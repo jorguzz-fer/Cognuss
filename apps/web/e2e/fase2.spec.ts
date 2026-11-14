@@ -51,7 +51,7 @@ test.describe('fase 2', () => {
     await page.goto('/app/minhas-disciplinas');
     await page.getByLabel('Nome da disciplina').fill('Patologia');
     await page.getByLabel('Sigla').fill('Pato');
-    await page.getByLabel('Cronograma').setInputFiles({
+    await page.getByLabel('Cronograma (opcional)').setInputFiles({
       name: 'cronograma.pdf',
       mimeType: 'application/pdf',
       buffer: pdf,

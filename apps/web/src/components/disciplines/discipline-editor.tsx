@@ -9,6 +9,7 @@ import { Field, Input } from '@/components/ui/field';
 import { api, ClientApiError } from '@/lib/client-api';
 import { cn } from '@/lib/cn';
 import { uploadFile } from '@/lib/upload';
+import { AttachDocument } from './attach-document';
 import { isPending, ScheduleStatus } from './schedule-status';
 import { CATEGORY_COLORS, categoryClasses, type CategoryColor } from '@/styles/categories';
 
@@ -326,6 +327,29 @@ export function DisciplineEditor({
                 ) : (
                   <p className="text-sm">Sem cronograma ainda.</p>
                 )}
+                <div className="flex flex-wrap gap-2">
+                  <AttachDocument
+                    disciplineId={d.id}
+                    kind="cronograma"
+                    label={
+                      d.documents.some((x) => x.kind === 'cronograma')
+                        ? 'Enviar outro cronograma'
+                        : 'Anexar cronograma'
+                    }
+                    onAttached={(nd) => {
+                      replace(nd);
+                      void refresh();
+                    }}
+                  />
+                  {d.documents.some((x) => x.kind === 'plano_ensino') ? null : (
+                    <AttachDocument
+                      disciplineId={d.id}
+                      kind="plano_ensino"
+                      label="Anexar plano de ensino"
+                      onAttached={replace}
+                    />
+                  )}
+                </div>
                 {d.scheduleImport ? (
                   <ScheduleStatus
                     value={d.scheduleImport}

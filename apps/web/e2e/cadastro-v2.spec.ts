@@ -68,7 +68,7 @@ test.describe('cadastro da v2', () => {
     await page.getByLabel('Docentes').fill('Dra. Juliana Martins');
     await page.getByLabel('Docentes').press('Enter');
     await expect(page.getByRole('button', { name: 'Remover Dra. Juliana Martins' })).toBeVisible();
-    await page.getByLabel('Cronograma').setInputFiles(CRONOGRAMA);
+    await page.getByLabel('Cronograma (opcional)').setInputFiles(CRONOGRAMA);
     await page.getByRole('button', { name: 'Adicionar disciplina' }).click();
     const item = page.getByRole('listitem').filter({ hasText: 'Fisiopatologia · Fisiopato' });
     await expect(item).toContainText('Dra. Juliana Martins');
