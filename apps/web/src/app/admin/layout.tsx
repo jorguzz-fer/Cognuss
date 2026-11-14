@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  FlaskConical,
   BadgeDollarSign,
   Building2,
   FileQuestion,
@@ -42,6 +43,11 @@ const adminItems: NavItem[] = [
     icon: <Building2 className={icon} aria-hidden />,
   },
   { href: '/admin/tutor', label: 'Tutor IA', icon: <Sparkles className={icon} aria-hidden /> },
+  {
+    href: '/admin/demo',
+    label: 'Conta de teste',
+    icon: <FlaskConical className={icon} aria-hidden />,
+  },
   {
     href: '/admin/ia',
     label: 'Custos de IA',
