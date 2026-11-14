@@ -19,6 +19,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      db-extensions:
+        condition: service_completed_successfully
       redis:
         condition: service_healthy
     environment:
@@ -157,6 +159,21 @@ services:
       timeout: 5s
       retries: 10
     # Sem "ports": o banco só é alcançável pela rede interna do compose.
+
+  # Extensões que só o superusuário cria (pgvector, ADR 0014). Roda a cada deploy, antes das
+  # migrations do web, e termina; num banco que já existia, dispensa o passo manual.
+  db-extensions:
+    image: gutta-db:16
+    # Mesma imagem do db (o build sai do cache); assim nada tenta baixar gutta-db de um registro.
+    build:
+      context: ./postgres
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: 'no'
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    command: ['psql', '-h', 'db', '-U', 'postgres', '-d', 'gutta', '-v', 'ON_ERROR_STOP=1', '-c', 'CREATE EXTENSION IF NOT EXISTS vector;']
 
 volumes:
   gutta-pg:

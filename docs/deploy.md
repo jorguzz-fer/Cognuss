@@ -87,12 +87,7 @@ Ela apaga o texto antigo das conversas do tutor, eventos e auditoria fora do pra
 
 ## Busca por conceito (pgvector e Voyage AI)
 
-A migration 0051 precisa da extensão `vector`, que só um superusuário cria. Volumes novos já saem com ela (`infra/postgres/init/01-roles.sh`). Num banco que já existia, antes do deploy que traz a 0051, rode uma vez como `postgres`:
-
-```sql
-\c gutta
-CREATE EXTENSION IF NOT EXISTS vector;
-```
+A migration 0051 precisa da extensão `vector`, que só um superusuário cria. O serviço `db-extensions` do compose faz isso a cada deploy, com o usuário `postgres`, antes de o `web` aplicar as migrations: volumes novos e bancos que já existiam não precisam de passo manual. A imagem `gutta-db` (`infra/postgres`) já vem com o pgvector compilado.
 
 Os vetores vêm da Voyage AI (decisão do Fernando, 14/11/2026). Cadastre `VOYAGE_API_KEY` no `web` e no `worker`. No painel da Voyage, em Organization → Terms of Service, mude para **Opted Out** (retenção zero, sem uso para treino; pede cartão cadastrado e conta de admin). Sem a chave, a busca por conceito fica desligada e a busca por palavra continua.
 
