@@ -1,6 +1,7 @@
 import { formatGrade } from '@gutta/core';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { AttachDocument } from '@/components/disciplines/attach-document';
 import { notFound } from 'next/navigation';
 import { DownloadButton } from '@/components/files/download-button';
 import { Badge, Card } from '@/components/ui/card';
@@ -296,10 +297,13 @@ export default async function DisciplineOverviewPage({
                   <DownloadButton fileId={o.schedule.id} label="Baixar o cronograma" />
                 </>
               ) : (
-                <p className="text-sm">
-                  Nenhum cronograma anexado.{' '}
-                  <Link href="/app/minhas-disciplinas">Anexar em Minhas disciplinas</Link>.
-                </p>
+                <>
+                  <p className="text-sm">
+                    Nenhum cronograma anexado. A leitura acompanha em{' '}
+                    <Link href="/app/minhas-disciplinas">Minhas disciplinas</Link>.
+                  </p>
+                  <AttachDocument disciplineId={id} kind="cronograma" label="Anexar cronograma" />
+                </>
               )}
             </Card>
             <Card as="section" aria-labelledby="resumo" className="grid gap-2">

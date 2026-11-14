@@ -61,7 +61,7 @@ test.describe('fluxo da v2', () => {
     await expect(page).toHaveURL(/\/comecar\/disciplinas/);
     await page.getByLabel('Nome da disciplina').fill('Fisiopatologia');
     await page.getByLabel('Sigla').fill('Fisiopato');
-    await page.getByLabel('Cronograma').setInputFiles({
+    await page.getByLabel('Cronograma (opcional)').setInputFiles({
       name: 'cronograma.pdf',
       mimeType: 'application/pdf',
       buffer: cronograma,

@@ -20,7 +20,7 @@ test.describe('cronograma', () => {
 
     await page.goto('/app/minhas-disciplinas');
     await page.getByLabel('Nome da disciplina').fill('Fisiopatologia');
-    await page.getByLabel('Cronograma').setInputFiles(CRONOGRAMA);
+    await page.getByLabel('Cronograma (opcional)').setInputFiles(CRONOGRAMA);
     await page.getByRole('button', { name: 'Adicionar disciplina' }).click();
     const card = page.getByRole('listitem').filter({ hasText: 'Fisiopatologia' }).first();
 
@@ -82,5 +82,32 @@ test.describe('cronograma', () => {
     await page.getByRole('button', { name: 'Fechar' }).click();
     // Semana de 09/08: aula de 2 h na segunda e prática de 3 h na quarta.
     await expect(page.getByRole('definition').filter({ hasText: '5h/sem' }).first()).toBeVisible();
+  });
+  test('anexa o cronograma a uma disciplina que já existe', async ({ page }) => {
+    await signUp(page, 'Elis', uniqueEmail('cronograma-depois'));
+    await page.goto('/app');
+    await completeOnboarding(page);
+
+    // Disciplina criada sem arquivo; o cronograma chega depois, pela visão geral.
+    await page.goto('/app/minhas-disciplinas');
+    await page.getByLabel('Nome da disciplina').fill('Bioquímica');
+    await page.getByRole('button', { name: 'Adicionar disciplina' }).click();
+    const card = page.getByRole('listitem').filter({ hasText: 'Bioquímica' }).first();
+    await expect(card).toContainText('Sem cronograma ainda.');
+    await card.getByRole('link', { name: 'Bioquímica' }).click();
+    await expect(page.getByText('Nenhum cronograma anexado.')).toBeVisible();
+    await page.getByLabel('Anexar cronograma').setInputFiles(CRONOGRAMA);
+    await expect(page.getByText(/Cronograma enviado\./)).toBeVisible({ timeout: 30_000 });
+
+    // A leitura aparece em Minhas disciplinas, como no cadastro.
+    await page.goto('/app/minhas-disciplinas');
+    const again = page.getByRole('listitem').filter({ hasText: 'Bioquímica' }).first();
+    await again.getByRole('button', { name: 'Autorizar a leitura' }).click({ timeout: 30_000 });
+    await again.getByRole('link', { name: 'Conferir o cronograma' }).click({ timeout: 45_000 });
+    await expect(page.getByRole('heading', { name: 'Conferir cronograma' })).toBeVisible();
+    expect(
+      (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag22aa']).analyze())
+        .violations,
+    ).toEqual([]);
   });
 });
