@@ -216,9 +216,10 @@ export default async function DisciplineOverviewPage({
                 ) : (
                   <p className="text-sm">Nenhuma nota lançada.</p>
                 )}
-                <Link href={`/app/notas/${id}`} className="text-sm">
-                  Ver detalhes
-                </Link>
+                <div className="flex flex-wrap gap-x-3 text-sm">
+                  <Link href={`/app/notas/${id}`}>Ver detalhes</Link>
+                  <Link href={`/app/notas/${id}#calculadora`}>Calcular média final</Link>
+                </div>
               </Card>
             </li>
           ) : null}
