@@ -1,6 +1,7 @@
 import { formatGrade } from '@gutta/core';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { buttonClass } from '@/components/ui/button';
 import { Badge, Card } from '@/components/ui/card';
 import { requireFeature } from '@/features/flags/service';
 import { gradesOverview } from '@/features/grades/service';
@@ -18,7 +19,8 @@ export default async function GradesPage() {
       <div className="grid gap-1">
         <h1 className="text-3xl md:text-4xl">Notas</h1>
         <p className="text-muted">
-          Médias e quanto falta em cada disciplina. O registro oficial é o da instituição.
+          Médias, quanto falta e a calculadora da média final de cada disciplina. O registro oficial
+          é o da instituição.
         </p>
       </div>
       {items.length === 0 ? (
@@ -39,6 +41,17 @@ export default async function GradesPage() {
                     ? 'Nenhuma nota lançada.'
                     : `Média atual ${formatGrade(d.summary.current)} (mínima ${formatGrade(d.scheme.minGrade)}), ${d.summary.graded} de ${d.summary.graded + d.summary.pending} avaliações lançadas.`}
                 </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <Link
+                    href={`/app/notas/${d.disciplineId}#calculadora`}
+                    className={buttonClass('secondary')}
+                  >
+                    Calcular minha média final
+                  </Link>
+                  <Link href={`/app/notas/${d.disciplineId}`} className={buttonClass('ghost')}>
+                    Ver notas
+                  </Link>
+                </div>
               </Card>
             </li>
           ))}

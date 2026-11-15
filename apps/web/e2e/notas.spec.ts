@@ -18,7 +18,13 @@ test.describe('notas', () => {
     await page.goto('/app');
     await completeOnboarding(page);
     await page.getByRole('link', { name: 'Notas', exact: true }).click();
-    await page.getByRole('link', { name: 'Fisiologia cardiovascular' }).click();
+    // O atalho da lista leva direto à calculadora da disciplina.
+    await page
+      .getByRole('listitem')
+      .filter({ hasText: 'Fisiologia cardiovascular' })
+      .getByRole('link', { name: 'Calcular minha média final' })
+      .click();
+    await expect(page).toHaveURL(/#calculadora$/);
     await expect(page.getByText('Nenhuma nota lançada ainda.')).toBeVisible();
 
     const add = async (name: string, date: string, grade: string, weight: string) => {
@@ -46,7 +52,7 @@ test.describe('notas', () => {
     expect(await axe(page)).toEqual([]);
 
     // Simulador com os números da disciplina já preenchidos: 7,75.
-    const simulador = page.getByRole('region', { name: 'Quanto preciso tirar?' });
+    const simulador = page.getByRole('region', { name: 'Calculadora: quanto preciso tirar?' });
     await expect(simulador.getByText('7,75', { exact: true })).toBeVisible();
     await simulador.getByLabel('Média final desejada').fill('9');
     await expect(simulador.getByText(/não é alcançável/)).toBeVisible();

@@ -162,7 +162,7 @@ export async function createDemoStudent(admin: CurrentUser, raw: unknown) {
         semester: 3,
         institutionId: institution?.id ?? null,
         institutionOther: institution ? null : 'Instituição fictícia de teste',
-        classGroup: 'Turma A',
+        classGroup: 'A',
         mainGoal: 'preparar_provas',
       })
       .onConflictDoNothing({ target: s.studentProfiles.userId });

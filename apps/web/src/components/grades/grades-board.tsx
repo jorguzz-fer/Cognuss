@@ -50,7 +50,7 @@ function situation(d: Dto): { text: string; tone: 'success' | 'warn' | 'neutral'
     };
   if (d.atRisk)
     return {
-      text: `Em risco: para chegar a ${min}, você precisa de ${formatGrade(d.needed.needed!)} em média nas avaliações restantes. Dá para usar o simulador abaixo para ver os cenários.`,
+      text: `Em risco: para chegar a ${min}, você precisa de ${formatGrade(d.needed.needed!)} em média nas avaliações restantes. Dá para usar a calculadora abaixo para ver os cenários.`,
       tone: 'warn',
     };
   return {
@@ -265,6 +265,70 @@ export function GradesBoard({
             </Alert>
           ) : null}
           <Chart d={d} />
+        </Card>
+
+        <Card
+          as="section"
+          id="calculadora"
+          aria-labelledby="simulador"
+          className="grid scroll-mt-24 gap-3"
+        >
+          <h2 id="simulador" className="text-lg font-semibold">
+            Calculadora: quanto preciso tirar?
+          </h2>
+          <p className="text-sm text-muted">
+            Informe a média final que você quer e veja a nota necessária no que falta. Os campos já
+            vêm com as suas notas lançadas; a média desejada começa na mínima de aprovação.
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            {(
+              [
+                ['current', 'Média das avaliações realizadas'],
+                ['desired', 'Média final desejada'],
+                [
+                  'done',
+                  d.scheme.method === 'percentual'
+                    ? 'Porcentagem já realizada'
+                    : 'Peso já realizado',
+                ],
+                [
+                  'remaining',
+                  d.scheme.method === 'percentual' ? 'Porcentagem restante' : 'Peso restante',
+                ],
+              ] as const
+            ).map(([k, l]) => (
+              <Field key={k} label={l}>
+                {(p) => (
+                  <Input
+                    {...p}
+                    inputMode="decimal"
+                    value={sim[k]}
+                    onChange={(e) => setSim({ ...sim, [k]: e.target.value })}
+                  />
+                )}
+              </Field>
+            ))}
+          </div>
+          <div
+            className="grid gap-1 rounded-[var(--radius)] bg-surface-2 p-3 text-center"
+            aria-live="polite"
+          >
+            {simResult.status === 'sem_restantes' ? (
+              <p>Informe um peso restante maior que zero.</p>
+            ) : (
+              <>
+                <p className="text-sm">Nota necessária nas próximas avaliações</p>
+                <p className="text-3xl font-bold">{formatGrade(simResult.needed)}</p>
+                <p className="text-sm text-muted">
+                  {simResult.status === 'garantida'
+                    ? 'A média desejada já está garantida.'
+                    : simResult.status === 'inalcancavel'
+                      ? 'Passa da nota máxima de 10: a média desejada não é alcançável com o que falta.'
+                      : 'Considerando os pesos informados e nota máxima de 10.'}
+                </p>
+              </>
+            )}
+          </div>
         </Card>
 
         <Card as="section" aria-labelledby="avaliacoes" className="grid gap-3">
@@ -501,60 +565,6 @@ export function GradesBoard({
           </form>
         </Card>
 
-        <Card as="section" aria-labelledby="simulador" className="grid gap-3">
-          <h2 id="simulador" className="text-lg font-semibold">
-            Quanto preciso tirar?
-          </h2>
-          <div className="grid grid-cols-2 gap-3">
-            {(
-              [
-                ['current', 'Média das avaliações realizadas'],
-                ['desired', 'Média final desejada'],
-                [
-                  'done',
-                  d.scheme.method === 'percentual'
-                    ? 'Porcentagem já realizada'
-                    : 'Peso já realizado',
-                ],
-                [
-                  'remaining',
-                  d.scheme.method === 'percentual' ? 'Porcentagem restante' : 'Peso restante',
-                ],
-              ] as const
-            ).map(([k, l]) => (
-              <Field key={k} label={l}>
-                {(p) => (
-                  <Input
-                    {...p}
-                    inputMode="decimal"
-                    value={sim[k]}
-                    onChange={(e) => setSim({ ...sim, [k]: e.target.value })}
-                  />
-                )}
-              </Field>
-            ))}
-          </div>
-          <div
-            className="grid gap-1 rounded-[var(--radius)] bg-surface-2 p-3 text-center"
-            aria-live="polite"
-          >
-            {simResult.status === 'sem_restantes' ? (
-              <p>Informe um peso restante maior que zero.</p>
-            ) : (
-              <>
-                <p className="text-sm">Nota necessária nas próximas avaliações</p>
-                <p className="text-3xl font-bold">{formatGrade(simResult.needed)}</p>
-                <p className="text-sm text-muted">
-                  {simResult.status === 'garantida'
-                    ? 'A média desejada já está garantida.'
-                    : simResult.status === 'inalcancavel'
-                      ? 'Passa da nota máxima de 10: a média desejada não é alcançável com o que falta.'
-                      : 'Considerando os pesos informados e nota máxima de 10.'}
-                </p>
-              </>
-            )}
-          </div>
-        </Card>
         {error ? (
           <Alert tone="danger" role="alert">
             {error}
