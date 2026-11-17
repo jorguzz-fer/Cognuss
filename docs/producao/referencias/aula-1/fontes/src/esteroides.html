@@ -1,0 +1,106 @@
+@@TITLE
+Síntese dos hormônios esteroides
+@@STYLE
+.sgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;align-items:start}
+.map{padding:8px;overflow-x:auto}
+.map svg{display:block;width:100%;min-width:640px;height:auto}
+.node{cursor:pointer}
+.node rect{transition:fill .25s,stroke .25s,opacity .25s}
+.node:focus-visible rect{stroke-width:4}
+.tag2{display:inline-block;font-size:12px;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--surface-2);margin:0 6px 6px 0}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 10px;font-size:15px;line-height:1.45}
+.kv dt{color:var(--muted);font-weight:600}.kv dd{margin:0}
+.memb{padding:0}.memb svg{display:block;width:100%;height:auto}
+@media (max-width:960px){.sgrid{grid-template-columns:1fr}}
+@@BODY
+  <section>
+    <div class="eyebrow">Peça interativa · Hormônios esteroides</div>
+    <h1>Do colesterol a cinco hormônios</h1>
+    <p class="lead">Cortisol, aldosterona, testosterona, estrógeno e progesterona saem da mesma molécula: o colesterol. Enzimas diferentes em cada glândula decidem o produto final. Clique num hormônio para ver o caminho, ou ligue uma deficiência enzimática.</p>
+  </section>
+  <div class="row"><span class="lbl">Ver o caminho até</span><span class="chips" id="finals"></span></div>
+  <div class="sgrid">
+    <div class="card map"><svg id="map" viewBox="0 0 760 560" role="img" aria-label="Mapa da síntese dos esteroides a partir do colesterol"></svg></div>
+    <div class="card panel">
+      <div><div class="eyebrow" id="hEy"></div><h2 id="hT" style="font-family:var(--f-display);font-weight:400;font-size:22px;margin:4px 0 10px"></h2>
+        <dl class="kv" id="hKv"></dl></div>
+      <div><div class="lbl" style="margin-bottom:8px">Simular deficiência enzimática</div>
+        <div class="chips"><button type="button" class="chip" id="d21">21-hidroxilase</button><button type="button" class="chip" id="darom">Aromatase</button><button type="button" class="chip" id="d5a">5α-redutase</button></div>
+        <p id="defT" style="margin:10px 0 0;line-height:1.55;font-size:15px;color:var(--muted)">Nenhuma deficiência ligada.</p></div>
+    </div>
+  </div>
+  <div class="card memb">
+    <div style="padding:16px 18px 0"><div class="eyebrow">Por que importa ser derivado do colesterol</div><h2 style="font-family:var(--f-display);font-weight:400;font-size:20px;margin:4px 0 4px">Esteroides atravessam a membrana; peptídeos não</h2>
+      <p style="margin:0;color:var(--muted);line-height:1.55">Os esteroides são lipossolúveis: passam pela bicamada e encontram o receptor dentro da célula, no citoplasma ou no núcleo. A insulina e os outros peptídeos param na membrana e usam receptores de superfície.</p></div>
+    <svg id="mem" viewBox="0 0 900 300" role="img" aria-label="Comparação: peptídeo para na membrana, esteroide atravessa"></svg>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow">Para fixar</div><h2>Mesma origem, enzimas diferentes</h2>
+      <p>A primeira etapa (colesterol → pregnenolona) acontece na mitocôndria e depende da proteína StAR, que leva o colesterol para dentro: é a etapa limitante, estimulada pelo ACTH na adrenal e pelo LH nas gônadas. Daí em diante, a enzima presente em cada zona ou glândula decide o produto.</p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p>Na hiperplasia adrenal congênita por deficiência de 21-hidroxilase, faltam cortisol e aldosterona, o ACTH sobe sem freio e os precursores são desviados para andrógenos: virilização na menina e perda de sal no recém-nascido. Ligue a deficiência no mapa.</p></div>
+  </div>
+@@SCRIPT
+/* nós do mapa: id, rótulo, x, y, grupo */
+const N={chol:['Colesterol',380,40,'s'],preg:['Pregnenolona',380,120,'s'],
+ prog:['Progesterona',150,210,'p'],ohpreg:['17-OH-pregnenolona',380,210,'s'],dhea:['DHEA',610,210,'a'],
+ doc:['11-desoxicorticosterona',150,300,'m'],ohprog:['17-OH-progesterona',380,300,'g'],andro:['Androstenediona',610,300,'a'],
+ cort:['Corticosterona',150,390,'m'],desox:['11-desoxicortisol',380,390,'g'],testo:['Testosterona',610,390,'a'],
+ aldo:['Aldosterona',150,480,'m'],cortisol:['Cortisol',380,480,'g'],estr:['Estradiol',545,480,'e'],dht:['DHT',690,480,'a']};
+/* arestas: de, para, enzima */
+const E=[['chol','preg','StAR + CYP11A1 (desmolase)'],['preg','prog','3β-HSD'],['preg','ohpreg','17α-hidroxilase'],['ohpreg','dhea','17,20-liase'],
+ ['prog','doc','21-hidroxilase'],['prog','ohprog','17α-hidroxilase'],['ohpreg','ohprog','3β-HSD'],['dhea','andro','3β-HSD'],['ohprog','andro','17,20-liase'],
+ ['doc','cort','11β-hidroxilase'],['ohprog','desox','21-hidroxilase'],['andro','testo','17β-HSD'],
+ ['cort','aldo','aldosterona sintase'],['desox','cortisol','11β-hidroxilase'],['testo','estr','aromatase'],['testo','dht','5α-redutase']];
+const INFO={
+ aldo:{ey:'Mineralocorticoide',where:'Zona glomerulosa da adrenal',key:'Aldosterona sintase',ctrl:'Angiotensina II e potássio (pouco o ACTH)',fn:'Rim: retém Na⁺ e água, excreta K⁺ e H⁺'},
+ cortisol:{ey:'Glicocorticoide',where:'Zona fasciculada da adrenal',key:'21-hidroxilase e 11β-hidroxilase',ctrl:'ACTH (eixo HHA)',fn:'Gliconeogênese, resposta ao estresse, efeito anti-inflamatório'},
+ testo:{ey:'Androgênio',where:'Células de Leydig (testículo); pouco na adrenal e no ovário',key:'17β-HSD',ctrl:'LH',fn:'Espermatogênese, massa muscular, caracteres sexuais masculinos'},
+ estr:{ey:'Estrogênio',where:'Células da granulosa (ovário), placenta e tecido adiposo',key:'Aromatase',ctrl:'FSH (aromatase) e LH (andrógenos da teca)',fn:'Proliferação do endométrio, caracteres sexuais femininos, massa óssea'},
+ prog:{ey:'Progestágeno',where:'Corpo lúteo e placenta; intermediário na adrenal',key:'3β-HSD',ctrl:'LH; hCG na gestação',fn:'Endométrio secretor, manutenção da gestação'},
+ dht:{ey:'Androgênio potente',where:'Próstata, pele e folículo piloso',key:'5α-redutase',ctrl:'Disponibilidade de testosterona',fn:'Genitália externa masculina no feto, próstata, calvície'}};
+const FINALS=[['cortisol','Cortisol'],['aldo','Aldosterona'],['testo','Testosterona'],['estr','Estradiol'],['prog','Progesterona'],['dht','DHT']];
+const GCOL={s:'var(--muted)',p:'var(--h2)',m:'var(--h1)',g:'var(--h3)',a:'var(--warn)',e:'var(--success)'};
+let SEL='cortisol',DEF=null;
+const BLOCK={d21:['21-hidroxilase'],darom:['aromatase'],d5a:['5α-redutase']};
+const DEFTXT={d21:'Sem 21-hidroxilase, progesterona e 17-OH-progesterona não seguem para aldosterona e cortisol. Sem cortisol, o ACTH sobe e empurra ainda mais precursor, que escapa pela via dos andrógenos: virilização e, nas formas graves, perda de sal. A 17-OH-progesterona alta é o marcador do teste do pezinho.',
+ darom:'Sem aromatase, os andrógenos não viram estrógenos: na mulher, virilização e ausência de puberdade feminina; no homem, fechamento tardio das epífises (estatura alta) e osteoporose.',
+ d5a:'Sem 5α-redutase, falta DHT no feto: genitália externa ambígua ou feminina em indivíduo 46,XY, que pode virilizar na puberdade, quando a testosterona sobe. A finasterida bloqueia essa enzima na hiperplasia prostática.'};
+function pathTo(t){const set=new Set([t]);let grow=true;while(grow){grow=false;E.forEach(([a,b])=>{if(set.has(b)&&!set.has(a)){
+  /* escolhe só um pai preferencial para a cadeia principal */set.add(a);grow=true}})}return set}
+const PREF={cortisol:['chol','preg','prog','ohprog','desox','cortisol'],aldo:['chol','preg','prog','doc','cort','aldo'],testo:['chol','preg','ohpreg','dhea','andro','testo'],estr:['chol','preg','ohpreg','dhea','andro','testo','estr'],prog:['chol','preg','prog'],dht:['chol','preg','ohpreg','dhea','andro','testo','dht']};
+function draw(){
+  const path=new Set(PREF[SEL]),blocked=DEF?BLOCK[DEF]:[];
+  const bE=E.filter(e=>blocked.includes(e[2]));
+  const dead=new Set();if(DEF==='d21'){['doc','cort','aldo','desox','cortisol'].forEach(k=>dead.add(k))}if(DEF==='darom')dead.add('estr');if(DEF==='d5a')dead.add('dht');
+  const boost=new Set(DEF==='d21'?['ohprog','prog','andro','dhea','testo']:DEF==='darom'?['andro','testo']:DEF==='d5a'?['testo']:[]);
+  let s=`<defs><marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--line-strong)"/></marker><marker id="ma" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker></defs>`;
+  [['Mineralocorticoides',150,'var(--h1)'],['Glicocorticoides',380,'var(--h3)'],['Androgênios e estrogênios',615,'var(--warn)']].forEach(([t,x,c])=>{s+=`<text x="${x}" y="552" text-anchor="middle" font-family="Hind,sans-serif" font-size="13" font-weight="700" fill="${c}">${t.toUpperCase()}</text>`});
+  E.forEach(([a,b,enz])=>{const A=N[a],B=N[b],on=path.has(a)&&path.has(b)&&PREF[SEL].indexOf(b)===PREF[SEL].indexOf(a)+1,bl=blocked.includes(enz);
+    const x1=A[1],y1=A[2]+20,x2=B[1],y2=B[2]-22,mx=(x1+x2)/2,my=(y1+y2)/2;
+    s+=`<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${bl?'var(--danger)':on?'var(--accent)':'var(--line-strong)'}" stroke-width="${on?4:2}" ${bl?'stroke-dasharray="6 5"':''} marker-end="url(#${on?'ma':'m'})" opacity="${bl?.9:on?1:.6}"/>`;
+    if(on||bl)s+=`<text x="${mx+(x2>=x1?8:-8)}" y="${my}" text-anchor="${x2>=x1?'start':'end'}" font-family="Hind,sans-serif" font-size="12" font-weight="700" fill="${bl?'var(--danger)':'var(--accent)'}" paint-order="stroke" stroke="var(--surface)" stroke-width="4">${bl?'✕ ':''}${enz}</text>`});
+  Object.entries(N).forEach(([k,[lab,x,y,g]])=>{const on=path.has(k),d=dead.has(k),bo=boost.has(k),fin=!!INFO[k];const w=Math.max(120,lab.length*8.4+24);
+    s+=`<g class="node" tabindex="${fin?0:-1}" data-k="${k}" opacity="${d?.3:1}"><rect x="${x-w/2}" y="${y-20}" width="${w}" height="40" rx="8" fill="${on?'var(--accent-soft)':'var(--surface-2)'}" stroke="${bo?'var(--warn)':on?'var(--accent)':GCOL[g]}" stroke-width="${bo?4:on?3:2}" ${d?'stroke-dasharray="5 4"':''}/>
+    <text x="${x}" y="${y+5}" text-anchor="middle" font-family="Hind,sans-serif" font-size="14" font-weight="${fin?700:600}" fill="var(--fg)">${lab}${bo?' ↑':''}</text></g>`});
+  $('#map').innerHTML=s;
+  $$('#map .node').forEach(n=>{const k=n.dataset.k;if(INFO[k]){n.onclick=()=>sel(k);n.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();sel(k)}}}});
+}
+function sel(k){SEL=k;const i=INFO[k];$$('#finals .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k));
+  $('#hEy').textContent=i.ey;$('#hT').textContent=N[k][0];
+  $('#hKv').innerHTML=`<dt>Onde</dt><dd>${i.where}</dd><dt>Enzima-chave</dt><dd>${i.key}</dd><dt>Controle</dt><dd>${i.ctrl}</dd><dt>Função</dt><dd>${i.fn}</dd><dt>Caminho</dt><dd>${PREF[k].map(x=>N[x][0]).join(' → ')}</dd>`;draw()}
+FINALS.forEach(([k,l])=>{const b=document.createElement('button');b.type='button';b.className='chip';b.dataset.k=k;b.textContent=l;b.onclick=()=>sel(k);$('#finals').appendChild(b)});
+['d21','darom','d5a'].forEach(id=>$('#'+id).onclick=()=>{DEF=DEF===id?null:id;['d21','darom','d5a'].forEach(x=>$('#'+x).setAttribute('aria-pressed',DEF===x));$('#defT').textContent=DEF?DEFTXT[DEF]:'Nenhuma deficiência ligada.';$('#defT').style.color=DEF?'var(--fg)':'var(--muted)';draw()});
+sel('cortisol');
+/* membrana: peptídeo para, esteroide atravessa */
+const mem=$('#mem');let t0=performance.now();
+function memDraw(now){const t=((now-t0)/1000)%6,u=t/6;let s='';
+  s+=`<rect x="0" y="110" width="900" height="50" fill="var(--surface-2)"/>`;for(let x=10;x<900;x+=22){s+=`<circle cx="${x}" cy="114" r="6" fill="var(--line-strong)"/><circle cx="${x}" cy="156" r="6" fill="var(--line-strong)"/>`}
+  s+=`<text x="16" y="30" font-family="Hind,sans-serif" font-size="12" font-weight="700" fill="var(--muted)">FORA DA CÉLULA</text><text x="16" y="200" font-family="Hind,sans-serif" font-size="12" font-weight="700" fill="var(--muted)">DENTRO DA CÉLULA</text>`;
+  /* peptídeo */const py=u<.35?40+u/.35*52:92;s+=`<path d="M210 106 v-16 M200 90 l10 -12 l10 12" stroke="var(--h1)" stroke-width="5" fill="none"/><circle cx="210" cy="${py-14}" r="16" fill="var(--h1)"/><text x="210" y="${py-9}" text-anchor="middle" font-family="Hind,sans-serif" font-size="11" font-weight="700" fill="var(--bg)">Ins</text>`;
+  s+=`<text x="210" y="230" text-anchor="middle" font-family="Hind,sans-serif" font-size="15" font-weight="700" fill="var(--h1)">Peptídeo: para no receptor de membrana</text><text x="210" y="252" text-anchor="middle" font-family="Hind,sans-serif" font-size="13" fill="var(--muted)">o sinal entra por segundos mensageiros</text>`;
+  /* esteroide */const sy=u<.7?30+u/.7*190:220;const bound=u>.7;s+=`<ellipse cx="640" cy="236" rx="60" ry="26" fill="var(--h3)" fill-opacity=".2" stroke="var(--h3)" stroke-width="3"/><text x="640" y="276" text-anchor="middle" font-family="Hind,sans-serif" font-size="13" fill="var(--muted)">receptor intracelular</text>`;
+  s+=`<polygon points="${[0,1,2,3,4,5].map(i=>`${640+15*Math.cos(i*Math.PI/3)},${(bound?232:sy)+15*Math.sin(i*Math.PI/3)}`).join(' ')}" fill="var(--h3)"/>`;
+  s+=`<text x="880" y="60" text-anchor="end" font-family="Hind,sans-serif" font-size="15" font-weight="700" fill="var(--h3)">Esteroide: atravessa</text><text x="880" y="80" text-anchor="end" font-family="Hind,sans-serif" font-size="13" fill="var(--muted)">e age no núcleo</text>`;
+  mem.innerHTML=s;if(!reduce)requestAnimationFrame(memDraw)}
+requestAnimationFrame(memDraw);
+window.__s={sel,setDef:id=>$('#'+id).click()};

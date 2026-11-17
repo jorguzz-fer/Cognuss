@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>O duplo mandato do GH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Identidade Cognuss (tokens de apps/web/src/styles/tokens.css): quase-preto quente, coral da marca,
+   Archivo Black nos títulos, Hind no texto. Layout: diagrama do eixo à esquerda, gráfico e controles à direita. */
+:root{
+  --bg:oklch(0.985 0 0);--surface:oklch(1 0 0);--surface-2:oklch(0.95 0.003 20);
+  --fg:oklch(0.21 0.006 20);--muted:oklch(0.46 0.006 20);--line:oklch(0.86 0.003 20);--line-strong:oklch(0.72 0.004 20);
+  --accent:oklch(0.52 0.2 27);--accent-hover:oklch(0.46 0.19 27);--accent-ink:oklch(0.99 0 0);--accent-soft:oklch(0.94 0.03 27);
+  --success:oklch(0.48 0.12 152);--success-soft:oklch(0.95 0.04 152);--warn:oklch(0.5 0.11 70);--warn-soft:oklch(0.95 0.05 85);
+  --danger:oklch(0.5 0.19 25);--danger-soft:oklch(0.95 0.03 25);
+  --h1:oklch(0.55 0.13 250);--h2:oklch(0.55 0.14 300);--h3:oklch(0.52 0.2 27);
+  --card-shadow:0 8px 24px -12px oklch(0.2 0 0 / .22);
+  --f-display:"Archivo Black","Arial Black",system-ui,sans-serif;--f-body:"Hind",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --radius:6px;--radius-lg:8px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto;padding:20px 24px 48px;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);color:var(--accent);font-size:18px;letter-spacing:-.2px}
+.crumb{font-size:14px;color:var(--muted)}
+.sp{flex:1}
+.badge{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--warn-soft);color:var(--warn)}
+.ibtn{border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:6px 10px;font-size:13px;color:var(--muted)}
+.ibtn:hover{color:var(--fg);border-color:var(--accent)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(28px,3.4vw,40px);line-height:1.08;margin:6px 0 8px;letter-spacing:-.5px;text-wrap:balance}
+.lead{margin:0;color:var(--muted);font-size:17px;line-height:1.55;max-width:70ch}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{border:0;background:transparent;padding:10px 14px 12px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--card-shadow)}
+.stage{padding:8px;position:relative}
+.stage svg{display:block;width:100%;height:auto}
+.panel{padding:18px;display:flex;flex-direction:column;gap:14px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line-strong);background:var(--surface-2);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--fg)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip.act{border-style:dashed}
+canvas{display:block;width:100%;height:220px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.ctl{display:flex;align-items:center;gap:12px}
+.ctl label{font-size:14px;font-weight:600;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--accent) var(--p,50%),var(--line-strong) var(--p,50%));margin:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+.ctl .v{font-family:var(--f-mono);font-size:14px;min-width:52px;text-align:right}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--surface-2);border-radius:var(--radius);padding:8px 10px;border-left:4px solid var(--c)}
+.tile .k{font-size:12px;color:var(--muted);font-weight:600}
+.tile .n{font-family:var(--f-mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;font-weight:700}
+.up{color:var(--danger)}.down{color:var(--h1)}.ok{color:var(--success)}
+.explain{padding:18px 20px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px}
+.explain h2{font-family:var(--f-display);font-weight:400;font-size:20px;margin:4px 0 8px;text-wrap:balance}
+.explain p{margin:0 0 10px;line-height:1.6;max-width:68ch}
+.exam{background:var(--accent-soft);border-radius:var(--radius);padding:14px 16px}
+.exam p{margin:6px 0 0;line-height:1.55}
+.foot{font-size:13px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line);padding-top:12px;margin:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:var(--radius);background:var(--accent);color:var(--accent-ink);font-weight:700;padding:9px 14px;font-size:14px}
+.btn:hover{background:var(--accent-hover)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line-strong)}
+.dil{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.dil span{display:block;height:100%;background:var(--accent);width:0}
+@media (max-width:960px){.grid,.explain{grid-template-columns:1fr}}
+@media (max-width:480px){.wrap{padding:14px 16px 40px}.tiles{grid-template-columns:1fr 1fr 1fr}.tile .n{font-size:17px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.stage svg text{font-family:var(--f-body)}
+.tcard{background:var(--surface-2);border-radius:var(--radius);padding:12px 14px;display:grid;gap:8px}
+.tcard .r{display:grid;grid-template-columns:120px 1fr;gap:10px;font-size:15px;line-height:1.45}
+.tcard .r span:first-child{font-weight:700;font-size:13px}
+.bars{display:grid;gap:10px}
+.bars .b{display:grid;grid-template-columns:150px 1fr 110px;gap:10px;align-items:center;font-size:14px;font-weight:600}
+.bars .t{height:12px;border-radius:6px;background:var(--surface-2);position:relative;overflow:hidden}
+.bars .t span{position:absolute;top:0;bottom:0;border-radius:6px}
+.bars .t i{position:absolute;left:50%;top:-2px;bottom:-2px;width:2px;background:var(--fg);opacity:.5}
+.bars em{font-style:normal;font-size:13px;text-align:right}
+.cx{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:18px;align-items:start}
+.cx svg{width:100%;height:auto;display:block}
+.cx svg text{font-family:var(--f-body)}
+table.cmp{width:100%;border-collapse:collapse;font-size:14px}
+table.cmp th,table.cmp td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4}
+table.cmp th{font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+@media (max-width:960px){.cx{grid-template-columns:1fr}.bars .b{grid-template-columns:110px 1fr 90px}}</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brand"><svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#c2181d"/><path d="M44 21A15 15 0 1 0 44 43" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round"/><circle cx="45.5" cy="32" r="4.6" fill="#fff"/></svg>COGNUSS</span>
+    <span class="crumb">Fisiologia endócrina · Aula 2 · Eixo somatotrófico</span>
+    <span class="sp"></span>
+    <span class="badge">Demonstração · sem revisão</span>
+    <button class="ibtn" id="themeBtn" type="button">Alternar tema</button>
+  </header>
+  <section>
+    <div class="eyebrow">Peça interativa · Bifurcação fisiológica</div>
+    <h1>O duplo mandato do GH</h1>
+    <p class="lead">O GH tem duas rotas. Pela <b style="color:var(--accent)">ação direta</b>, mexe no metabolismo em minutos a horas. Pela <b style="color:var(--h1)">via do IGF-1</b>, faz crescer osso, cartilagem e músculo ao longo de meses. Clique num tecido e mude o nível de GH.</p>
+  </section>
+  <div class="grid">
+    <div class="card stage"><svg id="d" viewBox="0 0 620 500" role="img" aria-label="Mapa das ações diretas do GH e das ações via IGF-1"></svg></div>
+    <div class="card panel">
+      <div class="lbl">Tecido</div>
+      <div class="chips" id="tis"></div>
+      <div class="tcard" id="tc"></div>
+      <div class="lbl">Nível de GH</div>
+      <div class="chips" id="lv"></div>
+      <div class="bars" id="bars"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="cx">
+      <div>
+        <div class="eyebrow">O amplificador periférico</div>
+        <h2 style="font-family:var(--f-display);font-weight:400;font-size:20px;margin:6px 0 8px">IGF-1 e sua escolta no plasma</h2>
+        <p style="margin:0 0 12px;line-height:1.55;color:var(--muted)">Livre, o IGF-1 dura minutos. Preso à IGFBP-3 e à ALS, forma o complexo ternário, que dura horas e funciona como reservatório. Monte o complexo:</p>
+        <div class="chips" id="cxb"></div>
+        <div class="tiles" style="margin-top:12px">
+          <div class="tile" style="--c:var(--h1)"><div class="k">Meia-vida</div><div class="n" id="hl"></div></div>
+          <div class="tile" style="--c:var(--success)"><div class="k">Do IGF-1 total</div><div class="n" id="fr"></div></div>
+          <div class="tile" style="--c:var(--warn)"><div class="k">Sai do vaso?</div><div class="n" id="ex" style="font-size:16px"></div></div>
+        </div>
+      </div>
+      <div><svg id="cxs" viewBox="0 0 420 250" role="img" aria-label="Montagem do complexo ternário"></svg></div>
+    </div>
+    <div style="padding:0 18px 18px">
+      <div class="lbl" style="margin-bottom:6px">IGF-1 × insulina</div>
+      <table class="cmp"><thead><tr><th></th><th>IGF-1</th><th>Insulina</th></tr></thead><tbody>
+        <tr><td><b>Estrutura</b></td><td>Peptídeo de cadeia única, cerca de 50% de homologia com a pró-insulina</td><td>Duas cadeias (A e B) ligadas por pontes dissulfeto</td></tr>
+        <tr><td><b>Receptor</b></td><td>IGF-1R, tirosina-quinase</td><td>Receptor de insulina, tirosina-quinase; há ligação cruzada em concentração alta</td></tr>
+        <tr><td><b>Função principal</b></td><td>Proliferação, diferenciação e hipertrofia</td><td>Captação e armazenamento imediato de nutrientes</td></tr>
+        <tr><td><b>Produção</b></td><td>Fígado (circulante) e tecidos (local), sob comando do GH</td><td>Célula β do pâncreas, sob comando da glicose</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow">Para fixar</div><h2>Crescer pelo IGF-1, poupar proteína pelo GH</h2>
+      <p>A ação direta do GH é catabólica para a gordura (lipólise) e antagonista da insulina: reduz a captação de glicose no músculo e no tecido adiposo e aumenta a produção hepática. Ao mesmo tempo, poupa proteína.</p>
+      <p>O crescimento é obra do IGF-1, sobretudo o produzido no próprio osso (ação parácrina), na placa epifisária. O IGF-1 circulante vem do fígado.</p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p>O GH é hormônio <b>diabetogênico</b>: o excesso (acromegalia) causa resistência à insulina, intolerância à glicose e diabetes. Na deficiência, sobretudo na criança, pode haver hipoglicemia; no adulto, aumento da gordura visceral e perda de massa magra.</p></div>
+  </div>
+  <p class="foot">Esquema didático, simplificado para fins de ensino. Base: Aires, <i>Fisiologia</i>, 5ª ed., cap. 73, p. 1219–1227 (Guanabara Koogan, 2018), conforme a aula do Dr. Rafael.</p>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const ss=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('#themeBtn').onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark';window.onTheme&&window.onTheme()};
+const TIS={
+ adiposo:{n:'Tecido adiposo',d:'Ativa a lipase hormônio-sensível: lipólise e liberação de ácidos graxos. Reduz a captação de glicose (antagonismo à insulina).',i:'Pouco relevante.',x:110,y:170,via:'d'},
+ musculo:{n:'Músculo',d:'Reduz a captação de glicose e aumenta a captação de aminoácidos e a síntese proteica.',i:'Hipertrofia e proliferação de células satélite.',x:110,y:330,via:'b'},
+ figado:{n:'Fígado',d:'Aumenta a gliconeogênese e a produção de glicose; aumenta a síntese proteica.',i:'É a principal fonte do IGF-1 circulante, além de IGFBP-3 e ALS.',x:310,y:260,via:'b'},
+ osso:{n:'Osso e cartilagem',d:'Estimula a diferenciação dos condroblastos da zona de reserva.',i:'Proliferação e hipertrofia dos condrócitos na placa epifisária: crescimento longitudinal até o fechamento.',x:510,y:330,via:'i'},
+ orgaos:{n:'Órgãos e pele',d:'Retenção de sódio e água.',i:'Crescimento de vísceras, cartilagem e tecidos moles: é o que aumenta mãos, pés, nariz e mandíbula na acromegalia.',x:510,y:170,via:'i'}};
+const LV={def:{n:'Deficiência',k:-1},nor:{n:'Normal',k:0},exc:{n:'Excesso',k:1}};
+let tsel='adiposo',lv='nor';
+const T=(x,y,s,o={})=>`<text x="${x}" y="${y}" font-size="${o.fs||14}" font-weight="${o.fw||700}" fill="${o.c||'var(--fg)'}" text-anchor="${o.a||'middle'}" paint-order="stroke" stroke="var(--surface)" stroke-width="${o.halo??4}">${s}</text>`;
+function draw(){const k=LV[lv].k,w=k<0?2:k>0?8:4.5,A='var(--accent)',B='var(--h1)';
+ let s=`<defs><marker id="mA" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10z" fill="${A}"/></marker><marker id="mB" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10z" fill="${B}"/></marker></defs>`;
+ s+=`<ellipse cx="310" cy="58" rx="64" ry="30" fill="${A}" fill-opacity=".9"/>`+T(310,64,'GH',{fs:18,c:'var(--accent-ink)',halo:0});
+ const ar=(x1,y1,x2,y2,c,m,ww,q)=>`<path d="M${x1} ${y1} Q${q[0]} ${q[1]} ${x2} ${y2}" fill="none" stroke="${c}" stroke-width="${ww}" stroke-linecap="round" marker-end="url(#${m})"/>`;
+ // direta
+ s+=ar(262,76,158,146,A,'mA',w,[190,90]);s+=ar(258,84,150,300,A,'mA',w,[150,160]);s+=ar(310,90,310,222,A,'mA',w,[310,150]);
+ s+=ar(360,84,470,148,A,'mA',Math.max(1.5,w*.45),[440,90]);
+ s+=T(170,104,'ação direta',{fs:13,c:A});
+ // IGF-1
+ s+=ar(356,272,424,318,B,'mB',w,[400,300]);s+=ar(350,248,440,202,B,'mB',w,[410,220]);s+=ar(264,280,196,322,B,'mB',w*.7,[220,300]);
+ s+=T(430,276,'IGF-1',{fs:14,c:B,a:'start'});
+ s+=`<path d="M400 360 q20 -6 32 6" fill="none" stroke="${B}" stroke-width="2" stroke-dasharray="4 4"/>`+T(440,392,'IGF-1 local (parácrino)',{fs:12,c:B,a:'start'});
+ Object.entries(TIS).forEach(([key,t])=>{const on=key===tsel;s+=`<g data-k="${key}" style="cursor:pointer"><rect x="${t.x-80}" y="${t.y-26}" width="160" height="52" rx="10" fill="${on?'var(--accent-soft)':'var(--surface)'}" stroke="${on?'var(--accent)':'var(--line-strong)'}" stroke-width="${on?3:2}"/>`+T(t.x,t.y+5,t.n,{fs:14})+'</g>'});
+ // balanço
+ s+=T(310,450,k<0?'Menos GH: menos lipólise e menos IGF-1':k>0?'Mais GH: lipólise, resistência à insulina e mais IGF-1':'Equilíbrio entre as duas rotas',{fs:14,c:'var(--muted)',fw:600});
+ $('#d').innerHTML=s;$$('#d g[data-k]').forEach(g=>g.onclick=()=>{tsel=g.dataset.k;draw()});
+ const t=TIS[tsel];$('#tc').innerHTML=`<div class="r"><span style="color:var(--accent)">Ação direta do GH</span><span>${t.d}</span></div><div class="r"><span style="color:var(--h1)">Via IGF-1</span><span>${t.i}</span></div>`;
+ const B3=[['Síntese proteica',[30,50,72],'var(--success)',['Menor','Basal','Maior']],['Lipólise',[25,50,82],'var(--warn)',['Menor: gordura visceral ↑','Basal','Maior']],['Glicemia de jejum',[38,50,74],'var(--danger)',['Tende a cair','Basal','Sobe: resistência à insulina']],['Crescimento (IGF-1)',[20,50,85],'var(--h1)',['Baixo','Basal','Alto']]];
+ $('#bars').innerHTML=B3.map(([n,v,c,l])=>{const p=v[k+1];return `<div class="b"><span>${n}</span><div class="t"><span style="left:${Math.min(p,50)}%;width:${Math.abs(p-50)||1}%;background:${c}"></span><i></i></div><em style="color:${c}">${l[k+1]}</em></div>`}).join('');
+ $$('#tis .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===tsel));$$('#lv .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===lv))}
+$('#tis').innerHTML=Object.entries(TIS).map(([k,v])=>`<button class="chip" type="button" data-k="${k}">${v.n}</button>`).join('');
+$('#lv').innerHTML=Object.entries(LV).map(([k,v])=>`<button class="chip" type="button" data-k="${k}">${v.n}</button>`).join('');
+$$('#tis .chip').forEach(b=>b.onclick=()=>{tsel=b.dataset.k;draw()});$$('#lv .chip').forEach(b=>b.onclick=()=>{lv=b.dataset.k;draw()});
+// complexo ternário
+const CX={livre:{n:'IGF-1 livre',hl:'≈ 10 min',fr:'< 1%',ex:'Sim, rápido'},bin:{n:'+ IGFBP-3',hl:'30–90 min',fr:'≈ 20–25%',ex:'Sim'},ter:{n:'+ ALS (ternário)',hl:'12–15 h',fr:'≈ 75–80%',ex:'Não: reservatório'}};
+let cs='ter';
+function drawCx(){const st=cs,c=CX[st];let s='';
+ s+=`<rect x="10" y="20" width="400" height="200" rx="14" fill="var(--danger)" fill-opacity=".06" stroke="var(--danger)" stroke-opacity=".35" stroke-width="2"/>`+T(24,42,'Capilar',{a:'start',fs:12,c:'var(--muted)'});
+ s+=`<path d="M10 220 L410 220" stroke="var(--danger)" stroke-opacity=".5" stroke-width="2" stroke-dasharray="10 8"/>`+T(210,242,'endotélio (poros)',{fs:12,c:'var(--muted)',fw:600});
+ const cx=210,cy=120;
+ if(st==='ter')s+=`<path d="M${cx-110} ${cy} A110 74 0 1 1 ${cx+110} ${cy} A110 74 0 1 1 ${cx-110} ${cy}Z" fill="var(--warn)" fill-opacity=".3" stroke="var(--warn)" stroke-width="2.5"/>`+T(cx,cy-52,'ALS',{fs:14,c:'var(--warn)',halo:0});
+ if(st!=='livre')s+=`<path d="M${cx-60} ${cy-10} A62 46 0 1 0 ${cx+60} ${cy-10}" fill="none" stroke="var(--success)" stroke-width="16" stroke-linecap="round" opacity=".75"/>`+T(cx,cy+90,'IGFBP-3',{fs:13,c:'var(--success)'});
+ s+=`<circle cx="${cx}" cy="${cy}" r="24" fill="var(--h1)"/>`+T(cx,cy+5,'IGF-1',{fs:12,c:'var(--surface)',halo:0});
+ if(st==='livre')s+=`<path d="M${cx} ${cy+26} L${cx} 232" stroke="var(--h1)" stroke-width="2.5" stroke-dasharray="5 4"/>`+T(cx+70,200,'escapa para os tecidos',{fs:12,c:'var(--h1)'});
+ if(st==='bin')s+=`<path d="M${cx+40} ${cy+40} L${cx+60} 232" stroke="var(--success)" stroke-width="2.5" stroke-dasharray="5 4"/>`+T(cx+110,196,'ainda atravessa',{fs:12,c:'var(--success)'});
+ $('#cxs').innerHTML=s;$('#hl').textContent=c.hl;$('#fr').textContent=c.fr;$('#ex').textContent=c.ex;
+ $$('#cxb .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===cs))}
+$('#cxb').innerHTML=Object.entries(CX).map(([k,v])=>`<button class="chip" type="button" data-k="${k}">${v.n}</button>`).join('');
+$$('#cxb .chip').forEach(b=>b.onclick=()=>{cs=b.dataset.k;drawCx()});
+draw();drawCx();window.onTheme=()=>{draw();drawCx()};
+
+</script>
+</body>
+</html>

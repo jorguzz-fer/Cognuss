@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vias de sinalização intracelular</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Identidade Cognuss (tokens de apps/web/src/styles/tokens.css): quase-preto quente, coral da marca,
+   Archivo Black nos títulos, Hind no texto. Layout: diagrama do eixo à esquerda, gráfico e controles à direita. */
+:root{
+  --bg:oklch(0.985 0 0);--surface:oklch(1 0 0);--surface-2:oklch(0.95 0.003 20);
+  --fg:oklch(0.21 0.006 20);--muted:oklch(0.46 0.006 20);--line:oklch(0.86 0.003 20);--line-strong:oklch(0.72 0.004 20);
+  --accent:oklch(0.52 0.2 27);--accent-hover:oklch(0.46 0.19 27);--accent-ink:oklch(0.99 0 0);--accent-soft:oklch(0.94 0.03 27);
+  --success:oklch(0.48 0.12 152);--success-soft:oklch(0.95 0.04 152);--warn:oklch(0.5 0.11 70);--warn-soft:oklch(0.95 0.05 85);
+  --danger:oklch(0.5 0.19 25);--danger-soft:oklch(0.95 0.03 25);
+  --h1:oklch(0.55 0.13 250);--h2:oklch(0.55 0.14 300);--h3:oklch(0.52 0.2 27);
+  --card-shadow:0 8px 24px -12px oklch(0.2 0 0 / .22);
+  --f-display:"Archivo Black","Arial Black",system-ui,sans-serif;--f-body:"Hind",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --radius:6px;--radius-lg:8px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto;padding:20px 24px 48px;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);color:var(--accent);font-size:18px;letter-spacing:-.2px}
+.crumb{font-size:14px;color:var(--muted)}
+.sp{flex:1}
+.badge{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--warn-soft);color:var(--warn)}
+.ibtn{border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:6px 10px;font-size:13px;color:var(--muted)}
+.ibtn:hover{color:var(--fg);border-color:var(--accent)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(28px,3.4vw,40px);line-height:1.08;margin:6px 0 8px;letter-spacing:-.5px;text-wrap:balance}
+.lead{margin:0;color:var(--muted);font-size:17px;line-height:1.55;max-width:70ch}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{border:0;background:transparent;padding:10px 14px 12px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--card-shadow)}
+.stage{padding:8px;position:relative}
+.stage svg{display:block;width:100%;height:auto}
+.panel{padding:18px;display:flex;flex-direction:column;gap:14px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line-strong);background:var(--surface-2);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--fg)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip.act{border-style:dashed}
+canvas{display:block;width:100%;height:220px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.ctl{display:flex;align-items:center;gap:12px}
+.ctl label{font-size:14px;font-weight:600;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--accent) var(--p,50%),var(--line-strong) var(--p,50%));margin:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+.ctl .v{font-family:var(--f-mono);font-size:14px;min-width:52px;text-align:right}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--surface-2);border-radius:var(--radius);padding:8px 10px;border-left:4px solid var(--c)}
+.tile .k{font-size:12px;color:var(--muted);font-weight:600}
+.tile .n{font-family:var(--f-mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;font-weight:700}
+.up{color:var(--danger)}.down{color:var(--h1)}.ok{color:var(--success)}
+.explain{padding:18px 20px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px}
+.explain h2{font-family:var(--f-display);font-weight:400;font-size:20px;margin:4px 0 8px;text-wrap:balance}
+.explain p{margin:0 0 10px;line-height:1.6;max-width:68ch}
+.exam{background:var(--accent-soft);border-radius:var(--radius);padding:14px 16px}
+.exam p{margin:6px 0 0;line-height:1.55}
+.foot{font-size:13px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line);padding-top:12px;margin:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:var(--radius);background:var(--accent);color:var(--accent-ink);font-weight:700;padding:9px 14px;font-size:14px}
+.btn:hover{background:var(--accent-hover)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line-strong)}
+.dil{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.dil span{display:block;height:100%;background:var(--accent);width:0}
+@media (max-width:960px){.grid,.explain{grid-template-columns:1fr}}
+@media (max-width:480px){.wrap{padding:14px 16px 40px}.tiles{grid-template-columns:1fr 1fr 1fr}.tile .n{font-size:17px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.vgrid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:16px;align-items:start}
+.vstage{padding:0;overflow:hidden}
+.vstage svg{display:block;width:100%;height:auto}
+.ptabs{display:flex;gap:4px;flex-wrap:wrap}
+.cap{padding:14px 16px;border-top:1px solid var(--line);display:flex;gap:12px;align-items:center;min-height:76px}
+.cap .n{flex:none;width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:700}
+.cap p{margin:0;line-height:1.5;font-size:16px}
+.ctlrow{display:flex;gap:8px;align-items:center;padding:0 16px 14px;flex-wrap:wrap}
+.speed{display:grid;grid-template-columns:110px 1fr;gap:6px 10px;align-items:center;font-size:14px}
+.speed .b{height:10px;border-radius:5px;background:var(--surface-2);position:relative;overflow:hidden}
+.speed .b span{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:5px}
+.amp{font-family:var(--f-mono);font-size:28px;font-weight:600;color:var(--accent)}
+.svgfade{transition:opacity .45s ease}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.cur{animation:pulse 1.2s ease-in-out infinite}
+@media (max-width:960px){.vgrid{grid-template-columns:1fr}}</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brand"><svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#c2181d"/><path d="M44 21A15 15 0 1 0 44 43" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round"/><circle cx="45.5" cy="32" r="4.6" fill="#fff"/></svg>COGNUSS</span>
+    <span class="crumb">Fisiologia endócrina · Aula 1 · Introdução</span>
+    <span class="sp"></span>
+    <span class="badge">Demonstração · sem revisão</span>
+    <button class="ibtn" id="themeBtn" type="button">Alternar tema</button>
+  </header>
+  <section>
+    <div class="eyebrow">Peça interativa · Vias de sinalização</div>
+    <h1>O efeito dominó dentro da célula</h1>
+    <p class="lead">O hormônio é só o primeiro mensageiro. Dentro da célula, cada etapa ativa várias moléculas da etapa seguinte e o sinal se amplifica. Escolha uma via e um hormônio e avance passo a passo.</p>
+  </section>
+  <div class="ptabs" id="paths" role="tablist" aria-label="Vias"></div>
+  <div class="vgrid">
+    <div class="card vstage">
+      <svg id="v" viewBox="0 0 900 520" role="img" aria-label="Esquema da via de sinalização"></svg>
+      <div class="cap"><span class="n" id="capN">1</span><p id="capT"></p></div>
+      <div class="ctlrow">
+        <button class="btn ghost" id="prev" type="button">← Voltar</button>
+        <button class="btn" id="next" type="button">Próximo passo →</button>
+        <button class="ibtn" id="auto" type="button">▶ Reproduzir</button>
+        <span class="sp"></span><span id="stepc" style="font-family:var(--f-mono);font-size:14px;color:var(--muted)"></span>
+      </div>
+    </div>
+    <div class="card panel">
+      <div><div class="lbl">Hormônios que usam esta via</div><div class="chips" id="horms" style="margin-top:8px"></div></div>
+      <div><div class="lbl">Efeito no exemplo escolhido</div><p id="eff" style="margin:6px 0 0;line-height:1.55"></p></div>
+      <div><div class="lbl">Amplificação</div><div class="amp" id="amp"></div><div id="ampT" style="font-size:14px;color:var(--muted)"></div></div>
+      <div><div class="lbl" style="margin-bottom:8px">Velocidade e duração</div>
+        <div class="speed"><span>Início</span><div class="b"><span id="spd"></span></div><span>Duração</span><div class="b"><span id="dur"></span></div></div>
+        <div id="spdT" style="font-size:13px;color:var(--muted);margin-top:6px"></div></div>
+    </div>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow">Para fixar</div><h2 id="fixT"></h2><p id="fixP"></p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p id="exam"></p></div>
+  </div>
+  <p class="foot">Esquema didático, simplificado para fins de ensino. Base: Aires, <i>Fisiologia</i>, 5ª ed., cap. 64 (Guanabara Koogan, 2018), conforme a aula do Dr. Rafael.</p>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const ss=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('#themeBtn').onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark';window.onTheme&&window.onTheme()};
+/* elementos SVG reutilizáveis */
+const C={a:'var(--accent)',h1:'var(--h1)',h2:'var(--h2)',h3:'var(--h3)',ok:'var(--success)',w:'var(--warn)',m:'var(--muted)',fg:'var(--fg)',l:'var(--line-strong)',s2:'var(--surface-2)',bad:'var(--danger)'};
+const T=(x,y,s,o={})=>`<text x="${x}" y="${y}" font-family="Hind,sans-serif" font-size="${o.fs||15}" font-weight="${o.fw||700}" fill="${o.c||C.fg}" text-anchor="${o.a||'middle'}">${s}</text>`;
+const blob=(x,y,rx,ry,c,lab,o={})=>`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${c}" fill-opacity="${o.op||.22}" stroke="${c}" stroke-width="3"/>${lab?T(x,y+5,lab,{fs:o.fs||14,c:C.fg}):''}`;
+const dots=(x,y,n,c,r=5,spread=60)=>{let s='';for(let i=0;i<n;i++){const a=i*2.4,d=8+((i*37)%spread);s+=`<circle cx="${x+Math.cos(a)*d}" cy="${y+Math.sin(a)*d*.6}" r="${r}" fill="${c}"/>`}return s};
+const arr=(x1,y1,x2,y2,c=C.l,dash='')=>`<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${c}" stroke-width="3" fill="none" ${dash?`stroke-dasharray="${dash}"`:''} marker-end="url(#mk)"/>`;
+const curve=(d,c=C.l,dash='')=>`<path d="${d}" stroke="${c}" stroke-width="3" fill="none" ${dash?`stroke-dasharray="${dash}"`:''} marker-end="url(#mk)"/>`;
+const gpcr=x=>{let p=`M${x-60} 86`;for(let i=0;i<7;i++){const xx=x-60+i*20;p+=`L${xx} 86 L${xx+10} 140`}return `<path d="${p}" fill="none" stroke="${C.h1}" stroke-width="6" stroke-linejoin="round"/>`+T(x+50,74,'Receptor acoplado à proteína G',{fs:13,c:C.m,a:'start'})};
+const MEM=`<defs><marker id="mk" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--line-strong)"/></marker></defs>
+<rect x="0" y="92" width="900" height="44" fill="var(--surface-2)"/><line x1="0" y1="92" x2="900" y2="92" stroke="var(--line-strong)" stroke-width="2"/><line x1="0" y1="136" x2="900" y2="136" stroke="var(--line-strong)" stroke-width="2"/>
+${T(16,30,'MEIO EXTRACELULAR',{a:'start',fs:12,c:C.m})}${T(16,124,'MEMBRANA',{a:'start',fs:12,c:C.m})}${T(16,200,'CITOPLASMA',{a:'start',fs:12,c:C.m})}
+<path d="M80 520 Q450 360 820 520Z" fill="var(--h2)" fill-opacity=".08" stroke="var(--h2)" stroke-width="2" stroke-dasharray="6 6"/>${T(450,505,'NÚCLEO',{fs:12,c:C.m})}`;
+/* cada via: passos com fragmentos SVG cumulativos */
+const PATHS={
+gs:{tab:'AMPc · proteína Gs',horm:{ACTH:'Córtex adrenal: síntese de cortisol.',TSH:'Tireoide: síntese e liberação de T3 e T4.','LH e FSH':'Gônadas: esteroidogênese e gametogênese.',Glucagon:'Fígado: glicogenólise e gliconeogênese, a glicemia sobe.','ADH (V2)':'Rim: aquaporina-2 vai à membrana e a água é reabsorvida.','Adrenalina (β)':'Coração: aumenta a frequência e a força de contração.',PTH:'Rim e osso: o cálcio no sangue sobe.',Calcitonina:'Osso: inibe os osteoclastos.'},
+ amp:['1 → 10⁴','Um hormônio ativa várias proteínas Gs, cada adenilil ciclase gera centenas de AMPc e cada PKA fosforila muitas proteínas.'],spd:[.8,.35],spdT:'Segundos a minutos; dura enquanto houver AMPc (a fosfodiesterase o degrada).',
+ fixT:'A via mais clássica da endocrinologia',fixP:'Hormônio → receptor → Gs → adenilil ciclase → AMPc → PKA → fosforilação de proteínas e regulação gênica (CREB). A cafeína e a teofilina inibem a fosfodiesterase e prolongam o AMPc.',
+ exam:'A cólera e a coqueluche agem por esta via: a toxina colérica mantém a Gs ligada (AMPc sempre alto, diarreia secretora) e a pertussis impede a Gi de inibir a ciclase.',
+ steps:[
+  ['O hormônio, hidrossolúvel, não atravessa a membrana: liga-se ao receptor acoplado à proteína G.',`${gpcr(220)}<circle cx="190" cy="60" r="18" fill="${C.a}"/>${T(190,30,'Hormônio',{fs:13})}`],
+  ['O receptor ativa a proteína Gs: a subunidade α troca GDP por GTP e se solta.',`${blob(300,170,40,22,C.h2,'Gsα')}${curve('M240 150 Q270 170 262 170')}`],
+  ['A Gsα ativa a adenilil ciclase na membrana.',`<rect x="440" y="88" width="70" height="52" rx="10" fill="${C.h3}" fill-opacity=".25" stroke="${C.h3}" stroke-width="3"/>${T(475,165,'Adenilil ciclase',{fs:13,c:C.m})}${curve('M340 168 Q400 168 438 130')}`],
+  ['A ciclase converte ATP em AMPc, o segundo mensageiro: muitas moléculas por enzima.',`${dots(560,240,22,C.a,5,70)}${T(560,300,'AMPc',{fs:15,c:C.a})}${curve('M500 142 Q520 200 540 220')}`],
+  ['O AMPc liga-se às subunidades reguladoras da proteína quinase A (PKA), que libera as subunidades catalíticas.',`${blob(700,260,62,34,C.h1,'PKA ativa')}${curve('M610 250 L632 255')}`],
+  ['A PKA fosforila proteínas-alvo e, no núcleo, o fator de transcrição CREB: resposta rápida e ajuste gênico.',`${blob(780,360,50,26,C.ok,'Efeito')}${curve('M720 294 L760 336')}${blob(450,440,70,26,C.h2,'CREB-P')}${curve('M680 294 Q560 380 500 420','var(--h2)','6 5')}`]]},
+gq:{tab:'IP3 / DAG · proteína Gq',horm:{TRH:'Adeno-hipófise: libera TSH.',GnRH:'Adeno-hipófise: libera LH e FSH em pulsos.',Ocitocina:'Útero e mama: contração do miométrio e ejeção do leite.','ADH (V1)':'Vasos: vasoconstrição.','Angiotensina II':'Vasos e adrenal: vasoconstrição e aldosterona.','Adrenalina (α1)':'Músculo liso vascular: vasoconstrição.'},
+ amp:['1 → 10³','Cada fosfolipase C gera muitas moléculas de IP3 e DAG, e o IP3 libera grandes quantidades de cálcio do retículo.'],spd:[.9,.3],spdT:'Segundos; o cálcio volta ao retículo em pouco tempo.',
+ fixT:'Cálcio como segundo mensageiro',fixP:'Hormônio → receptor → Gq → fosfolipase C → PIP2 vira IP3 + DAG. O IP3 abre canais de Ca²⁺ do retículo; o DAG e o Ca²⁺ ativam a PKC. Resultado típico: contração de músculo liso e secreção.',
+ exam:'O lítio interfere na reciclagem do inositol desta via. E o GnRH depende dela para os pulsos de LH e FSH.',
+ steps:[
+  ['O hormônio liga-se a um receptor acoplado à proteína G.',`${gpcr(220)}<circle cx="190" cy="60" r="18" fill="${C.a}"/>${T(190,30,'Hormônio',{fs:13})}`],
+  ['A proteína Gq é ativada (α-GTP) e se solta.',`${blob(300,170,40,22,C.h2,'Gqα')}${curve('M240 150 Q270 170 262 170')}`],
+  ['A Gqα ativa a fosfolipase C (PLC) na membrana.',`<rect x="420" y="88" width="80" height="52" rx="10" fill="${C.h3}" fill-opacity=".25" stroke="${C.h3}" stroke-width="3"/>${T(460,120,'PLC',{fs:14})}${curve('M340 168 Q390 168 418 130')}`],
+  ['A PLC quebra o PIP2 da membrana em dois mensageiros: IP3 (solúvel) e DAG (fica na membrana).',`${T(560,114,'DAG',{fs:15,c:C.w})}<rect x="530" y="96" width="60" height="30" rx="6" fill="none" stroke="${C.w}" stroke-width="2"/>${dots(470,230,10,C.a,5,40)}${T(470,280,'IP3',{fs:15,c:C.a})}${curve('M460 142 L466 196')}`],
+  ['O IP3 abre canais do retículo endoplasmático e o Ca²⁺ inunda o citoplasma.',`<path d="M600 300 q40 -30 80 0 t80 0 t60 0" fill="none" stroke="${C.h2}" stroke-width="10" stroke-linecap="round" opacity=".5"/>${T(700,340,'Retículo endoplasmático',{fs:13,c:C.m})}${dots(660,240,18,C.ok,5,70)}${T(760,215,'Ca²⁺',{fs:15,c:C.ok})}${curve('M500 240 Q560 280 600 296')}`],
+  ['DAG + Ca²⁺ ativam a proteína quinase C (PKC); o Ca²⁺ com a calmodulina dispara contração ou secreção.',`${blob(640,170,58,28,C.h1,'PKC')}${curve('M584 128 L610 150')}${curve('M690 230 L670 196')}${blob(820,420,58,26,C.ok,'Efeito')}${curve('M700 190 Q790 300 810 390')}`]]},
+gi:{tab:'Gi · inibição',horm:{Somatostatina:'Hipófise e pâncreas: reduz GH, insulina e glucagon.','Dopamina (D2)':'Lactotrofo: reduz a prolactina.','Adrenalina (α2)':'Terminal nervoso e ilhota: reduz a liberação de noradrenalina e de insulina.'},
+ amp:['↓ AMPc','A via Gi faz o oposto da Gs: desliga a adenilil ciclase e o AMPc cai.'],spd:[.8,.35],spdT:'Segundos a minutos.',
+ fixT:'O freio dentro da célula',fixP:'Hormônio → receptor → Gi → inibe a adenilil ciclase → menos AMPc → menos PKA. É assim que a somatostatina e a dopamina inibem a secreção hormonal.',
+ exam:'Agonistas dopaminérgicos (bromocriptina, cabergolina) tratam o prolactinoma ativando D2/Gi no lactotrofo. Antipsicóticos bloqueiam D2 e podem elevar a prolactina.',
+ steps:[
+  ['O hormônio liga-se ao receptor acoplado à proteína G.',`${gpcr(220)}<circle cx="190" cy="60" r="18" fill="${C.a}"/>${T(190,30,'Hormônio',{fs:13})}`],
+  ['A proteína Gi é ativada e se solta.',`${blob(300,170,40,22,C.h2,'Giα')}${curve('M240 150 Q270 170 262 170')}`],
+  ['A Giα inibe a adenilil ciclase.',`<rect x="440" y="88" width="70" height="52" rx="10" fill="${C.h3}" fill-opacity=".12" stroke="${C.h3}" stroke-width="3" stroke-dasharray="6 5"/>${T(475,165,'Adenilil ciclase',{fs:13,c:C.m})}<path d="M340 168 Q400 168 432 136" stroke="${C.bad}" stroke-width="3" fill="none"/><path d="M424 128 L442 146" stroke="${C.bad}" stroke-width="5"/>${T(390,200,'− inibe',{fs:14,c:C.bad})}`],
+  ['Menos AMPc, menos PKA ativa: a secreção do hormônio-alvo cai.',`${dots(580,240,4,C.a,5,30)}${T(580,290,'AMPc ↓',{fs:15,c:C.a})}${blob(760,330,70,30,C.bad,'Secreção ↓')}${curve('M610 260 Q690 300 700 310','var(--line-strong)','6 5')}`]]},
+rtk:{tab:'Tirosina-quinase · insulina',horm:{Insulina:'Músculo e tecido adiposo: GLUT4 vai à membrana e a glicose entra; síntese de glicogênio e proteínas.','IGF-1':'Cartilagem e tecidos: crescimento e proliferação.'},
+ amp:['2 vias','Um único receptor ativa duas cascatas: PI3K–Akt (metabolismo) e MAPK/ERK (crescimento).'],spd:[.75,.5],spdT:'Minutos para o GLUT4; horas para os efeitos de crescimento.',
+ fixT:'O receptor é a própria enzima',fixP:'A insulina liga-se ao receptor, que se autofosforila em tirosinas. Proteínas IRS ancoram e ativam a PI3K–Akt (GLUT4 vai à membrana, glicose entra) e a MAPK/ERK (crescimento).',
+ exam:'Na resistência à insulina (diabetes tipo 2), a falha está depois do receptor, sobretudo na via PI3K–Akt: a insulina está alta, mas o GLUT4 não sobe para a membrana.',
+ steps:[
+  ['A insulina liga-se ao receptor de tirosina-quinase (um dímero que atravessa a membrana).',`<path d="M390 40 V150 M450 40 V150" stroke="${C.h1}" stroke-width="12" stroke-linecap="round"/><circle cx="420" cy="50" r="18" fill="${C.a}"/>${T(420,24,'Insulina',{fs:13})}`],
+  ['O receptor se autofosforila em resíduos de tirosina no lado de dentro.',`${['P','P','P','P'].map((p,i)=>`<circle cx="${i<2?366:474}" cy="${160+(i%2)*30}" r="13" fill="${C.w}"/>${T(i<2?366:474,165+(i%2)*30,'P',{fs:13,c:'#1a1408'})}`).join('')}`],
+  ['A proteína IRS se liga às tirosinas fosforiladas e serve de plataforma.',`${blob(420,240,54,24,C.h2,'IRS-1')}${curve('M420 200 L420 214')}`],
+  ['Via PI3K–Akt: vesículas com GLUT4 vão até a membrana e a glicose entra.',`${blob(230,300,60,26,C.h3,'PI3K → Akt')}${curve('M370 250 Q300 270 260 280')}<circle cx="140" cy="200" r="18" fill="none" stroke="${C.ok}" stroke-width="3"/>${T(140,205,'G4',{fs:12,c:C.ok})}<rect x="128" y="88" width="24" height="52" fill="${C.ok}" fill-opacity=".35" stroke="${C.ok}" stroke-width="2"/>${curve('M180 290 Q140 250 140 222')}${dots(140,50,6,C.ok,5,22)}${T(140,24,'Glicose',{fs:13,c:C.ok})}${arr(140,66,140,92,C.ok)}`],
+  ['Via MAPK/ERK: o sinal chega ao núcleo e regula crescimento e síntese proteica.',`${blob(640,260,70,26,C.h1,'Ras → MAPK')}${curve('M470 250 Q560 255 568 258')}${blob(560,440,72,24,C.h2,'Transcrição')}${curve('M640 290 Q620 380 590 414','var(--h2)','6 5')}`]]},
+jak:{tab:'JAK-STAT · GH e prolactina',horm:{GH:'Fígado: produção de IGF-1; tecidos: lipólise e efeitos metabólicos.',Prolactina:'Mama: síntese das proteínas do leite.',Leptina:'Hipotálamo: reduz o apetite.',Eritropoetina:'Medula óssea: produção de hemácias.'},
+ amp:['Direto ao núcleo','O STAT é ao mesmo tempo sinalizador e fator de transcrição: poucas etapas entre a membrana e o gene.'],spd:[.55,.65],spdT:'Minutos a horas; efeito depende de transcrição.',
+ fixT:'Receptor sem enzima, com a JAK ao lado',fixP:'O hormônio aproxima dois receptores; as JAK associadas fosforilam-se entre si e fosforilam o receptor. O STAT é recrutado, fosforilado, forma dímero e vai ao núcleo regular a transcrição.',
+ exam:'Mutação ativadora da JAK2 causa policitemia vera (a via da eritropoetina fica sempre ligada). Inibidores de JAK (ruxolitinibe, tofacitinibe) são usados nessas doenças e em doenças autoimunes.',
+ steps:[
+  ['O hormônio aproxima dois receptores de citocina, cada um com uma JAK associada.',`<path d="M390 40 V150 M450 40 V150" stroke="${C.h1}" stroke-width="12" stroke-linecap="round"/><circle cx="420" cy="50" r="18" fill="${C.a}"/>${T(420,24,'Hormônio',{fs:13})}${blob(368,180,26,18,C.h3,'JAK',{fs:12})}${blob(472,180,26,18,C.h3,'JAK',{fs:12})}`],
+  ['As JAK fosforilam uma à outra e fosforilam o receptor.',`${[366,474].map(x=>`<circle cx="${x}" cy="212" r="12" fill="${C.w}"/>${T(x,217,'P',{fs:12,c:'#1a1408'})}`).join('')}`],
+  ['O STAT encaixa no receptor fosforilado e também é fosforilado.',`${blob(560,260,46,22,C.h2,'STAT-P')}${curve('M480 220 Q520 240 520 250')}`],
+  ['Dois STAT fosforilados formam um dímero.',`${blob(620,330,56,24,C.h2,'STAT ×2')}${curve('M580 282 L606 306')}`],
+  ['O dímero entra no núcleo e liga-se ao DNA: transcrição de genes-alvo, como o IGF-1 no fígado.',`${blob(450,440,80,26,C.ok,'Gene-alvo')}${curve('M610 356 Q560 400 520 420','var(--h2)','6 5')}`]]},
+nuc:{tab:'Receptor nuclear · esteroides e T3',horm:{Cortisol:'Fígado e tecidos: gliconeogênese, efeito anti-inflamatório.',Aldosterona:'Rim: síntese de canais ENaC e bomba Na⁺/K⁺.',Estradiol:'Útero e mama: proliferação.',Testosterona:'Músculo e órgãos sexuais: síntese proteica.',Progesterona:'Endométrio: fase secretora.','T3':'Quase todos os tecidos: metabolismo basal.','Vitamina D (calcitriol)':'Intestino: proteínas que absorvem cálcio.'},
+ amp:['Lento e duradouro','A resposta depende de transcrição e síntese de proteínas: demora horas, mas persiste.'],spd:[.2,.9],spdT:'Horas para começar; dura horas a dias.',
+ fixT:'O hormônio entra na célula',fixP:'Hormônios lipossolúveis atravessam a membrana e ligam-se a receptores no citoplasma ou no núcleo. O complexo hormônio-receptor é um fator de transcrição: liga-se ao DNA (elemento de resposta hormonal) e muda quais proteínas a célula produz.',
+ exam:'Por isso o corticoide tem efeito anti-inflamatório que começa em horas e dura além da meia-vida do remédio. A espironolactona bloqueia o receptor da aldosterona.',
+ steps:[
+  ['O hormônio lipossolúvel chega ligado a uma proteína transportadora e se solta dela.',`<circle cx="300" cy="50" r="16" fill="${C.a}"/>${blob(250,50,34,20,C.m,'',{op:.15})}${T(250,24,'Transportadora',{fs:12,c:C.m})}`],
+  ['Atravessa a bicamada lipídica sem precisar de receptor de membrana.',`${arr(300,70,300,200,C.a)}<circle cx="300" cy="216" r="16" fill="${C.a}"/>`],
+  ['Liga-se ao receptor no citoplasma (cortisol) ou já no núcleo (T3); proteínas de choque térmico se soltam.',`${blob(420,250,56,26,C.h1,'Receptor')}${dots(500,210,4,C.m,6,24)}${T(520,190,'HSP',{fs:12,c:C.m})}${curve('M318 222 Q360 236 366 242')}`],
+  ['O complexo hormônio-receptor entra no núcleo e se liga ao elemento de resposta hormonal no DNA.',`<path d="M300 440 C340 420 380 460 420 440 S500 420 540 440 S620 460 660 440" stroke="${C.h2}" stroke-width="6" fill="none"/>${blob(470,410,46,20,C.h1,'H-R',{fs:12})}${curve('M430 280 Q460 340 466 386','var(--h1)','6 5')}`],
+  ['Transcrição de mRNA e síntese de novas proteínas: a resposta aparece em horas.',`${curve('M540 420 Q640 360 700 300')}${blob(760,280,70,28,C.ok,'Nova proteína')}`]]}
+};
+let P='gs',H=null,S=0,timer=null;
+function render(){
+  const p=PATHS[P];let body='';
+  p.steps.forEach((st,i)=>{if(i<=S)body+=`<g class="svgfade${i===S?' cur':''}">${st[1]}</g>`});
+  $('#v').innerHTML=MEM+body;
+  $('#capN').textContent=S+1;$('#capT').textContent=p.steps[S][0];
+  $('#stepc').textContent=`passo ${S+1} de ${p.steps.length}`;
+  $('#prev').disabled=S===0;$('#next').disabled=S===p.steps.length-1;
+}
+function setPath(k){P=k;S=0;stop();const p=PATHS[k];
+  $$('#paths .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k));
+  $('#horms').innerHTML=Object.keys(p.horm).map(h=>`<button type="button" class="chip" data-h="${h}">${h}</button>`).join('');
+  $$('#horms .chip').forEach(b=>b.onclick=()=>setH(b.dataset.h));setH(Object.keys(p.horm)[0]);
+  $('#amp').textContent=p.amp[0];$('#ampT').textContent=p.amp[1];
+  $('#spd').style.width=(p.spd[0]*100)+'%';$('#dur').style.width=(p.spd[1]*100)+'%';$('#spdT').textContent=p.spdT;
+  $('#fixT').textContent=p.fixT;$('#fixP').textContent=p.fixP;$('#exam').textContent=p.exam;
+  try{history.replaceState(null,'','#'+k)}catch(e){}
+  render();}
+function setH(h){H=h;$$('#horms .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.h===h));$('#eff').innerHTML=`<b>${h}</b>: ${PATHS[P].horm[h]}`}
+Object.entries(PATHS).forEach(([k,p])=>{const b=document.createElement('button');b.type='button';b.className='chip';b.dataset.k=k;b.textContent=p.tab;b.onclick=()=>setPath(k);$('#paths').appendChild(b)});
+$('#next').onclick=()=>{stop();if(S<PATHS[P].steps.length-1){S++;render()}};
+$('#prev').onclick=()=>{stop();if(S>0){S--;render()}};
+function stop(){if(timer){clearInterval(timer);timer=null;$('#auto').textContent='▶ Reproduzir'}}
+$('#auto').onclick=()=>{if(timer){stop();return}S=0;render();$('#auto').textContent='⏸ Pausar';timer=setInterval(()=>{if(S<PATHS[P].steps.length-1){S++;render()}else stop()},2600)};
+const h0=location.hash.slice(1);setPath(PATHS[h0]?h0:'gs');
+window.__v={setPath,go:n=>{S=n;render()}};
+
+</script>
+</body>
+</html>

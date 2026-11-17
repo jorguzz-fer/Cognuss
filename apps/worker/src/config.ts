@@ -18,6 +18,8 @@ const schema = z.object({
   WORKER_CONCURRENCY_AI: z.coerce.number().int().positive().default(2),
   WORKER_CONCURRENCY_NOTIFICATIONS: z.coerce.number().int().positive().default(5),
   WORKER_CONCURRENCY_MAINTENANCE: z.coerce.number().int().positive().default(1),
+  // Produção de aulas (ADR 0021): conversão pesada e plano longo, um de cada vez.
+  WORKER_CONCURRENCY_PRODUCTION: z.coerce.number().int().positive().default(1),
   // Eventos já publicados ficam no outbox por este número de dias (auditoria de entrega).
   OUTBOX_RETENTION_DAYS: z.coerce.number().int().min(1).default(7),
   // Antivírus (ADR 0012). "clamd" em produção; "none" só em desenvolvimento e testes.
@@ -33,6 +35,9 @@ const schema = z.object({
   // Criações da Ajuda Cognuss (ADR 0020).
   AI_CREATION_MODEL: z.string().default('claude-opus-5-5'),
   AI_CREATION_EFFORT: z.enum(['low', 'medium', 'high']).default('medium'),
+  // Plano das peças da produção de aulas (ADR 0021): aula inteira, com imagens dos slides.
+  AI_PRODUCTION_MODEL: z.string().default('claude-opus-5-5'),
+  AI_PRODUCTION_EFFORT: z.enum(['low', 'medium', 'high']).default('high'),
   // Vetores da busca por conceito (ADR 0014): Voyage AI. Sem chave, a busca por palavra segue.
   VOYAGE_API_KEY: z.string().optional(),
   EMBEDDING_MODEL: z.string().default('voyage-4'),

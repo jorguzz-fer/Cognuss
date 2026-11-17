@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Síntese das catecolaminas na adrenal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Identidade Cognuss (tokens de apps/web/src/styles/tokens.css): quase-preto quente, coral da marca,
+   Archivo Black nos títulos, Hind no texto. Layout: diagrama do eixo à esquerda, gráfico e controles à direita. */
+:root{
+  --bg:oklch(0.985 0 0);--surface:oklch(1 0 0);--surface-2:oklch(0.95 0.003 20);
+  --fg:oklch(0.21 0.006 20);--muted:oklch(0.46 0.006 20);--line:oklch(0.86 0.003 20);--line-strong:oklch(0.72 0.004 20);
+  --accent:oklch(0.52 0.2 27);--accent-hover:oklch(0.46 0.19 27);--accent-ink:oklch(0.99 0 0);--accent-soft:oklch(0.94 0.03 27);
+  --success:oklch(0.48 0.12 152);--success-soft:oklch(0.95 0.04 152);--warn:oklch(0.5 0.11 70);--warn-soft:oklch(0.95 0.05 85);
+  --danger:oklch(0.5 0.19 25);--danger-soft:oklch(0.95 0.03 25);
+  --h1:oklch(0.55 0.13 250);--h2:oklch(0.55 0.14 300);--h3:oklch(0.52 0.2 27);
+  --card-shadow:0 8px 24px -12px oklch(0.2 0 0 / .22);
+  --f-display:"Archivo Black","Arial Black",system-ui,sans-serif;--f-body:"Hind",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --radius:6px;--radius-lg:8px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto;padding:20px 24px 48px;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);color:var(--accent);font-size:18px;letter-spacing:-.2px}
+.crumb{font-size:14px;color:var(--muted)}
+.sp{flex:1}
+.badge{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--warn-soft);color:var(--warn)}
+.ibtn{border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:6px 10px;font-size:13px;color:var(--muted)}
+.ibtn:hover{color:var(--fg);border-color:var(--accent)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(28px,3.4vw,40px);line-height:1.08;margin:6px 0 8px;letter-spacing:-.5px;text-wrap:balance}
+.lead{margin:0;color:var(--muted);font-size:17px;line-height:1.55;max-width:70ch}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{border:0;background:transparent;padding:10px 14px 12px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--card-shadow)}
+.stage{padding:8px;position:relative}
+.stage svg{display:block;width:100%;height:auto}
+.panel{padding:18px;display:flex;flex-direction:column;gap:14px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line-strong);background:var(--surface-2);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--fg)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip.act{border-style:dashed}
+canvas{display:block;width:100%;height:220px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.ctl{display:flex;align-items:center;gap:12px}
+.ctl label{font-size:14px;font-weight:600;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--accent) var(--p,50%),var(--line-strong) var(--p,50%));margin:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+.ctl .v{font-family:var(--f-mono);font-size:14px;min-width:52px;text-align:right}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--surface-2);border-radius:var(--radius);padding:8px 10px;border-left:4px solid var(--c)}
+.tile .k{font-size:12px;color:var(--muted);font-weight:600}
+.tile .n{font-family:var(--f-mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;font-weight:700}
+.up{color:var(--danger)}.down{color:var(--h1)}.ok{color:var(--success)}
+.explain{padding:18px 20px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px}
+.explain h2{font-family:var(--f-display);font-weight:400;font-size:20px;margin:4px 0 8px;text-wrap:balance}
+.explain p{margin:0 0 10px;line-height:1.6;max-width:68ch}
+.exam{background:var(--accent-soft);border-radius:var(--radius);padding:14px 16px}
+.exam p{margin:6px 0 0;line-height:1.55}
+.foot{font-size:13px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line);padding-top:12px;margin:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:var(--radius);background:var(--accent);color:var(--accent-ink);font-weight:700;padding:9px 14px;font-size:14px}
+.btn:hover{background:var(--accent-hover)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line-strong)}
+.dil{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.dil span{display:block;height:100%;background:var(--accent);width:0}
+@media (max-width:960px){.grid,.explain{grid-template-columns:1fr}}
+@media (max-width:480px){.wrap{padding:14px 16px 40px}.tiles{grid-template-columns:1fr 1fr 1fr}.tile .n{font-size:17px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.cgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start}
+.cstage{padding:0;overflow:hidden}
+.cstage svg{display:block;width:100%;height:auto}
+.plist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.plist li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;padding:8px 10px;border-radius:var(--radius);border:1px solid transparent;cursor:pointer}
+.plist li:hover{border-color:var(--line-strong)}
+.plist li .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--surface-2);border:1px solid var(--line-strong)}
+.plist li.on{background:var(--accent-soft);border-color:var(--accent)}
+.plist li.on .n{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.plist li.done .n{background:var(--line-strong);color:var(--fg)}
+.plist b{display:block}.plist small{color:var(--muted);font-size:13px;line-height:1.35;display:block}
+.capb{padding:14px 16px;border-top:1px solid var(--line);font-size:16px;line-height:1.5;min-height:78px}
+@media (max-width:960px){.cgrid{grid-template-columns:1fr}}</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brand"><svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#c2181d"/><path d="M44 21A15 15 0 1 0 44 43" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round"/><circle cx="45.5" cy="32" r="4.6" fill="#fff"/></svg>COGNUSS</span>
+    <span class="crumb">Fisiologia endócrina · Aula 1 · Introdução</span>
+    <span class="sp"></span>
+    <span class="badge">Demonstração · sem revisão</span>
+    <button class="ibtn" id="themeBtn" type="button">Alternar tema</button>
+  </header>
+  <section>
+    <div class="eyebrow">Peça interativa · Derivados de aminoácidos</div>
+    <h1>Da tirosina à adrenalina</h1>
+    <p class="lead">A medula da adrenal transforma o aminoácido tirosina em catecolaminas, em quatro reações. Comece pela anatomia, aproxime até a célula cromafim e acompanhe cada enzima.</p>
+  </section>
+  <div class="cgrid">
+    <div class="card cstage">
+      <svg id="c" viewBox="0 0 760 520" role="img" aria-label="Animação da adrenal até a síntese de catecolaminas"></svg>
+      <div class="capb" id="cap"></div>
+      <div class="row" style="padding:0 16px 14px"><button class="btn ghost" id="prev" type="button">← Voltar</button><button class="btn" id="next" type="button">Avançar →</button><button class="ibtn" id="play" type="button">▶ Reproduzir tudo</button>
+        <span class="sp"></span><label class="ibtn" for="cortT" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="cortT" checked> Cortisol do córtex chegando</label></div>
+    </div>
+    <div class="card panel">
+      <div class="lbl">Sequência</div>
+      <ol class="plist" id="pl"></ol>
+    </div>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow">Para fixar</div><h2>Uma glândula, duas origens</h2>
+      <p>O córtex adrenal vem do mesoderma e produz esteroides. A medula vem da crista neural: é um gânglio simpático modificado, cujas células cromafins liberam catecolaminas no sangue quando recebem acetilcolina do nervo esplâncnico.</p>
+      <p>Cerca de 80% do que a medula libera é adrenalina, porque a PNMT, a última enzima, é induzida pelo cortisol que desce do córtex pela circulação intra-adrenal.</p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p>A tirosina hidroxilase é a etapa limitante. O feocromocitoma, tumor das células cromafins, causa crises de hipertensão, cefaleia, sudorese e palpitação; o diagnóstico usa as metanefrinas, produtos da degradação das catecolaminas. Desligue o cortisol e veja a síntese parar na noradrenalina.</p></div>
+  </div>
+  <p class="foot">Esquema didático, simplificado para fins de ensino. Base: Aires, <i>Fisiologia</i>, 5ª ed., cap. 64 (Guanabara Koogan, 2018), conforme a aula do Dr. Rafael.</p>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const ss=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('#themeBtn').onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark';window.onTheme&&window.onTheme()};
+const ST=[
+ {t:'Adrenal',s:'Sobre o polo superior do rim',cap:'As adrenais ficam sobre o polo superior de cada rim. Cada uma é, na verdade, duas glândulas: o córtex por fora e a medula por dentro.'},
+ {t:'Córtex e medula',s:'Três zonas do córtex + medula',cap:'Em corte: o córtex tem três zonas (glomerulosa, fasciculada e reticular), que fazem esteroides. A medula, no centro, faz catecolaminas.'},
+ {t:'Célula cromafim',s:'Neurônio simpático modificado',cap:'Na medula, a célula cromafim recebe acetilcolina do nervo esplâncnico (fibra simpática pré-ganglionar) e guarda as catecolaminas em grânulos.'},
+ {t:'Tirosina → DOPA',s:'Tirosina hidroxilase · etapa limitante',cap:'A tirosina entra na célula e a tirosina hidroxilase acrescenta uma hidroxila: forma-se a DOPA. Esta é a etapa limitante da via.'},
+ {t:'DOPA → Dopamina',s:'DOPA descarboxilase',cap:'A DOPA descarboxilase remove o grupo carboxila e forma a dopamina, ainda no citoplasma.'},
+ {t:'Dopamina → Noradrenalina',s:'Dopamina β-hidroxilase · dentro da vesícula',cap:'A dopamina é bombeada para dentro da vesícula, onde a dopamina β-hidroxilase forma a noradrenalina.'},
+ {t:'Noradrenalina → Adrenalina',s:'PNMT · no citoplasma, induzida pelo cortisol',cap:'A noradrenalina sai para o citoplasma, a PNMT acrescenta um grupo metil e forma a adrenalina, que volta para a vesícula. A PNMT depende do cortisol que vem do córtex.'},
+ {t:'Secreção',s:'Exocitose estimulada por acetilcolina',cap:'Com o estímulo simpático, os grânulos se fundem à membrana e lançam adrenalina (cerca de 80%) e noradrenalina no sangue.'}];
+let S=0,timer=null;
+const t=(x,y,s,o={})=>`<text x="${x}" y="${y}" font-family="Hind,sans-serif" font-size="${o.fs||14}" font-weight="${o.fw||700}" fill="${o.c||'var(--fg)'}" text-anchor="${o.a||'middle'}">${s}</text>`;
+function scene(){const cort=$('#cortT').checked;let s=`<defs><marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker></defs>`;
+ if(S===0){s+=`<path d="M300 210 C230 230 220 400 300 450 C360 490 440 470 460 400 C430 380 430 330 460 300 C450 240 380 190 300 210Z" fill="var(--h3)" fill-opacity=".25" stroke="var(--h3)" stroke-width="3"/>${t(340,350,'Rim',{fs:18,c:'var(--muted)'})}
+   <path d="M260 215 Q300 120 380 140 Q430 160 420 212 Q340 190 260 215Z" fill="var(--warn)" fill-opacity=".35" stroke="var(--warn)" stroke-width="3"/>${t(340,180,'Adrenal',{fs:18})}
+   <path d="M520 100 L430 160" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 5"/><rect x="520" y="70" width="200" height="60" rx="8" fill="var(--surface-2)" stroke="var(--accent)"/>${t(620,96,'Aproxime para ver',{fs:14,c:'var(--accent)'})}${t(620,116,'o corte da glândula',{fs:13,c:'var(--muted)',fw:500})}`}
+ else if(S===1){const cx=380,cy=270;[['Cápsula',200,'var(--line-strong)',.15],['Zona glomerulosa',182,'var(--h1)',.25],['Zona fasciculada',160,'var(--h3)',.25],['Zona reticular',118,'var(--warn)',.25],['Medula',88,'var(--accent)',.45]].forEach(([n,r,c,o])=>{s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${c}" fill-opacity="${o}" stroke="${c}" stroke-width="2"/>`});
+   [['Glomerulosa → aldosterona',195,95,'var(--h1)'],['Fasciculada → cortisol',205,125,'var(--h3)'],['Reticular → andrógenos',215,155,'var(--warn)'],['Medula → catecolaminas',100,275,'var(--accent)']].forEach(([n,dx,y,c],i)=>{s+=t(cx+dx+170,y,n,{a:'start',c,fs:15})+`<path d="M${cx+dx+165} ${y-5}L${cx+(i===3?60:dx-30)} ${i===3?cy:cy-130+i*30}" stroke="${c}" stroke-width="2"/>`})}
+ else{/* célula cromafim */s+=`<rect x="40" y="40" width="680" height="440" rx="120" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="4"/>${t(90,76,'Célula cromafim',{a:'start',fs:16})}
+   <circle cx="150" cy="380" r="60" fill="var(--h2)" fill-opacity=".25" stroke="var(--h2)" stroke-width="2"/>${t(150,385,'Núcleo',{c:'var(--muted)'})}
+   <path d="M0 140 C60 140 70 150 70 170" stroke="var(--h1)" stroke-width="5" fill="none"/>${t(10,128,'Nervo esplâncnico (ACh)',{a:'start',fs:12,c:'var(--h1)'})}
+   <circle cx="560" cy="270" r="90" fill="var(--surface)" stroke="var(--h3)" stroke-width="3"/>${t(560,170,'Vesícula (grânulo cromafim)',{fs:13,c:'var(--h3)'})}`;
+   const mol=[['Tirosina',120,200],['DOPA',260,200],['Dopamina',400,200],['Noradrenalina',560,250],['Adrenalina',560,305]];
+   const enz=[['Tirosina hidroxilase',190,178],['DOPA descarboxilase',330,178],['Dopamina β-hidroxilase',480,232],['PNMT (+ cortisol)',395,340]];
+   if(S>=3){s+=`<path d="M10 200 L58 200" stroke="var(--accent)" stroke-width="3" marker-end="url(#m)"/>`+t(12,226,'do sangue',{a:'start',fs:12,c:'var(--muted)'})}
+   mol.forEach(([n,x,y],i)=>{const vis=S>=3&&i<=S-2,blocked=i===4&&!cort;
+     if(vis&&!blocked){s+=`<rect x="${x-58}" y="${y-18}" width="116" height="36" rx="18" fill="var(--surface)" stroke="${i===S-2?'var(--accent)':'var(--line-strong)'}" stroke-width="${i===S-2?3:2}"/>`+t(x,y+5,n,{fs:13})}});
+   enz.forEach(([n,x,y],i)=>{if(S>=3+i&&!(i===3&&!cort))s+=t(x,y,n,{fs:12,c:'var(--accent)'})});
+   if(S>=3)s+=`<path d="M178 200 L200 200" stroke="var(--accent)" stroke-width="3" marker-end="url(#m)"/>`;
+   if(S>=4)s+=`<path d="M318 200 L340 200" stroke="var(--accent)" stroke-width="3" marker-end="url(#m)"/>`;
+   if(S>=5)s+=`<path d="M440 218 Q470 250 500 250" stroke="var(--accent)" stroke-width="3" fill="none" marker-end="url(#m)"/>`;
+   if(S>=6){if(cort){s+=`<path d="M510 268 Q400 300 500 305" stroke="var(--accent)" stroke-width="3" fill="none" marker-end="url(#m)"/>`}else{s+=`<text x="380" y="360" text-anchor="middle" font-family="Hind,sans-serif" font-size="13" font-weight="700" fill="var(--danger)">✕ PNMT sem indução: a síntese para na noradrenalina</text>`}
+     s+=`<path d="M720 120 Q640 120 610 180" stroke="var(--h3)" stroke-width="2" stroke-dasharray="5 5" fill="none" opacity="${cort?1:.25}"/>`+t(700,110,cort?'Cortisol do córtex':'Sem cortisol',{fs:12,c:cort?'var(--h3)':'var(--muted)'})}
+   if(S>=7){for(let i=0;i<6;i++){const y=120+i*55;s+=`<circle cx="${700+(i%2)*20}" cy="${y}" r="9" fill="${i<5&&cort?'var(--accent)':'var(--h1)'}"/>`}s+=`<path d="M650 270 L740 270" stroke="var(--accent)" stroke-width="3" marker-end="url(#m)"/>`+t(600,505,cort?'≈ 80% adrenalina, 20% noradrenalina':'só noradrenalina',{fs:14,c:'var(--accent)'})}
+ }
+ $('#c').innerHTML=s;$('#cap').textContent=ST[S].cap;
+ $$('#pl li').forEach((li,i)=>{li.classList.toggle('on',i===S);li.classList.toggle('done',i<S)});
+ $('#prev').disabled=S===0;$('#next').disabled=S===ST.length-1;}
+$('#pl').innerHTML=ST.map((x,i)=>`<li data-i="${i}" tabindex="0"><span class="n">${i+1}</span><span><b>${x.t}</b><small>${x.s}</small></span></li>`).join('');
+$$('#pl li').forEach(li=>{li.onclick=()=>{stop();S=+li.dataset.i;scene()};li.onkeydown=e=>{if(e.key==='Enter'){stop();S=+li.dataset.i;scene()}}});
+function stop(){if(timer){clearInterval(timer);timer=null;$('#play').textContent='▶ Reproduzir tudo'}}
+$('#next').onclick=()=>{stop();if(S<ST.length-1){S++;scene()}};$('#prev').onclick=()=>{stop();if(S>0){S--;scene()}};
+$('#play').onclick=()=>{if(timer){stop();return}S=0;scene();$('#play').textContent='⏸ Pausar';timer=setInterval(()=>{if(S<ST.length-1){S++;scene()}else stop()},3200)};
+$('#cortT').onchange=scene;scene();
+window.__c={go:n=>{S=n;scene()}};
+
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+@@TITLE
+Síntese das catecolaminas na adrenal
+@@STYLE
+.cgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start}
+.cstage{padding:0;overflow:hidden}
+.cstage svg{display:block;width:100%;height:auto}
+.plist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.plist li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;padding:8px 10px;border-radius:var(--radius);border:1px solid transparent;cursor:pointer}
+.plist li:hover{border-color:var(--line-strong)}
+.plist li .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--surface-2);border:1px solid var(--line-strong)}
+.plist li.on{background:var(--accent-soft);border-color:var(--accent)}
+.plist li.on .n{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.plist li.done .n{background:var(--line-strong);color:var(--fg)}
+.plist b{display:block}.plist small{color:var(--muted);font-size:13px;line-height:1.35;display:block}
+.capb{padding:14px 16px;border-top:1px solid var(--line);font-size:16px;line-height:1.5;min-height:78px}
+@media (max-width:960px){.cgrid{grid-template-columns:1fr}}
+@@BODY
+  <section>
+    <div class="eyebrow">Peça interativa · Derivados de aminoácidos</div>
+    <h1>Da tirosina à adrenalina</h1>
+    <p class="lead">A medula da adrenal transforma o aminoácido tirosina em catecolaminas, em quatro reações. Comece pela anatomia, aproxime até a célula cromafim e acompanhe cada enzima.</p>
+  </section>
+  <div class="cgrid">
+    <div class="card cstage">
+      <svg id="c" viewBox="0 0 760 520" role="img" aria-label="Animação da adrenal até a síntese de catecolaminas"></svg>
+      <div class="capb" id="cap"></div>
+      <div class="row" style="padding:0 16px 14px"><button class="btn ghost" id="prev" type="button">← Voltar</button><button class="btn" id="next" type="button">Avançar →</button><button class="ibtn" id="play" type="button">▶ Reproduzir tudo</button>
+        <span class="sp"></span><label class="ibtn" for="cortT" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="cortT" checked> Cortisol do córtex chegando</label></div>
+    </div>
+    <div class="card panel">
+      <div class="lbl">Sequência</div>
+      <ol class="plist" id="pl"></ol>
+    </div>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow">Para fixar</div><h2>Uma glândula, duas origens</h2>
+      <p>O córtex adrenal vem do mesoderma e produz esteroides. A medula vem da crista neural: é um gânglio simpático modificado, cujas células cromafins liberam catecolaminas no sangue quando recebem acetilcolina do nervo esplâncnico.</p>
+      <p>Cerca de 80% do que a medula libera é adrenalina, porque a PNMT, a última enzima, é induzida pelo cortisol que desce do córtex pela circulação intra-adrenal.</p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p>A tirosina hidroxilase é a etapa limitante. O feocromocitoma, tumor das células cromafins, causa crises de hipertensão, cefaleia, sudorese e palpitação; o diagnóstico usa as metanefrinas, produtos da degradação das catecolaminas. Desligue o cortisol e veja a síntese parar na noradrenalina.</p></div>
+  </div>
+@@SCRIPT
+const ST=[
+ {t:'Adrenal',s:'Sobre o polo superior do rim',cap:'As adrenais ficam sobre o polo superior de cada rim. Cada uma é, na verdade, duas glândulas: o córtex por fora e a medula por dentro.'},
+ {t:'Córtex e medula',s:'Três zonas do córtex + medula',cap:'Em corte: o córtex tem três zonas (glomerulosa, fasciculada e reticular), que fazem esteroides. A medula, no centro, faz catecolaminas.'},
+ {t:'Célula cromafim',s:'Neurônio simpático modificado',cap:'Na medula, a célula cromafim recebe acetilcolina do nervo esplâncnico (fibra simpática pré-ganglionar) e guarda as catecolaminas em grânulos.'},
+ {t:'Tirosina → DOPA',s:'Tirosina hidroxilase · etapa limitante',cap:'A tirosina entra na célula e a tirosina hidroxilase acrescenta uma hidroxila: forma-se a DOPA. Esta é a etapa limitante da via.'},
+ {t:'DOPA → Dopamina',s:'DOPA descarboxilase',cap:'A DOPA descarboxilase remove o grupo carboxila e forma a dopamina, ainda no citoplasma.'},
+ {t:'Dopamina → Noradrenalina',s:'Dopamina β-hidroxilase · dentro da vesícula',cap:'A dopamina é bombeada para dentro da vesícula, onde a dopamina β-hidroxilase forma a noradrenalina.'},
+ {t:'Noradrenalina → Adrenalina',s:'PNMT · no citoplasma, induzida pelo cortisol',cap:'A noradrenalina sai para o citoplasma, a PNMT acrescenta um grupo metil e forma a adrenalina, que volta para a vesícula. A PNMT depende do cortisol que vem do córtex.'},
+ {t:'Secreção',s:'Exocitose estimulada por acetilcolina',cap:'Com o estímulo simpático, os grânulos se fundem à membrana e lançam adrenalina (cerca de 80%) e noradrenalina no sangue.'}];
+let S=0,timer=null;
+const t=(x,y,s,o={})=>`<text x="${x}" y="${y}" font-family="Hind,sans-serif" font-size="${o.fs||14}" font-weight="${o.fw||700}" fill="${o.c||'var(--fg)'}" text-anchor="${o.a||'middle'}">${s}</text>`;
+function scene(){const cort=$('#cortT').checked;let s=`<defs><marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker></defs>`;
+ if(S===0){s+=`<path d="M300 210 C230 230 220 400 300 450 C360 490 440 470 460 400 C430 380 430 330 460 300 C450 240 380 190 300 210Z" fill="var(--h3)" fill-opacity=".25" stroke="var(--h3)" stroke-width="3"/>${t(340,350,'Rim',{fs:18,c:'var(--muted)'})}
+   <path d="M260 215 Q300 120 380 140 Q430 160 420 212 Q340 190 260 215Z" fill="var(--warn)" fill-opacity=".35" stroke="var(--warn)" stroke-width="3"/>${t(340,180,'Adrenal',{fs:18})}
+   <path d="M520 100 L430 160" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 5"/><rect x="520" y="70" width="200" height="60" rx="8" fill="var(--surface-2)" stroke="var(--accent)"/>${t(620,96,'Aproxime para ver',{fs:14,c:'var(--accent)'})}${t(620,116,'o corte da glândula',{fs:13,c:'var(--muted)',fw:500})}`}
+ else if(S===1){const cx=380,cy=270;[['Cápsula',200,'var(--line-strong)',.15],['Zona glomerulosa',182,'var(--h1)',.25],['Zona fasciculada',160,'var(--h3)',.25],['Zona reticular',118,'var(--warn)',.25],['Medula',88,'var(--accent)',.45]].forEach(([n,r,c,o])=>{s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${c}" fill-opacity="${o}" stroke="${c}" stroke-width="2"/>`});
+   [['Glomerulosa → aldosterona',195,95,'var(--h1)'],['Fasciculada → cortisol',205,125,'var(--h3)'],['Reticular → andrógenos',215,155,'var(--warn)'],['Medula → catecolaminas',100,275,'var(--accent)']].forEach(([n,dx,y,c],i)=>{s+=t(cx+dx+170,y,n,{a:'start',c,fs:15})+`<path d="M${cx+dx+165} ${y-5}L${cx+(i===3?60:dx-30)} ${i===3?cy:cy-130+i*30}" stroke="${c}" stroke-width="2"/>`})}
+ else{/* célula cromafim */s+=`<rect x="40" y="40" width="680" height="440" rx="120" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="4"/>${t(90,76,'Célula cromafim',{a:'start',fs:16})}
+   <circle cx="150" cy="380" r="60" fill="var(--h2)" fill-opacity=".25" stroke="var(--h2)" stroke-width="2"/>${t(150,385,'Núcleo',{c:'var(--muted)'})}
+   <path d="M0 140 C60 140 70 150 70 170" stroke="var(--h1)" stroke-width="5" fill="none"/>${t(10,128,'Nervo esplâncnico (ACh)',{a:'start',fs:12,c:'var(--h1)'})}
+   <circle cx="560" cy="270" r="90" fill="var(--surface)" stroke="var(--h3)" stroke-width="3"/>${t(560,170,'Vesícula (grânulo cromafim)',{fs:13,c:'var(--h3)'})}`;
+   const mol=[['Tirosina',120,200],['DOPA',260,200],['Dopamina',400,200],['Noradrenalina',560,250],['Adrenalina',560,305]];
+   const enz=[['Tirosina hidroxilase',190,178],['DOPA descarboxilase',330,178],['Dopamina β-hidroxilase',480,232],['PNMT (+ cortisol)',395,340]];
+   if(S>=3){s+=`<path d="M10 200 L58 200" stroke="var(--accent)" stroke-width="3" marker-end="url(#m)"/>`+t(12,226,'do sangue',{a:'start',fs:12,c:'var(--muted)'})}
+   mol.forEach(([n,x,y],i)=>{const vis=S>=3&&i<=S-2,blocked=i===4&&!cort;
+     if(vis&&!blocked){s+=`<rect x="${x-58}" y="${y-18}" width="116" height="36" rx="18" fill="var(--surface)" stroke="${i===S-2?'var(--accent)':'var(--line-strong)'}" stroke-width="${i===S-2?3:2}"/>`+t(x,y+5,n,{fs:13})}});
+   enz.forEach(([n,x,y],i)=>{if(S>=3+i&&!(i===3&&!cort))s+=t(x,y,n,{fs:12,c:'var(--accent)'})});
+   if(S>=3)s+=`<path d="M178 200 L200 200" stroke="var(--accent)" stroke-width="3" marker-end="url(#m)"/>`;
+   if(S>=4)s+=`<path d="M318 200 L340 200" stroke="var(--accent)" stroke-width="3" marker-end="url(#m)"/>`;
+   if(S>=5)s+=`<path d="M440 218 Q470 250 500 250" stroke="var(--accent)" stroke-width="3" fill="none" marker-end="url(#m)"/>`;
+   if(S>=6){if(cort){s+=`<path d="M510 268 Q400 300 500 305" stroke="var(--accent)" stroke-width="3" fill="none" marker-end="url(#m)"/>`}else{s+=`<text x="380" y="360" text-anchor="middle" font-family="Hind,sans-serif" font-size="13" font-weight="700" fill="var(--danger)">✕ PNMT sem indução: a síntese para na noradrenalina</text>`}
+     s+=`<path d="M720 120 Q640 120 610 180" stroke="var(--h3)" stroke-width="2" stroke-dasharray="5 5" fill="none" opacity="${cort?1:.25}"/>`+t(700,110,cort?'Cortisol do córtex':'Sem cortisol',{fs:12,c:cort?'var(--h3)':'var(--muted)'})}
+   if(S>=7){for(let i=0;i<6;i++){const y=120+i*55;s+=`<circle cx="${700+(i%2)*20}" cy="${y}" r="9" fill="${i<5&&cort?'var(--accent)':'var(--h1)'}"/>`}s+=`<path d="M650 270 L740 270" stroke="var(--accent)" stroke-width="3" marker-end="url(#m)"/>`+t(600,505,cort?'≈ 80% adrenalina, 20% noradrenalina':'só noradrenalina',{fs:14,c:'var(--accent)'})}
+ }
+ $('#c').innerHTML=s;$('#cap').textContent=ST[S].cap;
+ $$('#pl li').forEach((li,i)=>{li.classList.toggle('on',i===S);li.classList.toggle('done',i<S)});
+ $('#prev').disabled=S===0;$('#next').disabled=S===ST.length-1;}
+$('#pl').innerHTML=ST.map((x,i)=>`<li data-i="${i}" tabindex="0"><span class="n">${i+1}</span><span><b>${x.t}</b><small>${x.s}</small></span></li>`).join('');
+$$('#pl li').forEach(li=>{li.onclick=()=>{stop();S=+li.dataset.i;scene()};li.onkeydown=e=>{if(e.key==='Enter'){stop();S=+li.dataset.i;scene()}}});
+function stop(){if(timer){clearInterval(timer);timer=null;$('#play').textContent='▶ Reproduzir tudo'}}
+$('#next').onclick=()=>{stop();if(S<ST.length-1){S++;scene()}};$('#prev').onclick=()=>{stop();if(S>0){S--;scene()}};
+$('#play').onclick=()=>{if(timer){stop();return}S=0;scene();$('#play').textContent='⏸ Pausar';timer=setInterval(()=>{if(S<ST.length-1){S++;scene()}else stop()},3200)};
+$('#cortT').onchange=scene;scene();
+window.__c={go:n=>{S=n;scene()}};

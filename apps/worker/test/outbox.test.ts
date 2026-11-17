@@ -144,7 +144,7 @@ describe('worker', () => {
       db: app,
       log: logger,
       handlers,
-      concurrency: { system: 1, files: 1, ai: 1, notifications: 1, maintenance: 1 },
+      concurrency: { system: 1, files: 1, ai: 1, notifications: 1, maintenance: 1, production: 1 },
     });
     const events = new QueueEvents('system', { connection: createRedis(REDIS_URL), prefix });
     await events.waitUntilReady();
@@ -186,7 +186,7 @@ describe('worker', () => {
       db: app,
       log: logger,
       handlers,
-      concurrency: { system: 1, files: 1, ai: 1, notifications: 1, maintenance: 1 },
+      concurrency: { system: 1, files: 1, ai: 1, notifications: 1, maintenance: 1, production: 1 },
     });
     try {
       const q: Queue = queues.system;
@@ -223,7 +223,7 @@ describe('worker', () => {
       db: app,
       log: logger,
       handlers: { ...base(), 'system.ping': { run } },
-      concurrency: { system: 1, files: 1, ai: 1, notifications: 1, maintenance: 1 },
+      concurrency: { system: 1, files: 1, ai: 1, notifications: 1, maintenance: 1, production: 1 },
     });
     try {
       await queues.system.add('system.ping', { requestId: '' }, { jobId: 'invalido', attempts: 1 });

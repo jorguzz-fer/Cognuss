@@ -1,0 +1,207 @@
+@@TITLE
+Sinalização endócrina
+@@STYLE
+
+.mgrid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:16px;align-items:start}
+.scene{position:relative;padding:0;overflow:hidden}
+.scene canvas{display:block;width:100%;height:auto;aspect-ratio:900/520}
+.scene .ctrls{position:absolute;right:10px;top:10px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:70%}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line)}
+.stp{padding:10px 12px;font-size:13px;color:var(--muted);border-right:1px solid var(--line);line-height:1.3}
+.stp:last-child{border-right:0}
+.stp b{display:block;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.stp.on{background:var(--accent-soft);color:var(--fg)}.stp.on b{color:var(--accent)}
+.chain{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:c}
+.chain li{position:relative;padding-left:34px;line-height:1.5;font-size:15px}
+.chain li::before{counter-increment:c;content:counter(c);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line-strong);display:grid;place-items:center;font-size:12px;font-weight:700}
+.chain li.on::before{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fact{background:var(--surface-2);border-radius:var(--radius);padding:8px 10px}
+.fact .k{font-size:12px;color:var(--muted);font-weight:600}.fact .v{font-weight:700;font-size:15px}
+.rangebar{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.rb{font-size:12px;text-align:center;padding:6px 2px;border-radius:4px;background:var(--surface-2);color:var(--muted);font-weight:600}
+.rb.on{background:var(--accent);color:var(--accent-ink)}
+.rscale{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
+.ex2{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;padding:18px 20px}
+.ex2 h2{font-family:var(--f-display);font-weight:400;font-size:20px;margin:4px 0 8px}
+@media (max-width:960px){.mgrid,.ex2{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}}
+
+@@BODY
+
+  <section>
+    <div class="eyebrow">Peça interativa · Modalidades de sinalização · 6 de 6</div>
+    <h1>Sinalização endócrina</h1>
+    <p class="lead">A glândula lança o hormônio na corrente sanguínea, que o leva a órgãos distantes. Só responde quem tem o receptor.</p>
+  </section>
+  <div><div class="lbl" style="margin-bottom:8px">Exemplo</div><div class="chips" id="exs"></div></div>
+  <div class="mgrid">
+    <div class="card scene">
+      <canvas id="cv" width="900" height="520" aria-label="Animação da sinalização"></canvas>
+      <div class="ctrls" id="ctrls"></div>
+      <div class="steps" id="steps">
+        <div class="stp"><b>1 · Emissor</b><span id="s0"></span></div>
+        <div class="stp"><b>2 · Sinal</b><span id="s1"></span></div>
+        <div class="stp"><b>3 · Receptor</b><span id="s2"></span></div>
+        <div class="stp"><b>4 · Resposta</b><span id="s3"></span></div>
+      </div>
+    </div>
+    <div class="card panel">
+      <div><div class="lbl">Passo a passo</div><ol class="chain" id="chain" style="margin-top:10px"></ol></div>
+      <div><div class="lbl" style="margin-bottom:8px">Alcance do sinal</div>
+        <div class="rangebar" id="rbar"></div>
+        <div class="rscale"><span>contato direto</span><span>longa distância</span></div></div>
+      <div class="row"><button class="btn ghost" id="replay" type="button">↻ Repetir animação</button><button class="ibtn" id="pause" type="button">Pausar</button></div>
+    </div>
+  </div>
+  <div class="card ex2">
+    <div><div class="eyebrow">Para fixar</div><h2 id="exT"></h2><p id="exP" style="margin:0;line-height:1.6"></p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p id="exam"></p></div>
+  </div>
+
+@@SCRIPT
+
+const MOD={"title": "Sinalização endócrina", "eyebrow": "Peça interativa · Modalidades de sinalização · 6 de 6", "lead": "A glândula lança o hormônio na corrente sanguínea, que o leva a órgãos distantes. Só responde quem tem o receptor.", "scene": "endo", "range": 3, "examples": [{"k": "pth", "chip": "Paratormônio (PTH)", "cell": "Paratireoides", "sig": "PTH", "resp": "Cálcio no sangue sobe", "chain": ["As paratireoides detectam a queda do cálcio no sangue (receptor sensor de cálcio).", "Secretam PTH na circulação.", "No osso: mobiliza cálcio. No rim: aumenta a reabsorção de cálcio e ativa a vitamina D.", "A vitamina D ativa aumenta a absorção intestinal de cálcio: efeito indireto do PTH."], "exam": "Mexa no cálcio do sangue: cálcio baixo aumenta o PTH, cálcio alto o reduz. É um feedback negativo, igual ao do eixo HHA, mas sem hipófise no meio."}]},ALL=[["autocrina", "Autócrina"], ["justacrina", "Justácrina"], ["sinaptica", "Sináptica"], ["paracrina", "Parácrina"], ["neuroendocrina", "Neuroendócrina"], ["endocrina", "Endócrina"]],SLUG='endocrina';
+const cv=$('#cv'),c=cv.getContext('2d');let W=900,H=520,dpr=1;
+function fit(){const r=cv.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,2);cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.width*H/W*dpr);c.setTransform(cv.width/W,0,0,cv.height/H,0,0)}
+new ResizeObserver(fit).observe(cv);
+let EX=MOD.examples[0],T=0,paused=false,STATE={};
+const COL={};function readCol(){['--fg','--muted','--line','--line-strong','--surface','--surface-2','--accent','--accent-soft','--h1','--h2','--h3','--success','--danger','--warn','--bg'].forEach(k=>COL[k]=css(k))}
+readCol();window.onTheme=readCol;matchMedia('(prefers-color-scheme: dark)').addEventListener('change',readCol);
+/* ---------- desenho ---------- */
+function cell(x,y,r,fill,stroke,glow=0,lab,sub){c.save();if(glow>0){c.shadowColor=COL['--accent'];c.shadowBlur=40*glow}
+ const g=c.createRadialGradient(x-r*.3,y-r*.3,r*.2,x,y,r);g.addColorStop(0,fill);g.addColorStop(1,COL['--surface-2']);
+ c.fillStyle=g;c.beginPath();c.arc(x,y,r,0,7);c.fill();c.shadowBlur=0;c.lineWidth=4;c.strokeStyle=stroke;c.stroke();c.restore();
+ if(lab)txt(lab,x,y+r+26,15,COL['--fg'],'center',700);if(sub)txt(sub,x,y+r+44,13,COL['--muted'],'center')}
+function nucleus(x,y,r,col){c.fillStyle=col;c.globalAlpha=.5;c.beginPath();c.arc(x,y,r,0,7);c.fill();c.globalAlpha=1}
+function receptor(x,y,ang,bound,col){c.save();c.translate(x,y);c.rotate(ang);c.strokeStyle=col;c.lineWidth=4;c.lineCap='round';c.beginPath();c.moveTo(0,0);c.lineTo(12,0);c.moveTo(12,0);c.lineTo(20,-7);c.moveTo(12,0);c.lineTo(20,7);c.stroke();if(bound){c.fillStyle=COL['--accent'];c.beginPath();c.arc(22,0,6,0,7);c.fill()}c.restore()}
+function dot(x,y,r,col,a=1){c.globalAlpha=a;c.fillStyle=col;c.beginPath();c.arc(x,y,r,0,7);c.fill();c.globalAlpha=1}
+function txt(s,x,y,size,col,al='left',w=600){c.font=`${w} ${size}px Hind, system-ui, sans-serif`;c.fillStyle=col;c.textAlign=al;c.fillText(s,x,y);c.textAlign='left'}
+function pill(s,x,y,col){c.font='700 14px Hind, system-ui, sans-serif';const w=c.measureText(s).width+20;c.fillStyle=COL['--surface'];c.strokeStyle=col;c.lineWidth=2;c.beginPath();c.roundRect(x-w/2,y-15,w,30,15);c.fill();c.stroke();c.fillStyle=col;c.textAlign='center';c.fillText(s,x,y+5);c.textAlign='left'}
+function arrow(x1,y1,x2,y2,col,w=3,dash){c.save();c.strokeStyle=col;c.fillStyle=col;c.lineWidth=w;if(dash)c.setLineDash(dash);c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();c.setLineDash([]);const a=Math.atan2(y2-y1,x2-x1);c.beginPath();c.moveTo(x2,y2);c.lineTo(x2-12*Math.cos(a-.4),y2-12*Math.sin(a-.4));c.lineTo(x2-12*Math.cos(a+.4),y2-12*Math.sin(a+.4));c.fill();c.restore()}
+const lerp=(a,b,t)=>a+(b-a)*t;
+function rng(s){return()=>{s=(s*16807)%2147483647;return(s-1)/2147483646}}
+/* fase do ciclo: 0 emissor, 1 sinal, 2 receptor, 3 resposta */
+const CYCLE=7.5;function phaseOf(t){const u=(t%CYCLE)/CYCLE;return u<.18?0:u<.5?1:u<.62?2:3}
+function stepUI(p){$$('.stp').forEach((e,i)=>e.classList.toggle('on',i===p));$$('#chain li').forEach((e,i)=>e.classList.toggle('on',i===p))}
+/* ---------- cenas ---------- */
+const SCENES={
+auto(t,u){const x=450,y=250,R=110,pre=u<.18,em=ss(.12,.3,u),fly=ss(.18,.5,u),bind=ss(.5,.62,u),resp=ss(.62,.8,u);
+ const ex=EX.k,clones=(ex==='il2'||ex==='tumor')?resp:0;
+ if(clones>0){const n=ex==='tumor'?5:4;for(let i=0;i<n;i++){const a=i/n*6.28+.6,d=lerp(0,R+95,clones);cell(x+Math.cos(a)*d,y+Math.sin(a)*d*.8,lerp(10,48,clones),COL['--h2'],COL['--h2'],0)}}
+ cell(x,y,R,COL['--accent-soft'],COL['--accent'],bind*(1-resp*.5)+(ex==='beta'?resp*.6:0),EX.cell);nucleus(x,y,40,COL['--h2']);
+ const rec=[-2.4,-1.6,-.8,.0,.8,2.4,3.1];rec.forEach(a=>receptor(x+Math.cos(a)*R,y+Math.sin(a)*R,a,bind>.5,COL['--h1']));
+ const r=rng(7);for(let i=0;i<rec.length;i++){const a=rec[i],out=R+70+r()*30,sa=a+(r()-.5)*.9;
+  let px,py;if(fly<=0){const k=em;px=x+Math.cos(sa)*(30+k*(R-30));py=y+Math.sin(sa)*(30+k*(R-30))}
+  else{const k=fly;const ox=x+Math.cos(sa)*out,oy=y+Math.sin(sa)*out;const ex2=x+Math.cos(a)*(R+22),ey=y+Math.sin(a)*(R+22);
+   if(k<.5){const q=k/.5;px=lerp(x+Math.cos(sa)*R,ox,q);py=lerp(y+Math.sin(sa)*R,oy,q)}else{const q=(k-.5)/.5;px=lerp(ox,ex2,q);py=lerp(oy,ey,q)}}
+  if(!(bind>.5))dot(px,py,7,COL['--accent'],em>0||fly>0?1:0)}
+ if(ex==='beta'&&resp>0){for(let i=0;i<6;i++){const a=i*1.05+.3;dot(x+Math.cos(a)*(R-25),y+Math.sin(a)*(R-25),6,COL['--h3'],1-resp*.6)}}
+ pill(EX.sig,x,y-R-36,COL['--accent']);if(u>.62)pill(EX.resp,x,465,COL['--success'])},
+para(t,u){const ex=EX.k,ex0=230,ey=260,em=ss(.1,.25,u),spread=ss(.18,.55,u),bind=ss(.5,.62,u),resp=ss(.62,.85,u);
+ const near=[[470,170],[480,350]],far=[790,260];
+ const RR=70;
+ // alvos
+ near.forEach(([x,y],i)=>{if(ex==='no'){c.save();c.translate(x,y);c.scale(lerp(1,1.35,resp),lerp(1,.75,resp));cell(0,0,RR*.85,COL['--h3'],COL['--h3'],bind*.6);c.restore();txt(EX.target,x,y+RR+18,15,COL['--fg'],'center',700)}
+  else if(ex==='plaq'){cell(x,y,RR*.7,COL['--h2'],COL['--h2'],bind*.6,EX.target);if(resp>0){for(let k=0;k<10;k++){const a=k*.63;c.strokeStyle=COL['--h2'];c.lineWidth=3;c.beginPath();c.moveTo(x+Math.cos(a)*RR*.7,y+Math.sin(a)*RR*.7);c.lineTo(x+Math.cos(a)*(RR*.7+18*resp),y+Math.sin(a)*(RR*.7+18*resp));c.stroke()}}}
+  else{cell(x,y,RR*.8,COL['--h1'],COL['--h1'],bind*.6,EX.target);if(resp>0){dot(x+RR*.95,y,10*resp,COL['--h1'],.5)}}
+  for(let k=0;k<4;k++){const a=Math.PI+(k-1.5)*.35;receptor(x+Math.cos(a)*RR*.8,y+Math.sin(a)*RR*.8,a,bind>.5,COL['--h1'])}});
+ cell(far[0],far[1],RR*.75,COL['--surface-2'],COL['--line-strong'],0,'Célula distante','sem efeito');
+ cell(ex0,ey,RR,COL['--accent-soft'],COL['--accent'],em,EX.cell);nucleus(ex0,ey,24,COL['--accent']);
+ if(ex==='hist'){for(let k=0;k<8;k++){const a=k*.8;dot(ex0+Math.cos(a)*40,ey+Math.sin(a)*40,7,COL['--h3'],1-em)}}
+ // difusão com decaimento
+ const r=rng(11),N=70;for(let i=0;i<N;i++){const a=r()*6.28,sp=0.6+r()*0.6,d=spread*sp*360,life=1-ss(.55,1,spread*sp);const px=ex0+Math.cos(a)*(RR+d),py=ey+Math.sin(a)*(RR+d)*.85;
+  if(spread>0&&life>0&&!(bind>.5&&px>400))dot(px,py,5,COL['--accent'],life*(.9))}
+ // halo de alcance
+ c.save();c.setLineDash([6,8]);c.strokeStyle=COL['--accent'];c.globalAlpha=.5*spread;c.beginPath();c.arc(ex0,ey,330,0,7);c.stroke();c.restore();
+ if(spread>.2)txt('alcance: algumas células',ex0+260,ey+210,13,COL['--accent'],'center',700);
+ pill(EX.sig,ex0,ey-RR-34,COL['--accent']);if(u>.62)pill(EX.resp,470,480,COL['--success'])},
+justa(t,u){const ex=EX.k,sep=STATE.apart?1:0,gap=lerp(0,120,sep),close=ss(.0,.3,u),lock=ss(.3,.5,u),resp=ss(.62,.85,u);
+ const xl=330-gap/2,xr=570+gap/2,y=250,R=118,dx=lerp(40,0,close);
+ const L=xl-dx,Rx=xr+dx;
+ const ok=!sep&&lock>.5;
+ if(ex==='fas'&&ok&&resp>0){const r=rng(5);for(let i=0;i<9;i++){const a=r()*6.28,d=resp*(40+r()*80);cell(Rx+Math.cos(a)*d,y+Math.sin(a)*d,lerp(R*.5,16,resp),COL['--h1'],COL['--h1'],0)}txt('Apoptose: a célula se fragmenta',Rx,y+R+60,14,COL['--danger'],'center',700)}
+ else cell(Rx,y,R,COL['--h1'],COL['--h1'],ok?resp*.8:0,EX.target);
+ cell(L,y,R,COL['--accent-soft'],COL['--accent'],0,EX.cell);nucleus(L-20,y,36,COL['--accent']);if(!(ex==='fas'&&ok&&resp>0))nucleus(Rx+20,y,36,COL['--h1']);
+ // ligantes na membrana esquerda e receptores na direita
+ for(let k=-2;k<=2;k++){const yy=y+k*30,xm=L+Math.sqrt(R*R-(k*30)**2);c.strokeStyle=COL['--accent'];c.lineWidth=5;c.beginPath();c.moveTo(xm,yy);c.lineTo(xm+12,yy);c.stroke();dot(xm+16,yy,7,COL['--accent']);
+  const xr2=Rx-Math.sqrt(R*R-(k*30)**2);receptor(xr2,yy,Math.PI,ok&&!(ex==='fas'&&resp>0),COL['--h1'])}
+ if(ex==='sinapse'&&ok){txt('TCR · CD28 · LFA-1',Rx,y-R-22,13,COL['--muted'],'center',700)}
+ if(sep)pill('Sem contato: nenhum sinal',450,470,COL['--danger']);else if(u>.62)pill(EX.resp,450,470,COL['--success']);
+ pill(EX.sig,L,y-R-36,COL['--accent'])},
+syn(t,u){const ex=EX.k,yb=150,yp=330,xc=450,ap=ss(.0,.15,u),fuse=ss(.15,.3,u),cross=ss(.3,.5,u),bind=ss(.5,.62,u),flow=ss(.62,.85,u);
+ // terminal pré
+ c.fillStyle=COL['--accent-soft'];c.strokeStyle=COL['--accent'];c.lineWidth=4;c.beginPath();c.moveTo(250,0);c.lineTo(250,90);c.quadraticCurveTo(250,yb+20,xc,yb+20);c.quadraticCurveTo(650,yb+20,650,90);c.lineTo(650,0);c.fill();c.stroke();
+ txt(EX.cell,262,30,15,COL['--fg'],'left',700);
+ // potencial de ação descendo
+ if(ap>0&&ap<1)dot(450,lerp(0,yb,ap),10,COL['--warn']);
+ // vesículas
+ for(let i=0;i<5;i++){const vx=330+i*60,vy=lerp(95,yb+8,fuse*(i%2?1:.6));if(fuse<1||i%2===0)dot(vx,vy,16,COL['--surface'],1);c.strokeStyle=COL['--accent'];c.lineWidth=2;if(fuse<1||i%2===0){c.beginPath();c.arc(vx,vy,16,0,7);c.stroke();for(let k=0;k<4;k++)dot(vx+Math.cos(k*1.6)*7,vy+Math.sin(k*1.6)*7,3,COL['--accent'])}}
+ // pós
+ c.fillStyle=COL['--surface-2'];c.strokeStyle=COL['--h1'];c.beginPath();c.moveTo(150,yp);c.lineTo(750,yp);c.lineTo(750,520);c.lineTo(150,520);c.closePath();c.fill();c.stroke();
+ txt(EX.target,165,yp+40,15,COL['--fg'],'left',700);txt('fenda sináptica ~20 nm',660,(yb+20+yp)/2+5,13,COL['--muted'],'left',600);
+ // NT atravessando
+ const r=rng(3);for(let i=0;i<30;i++){const sx=340+r()*220,ex2=330+(i%5)*60;const px=lerp(sx,ex2,cross),py=lerp(yb+24,yp-14,cross);if(cross>0&&!(bind>.5))dot(px,py,4,COL['--accent'])}
+ // receptores-canais
+ for(let i=0;i<5;i++){const x=330+i*60;c.fillStyle=COL['--h1'];c.fillRect(x-14,yp-12,10,24);c.fillRect(x+4,yp-12,10,24);if(bind>.5){dot(x,yp-16,5,COL['--accent'])}
+  if(flow>0){const col=EX.sign>0?COL['--danger']:COL['--h1'];for(let k=0;k<3;k++){const q=(flow*3+k/3)%1;dot(x,lerp(yp-40,yp+50,q),5,col,1-q*.3)}}}
+ if(flow>0)txt('entra '+EX.ion,450,yp+80,15,EX.sign>0?COL['--danger']:COL['--h1'],'center',700);
+ // traço de potencial de membrana
+ const gx=770,gy=360,gw=110,gh=120;c.strokeStyle=COL['--line-strong'];c.lineWidth=1;c.strokeRect(gx,gy,gw,gh);txt('Vm',gx,gy-8,12,COL['--muted']);
+ const base=gy+gh*.55,amp=(EX.sign>0?-1:1)*(STATE.bzd&&EX.sign<0?42:26);c.strokeStyle=EX.sign>0?COL['--danger']:COL['--h1'];c.lineWidth=2.5;c.beginPath();
+ for(let i=0;i<=gw;i++){const q=i/gw,tt=q;const dur=STATE.bzd&&EX.sign<0?.35:.22;const e=tt>.55?Math.exp(-(tt-.55)/dur)*(1-Math.exp(-(tt-.55)/.03)):0;const shown=q<=u?1:0;if(!shown)break;const yv=base+amp*e*ss(.6,.65,q+0.0001);i?c.lineTo(gx+i,yv):c.moveTo(gx+i,yv)}c.stroke();
+ txt(EX.sign>0?'PPSE':'PPSI',gx+gw-4,gy+16,12,EX.sign>0?COL['--danger']:COL['--h1'],'right',700);
+ pill(EX.sig,450,yb+60,COL['--accent']);if(u>.62)pill(EX.resp,450,500,COL['--success'])},
+neuro(t,u){const fire=ss(0,.18,u),rel=ss(.18,.32,u),port=ss(.32,.55,u),bind=ss(.55,.62,u),resp=ss(.62,.9,u);
+ const nx=220,ny=110;cell(nx,ny,56,COL['--accent-soft'],COL['--accent'],fire*.5);txt('Neurônio hipotalâmico',nx,ny-70,15,COL['--fg'],'center',700);
+ // axônio
+ c.strokeStyle=COL['--accent'];c.lineWidth=6;c.beginPath();c.moveTo(nx,ny+56);c.quadraticCurveTo(nx,260,380,250);c.stroke();txt('eminência mediana',382,236,13,COL['--muted'],'left',600);
+ if(fire>0&&fire<1){const q=fire;const px=q<.5?nx:lerp(nx,380,(q-.5)/.5),py=q<.5?lerp(ny+56,250,q/.5):250;dot(px,py,9,COL['--warn'])}
+ // vaso porta
+ c.strokeStyle=COL['--danger'];c.globalAlpha=.25;c.lineWidth=40;c.lineCap='round';c.beginPath();c.moveTo(400,250);c.bezierCurveTo(470,250,470,380,560,390);c.stroke();c.globalAlpha=1;c.lineCap='butt';
+ txt('sistema porta-hipofisário',470,300,13,COL['--danger'],'left',700);
+ const r=rng(9);for(let i=0;i<14;i++){const off=r()*.3;const q=clamp((port-off)/(1-off+.0001),0,1);if(rel>0&&q<1&&!(bind>.5)){const bx=Math.pow(1-q,3)*400+3*Math.pow(1-q,2)*q*470+3*(1-q)*q*q*470+q*q*q*560,by=Math.pow(1-q,3)*250+3*Math.pow(1-q,2)*q*250+3*(1-q)*q*q*380+q*q*q*390;dot(bx+(r()-.5)*14,by+(r()-.5)*14,6,COL['--accent'],rel)}}
+ // célula da adeno-hipófise
+ const tx=640,ty=400;cell(tx,ty,72,COL['--h2'],COL['--h2'],bind*.5,EX.tcell,'adeno-hipófise');for(let k=0;k<4;k++){const a=Math.PI+(k-1.5)*.4;receptor(tx+Math.cos(a)*72,ty+Math.sin(a)*72,a,bind>.5,COL['--h1'])}
+ // resposta: secreção para a circulação geral
+ const n=EX.inh?2:9;const r2=rng(4);for(let i=0;i<n;i++){const q=(resp+i/n)%1;if(resp>0)dot(tx+80+q*150,ty-60+(r2()-.5)*40-q*60,6,COL['--h2'],1-q)}
+ if(resp>0)arrow(tx+70,ty-40,tx+230,ty-130,COL['--h2'],3);if(resp>0)txt('→ '+EX.next,tx+150,ty-150,14,COL['--h2'],'left',700);
+ if(EX.inh&&bind>.5){pill('− inibe a secreção',tx,ty-100,COL['--danger'])}
+ pill(EX.h1,nx+110,ny,COL['--accent']);pill(EX.h2,tx+120,ty+10,COL['--h2']);if(u>.62)pill(EX.resp,450,500,COL['--success'])},
+endo(t,u){const ca=STATE.ca??9.5,rate=clamp((10.5-ca)/2.5,0.05,1.4);
+ // vaso
+ c.strokeStyle=COL['--danger'];c.globalAlpha=.22;c.lineWidth=46;c.lineCap='round';c.beginPath();c.moveTo(140,130);c.bezierCurveTo(400,60,560,60,800,140);c.bezierCurveTo(860,260,820,380,620,420);c.bezierCurveTo(420,460,260,430,180,360);c.stroke();c.globalAlpha=1;c.lineCap='butt';
+ txt('corrente sanguínea',470,70,13,COL['--danger'],'center',700);
+ const path=q=>{const seg=(p0,p1,p2,p3,s)=>[Math.pow(1-s,3)*p0[0]+3*Math.pow(1-s,2)*s*p1[0]+3*(1-s)*s*s*p2[0]+s*s*s*p3[0],Math.pow(1-s,3)*p0[1]+3*Math.pow(1-s,2)*s*p1[1]+3*(1-s)*s*s*p2[1]+s*s*s*p3[1]];
+  if(q<1/3)return seg([140,130],[400,60],[560,60],[800,140],q*3);if(q<2/3)return seg([800,140],[860,260],[820,380],[620,420],(q-1/3)*3);return seg([620,420],[420,460],[260,430],[180,360],(q-2/3)*3)};
+ const n=Math.round(24*rate);for(let i=0;i<n;i++){const q=((t*0.09)+i/n)%1;const [px,py]=path(q);dot(px,py,6,COL['--accent'])}
+ cell(140,200,56,COL['--accent-soft'],COL['--accent'],rate*.4,'Paratireoides','sensor de cálcio');
+ cell(790,250,58,COL['--h1'],COL['--h1'],rate*.35,'Osso','libera cálcio');
+ cell(560,380,58,COL['--h2'],COL['--h2'],rate*.35,'Rim','reabsorve Ca²⁺, ativa vit. D');
+ c.globalAlpha=.6;cell(300,330,46,COL['--surface-2'],COL['--line-strong'],0,'Intestino','via vitamina D');c.globalAlpha=1;
+ arrow(500,395,350,345,COL['--line-strong'],2,[5,5]);
+ pill('PTH',140,118,COL['--accent']);
+ const lv=ca<8.5?'Cálcio baixo: muito PTH':ca>10.5?'Cálcio alto: PTH suprimido':'Cálcio normal: PTH basal';pill(lv,450,500,ca<8.5?COL['--danger']:ca>10.5?COL['--h1']:COL['--success'])}
+};
+/* ---------- UI ---------- */
+function setEx(k){EX=MOD.examples.find(e=>e.k===k);T=0;$$('#exs .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k));
+ $('#chain').innerHTML=EX.chain.map(s=>`<li>${s}</li>`).join('');
+ $('#s0').textContent=' '+EX.cell;$('#s1').textContent=' '+EX.sig;$('#s2').textContent=' '+(EX.target||EX.cell);$('#s3').textContent=' '+EX.resp;
+ $('#exT').textContent=EX.chip;$('#exP').textContent=EX.chain[EX.chain.length-1];$('#exam').textContent=EX.exam;
+ try{history.replaceState(null,'','#'+k)}catch(e){}}
+MOD.examples.forEach(e=>{const b=document.createElement('button');b.type='button';b.className='chip';b.dataset.k=e.k;b.textContent=e.chip;b.onclick=()=>setEx(e.k);$('#exs').appendChild(b)});
+$('#rbar').innerHTML=ALL.map(([s,n])=>`<span class="rb${s===SLUG?' on':''}">${n}</span>`).join('');
+$('#replay').onclick=()=>{T=0;paused=false;$('#pause').textContent='Pausar'};
+$('#pause').onclick=e=>{paused=!paused;e.currentTarget.textContent=paused?'Continuar':'Pausar'};
+/* controles extras por cena */
+const X=$('#ctrls');
+if(MOD.scene==='justa'){X.innerHTML='<button class="ibtn" id="apart" type="button">Separar as células</button>';$('#apart').onclick=e=>{STATE.apart=!STATE.apart;e.currentTarget.textContent=STATE.apart?'Encostar as células':'Separar as células';T=0}}
+if(MOD.scene==='syn'){X.innerHTML='<button class="ibtn" id="bzd" type="button" hidden>Benzodiazepínico: desligado</button>';const b=$('#bzd');b.onclick=()=>{STATE.bzd=!STATE.bzd;b.textContent='Benzodiazepínico: '+(STATE.bzd?'ligado':'desligado');T=0};
+ const o=setEx;setEx=k=>{o(k);b.hidden=k!=='gaba'}}
+if(MOD.scene==='endo'){X.innerHTML='<label class="ibtn" style="display:flex;gap:8px;align-items:center;background:var(--surface)" for="ca">Cálcio no sangue <input id="ca" type="range" min="7" max="12" step="0.1" value="9.5" style="width:140px"><span id="cav" style="font-family:var(--f-mono)">9,5 mg/dL</span></label>';
+ const s=$('#ca');const sync=()=>{STATE.ca=+s.value;s.style.setProperty('--p',((s.value-7)/5*100)+'%');$('#cav').textContent=(+s.value).toLocaleString('pt-BR',{minimumFractionDigits:1})+' mg/dL'};s.oninput=sync;sync()}
+const h=location.hash.slice(1);setEx(MOD.examples.some(e=>e.k===h)?h:MOD.examples[0].k);
+let last=performance.now();
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(!paused)T+=dt*(reduce?.5:1);
+ c.clearRect(0,0,W,H);const u=(T%CYCLE)/CYCLE;SCENES[MOD.scene](T,u);stepUI(MOD.scene==='endo'?3:phaseOf(T));requestAnimationFrame(loop)}
+window.__m={setT:v=>{T=v},stop:()=>{paused=true}};fit();requestAnimationFrame(loop);
+

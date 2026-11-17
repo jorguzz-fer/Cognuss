@@ -1,0 +1,105 @@
+@@TITLE
+O eixo GH–IGF-1 em equilíbrio
+@@STYLE
+.stage svg text{font-family:var(--f-body)}
+.read{background:var(--surface-2);border-radius:var(--radius);padding:12px 14px;line-height:1.5;font-size:15px;border-left:4px solid var(--accent)}
+.read b{display:block;margin-bottom:2px}
+.tog{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600}
+@@BODY
+  <section>
+    <div class="eyebrow">Peça interativa · Arquitetura e regulação do eixo</div>
+    <h1>O eixo GH–IGF-1 em equilíbrio</h1>
+    <p class="lead">O hipotálamo acelera (GHRH) e freia (somatostatina) a hipófise; o estômago reforça com a grelina. O GH age direto nos tecidos e manda o fígado produzir IGF-1, que volta para frear o eixo. Escolha um cenário ou mexa nos controles.</p>
+  </section>
+  <div class="grid">
+    <div class="card stage"><svg id="d" viewBox="0 0 640 560" role="img" aria-label="Diagrama do eixo somatotrófico com a espessura das setas proporcional ao sinal"></svg></div>
+    <div class="card panel">
+      <div class="lbl">Cenário</div>
+      <div class="chips" id="sc"></div>
+      <div class="lbl">Comando</div>
+      <div class="ctl"><label for="ghrh" style="width:118px">GHRH</label><input type="range" id="ghrh" min="0" max="2" step="0.05"><span class="v" id="ghrhV"></span></div>
+      <div class="ctl"><label for="sst" style="width:118px">Somatostatina</label><input type="range" id="sst" min="0" max="2" step="0.05"><span class="v" id="sstV"></span></div>
+      <div class="ctl"><label for="gre" style="width:118px">Grelina</label><input type="range" id="gre" min="0" max="2" step="0.05"><span class="v" id="greV"></span></div>
+      <label class="tog"><input type="checkbox" id="fb" checked> Feedback negativo do IGF-1 e do GH ligado</label>
+      <div class="tiles">
+        <div class="tile" style="--c:var(--accent)"><div class="k">GH</div><div class="n" id="tGH"></div><div class="s" id="sGH"></div></div>
+        <div class="tile" style="--c:var(--h1)"><div class="k">IGF-1</div><div class="n" id="tIGF"></div><div class="s" id="sIGF"></div></div>
+        <div class="tile" style="--c:var(--h2)"><div class="k">Somatostatina efetiva</div><div class="n" id="tS"></div><div class="s" id="sS"></div></div>
+      </div>
+      <div class="read" id="read" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow">Para fixar</div><h2>O GH manda, o IGF-1 executa e avisa</h2>
+      <p>O GH (191 aminoácidos) sai da adeno-hipófise em pulsos, sob o cabo de guerra entre GHRH e somatostatina. Ele tem um <b>duplo mandato</b>: ação direta e rápida no metabolismo (lipólise, antagonismo à insulina) e ação indireta, pelo IGF-1 que o fígado produz, sobre o crescimento.</p>
+      <p>O IGF-1 fecha a alça: aumenta a somatostatina e reduz o GHRH no hipotálamo, e inibe direto o somatotrofo. O próprio GH também freia o GHRH (alça curta).</p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p>Leia GH e IGF-1 juntos. Os dois altos apontam para fonte hipofisária (adenoma). GH alto com IGF-1 baixo indica fígado que não responde: síndrome de Laron ou jejum prolongado. Os dois baixos indicam falha de comando. Teste os cenários e desligue o feedback para ver o eixo perder o freio.</p></div>
+  </div>
+@@SCRIPT
+const SC={
+ normal:{n:'Normal',p:{ghrh:1,sst:1,gre:1,cap:1,sens:1,auto:0,fb:1}},
+ sono:{n:'Sono profundo (N3)',p:{ghrh:2,sst:.45,gre:1,cap:1,sens:1,auto:0,fb:1}},
+ jejum:{n:'Jejum prolongado',p:{ghrh:1.2,sst:.7,gre:2,cap:1,sens:.33,auto:0,fb:1}},
+ hiper:{n:'Hiperglicemia e obesidade',p:{ghrh:.7,sst:2,gre:.3,cap:1,sens:1,auto:0,fb:1}},
+ adenoma:{n:'Adenoma somatotrófico',p:{ghrh:1,sst:1,gre:1,cap:1,sens:1,auto:4,fb:1}},
+ laron:{n:'Resistência ao GH (Laron)',p:{ghrh:1,sst:1,gre:1,cap:1,sens:.08,auto:0,fb:1}},
+ defic:{n:'Deficiência hipofisária',p:{ghrh:1,sst:1,gre:1,cap:.08,sens:1,auto:0,fb:1}}};
+const NOTE={
+ sono:'No sono de ondas lentas o GHRH sobe e a somatostatina cai: é o maior pulso do dia. Aqui o estímulo aparece mantido; na vida real ele dura poucas horas, e o IGF-1, que integra as 24 h, muda pouco.',
+ jejum:'No jejum a grelina e a hipoglicemia disparam o GH, que passa a queimar gordura e poupar proteína. O fígado reduz receptores de GH, e o IGF-1 cai apesar do GH alto: o corpo adia o crescimento.',
+ hiper:'Glicose alta e excesso de tecido adiposo aumentam a somatostatina e reduzem a grelina: o GH fica suprimido. Por isso o obeso tem resposta atenuada nos testes de estímulo.',
+ adenoma:'O tumor secreta GH por conta própria e não obedece ao freio. GH e IGF-1 ficam altos juntos, e o hipotálamo, frenado pelo IGF-1, reduz o GHRH sem efeito.',
+ laron:'O receptor de GH não funciona: o fígado não faz IGF-1. Sem IGF-1 não há freio, e o GH sobe. Padrão paradoxal: GH alto, IGF-1 muito baixo.',
+ defic:'A hipófise não responde ao comando. GH e IGF-1 caem juntos; o hipotálamo, sem freio, aumenta o GHRH em vão.'};
+let P={...SC.normal.p},cur='normal';
+function solve(p){let GH=1,IGF=1,g=1,s=1;for(let i=0;i<400;i++){const fi=p.fb?IGF:1,fg=p.fb?GH:1;
+  g=p.ghrh*2/(1+fi)*(1.3-.3*Math.min(fg,3));g=Math.max(0,g);s=p.sst*(.4+.6*fi);
+  let gh=p.cap*(.15+g*(.5+.5*p.gre))/(1+s)/(.5+.5*fi)/.575+p.auto;
+  const igf=p.sens*Math.pow(Math.max(gh,0),.7);GH=GH*.8+gh*.2;IGF=IGF*.8+igf*.2}
+ return{GH,IGF,g,s}}
+const f2=x=>(x<0.1?x.toFixed(2):x.toFixed(1)).replace('.',',');
+const lvl=x=>x>1.4?['Alto','up']:x<.6?['Baixo','down']:['Normal','ok'];
+function arrow(x1,y1,x2,y2,w,c,dash,curve){const d=curve?`M${x1} ${y1} Q${curve[0]} ${curve[1]} ${x2} ${y2}`:`M${x1} ${y1} L${x2} ${y2}`;
+ return `<path d="${d}" fill="none" stroke="${c}" stroke-width="${clamp(w,1.2,14).toFixed(1)}" stroke-linecap="round" ${dash?'stroke-dasharray="7 6"':''} marker-end="url(#a_${c.replace(/[^a-z0-9]/g,'')})" opacity="${w<1.3?.35:1}"/>`}
+function box(x,y,w,h,t,sub,c){return `<rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="10" fill="var(--surface)" stroke="${c}" stroke-width="2.5"/><text x="${x}" y="${y-(sub?4:-5)}" text-anchor="middle" font-size="16" font-weight="700" fill="var(--fg)">${t}</text>${sub?`<text x="${x}" y="${y+15}" text-anchor="middle" font-size="12.5" fill="var(--muted)">${sub}</text>`:''}`}
+function lab(x,y,t,c,a='middle'){return `<text x="${x}" y="${y}" text-anchor="${a}" font-size="13" font-weight="700" fill="${c}" paint-order="stroke" stroke="var(--surface)" stroke-width="4">${t}</text>`}
+function draw(){const r=solve(P);const A='var(--accent)',B='var(--h1)',G='var(--success)',R='var(--h2)',M='var(--muted)';
+ const cols=[A,B,G,R,M,'var(--danger)'];
+ let s='<defs>'+cols.map(c=>`<marker id="a_${c.replace(/[^a-z0-9]/g,'')}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${c}"/></marker>`).join('')+'</defs>';
+ // nós
+ s+=box(320,62,300,62,'Hipotálamo','núcleo arqueado · periventricular',M);
+ s+=box(90,340,140,58,'Estômago','grelina',G);
+ s+=box(320,232,210,62,'Adeno-hipófise',P.auto>0?'somatotrofos + adenoma':'somatotrofos',P.auto>0?'var(--danger)':A);
+ s+=box(320,410,170,58,'Fígado','produz IGF-1',B);
+ s+=box(548,300,170,62,'Ação direta','adiposo · músculo',A);
+ s+=box(548,500,170,62,'Crescimento','osso · cartilagem',B);
+ // sinais
+ s+=arrow(250,95,280,196,3+r.g*4,G);s+=lab(228,150,'GHRH +',G,'end');s+=lab(228,166,f2(r.g)+'×',G,'end');
+ s+=arrow(390,95,360,196,3+r.s*4,'var(--danger)');s+=lab(412,150,'Somatostatina −','var(--danger)','start');s+=lab(412,166,f2(r.s)+'×','var(--danger)','start');
+ s+=arrow(150,310,212,262,2+P.gre*3,G);s+=lab(166,282,'+',G);
+ const gw=2+Math.min(r.GH,6)*2.2;
+ s+=arrow(320,264,320,376,gw,A);s+=lab(334,320,'GH: '+f2(r.GH)+'×',A,'start');
+ s+=arrow(426,248,458,284,gw,A);
+ const iw=2+Math.min(r.IGF,5)*2.4;
+ s+=arrow(406,425,460,478,iw,B);s+=lab(444,436,'IGF-1: '+f2(r.IGF)+'×',B,'start');
+ if(P.fb){s+=arrow(236,410,190,98,1.5+Math.min(r.IGF,4),B,true,[110,190]);s+=lab(146,206,'IGF-1 −',B,'end');
+   s+=arrow(236,402,214,252,1.5+Math.min(r.IGF,4)*.8,B,true,[230,320]);
+   s+=arrow(426,226,474,52,1.2+Math.min(r.GH,4)*.6,A,true,[640,230]);s+=lab(636,250,'GH − (alça curta)',A,'end')}
+ else{s+=lab(150,206,'Feedback desligado',M,'end')}
+  if(P.cap<.5){s+=`<path d="M230 205 L410 260 M410 205 L230 260" stroke="var(--danger)" stroke-width="2.5" opacity=".7"/>`}
+ if(P.sens<.7){s+=`<text x="320" y="461" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--danger)">${P.sens<.2?'✕ receptor de GH não responde':'↓ receptores de GH no fígado'}</text>`}
+ $('#d').innerHTML=s;
+ const[a,ac]=lvl(r.GH),[b,bc]=lvl(r.IGF),[c,cc]=lvl(r.s);
+ $('#tGH').textContent=f2(r.GH)+'×';$('#sGH').textContent=a;$('#sGH').className='s '+ac;
+ $('#tIGF').textContent=f2(r.IGF)+'×';$('#sIGF').textContent=b;$('#sIGF').className='s '+bc;
+ $('#tS').textContent=f2(r.s)+'×';$('#sS').textContent=c;$('#sS').className='s '+cc;
+ let pat;if(r.GH>1.4&&r.IGF>1.4)pat='GH e IGF-1 altos juntos: o excesso vem da hipófise.';else if(r.GH>1.4&&r.IGF<.6)pat='GH alto com IGF-1 baixo: o fígado não está respondendo ao GH.';else if(r.GH<.6&&r.IGF<.6)pat='GH e IGF-1 baixos juntos: falha no comando do eixo.';else if(r.GH>1.4)pat='GH alto com IGF-1 normal: pico de GH sem mudança no IGF-1 integrado.';else if(r.GH<.6)pat='GH suprimido.';else pat='Eixo em equilíbrio: valores perto do basal.';
+ $('#read').innerHTML=`<b>${pat}</b>${NOTE[cur]||(cur==='normal'?'GHRH, somatostatina e grelina se equilibram; o IGF-1 segura o eixo no ponto de ajuste.':'Ajuste livre. Valores em múltiplos do basal, de um modelo didático.')}`;
+ ['ghrh','sst','gre'].forEach(k=>{const el=$('#'+k);el.value=P[k];el.style.setProperty('--p',(P[k]/2*100)+'%');$('#'+k+'V').textContent=(+P[k]).toFixed(2).replace('.',',')+'×'});$('#fb').checked=!!P.fb;
+ $$('#sc .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===cur))}
+$('#sc').innerHTML=Object.entries(SC).map(([k,v])=>`<button class="chip" type="button" data-k="${k}">${v.n}</button>`).join('');
+$$('#sc .chip').forEach(b=>b.onclick=()=>{cur=b.dataset.k;P={...SC[cur].p};draw();history.replaceState(null,'','#'+cur)});
+['ghrh','sst','gre'].forEach(k=>$('#'+k).oninput=e=>{P[k]=+e.target.value;cur='livre';draw()});
+$('#fb').onchange=e=>{P.fb=e.target.checked?1:0;if(cur!=='livre')cur=cur;draw()};
+const h=location.hash.slice(1);if(SC[h]){cur=h;P={...SC[h].p}}
+draw();window.onTheme=draw;window.__e={solve,SC};

@@ -1,10 +1,11 @@
-import type { Creator, Embedder, ScheduleExtractor } from '@gutta/ai';
+import type { Creator, Embedder, LessonPlanner, ScheduleExtractor } from '@gutta/ai';
 import type { ObjectStorage } from '@gutta/storage';
 import type { Scanner } from '../files/scanner';
 import { createCreation } from './creations';
 import { embedUser } from './embeddings';
 import { filesProcess } from './files';
 import { eraseUserObjects } from './maintenance';
+import { productionExtract, productionPlan } from './production';
 import { extractSchedule } from './schedule';
 import type { Handler, Handlers } from './types';
 
@@ -17,6 +18,8 @@ export type HandlerDeps = {
   creator: Creator | null;
   /** Null: sem chave da Voyage AI; a busca por conceito fica desligada e a por palavra segue. */
   embedder?: Embedder | null;
+  /** Null: sem chave do Claude; a produção de aulas lista os pedidos sem plano (ADR 0021). */
+  planner?: LessonPlanner | null;
 };
 
 function unavailable<T extends 'files.process'>(): Handler<T> {
@@ -45,6 +48,11 @@ export function createHandlers(deps: HandlerDeps): Handlers {
     }),
     'ai.create': createCreation({ creator: deps.creator }),
     'ai.embed_user': embedUser({ embedder: deps.embedder ?? null }),
+    'production.extract': productionExtract({
+      storage: deps.storage,
+      planner: deps.planner ?? null,
+    }),
+    'production.plan': productionPlan({ storage: deps.storage, planner: deps.planner ?? null }),
     'maintenance.erase_user_objects': eraseUserObjects(deps.storage),
   };
 }

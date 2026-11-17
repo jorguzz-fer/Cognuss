@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulador de feedback hormonal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Identidade Cognuss (tokens de apps/web/src/styles/tokens.css): quase-preto quente, coral da marca,
+   Archivo Black nos títulos, Hind no texto. Layout: diagrama do eixo à esquerda, gráfico e controles à direita. */
+:root{
+  --bg:oklch(0.985 0 0);--surface:oklch(1 0 0);--surface-2:oklch(0.95 0.003 20);
+  --fg:oklch(0.21 0.006 20);--muted:oklch(0.46 0.006 20);--line:oklch(0.86 0.003 20);--line-strong:oklch(0.72 0.004 20);
+  --accent:oklch(0.52 0.2 27);--accent-hover:oklch(0.46 0.19 27);--accent-ink:oklch(0.99 0 0);--accent-soft:oklch(0.94 0.03 27);
+  --success:oklch(0.48 0.12 152);--success-soft:oklch(0.95 0.04 152);--warn:oklch(0.5 0.11 70);--warn-soft:oklch(0.95 0.05 85);
+  --danger:oklch(0.5 0.19 25);--danger-soft:oklch(0.95 0.03 25);
+  --h1:oklch(0.55 0.13 250);--h2:oklch(0.55 0.14 300);--h3:oklch(0.52 0.2 27);
+  --card-shadow:0 8px 24px -12px oklch(0.2 0 0 / .22);
+  --f-display:"Archivo Black","Arial Black",system-ui,sans-serif;--f-body:"Hind",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --radius:6px;--radius-lg:8px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto;padding:20px 24px 48px;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);color:var(--accent);font-size:18px;letter-spacing:-.2px}
+.crumb{font-size:14px;color:var(--muted)}
+.sp{flex:1}
+.badge{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--warn-soft);color:var(--warn)}
+.ibtn{border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:6px 10px;font-size:13px;color:var(--muted)}
+.ibtn:hover{color:var(--fg);border-color:var(--accent)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(28px,3.4vw,40px);line-height:1.08;margin:6px 0 8px;letter-spacing:-.5px;text-wrap:balance}
+.lead{margin:0;color:var(--muted);font-size:17px;line-height:1.55;max-width:70ch}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{border:0;background:transparent;padding:10px 14px 12px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--card-shadow)}
+.stage{padding:8px;position:relative}
+.stage svg{display:block;width:100%;height:auto}
+.panel{padding:18px;display:flex;flex-direction:column;gap:14px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line-strong);background:var(--surface-2);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--fg)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip.act{border-style:dashed}
+canvas{display:block;width:100%;height:220px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.ctl{display:flex;align-items:center;gap:12px}
+.ctl label{font-size:14px;font-weight:600;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--accent) var(--p,50%),var(--line-strong) var(--p,50%));margin:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+.ctl .v{font-family:var(--f-mono);font-size:14px;min-width:52px;text-align:right}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--surface-2);border-radius:var(--radius);padding:8px 10px;border-left:4px solid var(--c)}
+.tile .k{font-size:12px;color:var(--muted);font-weight:600}
+.tile .n{font-family:var(--f-mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;font-weight:700}
+.up{color:var(--danger)}.down{color:var(--h1)}.ok{color:var(--success)}
+.explain{padding:18px 20px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px}
+.explain h2{font-family:var(--f-display);font-weight:400;font-size:20px;margin:4px 0 8px;text-wrap:balance}
+.explain p{margin:0 0 10px;line-height:1.6;max-width:68ch}
+.exam{background:var(--accent-soft);border-radius:var(--radius);padding:14px 16px}
+.exam p{margin:6px 0 0;line-height:1.55}
+.foot{font-size:13px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line);padding-top:12px;margin:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:var(--radius);background:var(--accent);color:var(--accent-ink);font-weight:700;padding:9px 14px;font-size:14px}
+.btn:hover{background:var(--accent-hover)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line-strong)}
+.dil{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.dil span{display:block;height:100%;background:var(--accent);width:0}
+@media (max-width:960px){.grid,.explain{grid-template-columns:1fr}}
+@media (max-width:480px){.wrap{padding:14px 16px 40px}.tiles{grid-template-columns:1fr 1fr 1fr}.tile .n{font-size:17px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brand"><svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#c2181d"/><path d="M44 21A15 15 0 1 0 44 43" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round"/><circle cx="45.5" cy="32" r="4.6" fill="#fff"/></svg>COGNUSS</span>
+    <span class="crumb">Fisiologia endócrina · Aula 1 · Introdução</span>
+    <span class="sp"></span>
+    <span class="badge">Demonstração · sem revisão</span>
+    <button class="ibtn" id="themeBtn" type="button">Alternar tema</button>
+  </header>
+
+  <section>
+    <div class="eyebrow">Peça interativa · Mecanismos de feedback</div>
+    <h1>O termostato hormonal</h1>
+    <p class="lead">Quando um hormônio sobe no sangue, o comando que o liberou diminui. Esse é o feedback negativo, que mantém a homeostase. No feedback positivo acontece o contrário: o produto reforça o estímulo até um evento final. Escolha um cenário e acompanhe os níveis em tempo real.</p>
+  </section>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-neg" aria-selected="true" aria-controls="pane">Feedback negativo · eixo HHA</button>
+    <button class="tab" role="tab" id="tab-pos" aria-selected="false" aria-controls="pane">Feedback positivo · ocitocina no parto</button>
+  </div>
+
+  <div class="grid" id="pane">
+    <div class="card stage"><svg id="dia" viewBox="-30 0 590 500" role="img" aria-label="Diagrama do eixo hormonal com setas de estímulo e de inibição"></svg></div>
+    <div class="card panel">
+      <div id="negCtl">
+        <div class="lbl">Cenário</div>
+        <div class="chips" id="scen" style="margin-top:8px"></div>
+      </div>
+      <div id="posCtl" hidden>
+        <div class="lbl">Trabalho de parto</div>
+        <div class="row" style="margin-top:8px"><button class="btn" id="startLabor" type="button">Iniciar contrações</button><button class="btn ghost" id="resetLabor" type="button">Recomeçar</button></div>
+        <div style="margin-top:12px" class="lbl">Dilatação do colo: <span id="dilv" style="font-family:var(--f-mono)">0 cm</span> de 10 cm</div>
+        <div class="dil" style="margin-top:6px"><span id="dilbar"></span></div>
+      </div>
+      <div>
+        <div class="row" style="justify-content:space-between"><span class="lbl">Níveis no tempo (% do basal)</span><button class="ibtn" id="pauseBtn" type="button">Pausar</button></div>
+        <canvas id="chart" aria-label="Gráfico dos níveis hormonais ao longo do tempo"></canvas>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="ctl" id="gCtl"><label for="gain" id="gainLbl">Força do feedback</label><input type="range" id="gain" min="0" max="2" step="0.05" value="1"><span class="v" id="gainV">100%</span></div>
+      <div class="tiles" id="tiles"></div>
+    </div>
+  </div>
+
+  <div class="card explain">
+    <div><div class="eyebrow" id="exEyebrow">O que está acontecendo</div><h2 id="exTitle"></h2><div id="exBody"></div></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><div id="exExam"></div></div>
+  </div>
+
+  <p class="foot">Modelo didático com três hormônios e constantes simplificadas: os valores aparecem como porcentagem do basal e não substituem faixas laboratoriais. Base: Aires, <i>Fisiologia</i>, 5ª ed., cap. 64 (Guanabara Koogan, 2018), conforme a aula do Dr. Rafael.</p>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const fmt=n=>Math.round(n).toLocaleString('pt-BR');
+
+/* ---------- tema ---------- */
+$('#themeBtn').onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark';drawDiagram()};
+
+/* ---------- cenários do feedback negativo ---------- */
+const SCEN={
+  normal:{label:'Normal',title:'Equilíbrio: cada hormônio freia quem o liberou',
+    body:'<p>O hipotálamo libera <b>CRH</b>, que estimula a adeno-hipófise a liberar <b>ACTH</b>, que estimula o córtex adrenal a produzir <b>cortisol</b>. O cortisol volta pelo sangue e inibe o hipotálamo e a hipófise (alça longa). O ACTH também inibe o hipotálamo (alça curta).</p><p>Por isso os três ficam estáveis: se o cortisol sobe, o comando cai; se cai, o comando sobe.</p>',
+    exam:'<p>Feedback negativo é a regra no sistema endócrino. Arraste a força do feedback para zero e veja os três hormônios dispararem: sem freio, não há homeostase.</p>'},
+  stress:{label:'Estresse agudo',title:'Estresse: o estímulo vence o freio por um tempo',
+    body:'<p>Um estresse (dor, infecção, cirurgia) aumenta o estímulo sobre o hipotálamo. CRH e ACTH sobem primeiro e o cortisol vem logo depois.</p><p>Quando o estresse passa, o cortisol alto freia CRH e ACTH, e tudo volta ao basal. O feedback é o que encerra a resposta.</p>',
+    exam:'<p>Observe a ordem dos picos: CRH, depois ACTH, depois cortisol. Cada nível depende do anterior, e o último freia os primeiros.</p>'},
+  pred:{label:'Corticoide exógeno',title:'Prednisona: o freio vem de fora',
+    body:'<p>O corticoide tomado como remédio age nos mesmos receptores do cortisol. Para o hipotálamo e a hipófise, é como se o cortisol estivesse alto: <b>CRH e ACTH caem</b>, e o cortisol produzido pela adrenal também cai.</p><p>Sem ACTH, que é o estímulo trófico da adrenal, o córtex adrenal <b>atrofia</b> com o uso prolongado.</p>',
+    exam:'<p>Use em seguida o botão “Suspender corticoide”: o eixo demora a se recuperar e o cortisol fica baixo por um tempo. Por isso o corticoide crônico se retira de forma gradual.</p>'},
+  stop:{label:'Suspender corticoide',act:true,title:'Retirada abrupta: insuficiência adrenal temporária',
+    body:'<p>Ao parar o corticoide de repente, o freio externo some. CRH e ACTH sobem, mas a adrenal está atrofiada e responde pouco: o <b>cortisol fica baixo</b> até a glândula recuperar o tamanho.</p>',
+    exam:'<p>Paciente em uso crônico de corticoide que para de repente pode ter crise adrenal (hipotensão, hipoglicemia). A retirada é gradual para dar tempo ao eixo.</p>'},
+  addison:{label:'Doença de Addison',title:'Adrenal destruída: o freio desaparece',
+    body:'<p>Na insuficiência adrenal primária, a adrenal não produz cortisol. Sem cortisol, não há feedback negativo: <b>CRH e ACTH sobem muito</b>.</p><p>O ACTH vem de uma molécula maior (POMC) que também gera o MSH, o hormônio que estimula os melanócitos. Daí a <b>hiperpigmentação</b> típica.</p>',
+    exam:'<p>Cortisol baixo com ACTH alto aponta o problema na adrenal (primário). Cortisol baixo com ACTH baixo aponta a hipófise ou o hipotálamo (secundário ou terciário).</p>'},
+  cushpit:{label:'Adenoma hipofisário',title:'Doença de Cushing: ACTH que não obedece',
+    body:'<p>Um adenoma da hipófise produz ACTH de forma autônoma, pouco sensível ao freio do cortisol. Resultado: <b>ACTH alto ou inapropriadamente normal</b> e <b>cortisol alto</b>.</p><p>O hipotálamo continua obedecendo: o cortisol alto derruba o CRH.</p>',
+    exam:'<p>Cortisol alto com ACTH alto sugere fonte de ACTH (hipófise ou produção ectópica). Cortisol alto com ACTH baixo sugere tumor da própria adrenal.</p>'},
+  cushadr:{label:'Tumor adrenal',title:'Tumor adrenal: cortisol sem comando',
+    body:'<p>O tumor da adrenal produz cortisol por conta própria. O cortisol alto freia o hipotálamo e a hipófise, então <b>CRH e ACTH ficam suprimidos</b>.</p><p>Sem ACTH, a adrenal do outro lado atrofia.</p>',
+    exam:'<p>Cortisol alto com ACTH baixo: a causa está na adrenal. É o padrão inverso da doença de Cushing hipofisária.</p>'},
+};
+const ORDER=['normal','stress','pred','stop','addison','cushpit','cushadr'];
+
+/* ---------- modelo do eixo HHA (unidades relativas; basal = 1) ---------- */
+const N={H:1,A:1,F:1,cap:1,exo:0,stress:0,mode:'normal',g:1,t:0,hist:[]};
+function stepNeg(dt){
+  const auto=N.mode==='cushadr'?3:0, tumor=N.mode==='cushpit'?2.5:0;
+  if(N.mode==='addison')N.cap=0.12;
+  N.stress*=Math.exp(-dt/6);
+  const Ft=N.F+N.exo,g=N.g;
+  const dH=2*(1+N.stress)/(1+g*Ft)-N.H;
+  const dA=1.5*N.H/(1+0.5*g*Ft)+tumor/(1+0.15*g*Ft)-N.A;
+  const dF=N.cap*N.A+auto-N.F;
+  N.H+=1.2*dH*dt;N.A+=0.8*dA*dt;N.F+=0.5*dF*dt;
+  if(N.mode!=='addison')N.cap=clamp(N.cap+0.03*(N.A*N.A-N.cap)*dt,0.12,2.5);
+}
+function setScen(k){
+  const prev=N.mode;N.mode=k==='stop'?'normal':k;
+  if(k==='normal'||k==='addison'||k==='cushpit'||k==='cushadr'){N.exo=0;if(prev==='addison'&&k!=='addison')N.cap=1}
+  if(k==='stress'){N.exo=0;N.stress=1.6;N.mode='normal'}
+  if(k==='pred'){N.exo=2;N.mode='normal'}
+  if(k==='stop'){N.exo=0}
+  N.cur=k;
+  $$('#scen .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k));
+  $('#scen .chip[data-k="stop"]').hidden=!(k==='pred'||k==='stop');
+  const s=SCEN[k];$('#exTitle').textContent=s.title;$('#exBody').innerHTML=s.body;$('#exExam').innerHTML=s.exam;
+}
+ORDER.forEach(k=>{const b=document.createElement('button');b.type='button';b.className='chip'+(SCEN[k].act?' act':'');b.dataset.k=k;b.textContent=SCEN[k].label;b.onclick=()=>setScen(k);$('#scen').appendChild(b)});
+
+/* ---------- modelo do feedback positivo (ocitocina) ---------- */
+const P={O:.1,K:.1,dil:0,on:false,born:false,g:1.25,t:0,hist:[]};
+function stepPos(dt){
+  const S=P.born?0:(P.on?0.15:0.02)+0.9*P.K+0.05*P.dil;
+  P.O+=1.2*(P.g*S-P.O)*dt;P.K+=0.9*(P.O-P.K)*dt;
+  P.O=clamp(P.O,0,8);P.K=clamp(P.K,0,8);
+  if(P.on&&!P.born){P.dil=Math.min(10,P.dil+0.06*P.K*dt);if(P.dil>=10){P.born=true;posText('born')}}
+  $('#dilbar').style.width=(P.dil*10)+'%';$('#dilv').textContent=P.dil.toLocaleString('pt-BR',{maximumFractionDigits:1})+' cm';
+}
+const POS={
+  idle:{title:'Ciclo de reforço: o produto aumenta o estímulo',body:'<p>A cabeça do bebê pressiona o colo do útero. Receptores de estiramento mandam sinais ao hipotálamo, e a neuro-hipófise libera <b>ocitocina</b>. A ocitocina contrai o útero, o que empurra o bebê e <b>aumenta o estiramento</b>, liberando mais ocitocina.</p><p>Clique em “Iniciar contrações” e acompanhe a escalada.</p>',exam:'<p>No feedback positivo, a resposta reforça o estímulo. Ele só é seguro porque existe um evento que encerra o ciclo.</p>'},
+  run:{title:'Escalada: cada contração gera uma maior',body:'<p>Ocitocina e contração crescem juntas, de forma exponencial. Quanto maior a força do reforço, mais rápida a escalada.</p><p>Reduza a força para menos de 100% e veja o ciclo perder fôlego: sem ganho suficiente, não há reforço.</p>',exam:'<p>Outros exemplos: o pico de LH antes da ovulação (estradiol alto estimula mais LH) e a coagulação, em que a trombina ativa mais trombina.</p>'},
+  born:{title:'Nascimento: o estímulo some e o ciclo termina',body:'<p>Com a saída do bebê, acaba o estiramento do colo. Sem estímulo, a ocitocina cai e as contrações perdem força.</p><p>É o evento final que separa o feedback positivo fisiológico de um ciclo descontrolado.</p>',exam:'<p>Feedback positivo precisa de um ponto final: parto, ovulação, formação do coágulo. Feedback negativo, ao contrário, mantém um valor estável indefinidamente.</p>'}
+};
+function posText(k){const s=POS[k];$('#exTitle').textContent=s.title;$('#exBody').innerHTML=s.body;$('#exExam').innerHTML=s.exam}
+$('#startLabor').onclick=()=>{if(P.born)resetLabor();P.on=true;posText('run')};
+function resetLabor(){Object.assign(P,{O:.1,K:.1,dil:0,on:false,born:false,hist:[]});posText('idle')}
+$('#resetLabor').onclick=resetLabor;
+
+/* ---------- modo, controles ---------- */
+let MODE='neg',paused=false;
+const gain=$('#gain');
+function syncGain(){const v=+gain.value;gain.style.setProperty('--p',(v/2*100)+'%');$('#gainV').textContent=fmt(v*100)+'%';if(MODE==='neg')N.g=v;else P.g=v}
+gain.addEventListener('input',syncGain);
+function setMode(m){
+  MODE=m;$('#tab-neg').setAttribute('aria-selected',m==='neg');$('#tab-pos').setAttribute('aria-selected',m==='pos');
+  $('#negCtl').hidden=m!=='neg';$('#posCtl').hidden=m!=='pos';
+  $('#gainLbl').textContent=m==='neg'?'Força do feedback':'Força do reforço';
+  gain.value=m==='neg'?N.g:P.g;syncGain();
+  if(m==='neg')setScen(N.cur||'normal');else posText(P.born?'born':P.on?'run':'idle');
+  buildLegend();drawDiagram();
+  try{history.replaceState(null,'',m==='pos'?'#positivo':'#'+(N.cur&&N.cur!=='normal'?N.cur:'negativo'))}catch(e){}
+}
+$('#tab-neg').onclick=()=>setMode('neg');$('#tab-pos').onclick=()=>setMode('pos');
+$('#pauseBtn').onclick=e=>{paused=!paused;e.currentTarget.textContent=paused?'Continuar':'Pausar'};
+
+/* ---------- séries ---------- */
+const SER={neg:[['H','CRH','--h1'],['A','ACTH','--h2'],['F','Cortisol','--h3']],pos:[['O','Ocitocina','--h2'],['K','Força da contração','--h3']]};
+function buildLegend(){$('#legend').innerHTML=SER[MODE].map(s=>`<span><i style="background:var(${s[2]})"></i>${s[1]}</span>`).join('')}
+function tiles(){
+  const M=MODE==='neg'?N:P;
+  $('#tiles').innerHTML=SER[MODE].map(([k,n,c])=>{const v=M[k]*100,st=MODE==='pos'?'':(v>130?'<span class="s up">↑ acima</span>':v<70?'<span class="s down">↓ abaixo</span>':'<span class="s ok">≈ basal</span>');
+    return `<div class="tile" style="--c:var(${c})"><div class="k">${n}</div><div class="n">${fmt(v)}%</div>${st}</div>`}).join('')+(MODE==='pos'?`<div class="tile" style="--c:var(--line-strong)"><div class="k">Fase</div><div class="n" style="font-size:15px;font-family:var(--f-body);font-weight:700">${P.born?'Nascimento':P.on?'Ativo':'Latente'}</div></div>`:'');
+}
+
+/* ---------- gráfico ---------- */
+const cv=$('#chart');
+function drawChart(){
+  const r=cv.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);if(!r.width)return;
+  cv.width=r.width*dpr;cv.height=r.height*dpr;const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);
+  const W=r.width,H=r.height,L=40,B=20,T=8,R=8,pw=W-L-R,ph=H-T-B;
+  const M=MODE==='neg'?N:P,hist=M.hist,ymax=MODE==='neg'?400:Math.max(400,...hist.map(h=>Math.max(h.O,h.K)*100))*1;
+  const top=MODE==='neg'?400:Math.min(800,Math.ceil(ymax/200)*200);
+  c.font='12px "IBM Plex Mono",monospace';c.fillStyle=css('--muted');c.strokeStyle=css('--line');c.lineWidth=1;
+  const steps=4;for(let i=0;i<=steps;i++){const v=top*i/steps,y=T+ph-ph*v/top;c.beginPath();c.moveTo(L,y);c.lineTo(L+pw,y);c.stroke();c.fillText(fmt(v),4,y+4)}
+  if(MODE==='neg'){const y=T+ph-ph*100/top;c.setLineDash([4,4]);c.strokeStyle=css('--line-strong');c.beginPath();c.moveTo(L,y);c.lineTo(L+pw,y);c.stroke();c.setLineDash([]);c.fillStyle=css('--muted');c.fillText('basal',L+pw-40,y-4)}
+  const span=40,tNow=M.t;
+  SER[MODE].forEach(([k,,col])=>{c.strokeStyle=css(col);c.lineWidth=2.5;c.beginPath();let f=true;
+    for(const h of hist){const x=L+pw*(1-(tNow-h.t)/span),y=T+ph-ph*clamp(h[k]*100,0,top)/top;if(x<L)continue;f?c.moveTo(x,y):c.lineTo(x,y);f=false}c.stroke();
+    const last=hist[hist.length-1];if(last){const y=T+ph-ph*clamp(last[k]*100,0,top)/top;c.fillStyle=css(col);c.beginPath();c.arc(L+pw,y,4,0,7);c.fill()}});
+  c.fillStyle=css('--muted');c.fillText('últimos 40 s',L,H-4);
+}
+
+/* ---------- diagrama ---------- */
+const svg=$('#dia');
+function drawDiagram(){svg.setAttribute('viewBox',MODE==='neg'?'-30 0 590 500':'0 0 560 540');svg.innerHTML=MODE==='neg'?negSVG():posSVG();}
+function node(x,y,w,h,title,sub,key,colVar){
+  return `<g><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="var(--surface-2)" stroke="var(${colVar})" stroke-width="2"/>
+  <rect id="bar-${key}" x="${x+12}" y="${y+h-14}" width="0" height="6" rx="3" fill="var(${colVar})"/>
+  <text x="${x+14}" y="${y+27}" font-family="Archivo Black,Arial Black,sans-serif" font-size="17" fill="var(--fg)">${title}</text>
+  <text x="${x+14}" y="${y+48}" font-size="14" fill="var(--muted)" font-family="Hind,sans-serif">${sub}</text>
+  <text id="val-${key}" x="${x+w-14}" y="${y+27}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="16" font-weight="600" fill="var(${colVar})">100%</text></g>`;
+}
+function negSVG(){
+  const pathStim=(id,d)=>`<path id="${id}" d="${d}" fill="none" stroke="var(--line-strong)" stroke-width="3" marker-end="url(#ah)"/>`;
+  return `<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--line-strong)"/></marker>
+  <marker id="ai" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M5 0V10" stroke="var(--danger)" stroke-width="3"/></marker></defs>
+  <text x="24" y="30" font-size="13" font-weight="700" letter-spacing="1" fill="var(--muted)" font-family="Hind,sans-serif">ESTRESSE · RITMO CIRCADIANO</text>
+  ${pathStim('in','M120 38V64')}
+  ${node(24,66,300,70,'Hipotálamo','Libera CRH','H','--h1')}
+  ${pathStim('s1','M174 136V184')}
+  ${node(24,186,300,70,'Adeno-hipófise','Libera ACTH','A','--h2')}
+  ${pathStim('s2','M174 256V304')}
+  ${node(24,306,300,70,'Córtex adrenal','Produz cortisol','F','--h3')}
+  ${pathStim('s3','M174 376V424')}
+  <g><rect x="24" y="426" width="300" height="58" rx="8" fill="none" stroke="var(--line-strong)" stroke-dasharray="5 5"/>
+  <text x="38" y="452" font-family="Archivo Black,Arial Black,sans-serif" font-size="15" fill="var(--fg)">Tecidos-alvo</text>
+  <text x="38" y="472" font-size="13" fill="var(--muted)" font-family="Hind,sans-serif">Glicemia, pressão, resposta imune</text></g>
+  <path id="lf1" d="M324 340C430 340 430 100 330 100" fill="none" stroke="var(--danger)" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#ai)"/>
+  <path id="lf2" d="M324 350C400 350 400 222 330 222" fill="none" stroke="var(--danger)" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#ai)"/>
+  <path id="sf" d="M24 221C-22 221 -22 101 20 101" fill="none" stroke="var(--danger)" stroke-width="2.5" stroke-dasharray="5 5" marker-end="url(#ai)"/>
+  <text x="430" y="200" font-size="13" font-weight="700" fill="var(--danger)" font-family="Hind,sans-serif">− alça longa</text>
+  <text x="430" y="218" font-size="12" fill="var(--muted)" font-family="Hind,sans-serif">cortisol inibe</text>
+  <text x="430" y="234" font-size="12" fill="var(--muted)" font-family="Hind,sans-serif">hipotálamo e hipófise</text>
+  <g id="exoG" opacity="0"><rect x="380" y="400" width="160" height="60" rx="8" fill="var(--warn-soft)" stroke="var(--warn)"/><text x="394" y="425" font-size="14" font-weight="700" fill="var(--warn)" font-family="Hind,sans-serif">Corticoide exógeno</text><text x="394" y="445" font-size="12" fill="var(--fg)" font-family="Hind,sans-serif">age como cortisol</text>
+  <path d="M380 420C350 420 345 360 330 352" fill="none" stroke="var(--warn)" stroke-width="3" marker-end="url(#ah)"/></g>
+  <g id="tumG" opacity="0"><circle id="tumC" cx="300" cy="221" r="12" fill="var(--warn)"/><text id="tumT" x="250" y="292" font-size="12" font-weight="700" fill="var(--warn)" font-family="Hind,sans-serif"></text></g>
+  <g id="dots"></g>`;
+}
+function posSVG(){
+  return `<defs><marker id="ap" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--success)"/></marker></defs>
+  <circle cx="280" cy="270" r="170" fill="none" stroke="var(--line)" stroke-width="2"/>
+  ${[['M280 100A170 170 0 0 1 444 230','pa'],['M440 320A170 170 0 0 1 300 440','pb'],['M250 438A170 170 0 0 1 112 310','pc'],['M116 222A170 170 0 0 1 250 102','pd']].map(([d,id])=>`<path id="${id}" d="${d}" fill="none" stroke="var(--success)" stroke-width="4" marker-end="url(#ap)"/>`).join('')}
+  ${[[280,100,'Colo do útero','estiramento','--h1'],[452,270,'Hipotálamo','e neuro-hipófise','--h1'],[280,440,'Ocitocina','no sangue','--h2'],[108,270,'Útero','contrai','--h3']].map(([x,y,t,s,c])=>`<g><rect x="${x-80}" y="${y-30}" width="160" height="60" rx="8" fill="var(--surface-2)" stroke="var(${c})" stroke-width="2"/><text x="${x}" y="${y-4}" text-anchor="middle" font-family="Archivo Black,Arial Black,sans-serif" font-size="15" fill="var(--fg)">${t}</text><text x="${x}" y="${y+16}" text-anchor="middle" font-size="13" fill="var(--muted)" font-family="Hind,sans-serif">${s}</text></g>`).join('')}
+  <g id="uterus"><ellipse cx="280" cy="270" rx="58" ry="74" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="3"/><circle cx="280" cy="300" r="28" fill="var(--surface)" stroke="var(--line-strong)"/></g>
+  <text x="280" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="var(--success)" font-family="Hind,sans-serif">+ reforço</text>
+  <text id="bornT" x="280" y="530" text-anchor="middle" font-family="Archivo Black,Arial Black,sans-serif" font-size="16" fill="var(--accent)"></text>
+  <g id="dots"></g>`;
+}
+/* partículas que correm pelas setas, na velocidade do nível de origem */
+const dots=[];
+function updateDiagram(dt){
+  const g=$('#dots');if(!g)return;
+  if(MODE==='neg'){
+    for(const [k,max] of [['H',4],['A',4],['F',4]]){const v=N[k];const b=$('#bar-'+k);if(b)b.setAttribute('width',Math.min(276,276*v/max));const t=$('#val-'+k);if(t)t.textContent=fmt(v*100)+'%'}
+    const Ft=N.F+N.exo,inh=clamp(N.g*Ft/2,0,1);
+    ['lf1','lf2'].forEach(id=>{const p=$('#'+id);if(p){p.style.opacity=.25+.75*inh;p.style.strokeDashoffset=-(N.t*30*inh)}});
+    const sp=$('#sf');if(sp){sp.style.opacity=.2+.6*clamp(N.g*N.A/3,0,1);sp.style.strokeDashoffset=-(N.t*20)}
+    $('#exoG').setAttribute('opacity',N.exo>0?1:0);
+    const tg=$('#tumG');const tum=N.mode==='cushpit'?['300','221','Adenoma: ACTH autônomo']:N.mode==='cushadr'?['300','341','Tumor: cortisol autônomo']:null;
+    tg.setAttribute('opacity',tum?1:0);if(tum){$('#tumC').setAttribute('cx',tum[0]);$('#tumC').setAttribute('cy',tum[1]);$('#tumT').textContent=tum[2];$('#tumT').setAttribute('y',+tum[1]+(N.mode==='cushpit'?-22:-22));$('#tumT').setAttribute('x',150)}
+    spawn([['in',N.H],['s1',N.H],['s2',N.A],['s3',N.F]],dt,'neg');
+  }else{
+    const sq=1+0.12*Math.min(P.K,4)*(0.5+0.5*Math.sin(P.t*4));$('#uterus').setAttribute('transform',`translate(280 270) scale(${1/sq} ${sq}) translate(-280 -270)`);
+    $('#bornT').textContent=P.born?'Nascimento: o estímulo acabou':'';
+    spawn([['pa',P.O],['pb',P.O],['pc',P.K],['pd',P.K]],dt,'pos');
+  }
+  const out=[];for(const d of dots){d.u+=dt*0.7;if(d.u<1&&d.m===MODE){const p=$('#'+d.id);if(!p)continue;const L=p.getTotalLength(),pt=p.getPointAtLength(L*d.u);out.push(`<circle cx="${pt.x}" cy="${pt.y}" r="4" fill="${d.c}"/>`)}}
+  for(let i=dots.length-1;i>=0;i--)if(dots[i].u>=1||dots[i].m!==MODE)dots.splice(i,1);
+  g.innerHTML=out.join('');
+}
+const acc={};
+function spawn(list,dt,m){for(const [id,v] of list){acc[id]=(acc[id]||0)+dt*clamp(v,0,4)*1.6;while(acc[id]>1){acc[id]-=1;dots.push({id,u:0,m,c:m==='neg'?'var(--h3)':'var(--success)'})}}}
+
+/* ---------- laço ---------- */
+let last=performance.now(),acc2=0;
+function loop(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(!paused){
+    const steps=3;for(let i=0;i<steps;i++){stepNeg(dt/steps*1.5);N.t+=dt/steps*1.5;stepPos(dt/steps*1.5);P.t+=dt/steps*1.5}
+    for(const M of [N,P]){M.hist.push(M===N?{t:N.t,H:N.H,A:N.A,F:N.F}:{t:P.t,O:P.O,K:P.K});while(M.hist.length&&M.t-M.hist[0].t>42)M.hist.shift()}
+    updateDiagram(dt);
+  }
+  acc2+=dt;if(acc2>.06){acc2=0;drawChart();tiles()}
+  requestAnimationFrame(loop);
+}
+/* rota por hash: #negativo, #stress, #pred, #stop, #addison, #cushpit, #cushadr, #positivo */
+function route(){const h=location.hash.slice(1);if(h==='stop'){N.exo=2;N.mode='normal';for(let k=0;k<6000;k++)stepNeg(0.05)}if(h==='positivo')setMode('pos');else{if(SCEN[h])N.cur=h;setMode('neg');if(SCEN[h])setScen(h)}}
+window.addEventListener('hashchange',route);
+gain.value=1;route();requestAnimationFrame(loop);
+window.__fb={N,P,setScen,setMode};
+</script>
+</body>
+</html>

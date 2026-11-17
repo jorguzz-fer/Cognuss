@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Evolução da comunicação celular</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Identidade Cognuss (tokens de apps/web/src/styles/tokens.css): quase-preto quente, coral da marca,
+   Archivo Black nos títulos, Hind no texto. Layout: diagrama do eixo à esquerda, gráfico e controles à direita. */
+:root{
+  --bg:oklch(0.985 0 0);--surface:oklch(1 0 0);--surface-2:oklch(0.95 0.003 20);
+  --fg:oklch(0.21 0.006 20);--muted:oklch(0.46 0.006 20);--line:oklch(0.86 0.003 20);--line-strong:oklch(0.72 0.004 20);
+  --accent:oklch(0.52 0.2 27);--accent-hover:oklch(0.46 0.19 27);--accent-ink:oklch(0.99 0 0);--accent-soft:oklch(0.94 0.03 27);
+  --success:oklch(0.48 0.12 152);--success-soft:oklch(0.95 0.04 152);--warn:oklch(0.5 0.11 70);--warn-soft:oklch(0.95 0.05 85);
+  --danger:oklch(0.5 0.19 25);--danger-soft:oklch(0.95 0.03 25);
+  --h1:oklch(0.55 0.13 250);--h2:oklch(0.55 0.14 300);--h3:oklch(0.52 0.2 27);
+  --card-shadow:0 8px 24px -12px oklch(0.2 0 0 / .22);
+  --f-display:"Archivo Black","Arial Black",system-ui,sans-serif;--f-body:"Hind",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --radius:6px;--radius-lg:8px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto;padding:20px 24px 48px;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);color:var(--accent);font-size:18px;letter-spacing:-.2px}
+.crumb{font-size:14px;color:var(--muted)}
+.sp{flex:1}
+.badge{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--warn-soft);color:var(--warn)}
+.ibtn{border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:6px 10px;font-size:13px;color:var(--muted)}
+.ibtn:hover{color:var(--fg);border-color:var(--accent)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(28px,3.4vw,40px);line-height:1.08;margin:6px 0 8px;letter-spacing:-.5px;text-wrap:balance}
+.lead{margin:0;color:var(--muted);font-size:17px;line-height:1.55;max-width:70ch}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{border:0;background:transparent;padding:10px 14px 12px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--card-shadow)}
+.stage{padding:8px;position:relative}
+.stage svg{display:block;width:100%;height:auto}
+.panel{padding:18px;display:flex;flex-direction:column;gap:14px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line-strong);background:var(--surface-2);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--fg)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip.act{border-style:dashed}
+canvas{display:block;width:100%;height:220px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.ctl{display:flex;align-items:center;gap:12px}
+.ctl label{font-size:14px;font-weight:600;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--accent) var(--p,50%),var(--line-strong) var(--p,50%));margin:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+.ctl .v{font-family:var(--f-mono);font-size:14px;min-width:52px;text-align:right}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--surface-2);border-radius:var(--radius);padding:8px 10px;border-left:4px solid var(--c)}
+.tile .k{font-size:12px;color:var(--muted);font-weight:600}
+.tile .n{font-family:var(--f-mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;font-weight:700}
+.up{color:var(--danger)}.down{color:var(--h1)}.ok{color:var(--success)}
+.explain{padding:18px 20px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px}
+.explain h2{font-family:var(--f-display);font-weight:400;font-size:20px;margin:4px 0 8px;text-wrap:balance}
+.explain p{margin:0 0 10px;line-height:1.6;max-width:68ch}
+.exam{background:var(--accent-soft);border-radius:var(--radius);padding:14px 16px}
+.exam p{margin:6px 0 0;line-height:1.55}
+.foot{font-size:13px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line);padding-top:12px;margin:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:var(--radius);background:var(--accent);color:var(--accent-ink);font-weight:700;padding:9px 14px;font-size:14px}
+.btn:hover{background:var(--accent-hover)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line-strong)}
+.dil{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.dil span{display:block;height:100%;background:var(--accent);width:0}
+@media (max-width:960px){.grid,.explain{grid-template-columns:1fr}}
+@media (max-width:480px){.wrap{padding:14px 16px 40px}.tiles{grid-template-columns:1fr 1fr 1fr}.tile .n{font-size:17px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.tl{padding:0;overflow:hidden}
+.tl canvas{display:block;width:100%;height:auto;aspect-ratio:1000/460}
+.track{padding:14px 18px 6px}
+.marks{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:8px}
+.mk{border:0;background:transparent;text-align:center;padding:6px 2px;border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--muted);line-height:1.25}
+.mk small{display:block;font-weight:500;font-size:12px}
+.mk.on{background:var(--accent-soft);color:var(--fg)}
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.el{border:1px solid var(--line);border-radius:var(--radius-lg);padding:10px 12px;background:var(--surface-2);transition:opacity .3s,border-color .3s}
+.el .k{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.el .v{font-weight:700;margin-top:2px}.el p{margin:4px 0 0;font-size:14px;line-height:1.45;color:var(--muted)}
+.el.lock{opacity:.35}.el.on{border-color:var(--accent)}
+@media (max-width:760px){.four{grid-template-columns:1fr 1fr}.marks{grid-template-columns:repeat(3,1fr)}}</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brand"><svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#c2181d"/><path d="M44 21A15 15 0 1 0 44 43" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round"/><circle cx="45.5" cy="32" r="4.6" fill="#fff"/></svg>COGNUSS</span>
+    <span class="crumb">Fisiologia endócrina · Aula 1 · Introdução</span>
+    <span class="sp"></span>
+    <span class="badge">Demonstração · sem revisão</span>
+    <button class="ibtn" id="themeBtn" type="button">Alternar tema</button>
+  </header>
+  <section>
+    <div class="eyebrow">Peça interativa · O paradigma da comunicação</div>
+    <h1>Da célula única ao organismo</h1>
+    <p class="lead">Um organismo multicelular só existe porque suas células aprenderam a conversar. A evolução selecionou quatro peças para essa conversa: quem emite, a molécula que codifica a mensagem, quem recebe e a resposta. Arraste a linha do tempo.</p>
+  </section>
+  <div class="card tl">
+    <canvas id="cv" width="1000" height="460" aria-label="Animação da evolução da comunicação celular"></canvas>
+    <div class="track">
+      <div class="ctl"><label for="tt">Tempo evolutivo</label><input type="range" id="tt" min="0" max="5" step="0.01" value="0"><button class="ibtn" id="play" type="button">▶ Reproduzir</button></div>
+      <div class="marks" id="marks"></div>
+    </div>
+  </div>
+  <div class="four" id="four">
+    <div class="el" data-u="1"><div class="k">1 · Emissor</div><div class="v">Célula que sinaliza</div><p>Detecta uma necessidade (falta de alimento, alteração de pH, glicose) e libera a mensagem.</p></div>
+    <div class="el" data-u="1"><div class="k">2 · Codificador</div><div class="v">Molécula sinalizadora</div><p>Hormônio, neurotransmissor ou citocina: a mensagem em forma química.</p></div>
+    <div class="el" data-u="1"><div class="k">3 · Receptor</div><div class="v">Proteína que lê o sinal</div><p>Só a célula com o receptor certo entende a mensagem: isso dá especificidade.</p></div>
+    <div class="el" data-u="1"><div class="k">4 · Resposta</div><div class="v">Mudança na célula-alvo</div><p>Divisão, secreção, contração, metabolismo: o efeito biológico.</p></div>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow" id="eEy"></div><h2 id="eT"></h2><p id="eP"></p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p>Toda modalidade de sinalização, da autócrina à endócrina, usa as mesmas quatro peças. O que muda é a distância entre emissor e receptor e o caminho do sinal: contato direto, líquido intersticial, fenda sináptica ou sangue.</p></div>
+  </div>
+  <p class="foot">Datas aproximadas, baseadas no registro fóssil e em evidências moleculares; o esquema simplifica a evolução para fins didáticos. Base: Aires, <i>Fisiologia</i>, 5ª ed., cap. 64, conforme a aula do Dr. Rafael.</p>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const ss=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('#themeBtn').onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark';window.onTheme&&window.onTheme()};
+const STG=[
+ {t:'Célula única',d:'≈ 3,5 bilhões de anos',e:'Células isoladas',tx:'As primeiras células viviam sozinhas. Já detectavam o ambiente (nutrientes, luz, pH) com proteínas de membrana: o embrião do que viria a ser um receptor.'},
+ {t:'Células conversam',d:'bactérias e eucariotos',e:'Moléculas sinalizadoras',tx:'Células passaram a liberar moléculas que outras células detectam. Bactérias fazem isso até hoje (quorum sensing): quando a densidade da população sobe, todas mudam o comportamento juntas.'},
+ {t:'Colônias',d:'≈ 1 bilhão de anos',e:'Vizinhas coordenadas',tx:'Células que ficavam juntas e se comunicavam com as adjacentes ganharam vantagem: dividiam tarefas e respondiam em conjunto. A seleção favoreceu as que tinham emissor, sinal e receptor compatíveis.'},
+ {t:'Tecidos',d:'≈ 600 milhões de anos',e:'Especialização',tx:'Grupos de células especializadas formam tecidos. A comunicação por contato e por difusão local (justácrina e parácrina) mantém cada tecido organizado.'},
+ {t:'Órgãos',d:'≈ 540 milhões de anos',e:'Tecidos cooperam',tx:'Tecidos diferentes se combinam em órgãos. Agora as mensagens precisam viajar mais longe: surgem a sinalização sináptica e a endócrina, pelo sangue.'},
+ {t:'Organismo',d:'sistemas integrados',e:'Sistema nervoso + endócrino',tx:'Órgãos se organizam em sistemas, coordenados por dois grandes sistemas de comunicação: o nervoso (rápido, por fios) e o endócrino (mais lento, pelo sangue, alcançando todo o corpo).'}];
+$('#marks').innerHTML=STG.map((s,i)=>`<button type="button" class="mk" data-i="${i}">${s.t}<small>${s.d}</small></button>`).join('');
+$$('#marks .mk').forEach(b=>b.onclick=()=>{stop();setU(+b.dataset.i)});
+const cv=$('#cv'),c=cv.getContext('2d'),W=1000,H=460;let U=0,playing=false;
+function fit(){const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);cv.width=r.width*d;cv.height=r.width*H/W*d;c.setTransform(cv.width/W,0,0,cv.height/H,0,0)}
+new ResizeObserver(fit).observe(cv);
+const col=k=>css(k);
+function cellAt(x,y,r,fill,stroke,a=1,glow=0){c.globalAlpha=a;c.save();if(glow){c.shadowColor=col('--accent');c.shadowBlur=24*glow}c.fillStyle=fill;c.strokeStyle=stroke;c.lineWidth=3;c.beginPath();c.arc(x,y,r,0,7);c.fill();c.stroke();c.restore();c.globalAlpha=1}
+function hexAt(x,y,r,fill,stroke,a){c.globalAlpha=a;c.fillStyle=fill;c.strokeStyle=stroke;c.lineWidth=2;c.beginPath();for(let i=0;i<6;i++){const q=Math.PI/3*i+Math.PI/6;i?c.lineTo(x+r*Math.cos(q),y+r*Math.sin(q)):c.moveTo(x+r*Math.cos(q),y+r*Math.sin(q))}c.closePath();c.fill();c.stroke();c.globalAlpha=1}
+let tt=0;
+function draw(){c.clearRect(0,0,W,H);const acc=col('--accent'),s2=col('--surface-2'),h1=col('--h1'),h2=col('--h2'),h3=col('--h3'),ln=col('--line-strong'),fg=col('--fg');
+ const w=k=>clamp(1-Math.abs(U-k),0,1);/* peso de cada estágio */
+ const cx=500,cy=230;
+ // 0 célula única
+ if(w(0)>0){const a=w(0);cellAt(cx,cy,70,s2,h1,a);c.globalAlpha=a;c.strokeStyle=h1;c.lineWidth=3;c.beginPath();c.moveTo(cx-70,cy);for(let i=0;i<40;i++)c.lineTo(cx-70-i*3,cy+Math.sin(i*.5+tt*6)*8);c.stroke();c.globalAlpha=1;
+  for(let i=0;i<10;i++){const q=(tt*.3+i/10)%1;const ang=i*.63;cellAt(cx+Math.cos(ang)*(220-q*140),cy+Math.sin(ang)*(160-q*90),5,h3,h3,a*(1-q))}}
+ // 1 duas células trocando sinal
+ if(w(1)>0){const a=w(1),x1=cx-150,x2=cx+150;cellAt(x1,cy,60,s2,acc,a);cellAt(x2,cy,60,s2,h1,a,(tt*1.2%1)>.6?1:0);
+  for(let i=0;i<8;i++){const q=(tt*.6+i/8)%1;cellAt(lerp(x1+60,x2-62,q),cy+Math.sin(q*6.28+i)*26,6,acc,acc,a)}
+  c.globalAlpha=a;c.font='700 15px Hind, sans-serif';c.fillStyle=fg;c.textAlign='center';c.fillText('Emissor',x1,cy+90);c.fillText('Receptor',x2,cy+90);c.textAlign='left';c.globalAlpha=1}
+ // 2 colônia
+ if(w(2)>0){const a=w(2);const pts=[];for(let i=0;i<14;i++){const ang=i*2.4,d=i?40+((i*29)%110):0;pts.push([cx+Math.cos(ang)*d*1.4,cy+Math.sin(ang)*d])}
+  c.globalAlpha=a*.6;c.strokeStyle=acc;c.lineWidth=2;pts.forEach((p,i)=>pts.forEach((q,j)=>{if(j>i&&Math.hypot(p[0]-q[0],p[1]-q[1])<90){c.beginPath();c.moveTo(p[0],p[1]);c.lineTo(q[0],q[1]);c.stroke()}}));c.globalAlpha=1;
+  pts.forEach((p,i)=>cellAt(p[0],p[1],26,s2,i%3?h1:acc,a,((tt+i*.17)%1.5)<.2?1:0))}
+ // 3 tecido
+ if(w(3)>0){const a=w(3);for(let r=0;r<5;r++)for(let k=0;k<11;k++){const x=cx-260+k*52+(r%2)*26,y=cy-100+r*45;hexAt(x,y,28,r<2?s2:col('--accent-soft'),r<2?h1:acc,a)}
+  c.globalAlpha=a;c.font='700 14px Hind, sans-serif';c.fillStyle=col('--muted');c.fillText('células especializadas, unidas e coordenadas',cx-250,cy+150);c.globalAlpha=1}
+ // 4 órgão
+ if(w(4)>0){const a=w(4);c.globalAlpha=a;[[150,h3,.18],[120,h2,.25],[86,acc,.3]].forEach(([r,cl,o])=>{c.fillStyle=cl;c.globalAlpha=a*o;c.beginPath();c.ellipse(cx,cy,r*1.3,r,0,0,7);c.fill();c.globalAlpha=a;c.strokeStyle=cl;c.lineWidth=3;c.stroke()});
+  c.strokeStyle=col('--danger');c.lineWidth=5;c.beginPath();c.moveTo(cx-260,cy+40);c.bezierCurveTo(cx-120,cy+40,cx-120,cy-30,cx,cy-20);c.stroke();
+  for(let i=0;i<6;i++){const q=(tt*.4+i/6)%1;cellAt(lerp(cx-260,cx-20,q),cy+40-q*60,5,col('--danger'),col('--danger'),a)}
+  c.font='700 14px Hind, sans-serif';c.fillStyle=fg;c.fillText('tecidos em camadas',cx+170,cy-90);c.fillText('vaso: sinais de longe',cx-300,cy+80);c.globalAlpha=1}
+ // 5 organismo
+ if(w(5)>0){const a=w(5);c.save();c.translate(0,-28);c.globalAlpha=a;c.fillStyle=s2;c.strokeStyle=ln;c.lineWidth=2;c.beginPath();c.arc(cx,cy-150,32,0,7);c.fill();c.stroke();c.beginPath();c.roundRect(cx-60,cy-110,120,190,40);c.fill();c.stroke();c.beginPath();c.roundRect(cx-55,cy+80,45,96,20);c.roundRect(cx+10,cy+80,45,96,20);c.fill();c.stroke();
+  c.strokeStyle=h1;c.lineWidth=3;c.beginPath();c.moveTo(cx,cy-150);c.lineTo(cx,cy+60);[-1,1].forEach(sg=>{for(let i=0;i<4;i++){c.moveTo(cx,cy-80+i*40);c.lineTo(cx+sg*45,cy-60+i*40)}});c.stroke();
+  const org=[[cx,cy-150,'Hipotálamo'],[cx,cy-105,'Tireoide'],[cx-25,cy+5,'Adrenal'],[cx+22,cy+25,'Pâncreas']];
+  org.forEach(([x,y],i)=>{cellAt(x,y,8,acc,acc,a,((tt+i*.3)%1.2)<.25?1:0)});
+  for(let i=0;i<10;i++){const q=(tt*.25+i/10)%1,ang=q*6.28;cellAt(cx+Math.cos(ang)*44,cy-15+Math.sin(ang)*80,4,col('--danger'),col('--danger'),a)}
+  c.font='700 14px Hind, sans-serif';c.fillStyle=h1;c.fillText('Sistema nervoso: rápido, por fios',cx+150,cy-80);c.fillStyle=col('--danger');c.fillText('Sistema endócrino: pelo sangue',cx+150,cy-50);c.globalAlpha=1;c.restore()}
+ // régua do tempo
+ c.strokeStyle=ln;c.lineWidth=2;c.beginPath();c.moveTo(60,430);c.lineTo(940,430);c.stroke();for(let i=0;i<6;i++){const x=60+i*176;c.fillStyle=i<=U+.01?acc:ln;c.beginPath();c.arc(x,430,6,0,7);c.fill()}
+ c.fillStyle=acc;c.beginPath();c.arc(60+U*176,430,10,0,7);c.fill();}
+function ui(){const i=Math.round(U),s=STG[i];$$('#marks .mk').forEach((b,k)=>b.classList.toggle('on',k===i));$('#tt').value=U;$('#tt').style.setProperty('--p',(U/5*100)+'%');
+ $('#eEy').textContent=s.d;$('#eT').textContent=s.t+': '+s.e.toLowerCase();$('#eP').textContent=s.tx;
+ const unlocked=U<.5?1:U<1.5?4:4;$$('#four .el').forEach((e,k)=>{e.classList.toggle('lock',U<.5&&k!==2);e.classList.toggle('on',U>=.5)})}
+function setU(v){U=clamp(v,0,5);ui()}
+$('#tt').oninput=e=>{stop();setU(+e.target.value)};
+let last=performance.now();
+function stop(){playing=false;$('#play').textContent='▶ Reproduzir'}
+$('#play').onclick=()=>{if(playing){stop();return}if(U>=4.99)U=0;playing=true;$('#play').textContent='⏸ Pausar'};
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;tt+=reduce?0:dt;if(playing){setU(U+dt*.35);if(U>=5)stop()}draw();requestAnimationFrame(loop)}
+const lerp=(a,b,t)=>a+(b-a)*t;
+fit();setU(0);requestAnimationFrame(loop);
+window.__t={setU};
+
+</script>
+</body>
+</html>

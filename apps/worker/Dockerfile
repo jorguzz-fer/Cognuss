@@ -1,7 +1,8 @@
 # Imagem do worker (ADR 0013). Build a partir da RAIZ do repositório:
 #   docker build -f apps/worker/Dockerfile -t gutta-worker .
-# Mesmo código do app, outro processo. Traz o LibreOffice (converter Office para PDF) e o
-# Poppler (texto e miniatura por página). O antivírus é o serviço clamav do compose (ADR 0012).
+# Mesmo código do app, outro processo. Traz o LibreOffice (converter Office para PDF), o
+# Poppler (texto e miniatura por página) e o unzip (ler o PPTX da produção de aulas, ADR 0021).
+# O antivírus é o serviço clamav do compose (ADR 0012).
 
 FROM node:22-alpine AS base
 ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH
@@ -33,7 +34,7 @@ RUN pnpm --filter @gutta/worker build
 FROM node:22-alpine AS runner
 ENV NODE_ENV=production WORKER_HEALTH_PORT=3001 HOME=/tmp
 WORKDIR /app
-RUN apk add --no-cache libreoffice poppler-utils font-dejavu font-noto \
+RUN apk add --no-cache libreoffice poppler-utils unzip font-dejavu font-noto \
     && addgroup -S -g 1001 gutta && adduser -S -u 1001 -G gutta gutta
 COPY --from=build --chown=gutta:gutta /repo/apps/worker/dist/worker.mjs ./worker.mjs
 USER gutta

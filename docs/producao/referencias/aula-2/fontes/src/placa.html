@@ -1,0 +1,103 @@
+@@TITLE
+Placa de crescimento: gigantismo ou acromegalia
+@@STYLE
+.pgrid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:16px;align-items:start}
+.stage svg text{font-family:var(--f-body)}
+#ch{height:300px}
+.read{background:var(--surface-2);border-radius:var(--radius);padding:12px 14px;line-height:1.5;font-size:15px;border-left:4px solid var(--accent)}
+.read b{display:block;margin-bottom:2px}
+@media (max-width:960px){.pgrid{grid-template-columns:1fr}}
+@@BODY
+  <section>
+    <div class="eyebrow">Peça interativa · Execução estrutural e patologia</div>
+    <h1>Placa de crescimento: gigantismo ou acromegalia</h1>
+    <p class="lead">O IGF-1 faz os condrócitos da placa epifisária proliferar e crescer, e o osso alonga. Quando a placa fecha, no fim da puberdade, o osso não cresce mais em comprimento. O mesmo excesso de GH dá doenças diferentes conforme a idade em que começa.</p>
+  </section>
+  <div class="pgrid">
+    <div class="card stage"><svg id="bone" viewBox="0 0 520 560" role="img" aria-label="Osso longo com a placa epifisária ampliada"></svg></div>
+    <div class="card panel">
+      <div class="lbl">GH e IGF-1</div>
+      <div class="chips" id="lv"></div>
+      <div class="ctl"><label for="on" style="width:150px">Alteração começa aos</label><input type="range" id="on" min="1" max="40" step="1"><span class="v" id="onV"></span></div>
+      <div class="ctl"><label for="ag" style="width:150px">Idade observada</label><input type="range" id="ag" min="1" max="50" step="1"><span class="v" id="agV"></span></div>
+      <canvas id="ch" role="img" aria-label="Curva de altura por idade comparada à faixa normal"></canvas>
+      <div class="tiles">
+        <div class="tile" style="--c:var(--accent)"><div class="k">Altura agora</div><div class="n" id="tH"></div></div>
+        <div class="tile" style="--c:var(--h1)"><div class="k">Placa epifisária</div><div class="n" id="tP" style="font-size:16px"></div></div>
+        <div class="tile" style="--c:var(--h2)"><div class="k">Quadro</div><div class="n" id="tD" style="font-size:15px;line-height:1.25"></div></div>
+      </div>
+      <div class="read" id="read" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow">Para fixar</div><h2>Três zonas, um relógio</h2>
+      <p>Na placa epifisária, as células da <b>zona de reserva</b> são recrutadas pelo GH; na <b>zona proliferativa</b>, o IGF-1 (circulante e local) as faz dividir em colunas; na <b>zona hipertrófica</b>, elas aumentam de tamanho, a matriz calcifica e é substituída por osso. A soma é o crescimento longitudinal.</p>
+      <p>Os estrogênios (inclusive os vindos da aromatização da testosterona) aceleram a maturação e fecham a placa no fim da puberdade.</p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p>A causa é a mesma nos dois casos: em geral, adenoma hipofisário secretor de GH. <b>Gigantismo</b>: excesso antes do fechamento das placas, com crescimento longitudinal exagerado. <b>Acromegalia</b>: excesso depois do fechamento, com crescimento de mãos, pés, mandíbula e vísceras, sem ganho de altura. A deficiência na infância dá baixa estatura proporcional.</p></div>
+  </div>
+@@SCRIPT
+const LV={def:{n:'Deficiência',f:.55},nor:{n:'Normal',f:1},exc:{n:'Excesso',f:1.65}};
+let lv='exc',on=10,ag=16,CL=17.5;
+const VEL=[[0,1,25],[1,2,12],[2,3,8]].concat([...Array(8)].map((_,i)=>[3+i,4+i,6.2-i*.12])).concat([[11,12,5.5],[12,13,7.5],[13,14,9.5],[14,15,7.5],[15,16,4],[16,17,1.5],[17,17.5,.5]]);
+function vel(a){for(const[x,y,v]of VEL)if(a>=x&&a<y)return v;return 0}
+function height(a,f){let h=50;const dt=.05;for(let t=0;t<a;t+=dt){h+=vel(t)*(t>=on?f:1)*dt}return h}
+function acral(a){return lv==='exc'?Math.max(0,a-Math.max(on,CL)):0}
+const cv=$('#ch'),cx=cv.getContext('2d');let ph=0,last=0;
+function chart(){const dpr=devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,W,H);
+ const l=48,r=W-12,t=12,b=H-34,X=a=>l+(r-l)*a/50,Y=h=>b-(b-t)*(h-40)/(230-40);
+ const mu=css('--muted'),ln=css('--line'),ac=css('--accent'),b1=css('--h1'),fg=css('--fg');
+ cx.font='600 12px Hind, sans-serif';cx.textBaseline='middle';cx.fillStyle=mu;cx.strokeStyle=ln;cx.lineWidth=1;
+ cx.textAlign='right';[50,100,150,200].forEach(h=>{cx.beginPath();cx.moveTo(l,Y(h));cx.lineTo(r,Y(h));cx.stroke();cx.fillText(h,l-6,Y(h))});
+ cx.textAlign='center';[0,10,17.5,30,40,50].forEach(a=>cx.fillText(a===17.5?'fecha':a,X(a),b+14));
+ cx.save();cx.translate(12,(t+b)/2);cx.rotate(-Math.PI/2);cx.fillText('altura (cm)',0,0);cx.restore();cx.fillText('idade (anos)',(l+r)/2,b+28);
+ // faixa normal
+ cx.beginPath();for(let a=0;a<=50;a+=.5)cx.lineTo(X(a),Y(height(a,1)*1.08-(a<1?0:0)));for(let a=50;a>=0;a-=.5)cx.lineTo(X(a),Y(height(a,1)*.92));cx.closePath();cx.globalAlpha=.14;cx.fillStyle=b1;cx.fill();cx.globalAlpha=1;
+ // placa aberta
+ cx.fillStyle=mu;cx.globalAlpha=.08;cx.fillRect(X(0),t,X(CL)-X(0),b-t);cx.globalAlpha=1;
+ cx.strokeStyle=mu;cx.setLineDash([4,4]);cx.beginPath();cx.moveTo(X(CL),t);cx.lineTo(X(CL),b);cx.stroke();cx.moveTo(0,0);
+ cx.strokeStyle=ac;cx.setLineDash([3,3]);cx.beginPath();cx.moveTo(X(on),t);cx.lineTo(X(on),b);cx.stroke();cx.setLineDash([]);
+ cx.fillStyle=ac;cx.textAlign='left';cx.fillText('início',X(on)+4,t+8);
+ const f=LV[lv].f;cx.strokeStyle=ac;cx.lineWidth=3;cx.beginPath();for(let a=0;a<=50;a+=.25){const y=Y(height(a,f));a===0?cx.moveTo(X(a),y):cx.lineTo(X(a),y)}cx.stroke();
+ cx.fillStyle=fg;cx.beginPath();cx.arc(X(ag),Y(height(ag,f)),6,0,7);cx.fill();
+ cx.fillStyle=b1;cx.textAlign='right';cx.fillText('faixa normal',r-4,Y(height(50,1)*1.08)-10)}
+function bone(){const f=LV[lv].f,open=ag<CL,act=ag>=on?f:1,ac=acral(ag);let s='';
+ const A='var(--accent)',B='var(--h1)';
+ // osso longo
+ const L=Math.min(1.25,Math.max(.6,height(ag,LV[lv].f)/178));const top=50,bot=top+380*L;
+ s+=`<g transform="translate(0,${(560-(bot-top))/2-top})">`;
+ s+=`<path d="M70 ${top} q-30 0 -30 40 q0 40 45 50 l0 ${bot-top-180} q-45 10 -45 50 q0 40 30 40 l100 0 q30 0 30 -40 q0 -40 -45 -50 l0 -${bot-top-180} q45 -10 45 -50 q0 -40 -30 -40z" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="2.5"/>`;
+ const py=top+64;
+ if(open)s+=`<rect x="44" y="${py}" width="132" height="10" fill="${B}" opacity=".85"/>`;else s+=`<line x1="44" y1="${py+5}" x2="176" y2="${py+5}" stroke="var(--muted)" stroke-width="2" stroke-dasharray="4 3"/>`;
+ s+=`<text x="110" y="${py-10}" font-size="12" font-weight="700" text-anchor="middle" fill="${open?B:'var(--muted)'}">${open?'placa aberta':'linha epifisária'}</text>`;
+ s+=`<path d="M180 ${py+5} L246 ${py+5}" stroke="${B}" stroke-width="2" stroke-dasharray="4 4"/>`;
+ if(ac>0){const w=Math.min(14,ac*1.2);s+=`<path d="M40 ${top+40} q-${w} 0 -${w} 20 M180 ${top+40} q${w} 0 ${w} 20 M40 ${bot-40} q-${w} 0 -${w} -20 M180 ${bot-40} q${w} 0 ${w} -20" stroke="${A}" stroke-width="5" fill="none" stroke-linecap="round"/>`+`<text x="110" y="${bot+28}" font-size="12" font-weight="700" text-anchor="middle" fill="${A}">alarga, não alonga</text>`}
+ s+='</g>';
+ // ampliação
+ const zx=250,zy=40,zw=250,zh=470;s+=`<rect x="${zx}" y="${zy}" width="${zw}" height="${zh}" rx="12" fill="var(--surface)" stroke="${B}" stroke-width="2"/>`;
+ if(open){const Z=[['Reserva',.0,.16,'var(--h2)'],['Proliferativa',.16,.52,B],['Hipertrófica',.52,.8,'var(--warn)'],['Ossificação',.8,1,'var(--muted)']];
+  Z.forEach(([n,a,b2,c])=>{s+=`<rect x="${zx}" y="${zy+zh*a}" width="${zw}" height="${zh*(b2-a)}" fill="${c}" fill-opacity=".07"/><text x="${zx+zw-8}" y="${zy+zh*a+16}" font-size="12" font-weight="700" text-anchor="end" fill="${c}">${n}</text>`});
+  const cols=5,sp=(zw-90)/cols;for(let c=0;c<cols;c++){const x0=zx+22+c*sp;
+   for(let k=0;k<14;k++){let u=((k/14)+ph)%1;const y=zy+zh*(.04+u*.92);let rx,ry,fill;
+    if(u<.16){rx=7;ry=7;fill='var(--h2)'}else if(u<.52){rx=9;ry=4.5;fill=B}else if(u<.8){const g=(u-.52)/.28;rx=9+g*7;ry=5+g*9;fill='var(--warn)'}else{rx=14;ry=10;fill='var(--muted)'}
+    s+=`<ellipse cx="${x0}" cy="${y}" rx="${rx}" ry="${ry}" fill="${fill}" fill-opacity="${u>.8?.25:.55}" stroke="${fill}" stroke-width="1.2"/>`}}
+  s+=`<text x="${zx+zw/2}" y="${zy+zh+22}" font-size="12.5" font-weight="700" text-anchor="middle" fill="var(--muted)">ritmo de crescimento: ${act<.8?'lento':act>1.2?'acelerado':'normal'}</text>`}
+ else{s+=`<rect x="${zx+10}" y="${zy+10}" width="${zw-20}" height="${zh-20}" rx="8" fill="var(--muted)" fill-opacity=".12"/><text x="${zx+zw/2}" y="${zy+zh/2-10}" font-size="15" font-weight="700" text-anchor="middle" fill="var(--muted)">Placa fechada</text><text x="${zx+zw/2}" y="${zy+zh/2+12}" font-size="13" text-anchor="middle" fill="var(--muted)">cartilagem substituída por osso:</text><text x="${zx+zw/2}" y="${zy+zh/2+30}" font-size="13" text-anchor="middle" fill="var(--muted)">não há mais crescimento em comprimento</text>`}
+ $('#bone').innerHTML=s}
+function info(){const f=LV[lv].f,h=height(ag,f),hn=height(ag,1),fin=height(50,f);
+ $('#tH').textContent=Math.round(h)+' cm';$('#tP').textContent=ag<CL?'Aberta':'Fechada';
+ let d,m;
+ if(lv==='nor'){d='Normal';m='Crescimento dentro da faixa até o fechamento da placa, perto dos 17 anos.'}
+ else if(lv==='exc'){if(on<CL){d=ag<on?'Ainda sem doença':ag<CL?'Gigantismo':'Gigantismo e acromegalia';m=`O excesso começou com a placa aberta: o osso alonga demais. Altura final prevista ≈ ${Math.round(fin)} cm.`+(ag>=CL?' Depois do fechamento, o excesso que continua passa a dar traços acromegálicos.':'')}
+  else{d=ag<on?'Ainda sem doença':'Acromegalia';m='A placa já estava fechada: a altura não muda. O excesso aumenta mãos, pés, mandíbula, nariz e vísceras, de forma lenta; o diagnóstico costuma atrasar anos.'}}
+ else{if(on<CL){d=ag<on?'Ainda sem doença':'Baixa estatura proporcional';m=`Com pouco IGF-1, a placa cresce devagar. Altura final prevista ≈ ${Math.round(fin)} cm sem tratamento; repor GH antes do fechamento recupera parte do potencial.`}
+  else{d=ag<on?'Ainda sem doença':'Deficiência de GH do adulto';m='Com a placa fechada, a altura não muda. O quadro é metabólico: mais gordura visceral, menos massa magra e óssea, menor disposição.'}}
+ $('#tD').textContent=d;$('#read').innerHTML=`<b>${d}</b>${m}`;
+ ['on','ag'].forEach(k=>{const el=$('#'+k);el.value=k==='on'?on:ag;el.style.setProperty('--p',((+el.value-el.min)/(el.max-el.min)*100)+'%')});$('#onV').textContent=on+' anos';$('#agV').textContent=ag+' anos';
+ $$('#lv .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===lv))}
+function all(){chart();bone();info()}
+$('#lv').innerHTML=Object.entries(LV).map(([k,v])=>`<button class="chip" type="button" data-k="${k}">${v.n}</button>`).join('');
+$$('#lv .chip').forEach(b=>b.onclick=()=>{lv=b.dataset.k;all()});
+$('#on').oninput=e=>{on=+e.target.value;all()};$('#ag').oninput=e=>{ag=+e.target.value;all()};
+function tick(ts){const dt=Math.min(.05,(ts-last)/1000);last=ts;if(ag<CL){const f=ag>=on?LV[lv].f:1;ph=(ph+dt*.03*f)%1;bone()}requestAnimationFrame(tick)}
+all();if(!reduce)requestAnimationFrame(tick);addEventListener('resize',chart);window.onTheme=all;matchMedia('(prefers-color-scheme: dark)').addEventListener('change',all);
+window.__g={set:(l,o,a)=>{lv=l;on=o;ag=a;all()}};

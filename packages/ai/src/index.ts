@@ -3,3 +3,4 @@ export * from './schedule';
 export * from './schedule-score';
 export * from './creations';
 export * from './embeddings';
+export * from './production';

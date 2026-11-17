@@ -5,6 +5,7 @@ import { keys, type ObjectStorage } from '@gutta/storage';
 import { classify } from '../files/detect';
 import type { Scanner } from '../files/scanner';
 import { EXT_BY_MIME, pdfPageCount, pdfText, pdfThumbnails, toPdf } from '../files/tools';
+import { releaseProductionBatches } from './production';
 import { releaseScheduleImports } from './schedule';
 import type { Handler } from './types';
 
@@ -49,8 +50,10 @@ export function filesProcess(deps: FileDeps): Handler<'files.process'> {
             patch.status === 'ready' ||
             patch.status === 'failed' ||
             patch.status === 'quarantined'
-          )
+          ) {
             await releaseScheduleImports(tx, fileId, userId);
+            await releaseProductionBatches(tx, fileId, userId);
+          }
           // Arquivo pronto: os vetores da busca por conceito podem ser gerados (ADR 0014).
           if (patch.status === 'ready')
             await emit(tx, 'ai.embed_user', { userId }, { delayMs: 2000 });

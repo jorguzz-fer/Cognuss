@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Placa de crescimento: gigantismo ou acromegalia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Identidade Cognuss (tokens de apps/web/src/styles/tokens.css): quase-preto quente, coral da marca,
+   Archivo Black nos títulos, Hind no texto. Layout: diagrama do eixo à esquerda, gráfico e controles à direita. */
+:root{
+  --bg:oklch(0.985 0 0);--surface:oklch(1 0 0);--surface-2:oklch(0.95 0.003 20);
+  --fg:oklch(0.21 0.006 20);--muted:oklch(0.46 0.006 20);--line:oklch(0.86 0.003 20);--line-strong:oklch(0.72 0.004 20);
+  --accent:oklch(0.52 0.2 27);--accent-hover:oklch(0.46 0.19 27);--accent-ink:oklch(0.99 0 0);--accent-soft:oklch(0.94 0.03 27);
+  --success:oklch(0.48 0.12 152);--success-soft:oklch(0.95 0.04 152);--warn:oklch(0.5 0.11 70);--warn-soft:oklch(0.95 0.05 85);
+  --danger:oklch(0.5 0.19 25);--danger-soft:oklch(0.95 0.03 25);
+  --h1:oklch(0.55 0.13 250);--h2:oklch(0.55 0.14 300);--h3:oklch(0.52 0.2 27);
+  --card-shadow:0 8px 24px -12px oklch(0.2 0 0 / .22);
+  --f-display:"Archivo Black","Arial Black",system-ui,sans-serif;--f-body:"Hind",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --radius:6px;--radius-lg:8px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto;padding:20px 24px 48px;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);color:var(--accent);font-size:18px;letter-spacing:-.2px}
+.crumb{font-size:14px;color:var(--muted)}
+.sp{flex:1}
+.badge{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--warn-soft);color:var(--warn)}
+.ibtn{border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:6px 10px;font-size:13px;color:var(--muted)}
+.ibtn:hover{color:var(--fg);border-color:var(--accent)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(28px,3.4vw,40px);line-height:1.08;margin:6px 0 8px;letter-spacing:-.5px;text-wrap:balance}
+.lead{margin:0;color:var(--muted);font-size:17px;line-height:1.55;max-width:70ch}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{border:0;background:transparent;padding:10px 14px 12px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--card-shadow)}
+.stage{padding:8px;position:relative}
+.stage svg{display:block;width:100%;height:auto}
+.panel{padding:18px;display:flex;flex-direction:column;gap:14px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line-strong);background:var(--surface-2);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--fg)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip.act{border-style:dashed}
+canvas{display:block;width:100%;height:220px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.ctl{display:flex;align-items:center;gap:12px}
+.ctl label{font-size:14px;font-weight:600;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--accent) var(--p,50%),var(--line-strong) var(--p,50%));margin:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+.ctl .v{font-family:var(--f-mono);font-size:14px;min-width:52px;text-align:right}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--surface-2);border-radius:var(--radius);padding:8px 10px;border-left:4px solid var(--c)}
+.tile .k{font-size:12px;color:var(--muted);font-weight:600}
+.tile .n{font-family:var(--f-mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;font-weight:700}
+.up{color:var(--danger)}.down{color:var(--h1)}.ok{color:var(--success)}
+.explain{padding:18px 20px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px}
+.explain h2{font-family:var(--f-display);font-weight:400;font-size:20px;margin:4px 0 8px;text-wrap:balance}
+.explain p{margin:0 0 10px;line-height:1.6;max-width:68ch}
+.exam{background:var(--accent-soft);border-radius:var(--radius);padding:14px 16px}
+.exam p{margin:6px 0 0;line-height:1.55}
+.foot{font-size:13px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line);padding-top:12px;margin:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:var(--radius);background:var(--accent);color:var(--accent-ink);font-weight:700;padding:9px 14px;font-size:14px}
+.btn:hover{background:var(--accent-hover)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line-strong)}
+.dil{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.dil span{display:block;height:100%;background:var(--accent);width:0}
+@media (max-width:960px){.grid,.explain{grid-template-columns:1fr}}
+@media (max-width:480px){.wrap{padding:14px 16px 40px}.tiles{grid-template-columns:1fr 1fr 1fr}.tile .n{font-size:17px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.pgrid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:16px;align-items:start}
+.stage svg text{font-family:var(--f-body)}
+#ch{height:300px}
+.read{background:var(--surface-2);border-radius:var(--radius);padding:12px 14px;line-height:1.5;font-size:15px;border-left:4px solid var(--accent)}
+.read b{display:block;margin-bottom:2px}
+@media (max-width:960px){.pgrid{grid-template-columns:1fr}}</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brand"><svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#c2181d"/><path d="M44 21A15 15 0 1 0 44 43" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round"/><circle cx="45.5" cy="32" r="4.6" fill="#fff"/></svg>COGNUSS</span>
+    <span class="crumb">Fisiologia endócrina · Aula 2 · Eixo somatotrófico</span>
+    <span class="sp"></span>
+    <span class="badge">Demonstração · sem revisão</span>
+    <button class="ibtn" id="themeBtn" type="button">Alternar tema</button>
+  </header>
+  <section>
+    <div class="eyebrow">Peça interativa · Execução estrutural e patologia</div>
+    <h1>Placa de crescimento: gigantismo ou acromegalia</h1>
+    <p class="lead">O IGF-1 faz os condrócitos da placa epifisária proliferar e crescer, e o osso alonga. Quando a placa fecha, no fim da puberdade, o osso não cresce mais em comprimento. O mesmo excesso de GH dá doenças diferentes conforme a idade em que começa.</p>
+  </section>
+  <div class="pgrid">
+    <div class="card stage"><svg id="bone" viewBox="0 0 520 560" role="img" aria-label="Osso longo com a placa epifisária ampliada"></svg></div>
+    <div class="card panel">
+      <div class="lbl">GH e IGF-1</div>
+      <div class="chips" id="lv"></div>
+      <div class="ctl"><label for="on" style="width:150px">Alteração começa aos</label><input type="range" id="on" min="1" max="40" step="1"><span class="v" id="onV"></span></div>
+      <div class="ctl"><label for="ag" style="width:150px">Idade observada</label><input type="range" id="ag" min="1" max="50" step="1"><span class="v" id="agV"></span></div>
+      <canvas id="ch" role="img" aria-label="Curva de altura por idade comparada à faixa normal"></canvas>
+      <div class="tiles">
+        <div class="tile" style="--c:var(--accent)"><div class="k">Altura agora</div><div class="n" id="tH"></div></div>
+        <div class="tile" style="--c:var(--h1)"><div class="k">Placa epifisária</div><div class="n" id="tP" style="font-size:16px"></div></div>
+        <div class="tile" style="--c:var(--h2)"><div class="k">Quadro</div><div class="n" id="tD" style="font-size:15px;line-height:1.25"></div></div>
+      </div>
+      <div class="read" id="read" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow">Para fixar</div><h2>Três zonas, um relógio</h2>
+      <p>Na placa epifisária, as células da <b>zona de reserva</b> são recrutadas pelo GH; na <b>zona proliferativa</b>, o IGF-1 (circulante e local) as faz dividir em colunas; na <b>zona hipertrófica</b>, elas aumentam de tamanho, a matriz calcifica e é substituída por osso. A soma é o crescimento longitudinal.</p>
+      <p>Os estrogênios (inclusive os vindos da aromatização da testosterona) aceleram a maturação e fecham a placa no fim da puberdade.</p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p>A causa é a mesma nos dois casos: em geral, adenoma hipofisário secretor de GH. <b>Gigantismo</b>: excesso antes do fechamento das placas, com crescimento longitudinal exagerado. <b>Acromegalia</b>: excesso depois do fechamento, com crescimento de mãos, pés, mandíbula e vísceras, sem ganho de altura. A deficiência na infância dá baixa estatura proporcional.</p></div>
+  </div>
+  <p class="foot">Esquema didático, simplificado para fins de ensino. Base: Aires, <i>Fisiologia</i>, 5ª ed., cap. 73, p. 1219–1227 (Guanabara Koogan, 2018), conforme a aula do Dr. Rafael.</p>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const ss=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('#themeBtn').onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark';window.onTheme&&window.onTheme()};
+const LV={def:{n:'Deficiência',f:.55},nor:{n:'Normal',f:1},exc:{n:'Excesso',f:1.65}};
+let lv='exc',on=10,ag=16,CL=17.5;
+const VEL=[[0,1,25],[1,2,12],[2,3,8]].concat([...Array(8)].map((_,i)=>[3+i,4+i,6.2-i*.12])).concat([[11,12,5.5],[12,13,7.5],[13,14,9.5],[14,15,7.5],[15,16,4],[16,17,1.5],[17,17.5,.5]]);
+function vel(a){for(const[x,y,v]of VEL)if(a>=x&&a<y)return v;return 0}
+function height(a,f){let h=50;const dt=.05;for(let t=0;t<a;t+=dt){h+=vel(t)*(t>=on?f:1)*dt}return h}
+function acral(a){return lv==='exc'?Math.max(0,a-Math.max(on,CL)):0}
+const cv=$('#ch'),cx=cv.getContext('2d');let ph=0,last=0;
+function chart(){const dpr=devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,W,H);
+ const l=48,r=W-12,t=12,b=H-34,X=a=>l+(r-l)*a/50,Y=h=>b-(b-t)*(h-40)/(230-40);
+ const mu=css('--muted'),ln=css('--line'),ac=css('--accent'),b1=css('--h1'),fg=css('--fg');
+ cx.font='600 12px Hind, sans-serif';cx.textBaseline='middle';cx.fillStyle=mu;cx.strokeStyle=ln;cx.lineWidth=1;
+ cx.textAlign='right';[50,100,150,200].forEach(h=>{cx.beginPath();cx.moveTo(l,Y(h));cx.lineTo(r,Y(h));cx.stroke();cx.fillText(h,l-6,Y(h))});
+ cx.textAlign='center';[0,10,17.5,30,40,50].forEach(a=>cx.fillText(a===17.5?'fecha':a,X(a),b+14));
+ cx.save();cx.translate(12,(t+b)/2);cx.rotate(-Math.PI/2);cx.fillText('altura (cm)',0,0);cx.restore();cx.fillText('idade (anos)',(l+r)/2,b+28);
+ // faixa normal
+ cx.beginPath();for(let a=0;a<=50;a+=.5)cx.lineTo(X(a),Y(height(a,1)*1.08-(a<1?0:0)));for(let a=50;a>=0;a-=.5)cx.lineTo(X(a),Y(height(a,1)*.92));cx.closePath();cx.globalAlpha=.14;cx.fillStyle=b1;cx.fill();cx.globalAlpha=1;
+ // placa aberta
+ cx.fillStyle=mu;cx.globalAlpha=.08;cx.fillRect(X(0),t,X(CL)-X(0),b-t);cx.globalAlpha=1;
+ cx.strokeStyle=mu;cx.setLineDash([4,4]);cx.beginPath();cx.moveTo(X(CL),t);cx.lineTo(X(CL),b);cx.stroke();cx.moveTo(0,0);
+ cx.strokeStyle=ac;cx.setLineDash([3,3]);cx.beginPath();cx.moveTo(X(on),t);cx.lineTo(X(on),b);cx.stroke();cx.setLineDash([]);
+ cx.fillStyle=ac;cx.textAlign='left';cx.fillText('início',X(on)+4,t+8);
+ const f=LV[lv].f;cx.strokeStyle=ac;cx.lineWidth=3;cx.beginPath();for(let a=0;a<=50;a+=.25){const y=Y(height(a,f));a===0?cx.moveTo(X(a),y):cx.lineTo(X(a),y)}cx.stroke();
+ cx.fillStyle=fg;cx.beginPath();cx.arc(X(ag),Y(height(ag,f)),6,0,7);cx.fill();
+ cx.fillStyle=b1;cx.textAlign='right';cx.fillText('faixa normal',r-4,Y(height(50,1)*1.08)-10)}
+function bone(){const f=LV[lv].f,open=ag<CL,act=ag>=on?f:1,ac=acral(ag);let s='';
+ const A='var(--accent)',B='var(--h1)';
+ // osso longo
+ const L=Math.min(1.25,Math.max(.6,height(ag,LV[lv].f)/178));const top=50,bot=top+380*L;
+ s+=`<g transform="translate(0,${(560-(bot-top))/2-top})">`;
+ s+=`<path d="M70 ${top} q-30 0 -30 40 q0 40 45 50 l0 ${bot-top-180} q-45 10 -45 50 q0 40 30 40 l100 0 q30 0 30 -40 q0 -40 -45 -50 l0 -${bot-top-180} q45 -10 45 -50 q0 -40 -30 -40z" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="2.5"/>`;
+ const py=top+64;
+ if(open)s+=`<rect x="44" y="${py}" width="132" height="10" fill="${B}" opacity=".85"/>`;else s+=`<line x1="44" y1="${py+5}" x2="176" y2="${py+5}" stroke="var(--muted)" stroke-width="2" stroke-dasharray="4 3"/>`;
+ s+=`<text x="110" y="${py-10}" font-size="12" font-weight="700" text-anchor="middle" fill="${open?B:'var(--muted)'}">${open?'placa aberta':'linha epifisária'}</text>`;
+ s+=`<path d="M180 ${py+5} L246 ${py+5}" stroke="${B}" stroke-width="2" stroke-dasharray="4 4"/>`;
+ if(ac>0){const w=Math.min(14,ac*1.2);s+=`<path d="M40 ${top+40} q-${w} 0 -${w} 20 M180 ${top+40} q${w} 0 ${w} 20 M40 ${bot-40} q-${w} 0 -${w} -20 M180 ${bot-40} q${w} 0 ${w} -20" stroke="${A}" stroke-width="5" fill="none" stroke-linecap="round"/>`+`<text x="110" y="${bot+28}" font-size="12" font-weight="700" text-anchor="middle" fill="${A}">alarga, não alonga</text>`}
+ s+='</g>';
+ // ampliação
+ const zx=250,zy=40,zw=250,zh=470;s+=`<rect x="${zx}" y="${zy}" width="${zw}" height="${zh}" rx="12" fill="var(--surface)" stroke="${B}" stroke-width="2"/>`;
+ if(open){const Z=[['Reserva',.0,.16,'var(--h2)'],['Proliferativa',.16,.52,B],['Hipertrófica',.52,.8,'var(--warn)'],['Ossificação',.8,1,'var(--muted)']];
+  Z.forEach(([n,a,b2,c])=>{s+=`<rect x="${zx}" y="${zy+zh*a}" width="${zw}" height="${zh*(b2-a)}" fill="${c}" fill-opacity=".07"/><text x="${zx+zw-8}" y="${zy+zh*a+16}" font-size="12" font-weight="700" text-anchor="end" fill="${c}">${n}</text>`});
+  const cols=5,sp=(zw-90)/cols;for(let c=0;c<cols;c++){const x0=zx+22+c*sp;
+   for(let k=0;k<14;k++){let u=((k/14)+ph)%1;const y=zy+zh*(.04+u*.92);let rx,ry,fill;
+    if(u<.16){rx=7;ry=7;fill='var(--h2)'}else if(u<.52){rx=9;ry=4.5;fill=B}else if(u<.8){const g=(u-.52)/.28;rx=9+g*7;ry=5+g*9;fill='var(--warn)'}else{rx=14;ry=10;fill='var(--muted)'}
+    s+=`<ellipse cx="${x0}" cy="${y}" rx="${rx}" ry="${ry}" fill="${fill}" fill-opacity="${u>.8?.25:.55}" stroke="${fill}" stroke-width="1.2"/>`}}
+  s+=`<text x="${zx+zw/2}" y="${zy+zh+22}" font-size="12.5" font-weight="700" text-anchor="middle" fill="var(--muted)">ritmo de crescimento: ${act<.8?'lento':act>1.2?'acelerado':'normal'}</text>`}
+ else{s+=`<rect x="${zx+10}" y="${zy+10}" width="${zw-20}" height="${zh-20}" rx="8" fill="var(--muted)" fill-opacity=".12"/><text x="${zx+zw/2}" y="${zy+zh/2-10}" font-size="15" font-weight="700" text-anchor="middle" fill="var(--muted)">Placa fechada</text><text x="${zx+zw/2}" y="${zy+zh/2+12}" font-size="13" text-anchor="middle" fill="var(--muted)">cartilagem substituída por osso:</text><text x="${zx+zw/2}" y="${zy+zh/2+30}" font-size="13" text-anchor="middle" fill="var(--muted)">não há mais crescimento em comprimento</text>`}
+ $('#bone').innerHTML=s}
+function info(){const f=LV[lv].f,h=height(ag,f),hn=height(ag,1),fin=height(50,f);
+ $('#tH').textContent=Math.round(h)+' cm';$('#tP').textContent=ag<CL?'Aberta':'Fechada';
+ let d,m;
+ if(lv==='nor'){d='Normal';m='Crescimento dentro da faixa até o fechamento da placa, perto dos 17 anos.'}
+ else if(lv==='exc'){if(on<CL){d=ag<on?'Ainda sem doença':ag<CL?'Gigantismo':'Gigantismo e acromegalia';m=`O excesso começou com a placa aberta: o osso alonga demais. Altura final prevista ≈ ${Math.round(fin)} cm.`+(ag>=CL?' Depois do fechamento, o excesso que continua passa a dar traços acromegálicos.':'')}
+  else{d=ag<on?'Ainda sem doença':'Acromegalia';m='A placa já estava fechada: a altura não muda. O excesso aumenta mãos, pés, mandíbula, nariz e vísceras, de forma lenta; o diagnóstico costuma atrasar anos.'}}
+ else{if(on<CL){d=ag<on?'Ainda sem doença':'Baixa estatura proporcional';m=`Com pouco IGF-1, a placa cresce devagar. Altura final prevista ≈ ${Math.round(fin)} cm sem tratamento; repor GH antes do fechamento recupera parte do potencial.`}
+  else{d=ag<on?'Ainda sem doença':'Deficiência de GH do adulto';m='Com a placa fechada, a altura não muda. O quadro é metabólico: mais gordura visceral, menos massa magra e óssea, menor disposição.'}}
+ $('#tD').textContent=d;$('#read').innerHTML=`<b>${d}</b>${m}`;
+ ['on','ag'].forEach(k=>{const el=$('#'+k);el.value=k==='on'?on:ag;el.style.setProperty('--p',((+el.value-el.min)/(el.max-el.min)*100)+'%')});$('#onV').textContent=on+' anos';$('#agV').textContent=ag+' anos';
+ $$('#lv .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===lv))}
+function all(){chart();bone();info()}
+$('#lv').innerHTML=Object.entries(LV).map(([k,v])=>`<button class="chip" type="button" data-k="${k}">${v.n}</button>`).join('');
+$$('#lv .chip').forEach(b=>b.onclick=()=>{lv=b.dataset.k;all()});
+$('#on').oninput=e=>{on=+e.target.value;all()};$('#ag').oninput=e=>{ag=+e.target.value;all()};
+function tick(ts){const dt=Math.min(.05,(ts-last)/1000);last=ts;if(ag<CL){const f=ag>=on?LV[lv].f:1;ph=(ph+dt*.03*f)%1;bone()}requestAnimationFrame(tick)}
+all();if(!reduce)requestAnimationFrame(tick);addEventListener('resize',chart);window.onTheme=all;matchMedia('(prefers-color-scheme: dark)').addEventListener('change',all);
+window.__g={set:(l,o,a)=>{lv=l;on=o;ag=a;all()}};
+
+</script>
+</body>
+</html>

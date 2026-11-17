@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Questões de feedback hormonal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Identidade Cognuss: quase-preto quente, coral da marca, Archivo Black + Hind. Layout: uma questão por vez, como a tela de questões do app. */
+:root{
+  --bg:oklch(0.985 0 0);--surface:oklch(1 0 0);--surface-2:oklch(0.95 0.003 20);
+  --fg:oklch(0.21 0.006 20);--muted:oklch(0.46 0.006 20);--line:oklch(0.86 0.003 20);--line-strong:oklch(0.72 0.004 20);
+  --accent:oklch(0.52 0.2 27);--accent-hover:oklch(0.46 0.19 27);--accent-ink:oklch(0.99 0 0);--accent-soft:oklch(0.94 0.03 27);
+  --success:oklch(0.48 0.12 152);--success-soft:oklch(0.95 0.04 152);--warn:oklch(0.5 0.11 70);--warn-soft:oklch(0.95 0.05 85);
+  --danger:oklch(0.5 0.19 25);--danger-soft:oklch(0.95 0.03 25);
+  --h1:oklch(0.55 0.13 250);--h2:oklch(0.55 0.14 300);--h3:oklch(0.52 0.2 27);
+  --card-shadow:0 8px 24px -12px oklch(0.2 0 0 / .22);
+  --f-display:"Archivo Black","Arial Black",system-ui,sans-serif;--f-body:"Hind",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --radius:6px;--radius-lg:8px;color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;-webkit-font-smoothing:antialiased}
+button,a{font:inherit;color:inherit}button{cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:860px;margin:0 auto;padding:20px 20px 48px;display:flex;flex-direction:column;gap:16px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);color:var(--accent);font-size:18px}
+.sp{flex:1}
+.badge{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--warn-soft);color:var(--warn)}
+.ibtn{border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:6px 10px;font-size:13px;color:var(--muted)}
+.prog{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
+.bar{height:4px;background:var(--line);border-radius:4px;overflow:hidden}.bar span{display:block;height:100%;background:var(--accent);transition:width .3s}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--card-shadow);padding:22px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tag{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--surface-2);color:var(--muted)}
+.stem{font-size:18px;line-height:1.55;margin:0 0 16px;max-width:68ch}
+.stem b{font-weight:700}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--line-strong);border-radius:var(--radius-lg);padding:12px 14px;font-size:16px;line-height:1.5}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt .lt{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;border:1.5px solid var(--line-strong);margin-top:-1px}
+.opt .tx{flex:1}.opt .st{display:block;font-size:13px;font-weight:700;margin-top:2px}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}.opt.sel .lt{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.opt.right{border-color:var(--success);background:var(--success-soft)}.opt.right .lt{background:var(--success);border-color:var(--success);color:var(--bg)}.opt.right .st{color:var(--success)}
+.opt.wrong{border-color:var(--danger);background:var(--danger-soft)}.opt.wrong .lt{background:var(--danger);border-color:var(--danger);color:var(--bg)}.opt.wrong .st{color:var(--danger)}
+.opt:disabled{cursor:default}.opt.dim{opacity:.6}
+.act{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.btn{border:0;border-radius:var(--radius);background:var(--accent);color:var(--accent-ink);font-weight:700;padding:11px 18px;font-size:15px;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{background:var(--accent-hover)}.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line-strong)}
+.verdict{border-radius:var(--radius-lg);padding:12px 14px;font-size:15px;line-height:1.5;margin-top:14px}
+.verdict.ok{background:var(--success-soft)}.verdict.bad{background:var(--danger-soft)}
+.verdict b{display:block;font-size:16px}
+.ex{display:grid;gap:14px}
+.ex h2{font-family:var(--f-display);font-weight:400;font-size:21px;margin:0;text-wrap:balance}
+.ex p{margin:0;line-height:1.6;max-width:70ch}
+.why{display:grid;gap:8px}
+.why div{font-size:15px;line-height:1.5;padding-left:12px;border-left:3px solid var(--line-strong)}
+.why div.r{border-color:var(--success)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent)}
+.mini{background:var(--surface-2);border-radius:var(--radius-lg);padding:14px 16px}
+.mini svg{display:block;width:100%;height:auto}
+.foot{font-size:13px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line);padding-top:12px;margin:0}
+@media (max-width:480px){.wrap{padding:14px 16px 40px}.card{padding:16px}.stem{font-size:17px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brand"><svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#c2181d"/><path d="M44 21A15 15 0 1 0 44 43" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round"/><circle cx="45.5" cy="32" r="4.6" fill="#fff"/></svg>COGNUSS</span>
+    <span class="sp"></span>
+    <span class="badge">Demonstração · sem revisão</span>
+    <button class="ibtn" id="themeBtn" type="button">Alternar tema</button>
+  </header>
+  <div>
+    <div class="prog"><span id="progT">Questão 1 de 3</span><span>Mecanismos de feedback</span></div>
+    <div class="bar" style="margin-top:6px"><span id="progB"></span></div>
+  </div>
+  <section class="card" id="qcard" aria-live="polite">
+    <div class="tags"><span class="tag">Fisiologia endócrina</span><span class="tag">Aula 1 · Introdução</span><span class="tag" id="qtype"></span></div>
+    <p class="stem" id="stem"></p>
+    <div class="opts" id="opts" role="radiogroup" aria-label="Alternativas"></div>
+    <div class="act" id="act1"><button class="btn" id="confirm" type="button" disabled>Responder</button><span id="hint" style="font-size:14px;color:var(--muted)">Escolha uma alternativa.</span></div>
+    <div id="verdict"></div>
+  </section>
+  <section class="card ex" id="ex" hidden>
+    <div><div class="eyebrow">Explicação</div><h2 id="exT"></h2></div>
+    <div id="exB" style="display:grid;gap:10px"></div>
+    <div class="mini" id="mini"></div>
+    <div class="why" id="why"></div>
+    <div class="act">
+      <a class="btn ghost" id="sim" href="#" target="_blank" rel="noopener">Abrir este cenário no simulador ↗</a>
+      <button class="btn" id="next" type="button">Próxima questão →</button>
+    </div>
+  </section>
+  <section class="card" id="done" hidden>
+    <div class="eyebrow">Fim da sequência</div>
+    <h2 style="font-family:var(--f-display);font-weight:400;font-size:24px;margin:6px 0 8px" id="score"></h2>
+    <p style="margin:0 0 14px;line-height:1.6">As três questões cobrem o ponto que o Dr. Rafael marcou como o mais importante da aula: o hormônio freia quem o liberou (feedback negativo), e só em situações com ponto final o produto reforça o estímulo (feedback positivo).</p>
+    <div class="act"><button class="btn" id="again" type="button">Refazer</button><a class="btn ghost" href="https://claude.ai/artifact/FFsUgQJ1RDwiAzNBZR5UeG" target="_blank" rel="noopener">Explorar o simulador ↗</a></div>
+  </section>
+  <p class="foot">Protótipo: neste arquivo o gabarito fica no navegador. No Cognuss ele vem do servidor só depois da resposta. Gráficos gerados pelo mesmo modelo didático do simulador (porcentagem do basal).</p>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const SIM='https://claude.ai/artifact/FFsUgQJ1RDwiAzNBZR5UeG';
+$('#themeBtn').onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark'};
+
+const Q=[
+ {id:'endo-intro-fb-01',type:'Caso clínico',scen:'stop',
+  stem:'Homem de 45 anos usa <b>prednisona 20 mg/dia há 8 meses</b> para artrite reumatoide e suspende o remédio por conta própria. Dois dias depois chega com fraqueza, hipotensão e hipoglicemia. Qual mecanismo explica o quadro?',
+  answer:'A',opts:{
+   A:'O corticoide exógeno suprimiu CRH e ACTH por feedback negativo; sem ACTH, o córtex adrenal atrofiou e não consegue produzir cortisol logo após a suspensão.',
+   B:'A prednisona exercia feedback positivo sobre o ACTH, que se esgotou depois de meses de estímulo contínuo.',
+   C:'O uso prolongado induziu resistência dos tecidos ao cortisol, que persiste após a suspensão.',
+   D:'O corticoide desencadeou destruição autoimune das adrenais (doença de Addison).'},
+  why:{A:'O freio externo (prednisona) desligou o comando do eixo, e o ACTH é o estímulo trófico que mantém a adrenal. Sem ele por meses, a glândula atrofia.',
+   B:'O corticoide exógeno inibe o ACTH, não o estimula. Não há feedback positivo nesse eixo.',
+   C:'Resistência ao cortisol não explica hipotensão e hipoglicemia que surgem justamente quando o remédio é retirado.',
+   D:'Addison é destruição da glândula, geralmente autoimune, sem relação com o uso de corticoide. Aqui a adrenal está atrofiada, não destruída, e se recupera com o tempo.'},
+  exT:'O freio que vinha de fora sumiu, e a adrenal atrofiada não dá conta',
+  exB:['<p>Para o hipotálamo e a hipófise, a prednisona funciona como cortisol: enquanto o paciente toma o remédio, <b>CRH e ACTH ficam baixos</b>. O ACTH, além de estimular, mantém o tamanho do córtex adrenal; sem ele, a glândula atrofia.</p>','<p>Na suspensão abrupta, CRH e ACTH voltam a subir, mas a adrenal responde pouco. O cortisol fica baixo e surge a <b>insuficiência adrenal</b>. Por isso a retirada de corticoide crônico é gradual.</p>'],
+  mini:'Níveis dois dias depois da suspensão, comparados ao basal'},
+ {id:'endo-intro-fb-02',type:'Raciocínio de eixo',scen:'addison',
+  stem:'Mulher de 32 anos com fadiga, perda de peso, hipotensão e <b>escurecimento da pele</b> das mãos e da mucosa oral. O cortisol matinal está baixo. O que se espera do ACTH e por quê?',
+  answer:'B',opts:{
+   A:'ACTH baixo, porque a hipófise acompanha a queda do cortisol.',
+   B:'ACTH alto, porque a falta de cortisol retira o feedback negativo sobre o hipotálamo e a hipófise.',
+   C:'ACTH normal, porque o eixo compensa a queda do cortisol.',
+   D:'ACTH alto, porque o cortisol baixo exerce feedback positivo sobre a hipófise.'},
+  why:{A:'ACTH baixo com cortisol baixo indica problema na hipófise (insuficiência secundária), o que não combina com a hiperpigmentação.',
+   B:'Sem cortisol, não há freio: CRH e ACTH sobem. O ACTH vem da POMC, que também origina o MSH, daí a hiperpigmentação.',
+   C:'Com a adrenal destruída, o eixo tenta compensar aumentando o ACTH; ele não fica normal.',
+   D:'O ACTH sobe, mas porque o freio sumiu, não por feedback positivo. Hormônio baixo não "estimula" o eixo; ele deixa de inibir.'},
+  exT:'Sem cortisol, o eixo perde o freio e o ACTH dispara',
+  exB:['<p>Na doença de Addison a adrenal está destruída, em geral por autoimunidade. O cortisol cai e deixa de inibir o hipotálamo e a hipófise: <b>CRH e ACTH sobem</b>, tentando em vão estimular uma glândula que não responde.</p>','<p>O ACTH é clivado da pró-opiomelanocortina (POMC), a mesma molécula que gera o MSH. Com a POMC aumentada, os melanócitos são estimulados: daí a <b>hiperpigmentação</b> de pele e mucosas.</p>'],
+  mini:'Níveis na insuficiência adrenal primária, comparados ao basal'},
+ {id:'endo-intro-fb-03',type:'Conceito',scen:'positivo',
+  stem:'Qual dos processos abaixo é um exemplo de <b>feedback positivo</b>?',
+  answer:'C',opts:{
+   A:'Secreção de insulina após uma refeição, que reduz a glicemia.',
+   B:'Secreção de PTH quando o cálcio no sangue cai.',
+   C:'Liberação de ocitocina durante o trabalho de parto.',
+   D:'Inibição do TSH pelos hormônios tireoidianos.'},
+  why:{A:'A insulina reduz a glicemia, que é o estímulo da sua secreção: feedback negativo.',
+   B:'O PTH eleva o cálcio, e o cálcio alto reduz o PTH: feedback negativo.',
+   C:'A ocitocina contrai o útero, a contração aumenta o estiramento do colo e o estiramento libera mais ocitocina. O ciclo só termina com o nascimento.',
+   D:'T3 e T4 inibem o TSH e o TRH: é o exemplo clássico de feedback negativo de alça longa.'},
+  exT:'No feedback positivo, a resposta reforça o próprio estímulo',
+  exB:['<p>No parto, a cabeça do bebê estira o colo do útero. Esse sinal chega ao hipotálamo e a neuro-hipófise libera <b>ocitocina</b>, que contrai o útero. A contração empurra o bebê, estira mais o colo e libera mais ocitocina: o sinal se amplifica.</p>','<p>O ciclo é seguro porque tem um <b>evento final</b>: com o nascimento, o estiramento acaba e a ocitocina cai. Outros exemplos com ponto final: o pico de LH antes da ovulação e a cascata da coagulação.</p>'],
+  mini:'Ocitocina e força da contração durante o trabalho de parto'}
+];
+
+/* ---- modelo do eixo HHA (mesmo do simulador) ---- */
+function simulate(plan){
+  const N={H:1,A:1,F:1,cap:1};
+  const run=(T,o)=>{const dt=0.02;for(let t=0;t<T;t+=dt){if(o.addison)N.cap=0.12;const Ft=N.F+(o.exo||0);
+    N.H+=1.2*(2/(1+Ft)-N.H)*dt;N.A+=0.8*(1.5*N.H/(1+0.5*Ft)-N.A)*dt;N.F+=0.5*(N.cap*N.A-N.F)*dt;
+    if(!o.addison)N.cap=Math.min(2.5,Math.max(0.12,N.cap+0.03*(N.A*N.A-N.cap)*dt))}};
+  plan.forEach(([T,o])=>run(T,o));return N;
+}
+function barsSVG(N){
+  const rows=[['CRH','--h1',N.H],['ACTH','--h2',N.A],['Cortisol','--h3',N.F]],W=640,L=86,R=56,max=300,x=v=>L+(W-L-R)*Math.min(v,max)/max;
+  let s=`<svg viewBox="0 0 ${W} 148" role="img" aria-label="Barras com os níveis de CRH, ACTH e cortisol em porcentagem do basal">`;
+  [0,100,200,300].forEach(v=>{s+=`<line x1="${x(v)}" x2="${x(v)}" y1="4" y2="118" stroke="var(--line)" ${v===100?'stroke-dasharray="4 4" stroke-width="2"':''}/><text x="${x(v)}" y="138" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="IBM Plex Mono,monospace">${v}%</text>`});
+  s+=`<text x="${x(100)+4}" y="14" font-size="11" fill="var(--muted)" font-family="Hind,sans-serif">basal</text>`;
+  rows.forEach(([n,c,v],i)=>{const y=14+i*36;s+=`<text x="0" y="${y+17}" font-size="15" font-weight="600" fill="var(--fg)" font-family="Hind,sans-serif">${n}</text><rect x="${L}" y="${y+2}" width="${x(v*100)-L}" height="22" rx="4" fill="var(${c})"/><text x="${x(v*100)+8}" y="${y+18}" font-size="14" font-weight="600" fill="var(${c})" font-family="IBM Plex Mono,monospace">${Math.round(v*100)}%</text>`});
+  return s+'</svg>';
+}
+function posSVG(){
+  const W=640,H=150,L=40,R=12,T=10,B=26;let O=.1,K=.1,dil=0,born=false,pts=[];
+  for(let t=0;t<40;t+=0.02){const S=born?0:0.15+0.9*K+0.05*dil;O+=1.2*(1.25*S-O)*0.02;K+=0.9*(O-K)*0.02;O=Math.min(O,8);K=Math.min(K,8);if(!born){dil=Math.min(10,dil+0.06*K*0.02);if(dil>=10)born=t}if(Math.round(t*50)%10===0)pts.push([t,O,K])}
+  const x=t=>L+(W-L-R)*t/40,y=v=>T+(H-T-B)*(1-Math.min(v,8)/8);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Ocitocina e contração sobem juntas e caem após o nascimento">`;
+  [0,2,4,6,8].forEach(v=>{s+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="4" y="${y(v)+4}" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono,monospace">${v*100}%</text>`});
+  [['--h2',1],['--h3',2]].forEach(([c,k])=>{s+=`<path d="${pts.map((p,i)=>(i?'L':'M')+x(p[0]).toFixed(1)+' '+y(p[k]).toFixed(1)).join('')}" fill="none" stroke="var(${c})" stroke-width="3"/>`});
+  if(born){s+=`<line x1="${x(born)}" x2="${x(born)}" y1="${T}" y2="${H-B}" stroke="var(--accent)" stroke-dasharray="4 4" stroke-width="2"/><text x="${x(born)+6}" y="${T+14}" font-size="13" font-weight="700" fill="var(--accent)" font-family="Hind,sans-serif">Nascimento</text>`}
+  s+=`<text x="${L}" y="${H-6}" font-size="12" fill="var(--muted)" font-family="Hind,sans-serif">tempo →</text><text x="${W-R}" y="${H-6}" text-anchor="end" font-size="12" font-family="Hind,sans-serif"><tspan fill="var(--h2)">● ocitocina</tspan>  <tspan fill="var(--h3)">● contração</tspan></text>`;
+  return s+'</svg>';
+}
+function miniFor(q){
+  if(q.scen==='positivo')return posSVG();
+  if(q.scen==='addison')return barsSVG(simulate([[80,{addison:true}]]));
+  if(q.scen==='stop')return barsSVG(simulate([[200,{exo:2}],[3,{exo:0}]]));
+}
+
+/* ---- fluxo ---- */
+let i=0,chosen=null,score=0;
+function render(){
+  const q=Q[i];chosen=null;
+  $('#progT').textContent=`Questão ${i+1} de ${Q.length}`;$('#progB').style.width=(i/Q.length*100)+'%';
+  $('#qtype').textContent=q.type;$('#stem').innerHTML=q.stem;
+  $('#opts').innerHTML=Object.entries(q.opts).map(([k,t])=>`<button type="button" class="opt" role="radio" aria-checked="false" data-k="${k}"><span class="lt">${k}</span><span class="tx">${t}<span class="st"></span></span></button>`).join('');
+  $$('.opt').forEach(b=>b.onclick=()=>{chosen=b.dataset.k;$$('.opt').forEach(x=>{x.classList.toggle('sel',x===b);x.setAttribute('aria-checked',x===b)});$('#confirm').disabled=false;$('#hint').textContent=''});
+  $('#confirm').disabled=true;$('#act1').hidden=false;$('#hint').textContent='Escolha uma alternativa.';$('#verdict').innerHTML='';$('#ex').hidden=true;$('#qcard').hidden=false;$('#done').hidden=true;
+}
+$('#confirm').onclick=()=>{
+  const q=Q[i],ok=chosen===q.answer;if(ok)score++;
+  $$('.opt').forEach(b=>{const k=b.dataset.k;b.disabled=true;b.classList.remove('sel');
+    if(k===q.answer){b.classList.add('right');b.querySelector('.st').textContent='Correta'}else if(k===chosen){b.classList.add('wrong');b.querySelector('.st').textContent='Sua resposta'}else b.classList.add('dim')});
+  $('#act1').hidden=true;
+  $('#verdict').innerHTML=`<div class="verdict ${ok?'ok':'bad'}"><b>${ok?'Isso mesmo.':'Não foi dessa vez.'}</b>${ok?'Veja abaixo por que as outras alternativas não servem.':'A resposta é a alternativa '+q.answer+'. A explicação mostra o mecanismo.'}</div>`;
+  $('#exT').textContent=q.exT;$('#exB').innerHTML=q.exB.join('');
+  $('#mini').innerHTML=`<div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px">${q.mini}</div>`+miniFor(q);
+  $('#why').innerHTML=Object.keys(q.opts).map(k=>`<div class="${k===q.answer?'r':''}"><b>${k}.</b> ${q.why[k]}</div>`).join('');
+  $('#sim').href=SIM+'#'+q.scen;$('#next').textContent=i<Q.length-1?'Próxima questão →':'Ver resultado';
+  $('#ex').hidden=false;$('#ex').scrollIntoView({behavior:'smooth',block:'start'});
+};
+$('#next').onclick=()=>{i++;if(i<Q.length){render();scrollTo({top:0,behavior:'smooth'})}else{$('#qcard').hidden=true;$('#ex').hidden=true;$('#done').hidden=false;$('#progB').style.width='100%';$('#progT').textContent='Concluído';$('#score').textContent=`Você acertou ${score} de ${Q.length}`}};
+$('#again').onclick=()=>{i=0;score=0;render()};
+render();
+window.__q={Q,simulate};
+</script>
+</body>
+</html>
