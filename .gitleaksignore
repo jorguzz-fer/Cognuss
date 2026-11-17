@@ -5,3 +5,8 @@ e3f9171b4f2bda88e67dd8c2f0ccfbe4d1499a2d:apps/web/vitest.int.config.ts:generic-a
 # Falso positivo: alfabeto da senha temporária do admin (letras e dígitos, não é segredo), já
 # montado por faixas no código. Fica ignorado porque está no histórico do commit 64f94c0.
 64f94c034b0f9f1cb8bea93abe8039a6f9ede0e8:apps/web/src/features/admin/service.ts:generic-api-key:585
+
+# Falso positivo: peça de referência do piloto da produção de aulas (docs/producao), com a chave
+# de um item do mapa da esteroidogênese ("key:'21-hidroxilase…'"), não é segredo.
+978cb6ed7dfd561a561a6166b00616bd4ac370f0:docs/producao/referencias/aula-1/pecas/esteroides.html:generic-api-key:170
+978cb6ed7dfd561a561a6166b00616bd4ac370f0:docs/producao/referencias/aula-1/fontes/src/esteroides.html:generic-api-key:56
