@@ -94,7 +94,7 @@ export function foldText(text: string): string {
 export function tidyText(text: string): string {
   return text
     .split(/\n/)
-    .map((l) => l.replace(/[ \t ]+/g, ' ').trim())
+    .map((l) => l.replace(/[ \t\u00a0]+/g, ' ').trim())
     .filter(Boolean)
     .join('\n');
 }

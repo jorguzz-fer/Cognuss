@@ -2,3 +2,4 @@ public/
 pnpm-lock.yaml
 docs/spec/
 packages/db/migrations/meta/
+docs/producao/referencias/

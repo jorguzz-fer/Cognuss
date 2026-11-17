@@ -48,7 +48,7 @@ export function xmlText(xml: string): string {
     const line = [...p[1]!.matchAll(/<a:t\b[^>]*>([\s\S]*?)<\/a:t>|<a:br\b[^>]*\/>/g)]
       .map((r) => (r[1] === undefined ? '\n' : decodeXml(r[1])))
       .join('')
-      .replace(/[ \t ]+/g, ' ')
+      .replace(/[ \t\u00a0]+/g, ' ')
       .trim();
     if (line) lines.push(line);
   }
