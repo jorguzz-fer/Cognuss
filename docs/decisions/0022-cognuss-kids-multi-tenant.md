@@ -1,6 +1,6 @@
 # ADR 0022: Cognuss Kids, app próprio e banco multi-inquilino
 
-- Status: proposto
+- Status: aceito (banco separado confirmado pelo Fernando em 20/11/2026, K-D08 na SPEC)
 - Data: 2026-11-20
 
 ## Contexto

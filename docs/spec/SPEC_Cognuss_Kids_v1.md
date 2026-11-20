@@ -1,7 +1,7 @@
 # SPEC DE PRODUTO E ENGENHARIA: Cognuss Kids v1
 
 - **Versão:** 1.0 (rascunho), 20/11/2026.
-- **Status:** proposta para revisão do Fernando. Não é fonte de verdade até ser aprovada. As decisões abertas estão na seção 14.2.
+- **Status:** proposta para revisão do Fernando. As decisões que bloqueavam a Fase 0 e a Fase 1 foram tomadas em 20/11/2026 (seção 14.1). As abertas (seção 14.2) não bloqueiam o início; a D-K01 bloqueia o piloto com escola real.
 - **Origem:** o piloto `estudos.tudomudou.com.br` (Ciências do 3º ano, feito para a Fiorella). É uma página estática com plano de estudos, explicação por grupos, flashcards, simulado e prova com nota mínima 8 e recuperação em outro formato. O progresso fica no `localStorage`. O piloto mostrou que o formato funciona com uma criança. O Kids leva esse formato para escolas.
 - **Relação com os outros documentos:**
   - O `Engineering_Blueprint.md` é o padrão de engenharia. A seção 7.2 desta spec o confere item a item.
@@ -135,7 +135,7 @@ Os papéis são **por instituição**, guardados em `memberships` (usuário × i
 
 Regras:
 - **2FA (TOTP) obrigatório** para Super Admin e Gestor. Para Professor fica como decisão aberta (D-K05).
-- O aluno do Fundamental I (1º ao 5º ano) pode entrar com **código da turma + nome de usuário + senha simples ou figura**, sem e-mail. **[ENG] [PEND D-K02]**
+- O aluno do Fundamental I (1º ao 5º ano) pode entrar com **código da turma + nome de usuário + senha simples**, sem e-mail (K-D07).
 - A identidade vem da sessão. O tenant ativo vem da sessão e é validado contra `memberships`, nunca lido do corpo da requisição.
 
 ---
@@ -199,7 +199,7 @@ EST define quais anos existem → PLA cria um plano por ano e matéria → CON e
 |---|---|---|
 | USR-01 | Convite por e-mail com link de uso único e validade de 7 dias, para gestor e professor. | E |
 | USR-02 | Para matricular alunos na turma, o gestor importa uma planilha CSV (nome, ano, turma, e-mail do responsável) ou cadastra um a um. | E |
-| USR-03 | Login do aluno: e-mail e senha (Médio e Fundamental II) ou código da turma + usuário + senha simples (Fundamental I). **[PEND D-K02]** | E |
+| USR-03 | Login do aluno: e-mail e senha (Médio e Fundamental II) ou código da turma + usuário + senha simples (Fundamental I, K-D07). O professor ou o gestor redefine a senha (USR-07). | E |
 | USR-04 | O professor é ligado a turmas × matérias (`teacher_assignments`). Esse vínculo define o que ele edita e vê. | E |
 | USR-05 | Quem é membro de mais de uma instituição escolhe a ativa depois do login e pode trocar pelo menu. | D |
 | USR-06 | Remover um membro encerra as sessões dele naquela instituição. O histórico de tentativas do aluno fica com a instituição até o prazo de retenção (seção 10). | E |
@@ -258,7 +258,7 @@ EST define quais anos existem → PLA cria um plano por ano e matéria → CON e
 | RES-01 | Todo aluno menor de 18 anos tem ao menos um responsável cadastrado (nome e e-mail). | E |
 | RES-02 | Antes do primeiro acesso do aluno, o responsável recebe um link e dá o **consentimento específico e em destaque** (LGPD art. 14 §1º), por finalidade. O registro guarda versão do texto, data e IP, e não pode ser alterado. | E |
 | RES-03 | Sem o consentimento do responsável, a conta do aluno fica bloqueada para estudo. O gestor vê a lista de pendentes. | E |
-| RES-04 | A instituição pode registrar que coletou o consentimento em papel, com o arquivo anexado e o gestor responsável pelo registro. Fica marcado como "coletado pela instituição". **[PEND D-K01]** | D |
+| RES-04 | A instituição pode registrar que coletou o consentimento em papel, com o arquivo anexado e o gestor responsável pelo registro. Fica marcado como "coletado pela instituição" (K-D10). | D |
 | RES-05 | O responsável pode pedir, pelo mesmo link, acesso, correção, exportação e exclusão dos dados do aluno (art. 18). | E |
 
 ---
@@ -319,7 +319,7 @@ A decisão está no **ADR 0022**: o Kids é um novo app do mesmo monorepo (`apps
 
 | Do Cognuss | Uso no Kids |
 |---|---|
-| Better Auth com Argon2id, sessões no banco, 2FA TOTP (ADR 0002), `apps/web/src/lib/auth` | Mesma configuração em `apps/kids/src/lib/auth`, com conexão ao banco do Kids. Muda o plugin de usuário/senha para o aluno sem e-mail (D-K02). |
+| Better Auth com Argon2id, sessões no banco, 2FA TOTP (ADR 0002), `apps/web/src/lib/auth` | Mesma configuração em `apps/kids/src/lib/auth`, com conexão ao banco do Kids. Muda o plugin de usuário/senha para o aluno sem e-mail (K-D07). |
 | `withUser()` e as políticas de RLS (`packages/db/src/client.ts`, migrations 0001 e 0011) | Viram `withTenantUser(tenantId, userId, tx => …)` em `packages/db-kids`. |
 | Papéis de banco `gutta_owner`/`gutta_app` (ADR 0003, `infra/postgres/init/01-roles.sh`) | `kids_owner` e `kids_app` (sem BYPASSRLS), no mesmo container de Postgres e em outro banco. |
 | Trigger `enforce_editorial_transition()` (migration 0001) | Mesma lógica sobre `study_plans` e `questions` do Kids, com "reviewer" = professor ou gestor que não é o autor. |
@@ -343,7 +343,7 @@ A decisão está no **ADR 0022**: o Kids é um novo app do mesmo monorepo (`apps
 | §3 Arquitetura | `packages/core` (regras puras: nota, recuperação, SRS, liberação do plano) → serviços → rotas. Efeitos colaterais (e-mails, consentimento) via outbox e fila, com nova tentativa e fila de mortos. | Nenhum. |
 | §4 Monorepo | pnpm workspaces. Novos: `apps/kids`, `packages/db-kids`. Compartilhados: `core`, `contracts`, `storage`, `jobs`. | Nenhum. |
 | §5 Deploy | Mesmo projeto Coolify. Serviço `kids` novo no `infra/compose.yml`, que usa o `db` e o `redis` existentes e não publica porta. As migrations do Kids rodam no start do container `kids`, como `kids_owner`. | O backup diário passa a incluir o banco `cognuss_kids`. Teste de restauração dos dois bancos. RPO 24 h e RTO 4 h. Ambiente de homologação do Kids igual ao de produção antes do piloto com escola. Segredos só nas variáveis do Coolify, listados em `.env.example`. **[ENG]** |
-| §6 Segurança | Cookie httpOnly/Secure/SameSite, Argon2id, 2FA obrigatório para Super Admin e Gestor, RBAC por membership no servidor, rate limit e lockout progressivo, CSP, URL assinada para arquivos, gitleaks, CodeQL e varredura de imagem na CI. | O aluno do Fundamental I pode ter login sem e-mail (D-K02). A recuperação de senha passa pelo professor e fica na auditoria (USR-07). |
+| §6 Segurança | Cookie httpOnly/Secure/SameSite, Argon2id, 2FA obrigatório para Super Admin e Gestor, RBAC por membership no servidor, rate limit e lockout progressivo, CSP, URL assinada para arquivos, gitleaks, CodeQL e varredura de imagem na CI. | O aluno do Fundamental I entra sem e-mail (K-D07), com lockout por turma e usuário. A recuperação de senha passa pelo professor e fica na auditoria (USR-07). |
 | **§7 Multitenancy** | **Aplica-se integralmente.** Banco compartilhado, schema compartilhado, `tenant_id` + RLS: o padrão do blueprint. Cada requisição abre uma transação com `SET LOCAL app.tenant_id` e `app.user_id`. O papel `kids_app` não tem BYPASSRLS. O tenant aparece em todas as camadas: sessão (tenant ativo validado contra `memberships`), cache (chaves `t:{tenant}:…`), armazenamento (`t/{tenant}/…`), registros (`tenant_id` no log), filas (`tenant_id` no conteúdo do trabalho). Usuário em vários tenants via `memberships`. Ciclo de vida: provisionamento com seed de matérias, suspensão, exportação e exclusão auditada (INS-02, INS-05). Dados globais (lista de etapas e anos, lista BNCC sugerida) ficam separados e são só leitura. | **Teste obrigatório na CI: o tenant A nunca lê nem escreve dados do tenant B, em toda tabela.** Índices compostos começam por `tenant_id`. |
 | §8 API-first | **Não se aplica na v1**: não há terceiros consumindo a API. | Se entrar integração com sistema escolar, aplicar a §8 inteira (OAuth2 Client Credentials, escopos, webhooks com HMAC). |
 | §9 UX e design system | O design system do Cognuss, num pacote compartilhado (`packages/ui`), com tokens e componentes base isolando a lib visual, como pede o Blueprint (§4 `design-tokens`, §9). Pensado primeiro para tablet e celular, PWA, navegação em contexto, sem botão inerte, um painel por perfil, white-label leve só com o logo (INS-04), acessibilidade (6.2). | A interface é só em português na v1, com os textos centralizados para permitir i18n. |
@@ -610,20 +610,22 @@ INS-06, PAI-05, login do responsável, biblioteca compartilhada, IA.
 | K-D04 | Compartilhamento de planos entre instituições | Não na v1. Cada instituição cria os seus. | Fernando, 20/11/2026 |
 | K-D05 | Stack | Next.js + Drizzle + Postgres, no repositório Cognuss, branch `cognuss-kids`. | Fernando, 20/11/2026 |
 | K-D06 | UX e UI | **As mesmas do Cognuss original:** identidade visual dos ADRs 0007 e 0010 (tema escuro e vermelho, com o claro opcional), padrões de `docs/ux.md` e componentes compartilhados em `packages/ui` (seção 6.5). | Fernando, 20/11/2026 |
+| K-D07 | Login do aluno do Fundamental I (era D-K02) | **Código da turma + usuário + senha simples**, sem e-mail. O professor ou o gestor redefine a senha, com registro na auditoria. Fundamental II e Médio entram com e-mail e senha. | Fernando, 20/11/2026 |
+| K-D08 | Onde ficam os dados (era D-K09) | **Banco separado** (`cognuss_kids`) no mesmo Postgres, com `tenant_id` + RLS (ADR 0022). | Fernando, 20/11/2026 |
+| K-D09 | Tema padrão (era parte de D-K08) | **Escuro, como o Cognuss**, para todas as etapas, com o botão para o claro. O piloto mede quantas crianças do Fundamental I trocam para o claro. | Fernando, 20/11/2026 |
+| K-D10 | Consentimento do responsável (era parte de D-K01) | **Online, com o papel como alternativa.** O responsável recebe um link e autoriza por finalidade. A escola pode registrar uma autorização em papel com o arquivo anexado (RES-04). Sem autorização, o aluno não estuda (RES-03). Vale para todos os menores de 18 anos até o parecer jurídico (D-K01). | Fernando, 20/11/2026 |
 
 ### 14.2 Abertas
 
 | # | Decisão | Recomendação | Bloqueia |
 |---|---|---|---|
-| D-K01 | Contrato com a escola (controladora × operadora), parecer jurídico sobre o art. 14 e a coleta de consentimento em papel | Consentimento online do responsável para todos os menores de 18 anos; o papel entra só como alternativa registrada. | Piloto com escola real |
-| D-K02 | Login do aluno do Fundamental I sem e-mail | Código da turma + usuário + senha simples, com redefinição pelo professor. | Fase 1 |
+| D-K01 | Contrato com a escola (controladora × operadora) e parecer jurídico sobre o art. 14 | Levar ao jurídico o modelo de K-D10 e o contrato de tratamento com a escola. | Piloto com escola real |
 | D-K03 | Biblioteca compartilhada de planos | Reavaliar depois do piloto. | Não bloqueia |
 | D-K04 | O responsável tem login próprio? | Na v1, só links com token (consentimento e pedidos). Conta própria na fase 5. | Fase 5 |
 | D-K05 | 2FA obrigatório para Professor | Opcional na v1, obrigatório se o professor puder exportar dados. | Fase 1 |
 | D-K06 | Endereço por instituição (subdomínio) | Um domínio só, com escolha da instituição no login. | Não bloqueia |
 | D-K07 | Modelo comercial (por aluno ou por escola) | | Antes da venda |
-| D-K08 | Domínio do Kids e tema padrão para o Fundamental I | Domínio próprio (exemplo: `kids.` no domínio do Cognuss). Manter o escuro como padrão, como no Cognuss, e medir no piloto se as crianças do Fundamental I trocam para o claro. | Fase 2 |
-| D-K09 | Banco separado ou o mesmo banco do Cognuss com `tenant_id` | Banco separado (ADR 0022). | Fase 0 |
+| D-K08 | Domínio do Kids | Domínio próprio (exemplo: `kids.` no domínio do Cognuss). | Fase 2 |
 
 ---
 
