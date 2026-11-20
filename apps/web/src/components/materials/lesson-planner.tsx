@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import type { z } from 'zod';
 import type { materials } from '@gutta/contracts';
-import { Button } from '@/components/ui/button';
+import { Button } from '@gutta/ui/button';
 import { AttachDialog, type AttachTarget } from './attach-dialog';
 
 type Lesson = z.infer<typeof materials.LessonContentDto>;

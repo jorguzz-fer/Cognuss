@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { buttonClass } from '@/components/ui/button';
-import { Wordmark } from '@/components/shared/logo';
-import { ThemeToggle } from '@/components/shared/theme-toggle';
+import { buttonClass } from '@gutta/ui/button';
+import { Wordmark } from '@gutta/ui/logo';
+import { ThemeToggle } from '@gutta/ui/theme-toggle';
 
 const STEPS = [
   {

@@ -1,5 +1,5 @@
 import { Check } from 'lucide-react';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 import { SIGNUP_STEPS, type SignupProgress, type SignupStep } from '@/features/signup/steps';
 
 // Indicador de etapas (CAD-09): concluídas com marca, a atual em destaque. Números e nomes

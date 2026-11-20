@@ -1,8 +1,8 @@
 'use client';
 import { useActionState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
-import { Field, Input } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
+import { Field, Input } from '@gutta/ui/field';
 import { createDemoStudentAction, type DemoState } from '@/features/demo/actions';
 
 /** Cria a conta de teste e mostra a senha uma vez (não fica salva em lugar nenhum). */

@@ -2,20 +2,20 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 
-// Fontes no repositório (OFL, ver src/fonts/LICENSE.md): o build não depende de rede e o
+// Fontes no repositório (OFL, ver packages/ui/fonts/LICENSE.md): o build não depende de rede e o
 // navegador do aluno não faz requisição ao Google.
 const display = localFont({
-  src: '../fonts/archivo-black-latin-400.woff2',
+  src: '../../../../packages/ui/fonts/archivo-black-latin-400.woff2',
   weight: '400',
   variable: '--font-archivo',
   display: 'swap',
 });
 const sans = localFont({
   src: [
-    { path: '../fonts/hind-latin-400.woff2', weight: '400' },
-    { path: '../fonts/hind-latin-500.woff2', weight: '500' },
-    { path: '../fonts/hind-latin-600.woff2', weight: '600' },
-    { path: '../fonts/hind-latin-700.woff2', weight: '700' },
+    { path: '../../../../packages/ui/fonts/hind-latin-400.woff2', weight: '400' },
+    { path: '../../../../packages/ui/fonts/hind-latin-500.woff2', weight: '500' },
+    { path: '../../../../packages/ui/fonts/hind-latin-600.woff2', weight: '600' },
+    { path: '../../../../packages/ui/fonts/hind-latin-700.woff2', weight: '700' },
   ],
   variable: '--font-hind',
   display: 'swap',

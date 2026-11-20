@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Alert, Card } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert, Card } from '@gutta/ui/card';
 import { requireFeature } from '@/features/flags/service';
 import { changeGoalAction } from '@/features/space/actions';
 import { loadSpace } from '@/features/space/service';

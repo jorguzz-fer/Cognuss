@@ -27,6 +27,64 @@ importers:
         specifier: ^8.46.0
         version: 8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
 
+  apps/kids:
+    dependencies:
+      '@gutta/db-kids':
+        specifier: workspace:*
+        version: link:../../packages/db-kids
+      '@gutta/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      better-auth:
+        specifier: ^1.7.15
+        version: 1.7.15(@opentelemetry/api@1.10.0)(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@opentelemetry/api@1.10.0)(@types/pg@8.23.1)(kysely@0.29.8)(pg@8.23.1))(next@16.4.4(@babel/core@7.29.7)(@opentelemetry/api@1.10.0)(@playwright/test@1.63.0)(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vitest@4.1.12(@opentelemetry/api@1.10.0)(@types/node@22.20.5)(vite@7.3.7(@types/node@22.20.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.15)))
+      lucide-react:
+        specifier: ^1.66.0
+        version: 1.66.0(@types/react@19.3.0)(react@19.3.1)
+      next:
+        specifier: ^16.4.4
+        version: 16.4.4(@babel/core@7.29.7)(@opentelemetry/api@1.10.0)(@playwright/test@1.63.0)(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react:
+        specifier: ^19.3.1
+        version: 19.3.1
+      react-dom:
+        specifier: ^19.3.1
+        version: 19.3.1(react@19.3.1)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
+      uqr:
+        specifier: ^0.1.3
+        version: 0.1.3
+      zod:
+        specifier: ^4.6.7
+        version: 4.6.7
+    devDependencies:
+      '@tailwindcss/postcss':
+        specifier: ^4.3.3
+        version: 4.3.3
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.20.5
+      '@types/react':
+        specifier: ^19.2.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.2.0
+        version: 19.3.0(@types/react@19.3.0)
+      eslint-config-next:
+        specifier: ^16.4.4
+        version: 16.4.4(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
+      tailwindcss:
+        specifier: ^4.3.3
+        version: 4.3.3
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^4.1.12
+        version: 4.1.12(@opentelemetry/api@1.10.0)(@types/node@22.20.5)(vite@7.3.7(@types/node@22.20.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.15))
+
   apps/web:
     dependencies:
       '@anthropic-ai/sdk':
@@ -50,6 +108,9 @@ importers:
       '@gutta/storage':
         specifier: workspace:*
         version: link:../../packages/storage
+      '@gutta/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       better-auth:
         specifier: ^1.7.15
         version: 1.7.15(@opentelemetry/api@1.10.0)(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@opentelemetry/api@1.10.0)(@types/pg@8.23.1)(kysely@0.29.8)(pg@8.23.1))(next@16.4.4(@babel/core@7.29.7)(@opentelemetry/api@1.10.0)(@playwright/test@1.63.0)(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vitest@4.1.12(@opentelemetry/api@1.10.0)(@types/node@22.20.5)(vite@7.3.7(@types/node@22.20.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.15)))
@@ -254,6 +315,40 @@ importers:
         specifier: ^4.1.12
         version: 4.1.12(@opentelemetry/api@1.10.0)(@types/node@22.20.5)(vite@7.3.7(@types/node@22.20.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.15))
 
+  packages/db-kids:
+    dependencies:
+      '@node-rs/argon2':
+        specifier: ^2.2.2
+        version: 2.2.2
+      drizzle-orm:
+        specifier: ^0.45.4
+        version: 0.45.4(@opentelemetry/api@1.10.0)(@types/pg@8.23.1)(kysely@0.29.8)(pg@8.23.1)
+      pg:
+        specifier: ^8.23.1
+        version: 8.23.1
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.20.5
+      '@types/pg':
+        specifier: ^8.23.1
+        version: 8.23.1
+      drizzle-kit:
+        specifier: ^0.31.11
+        version: 0.31.11
+      esbuild:
+        specifier: ^0.25.12
+        version: 0.25.12
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^4.1.12
+        version: 4.1.12(@opentelemetry/api@1.10.0)(@types/node@22.20.5)(vite@7.3.7(@types/node@22.20.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.15))
+
   packages/jobs:
     dependencies:
       '@gutta/db':
@@ -285,6 +380,27 @@ importers:
       '@types/node':
         specifier: ^22.18.0
         version: 22.20.5
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^4.1.12
+        version: 4.1.12(@opentelemetry/api@1.10.0)(@types/node@22.20.5)(vite@7.3.7(@types/node@22.20.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.15))
+
+  packages/ui:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.20.5
+      '@types/react':
+        specifier: ^19.2.0
+        version: 19.3.0
+      lucide-react:
+        specifier: ^1.66.0
+        version: 1.66.0(@types/react@19.3.0)(react@19.3.1)
+      react:
+        specifier: ^19.3.1
+        version: 19.3.1
       typescript:
         specifier: 5.9.3
         version: 5.9.3

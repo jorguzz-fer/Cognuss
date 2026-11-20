@@ -1,4 +1,4 @@
-import { cn } from '@/lib/cn';
+import { cn } from './cn';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type Size = 'md' | 'lg';

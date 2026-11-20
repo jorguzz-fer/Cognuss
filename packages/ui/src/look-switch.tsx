@@ -1,6 +1,6 @@
 'use client';
 import { useSyncExternalStore } from 'react';
-import { cn } from '@/lib/cn';
+import { cn } from './cn';
 
 type Look = 'classic' | 'glass';
 const KEY = 'gutta-look';

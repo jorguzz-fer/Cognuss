@@ -2,9 +2,9 @@
 import { useActionState, useState } from 'react';
 import { saveProfileAction, type SignupFormState } from '@/features/signup/actions';
 import { MAIN_GOALS } from '@/features/signup/steps';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
-import { Field, Input, Select } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
+import { Field, Input, Select } from '@gutta/ui/field';
 
 type Option = { id: string; name: string; slug?: string };
 

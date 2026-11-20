@@ -1,4 +1,4 @@
-import { cn } from '@/lib/cn';
+import { cn } from './cn';
 
 // Estados que toda tela precisa ter: vazio com próximo passo, erro recuperável e carregando.
 export function EmptyState({

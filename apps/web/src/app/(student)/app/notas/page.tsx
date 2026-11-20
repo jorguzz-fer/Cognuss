@@ -1,8 +1,8 @@
 import { formatGrade } from '@gutta/core';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { buttonClass } from '@/components/ui/button';
-import { Badge, Card } from '@/components/ui/card';
+import { buttonClass } from '@gutta/ui/button';
+import { Badge, Card } from '@gutta/ui/card';
 import { requireFeature } from '@/features/flags/service';
 import { gradesOverview } from '@/features/grades/service';
 import { requireStudent } from '@/lib/auth/session';

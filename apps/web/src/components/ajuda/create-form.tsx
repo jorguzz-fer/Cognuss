@@ -3,10 +3,10 @@ import { BarChart3, CheckSquare, FileText, Layers, ListChecks, Network, Route } 
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import type { ajuda } from '@gutta/contracts';
-import { Button } from '@/components/ui/button';
-import { Alert, Card } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert, Card } from '@gutta/ui/card';
 import { ClientApiError, api } from '@/lib/client-api';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 type Material = {
   id: string;

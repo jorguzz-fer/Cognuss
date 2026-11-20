@@ -3,10 +3,10 @@ import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import type { agenda } from '@gutta/contracts';
 import { AgendaRow, itemColor, timeLabel } from '@/components/agenda/item';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/cn';
-import { categoryClasses } from '@/styles/categories';
+import { Button } from '@gutta/ui/button';
+import { Card } from '@gutta/ui/card';
+import { cn } from '@gutta/ui/cn';
+import { categoryClasses } from '@gutta/ui/categories';
 import { EventEditor, type EditorTarget } from './event-editor';
 
 type Item = agenda.AgendaItemDto;

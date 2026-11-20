@@ -1,4 +1,4 @@
-import { cn } from '@/lib/cn';
+import { cn } from './cn';
 import { useId } from 'react';
 
 // Rótulo sempre visível acima do campo, dica e erro ligados por aria-describedby.

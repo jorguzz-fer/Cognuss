@@ -4,15 +4,15 @@ import Link from 'next/link';
 import { AttachDocument } from '@/components/disciplines/attach-document';
 import { notFound } from 'next/navigation';
 import { DownloadButton } from '@/components/files/download-button';
-import { Badge, Card } from '@/components/ui/card';
+import { Badge, Card } from '@gutta/ui/card';
 import { getAttendance } from '@/features/attendance/service';
 import { disciplineOverview } from '@/features/discipline-overview/service';
 import { requireFeature } from '@/features/flags/service';
 import { getGrades } from '@/features/grades/service';
 import { ApiError } from '@/lib/api';
 import { requireStudent } from '@/lib/auth/session';
-import { cn } from '@/lib/cn';
-import { categoryClasses, type CategoryColor } from '@/styles/categories';
+import { cn } from '@gutta/ui/cn';
+import { categoryClasses, type CategoryColor } from '@gutta/ui/categories';
 
 export const metadata: Metadata = { title: 'Disciplina' };
 

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Badge, Card } from '@/components/ui/card';
+import { Badge, Card } from '@gutta/ui/card';
 import { listCreations } from '@/features/ajuda/service';
 import { requireFeature } from '@/features/flags/service';
 import { requireStudent } from '@/lib/auth/session';

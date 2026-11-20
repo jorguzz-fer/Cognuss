@@ -2,15 +2,15 @@ import { BAND_LABEL, type Recommendation } from '@gutta/core';
 import { CalendarDays, Check, Layers, Sparkles } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { buttonClass } from '@/components/ui/button';
-import { Alert, Badge, Card, DemoBadge } from '@/components/ui/card';
+import { buttonClass } from '@gutta/ui/button';
+import { Alert, Badge, Card, DemoBadge } from '@gutta/ui/card';
 import { MySpace } from '@/components/space/my-space';
 import { loadDashboard } from '@/features/dashboard/data';
 import { flags } from '@/features/flags/service';
 import { weekSummary } from '@/features/planning/service';
 import { loadSpace } from '@/features/space/service';
 import { requireStudent } from '@/lib/auth/session';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 export const metadata: Metadata = { title: 'Hoje' };
 

@@ -1,5 +1,5 @@
 import { connection } from 'next/server';
-import { Wordmark } from '@/components/shared/logo';
+import { Wordmark } from '@gutta/ui/logo';
 import { requireFeature } from '@/features/flags/service';
 
 // Cadastro da v2 (SPEC v2, 5.1), atrás da chave "cadastro".

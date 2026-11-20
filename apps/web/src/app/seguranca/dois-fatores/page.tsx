@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AuthShell } from '@/components/auth/auth-shell';
 import { TwoFactorSetup } from '@/components/auth/two-factor-setup';
-import { Alert } from '@/components/ui/card';
+import { Alert } from '@gutta/ui/card';
 import { requireUser } from '@/lib/auth/session';
 
 export const metadata: Metadata = { title: 'Verificação em duas etapas' };

@@ -3,9 +3,9 @@ import { formatGrade, neededGrade } from '@gutta/core';
 import { useState } from 'react';
 import type { grades } from '@gutta/contracts';
 import { RequestReview } from '@/components/planning/request-review';
-import { Button } from '@/components/ui/button';
-import { Alert, Badge, Card } from '@/components/ui/card';
-import { Field, Input, Select } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert, Badge, Card } from '@gutta/ui/card';
+import { Field, Input, Select } from '@gutta/ui/field';
 import { api, ClientApiError } from '@/lib/client-api';
 
 type Dto = grades.GradesDto;

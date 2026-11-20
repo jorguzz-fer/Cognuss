@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { AdminHeader, Checkbox, Flash } from '@/components/admin/ui';
-import { Button } from '@/components/ui/button';
-import { Alert, Card } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert, Card } from '@gutta/ui/card';
 import { saveFlagsAction } from '@/features/flags/actions';
 import { FEATURES } from '@/features/flags/catalog';
 import { flags } from '@/features/flags/service';

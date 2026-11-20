@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AdminHeader, Flash, StatusBadge, tableClass } from '@/components/admin/ui';
-import { Button } from '@/components/ui/button';
-import { Card, DemoBadge } from '@/components/ui/card';
-import { Field, Input } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Card, DemoBadge } from '@gutta/ui/card';
+import { Field, Input } from '@gutta/ui/field';
 import { saveInstitutionAction, setInstitutionStatusAction } from '@/features/admin/actions';
 import { listInstitutions, type InstitutionStatus } from '@/features/admin/service';
 import { requireRole } from '@/lib/auth/session';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 export const metadata: Metadata = { title: 'Instituições' };
 

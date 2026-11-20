@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Alert, Badge } from '@/components/ui/card';
+import { Alert, Badge } from '@gutta/ui/card';
 
 // Peças comuns das telas do admin.
 

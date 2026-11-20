@@ -3,15 +3,15 @@ import { FileText, Trash2, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { disciplines } from '@gutta/contracts';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
-import { Field, Input } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
+import { Field, Input } from '@gutta/ui/field';
 import { api, ClientApiError } from '@/lib/client-api';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 import { uploadFile } from '@/lib/upload';
 import { AttachDocument } from './attach-document';
 import { isPending, ScheduleStatus } from './schedule-status';
-import { CATEGORY_COLORS, categoryClasses, type CategoryColor } from '@/styles/categories';
+import { CATEGORY_COLORS, categoryClasses, type CategoryColor } from '@gutta/ui/categories';
 
 type DisciplineDto = disciplines.DisciplineDto;
 

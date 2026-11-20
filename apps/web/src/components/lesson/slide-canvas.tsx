@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { lessonStudy } from '@gutta/contracts';
 import type { z } from 'zod';
-import { Button } from '@/components/ui/button';
+import { Button } from '@gutta/ui/button';
 import { hits, q4, shapeId, thin, type Pt, type Shape } from './geometry';
 import type { PDFDocumentProxy } from './pdf';
 import { ShapeView } from './shapes';

@@ -2,8 +2,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { lessonStudy } from '@gutta/contracts';
 import type { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
 import { ClientApiError, api } from '@/lib/client-api';
 
 type Item = z.infer<typeof lessonStudy.annotationHistory.response>['items'][number];

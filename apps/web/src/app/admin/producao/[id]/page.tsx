@@ -4,7 +4,7 @@ import { slidesLabel } from '@gutta/core';
 import { AdminHeader } from '@/components/admin/ui';
 import { AutoRefresh } from '@/components/production/auto-refresh';
 import { TaskBoard } from '@/components/production/task-board';
-import { Alert, Badge, Card } from '@/components/ui/card';
+import { Alert, Badge, Card } from '@gutta/ui/card';
 import { BATCH_STATUS, SLIDE_KIND, usd } from '@/features/production/labels';
 import { getBatch } from '@/features/production/service';
 import { ApiError } from '@/lib/api';

@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Card } from '@/components/ui/card';
+import { Card } from '@gutta/ui/card';
 import { listCreations } from '@/features/ajuda/service';
 import { featureEnabled, requireFeature } from '@/features/flags/service';
 import { requireStudent } from '@/lib/auth/session';

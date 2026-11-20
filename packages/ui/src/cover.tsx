@@ -1,4 +1,4 @@
-import { cn } from '@/lib/cn';
+import { cn } from './cn';
 
 // Matizes das capas, todos nos tons de vermelho e brasa da marca. A escolha é estável por slug.
 const HUES = [27, 18, 35, 10, 42, 22];

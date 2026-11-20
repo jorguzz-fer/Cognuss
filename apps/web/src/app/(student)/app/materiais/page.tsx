@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Library } from '@/components/materials/library';
-import { Card } from '@/components/ui/card';
+import { Card } from '@gutta/ui/card';
 import { requireFeature } from '@/features/flags/service';
 import { disciplinesForMaterials, listMaterials } from '@/features/materials/service';
 import { requireStudent } from '@/lib/auth/session';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 export const metadata: Metadata = { title: 'Material de estudo' };
 

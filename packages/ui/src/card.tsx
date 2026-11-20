@@ -1,4 +1,4 @@
-import { cn } from '@/lib/cn';
+import { cn } from './cn';
 
 // Um contêiner por unidade de informação (Região Comum).
 export function Card({

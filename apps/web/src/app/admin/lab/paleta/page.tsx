@@ -6,7 +6,7 @@ import {
   categoryClasses,
   EVENT_TYPE_COLOR,
   type CategoryColor,
-} from '@/styles/categories';
+} from '@gutta/ui/categories';
 
 export const metadata: Metadata = { title: 'Paleta de categorias' };
 

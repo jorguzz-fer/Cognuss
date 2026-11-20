@@ -2,10 +2,10 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { useActionState, useState } from 'react';
 import { saveQuestionAction, type EditorialState } from '@/features/editorial/actions';
-import { Button } from '@/components/ui/button';
-import { Alert, Card } from '@/components/ui/card';
-import { Field, Input, Select, Textarea } from '@/components/ui/field';
-import { cn } from '@/lib/cn';
+import { Button } from '@gutta/ui/button';
+import { Alert, Card } from '@gutta/ui/card';
+import { Field, Input, Select, Textarea } from '@gutta/ui/field';
+import { cn } from '@gutta/ui/cn';
 
 type Topic = { id: string; name: string; parentId: string | null; disciplineName: string };
 type Opt = { body: string; explanation: string; isCorrect: boolean };

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { MaterialDetail } from '@/components/materials/material-detail';
-import { buttonClass } from '@/components/ui/button';
+import { buttonClass } from '@gutta/ui/button';
 import { featureEnabled, requireFeature } from '@/features/flags/service';
 import { disciplinesForMaterials, getMaterial } from '@/features/materials/service';
 import { ApiError } from '@/lib/api';

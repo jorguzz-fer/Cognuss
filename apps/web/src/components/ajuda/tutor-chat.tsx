@@ -2,8 +2,8 @@
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import type { ajuda } from '@gutta/contracts';
-import { Button } from '@/components/ui/button';
-import { Alert, Badge, Card } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert, Badge, Card } from '@gutta/ui/card';
 import { ClientApiError, api } from '@/lib/client-api';
 import { AI_SEAL } from './creation-view';
 

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { NewCardForm } from '@/components/flashcards/new-card-form';
-import { EmptyState } from '@/components/shared/states';
-import { Button } from '@/components/ui/button';
-import { Badge, Card } from '@/components/ui/card';
+import { EmptyState } from '@gutta/ui/states';
+import { Button } from '@gutta/ui/button';
+import { Badge, Card } from '@gutta/ui/card';
 import { deleteCardAction } from '@/features/flashcards/actions';
 import { listPersonal } from '@/features/flashcards/service';
 import { requireStudent } from '@/lib/auth/session';

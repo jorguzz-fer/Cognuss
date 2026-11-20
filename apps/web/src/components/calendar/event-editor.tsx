@@ -3,10 +3,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import type { agenda, calendar } from '@gutta/contracts';
-import { Button, buttonClass } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
+import { Button, buttonClass } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
 import { RequestReview } from '@/components/planning/request-review';
-import { Field, Input, Select, Textarea } from '@/components/ui/field';
+import { Field, Input, Select, Textarea } from '@gutta/ui/field';
 import { api, ClientApiError } from '@/lib/client-api';
 
 type Item = agenda.AgendaItemDto;

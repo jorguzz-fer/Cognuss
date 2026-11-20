@@ -2,9 +2,9 @@
 import Link from 'next/link';
 import { useActionState } from 'react';
 import { savePersonalAction, type SignupFormState } from '@/features/signup/actions';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
-import { Field, Input } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
+import { Field, Input } from '@gutta/ui/field';
 
 export function PersonalForm({
   initial,

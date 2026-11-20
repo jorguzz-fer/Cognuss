@@ -1,9 +1,9 @@
 'use client';
 import { useActionState, useRef } from 'react';
 import { createCardAction, type CardFormState } from '@/features/flashcards/actions';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
-import { Field, Textarea } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
+import { Field, Textarea } from '@gutta/ui/field';
 
 export function NewCardForm() {
   const formRef = useRef<HTMLFormElement>(null);
