@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { ajuda } from '@gutta/contracts';
-import { Button, buttonClass } from '@/components/ui/button';
-import { Alert, Badge, Card } from '@/components/ui/card';
+import { Button, buttonClass } from '@gutta/ui/button';
+import { Alert, Badge, Card } from '@gutta/ui/card';
 import { ClientApiError, api } from '@/lib/client-api';
 
 type Creation = ajuda.CreationDto;

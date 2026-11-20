@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { TutorStart } from '@/components/ajuda/tutor-start';
-import { Card } from '@/components/ui/card';
+import { Card } from '@gutta/ui/card';
 import { hasAiConsent, materialsForCreation } from '@/features/ajuda/service';
 import { requireFeature } from '@/features/flags/service';
 import { listTutorThreads, TUTOR_CONSENT_TEXT, tutorPresetLabel } from '@/features/tutor/materials';

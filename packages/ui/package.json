@@ -1,0 +1,40 @@
+{
+  "name": "@gutta/ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": ["*.css"],
+  "exports": {
+    "./theme.css": "./src/theme.css",
+    "./tokens.css": "./src/tokens.css",
+    "./glass.css": "./src/glass.css",
+    "./cn": "./src/cn.ts",
+    "./categories": "./src/categories.ts",
+    "./contrast": "./src/contrast.ts",
+    "./button": "./src/button.tsx",
+    "./card": "./src/card.tsx",
+    "./field": "./src/field.tsx",
+    "./password-input": "./src/password-input.tsx",
+    "./cover": "./src/cover.tsx",
+    "./logo": "./src/logo.tsx",
+    "./states": "./src/states.tsx",
+    "./theme-toggle": "./src/theme-toggle.tsx",
+    "./look-switch": "./src/look-switch.tsx"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "lucide-react": "^1.66.0",
+    "react": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.2.0",
+    "lucide-react": "^1.66.0",
+    "react": "^19.3.1",
+    "typescript": "5.9.3",
+    "vitest": "^4.1.12"
+  }
+}

@@ -3,11 +3,11 @@ import { BAND_LABEL, type MasteryBand } from '@gutta/core';
 import { Check, X } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ErrorState, LoadingBlock } from '@/components/shared/states';
-import { Button, buttonClass } from '@/components/ui/button';
-import { Alert, Badge, Card, DemoBadge } from '@/components/ui/card';
+import { ErrorState, LoadingBlock } from '@gutta/ui/states';
+import { Button, buttonClass } from '@gutta/ui/button';
+import { Alert, Badge, Card, DemoBadge } from '@gutta/ui/card';
 import { api, ClientApiError } from '@/lib/client-api';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 import { CreateFlashcardFromQuestion } from './create-flashcard';
 
 type Option = { id: string; body: string; displayOrder: number };

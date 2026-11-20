@@ -2,10 +2,10 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { authClient } from '@/lib/auth/client';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
-import { Field, Input } from '@/components/ui/field';
-import { PasswordInput } from '@/components/ui/password-input';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
+import { Field, Input } from '@gutta/ui/field';
+import { PasswordInput } from '@gutta/ui/password-input';
 
 export function RequestResetForm() {
   const [state, setState] = useState<'idle' | 'pending' | 'sent' | 'error'>('idle');

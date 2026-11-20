@@ -3,10 +3,10 @@ import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { renderSVG } from 'uqr';
 import { authClient } from '@/lib/auth/client';
-import { Button } from '@/components/ui/button';
-import { Alert, Card } from '@/components/ui/card';
-import { Field, Input } from '@/components/ui/field';
-import { PasswordInput } from '@/components/ui/password-input';
+import { Button } from '@gutta/ui/button';
+import { Alert, Card } from '@gutta/ui/card';
+import { Field, Input } from '@gutta/ui/field';
+import { PasswordInput } from '@gutta/ui/password-input';
 
 // Ativação do segundo fator em 3 passos, com progresso visível (Gradiente de Meta).
 export function TwoFactorSetup() {

@@ -16,8 +16,11 @@ Plataforma de estudo diário para o curso de Medicina. O nome da marca é **Cogn
 ```
 public/            site estático (página de espera e /roadmap), servido pelo Dockerfile raiz. Não mexer sem pedido.
 apps/web/          Next.js 16 (App Router): telas, route handlers /api/v1, server actions
+apps/kids/         Cognuss Kids (ADR 0022): app Next.js próprio, banco próprio, RLS por instituição
 packages/core/     regras de domínio puras (SRS, domínio, recomendação, normalização). Sem I/O.
 packages/db/       schema Drizzle, migrations SQL, RLS, seeds, withUser()
+packages/db-kids/  banco do Kids: schema, migrations, RLS por tenant, withTenantUser(), withPlatformAdmin()
+packages/ui/       design system compartilhado (tokens, fontes, componentes base) do web e do kids
 loadtest/          k6
 docs/              spec, ADRs, arquitetura, deploy, UX
 ```
@@ -27,6 +30,7 @@ docs/              spec, ADRs, arquitetura, deploy, UX
 - Português do Brasil na interface, nos comentários e na documentação. Identificadores de código em inglês.
 - Servidor é a fronteira de confiança. Identidade vem da sessão, nunca do corpo da requisição.
 - Todo acesso a dados do aluno passa por `withUser(userId, tx => …)`, que liga o RLS. O papel `gutta_app` não tem BYPASSRLS.
+- No Kids, todo acesso passa por `withTenantUser(tenantId, userId, tx => …)`; o tenant vem da sessão e é conferido contra `memberships`. Toda tabela nova com `tenant_id` entra sozinha no teste de isolamento (`packages/db-kids/test/isolation.test.ts`) e precisa de uma linha da escola B nele.
 - Gabarito nunca vai ao navegador antes da tentativa.
 - Conteúdo de saúde sem revisão editorial é sempre marcado como demonstração. Conteúdo gerado por IA a partir do material do aluno leva o selo de gerado por IA, sem revisão. Não inventar fontes, citações nem dados institucionais.
 - Nada muda a agenda do aluno sem ele confirmar. Horário pessoal protegido nunca é usado para estudo. Sem texto de culpa ou cobrança (SPEC v2, seção 6).

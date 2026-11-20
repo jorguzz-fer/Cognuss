@@ -1,6 +1,6 @@
 import type { agenda } from '@gutta/contracts';
-import { cn } from '@/lib/cn';
-import { categoryClasses, EVENT_TYPE_COLOR, type CategoryColor } from '@/styles/categories';
+import { cn } from '@gutta/ui/cn';
+import { categoryClasses, EVENT_TYPE_COLOR, type CategoryColor } from '@gutta/ui/categories';
 
 type Item = agenda.AgendaItemDto;
 

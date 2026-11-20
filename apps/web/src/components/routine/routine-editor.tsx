@@ -2,17 +2,17 @@
 import { ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { routine } from '@gutta/contracts';
-import { Button } from '@/components/ui/button';
-import { Alert, Card } from '@/components/ui/card';
-import { Field, Input, Select } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert, Card } from '@gutta/ui/card';
+import { Field, Input, Select } from '@gutta/ui/field';
 import { api, ClientApiError } from '@/lib/client-api';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 import {
   CATEGORY_COLORS,
   categoryClasses,
   EVENT_TYPE_COLOR,
   type CategoryColor,
-} from '@/styles/categories';
+} from '@gutta/ui/categories';
 
 type Dto = routine.RoutineDto;
 type Block = routine.RoutineBlockDto;

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AdminHeader, tableClass } from '@/components/admin/ui';
 import { NewBatchForm } from '@/components/production/new-batch-form';
-import { Badge, Card } from '@/components/ui/card';
+import { Badge, Card } from '@gutta/ui/card';
 import { BATCH_STATUS } from '@/features/production/labels';
 import { listBatches, productionOptions } from '@/features/production/service';
 import { requireRole } from '@/lib/auth/session';

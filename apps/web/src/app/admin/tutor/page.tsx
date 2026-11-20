@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AdminHeader, Checkbox, Flash, tableClass } from '@/components/admin/ui';
-import { Button } from '@/components/ui/button';
-import { Alert, Card } from '@/components/ui/card';
-import { Field, Input } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert, Card } from '@gutta/ui/card';
+import { Field, Input } from '@gutta/ui/field';
 import { saveTutorSettingsAction } from '@/features/tutor/actions';
 import { tutorAdminOverview } from '@/features/tutor/service';
 import { requireRole } from '@/lib/auth/session';

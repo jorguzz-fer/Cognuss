@@ -2,8 +2,8 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { planning } from '@gutta/contracts';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
 import { ClientApiError, api } from '@/lib/client-api';
 
 type Prefs = planning.PreferencesDto;

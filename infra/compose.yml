@@ -7,6 +7,9 @@
 #   VOYAGE_API_KEY e EMBEDDING_MODEL (opcionais; busca por conceito, ADR 0014)
 #   LEGAL_CONTROLLER_NAME, LEGAL_CONTROLLER_DOCUMENT, DPO_NAME, DPO_EMAIL (LGPD; preencher antes do piloto)
 #   REDIS_PASSWORD (fila e limite de taxa; ADR 0013)
+# Cognuss Kids (ADR 0022), no mesmo Postgres e em banco próprio:
+#   KIDS_APP_URL, KIDS_BETTER_AUTH_SECRET, KIDS_OWNER_PASSWORD, KIDS_APP_PASSWORD,
+#   KIDS_BOOTSTRAP_ADMIN_EMAILS, KIDS_MAIL_FROM (opcional)
 name: gutta
 
 services:
@@ -174,6 +177,53 @@ services:
     environment:
       PGPASSWORD: ${POSTGRES_PASSWORD}
     command: ['psql', '-h', 'db', '-U', 'postgres', '-d', 'gutta', '-v', 'ON_ERROR_STOP=1', '-c', 'CREATE EXTENSION IF NOT EXISTS vector;']
+
+  # Cognuss Kids (ADR 0022): app próprio, banco próprio (cognuss_kids) no mesmo Postgres.
+  # Só os papéis kids_owner e kids_app conectam a esse banco. Domínio próprio no Coolify.
+  kids:
+    image: gutta-kids:latest
+    build:
+      context: ..
+      dockerfile: apps/kids/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      db-kids-roles:
+        condition: service_completed_successfully
+    environment:
+      APP_URL: ${KIDS_APP_URL}
+      BETTER_AUTH_SECRET: ${KIDS_BETTER_AUTH_SECRET}
+      KIDS_DATABASE_URL: postgres://kids_app:${KIDS_APP_PASSWORD}@db:5432/cognuss_kids
+      KIDS_DATABASE_OWNER_URL: postgres://kids_owner:${KIDS_OWNER_PASSWORD}@db:5432/cognuss_kids
+      KIDS_BOOTSTRAP_ADMIN_EMAILS: ${KIDS_BOOTSTRAP_ADMIN_EMAILS:-}
+      DB_POOL_MAX: ${KIDS_DB_POOL_MAX:-10}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      MAIL_FROM: ${KIDS_MAIL_FROM:-Cognuss Kids <nao-responda@gutta.tudomudou.com.br>}
+    expose:
+      - '3100'
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:3100/api/health >/dev/null || exit 1']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  # Papéis e banco do Kids. Roda a cada deploy (idempotente) e termina, antes do kids.
+  db-kids-roles:
+    image: gutta-db:16
+    build:
+      context: ./postgres
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: 'no'
+    environment:
+      PGHOST: db
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      KIDS_OWNER_PASSWORD: ${KIDS_OWNER_PASSWORD}
+      KIDS_APP_PASSWORD: ${KIDS_APP_PASSWORD}
+    entrypoint: ['/usr/local/bin/kids-roles.sh']
 
 volumes:
   gutta-pg:

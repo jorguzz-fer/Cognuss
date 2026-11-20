@@ -2,10 +2,10 @@
 import Link from 'next/link';
 import { useActionState } from 'react';
 import { signUpAction, type SignUpState } from '@/features/auth/actions';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
-import { Field, Input } from '@/components/ui/field';
-import { PasswordInput } from '@/components/ui/password-input';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
+import { Field, Input } from '@gutta/ui/field';
+import { PasswordInput } from '@gutta/ui/password-input';
 
 // Três campos e o aceite (Hick, Parkinson). O resto do perfil vem no onboarding.
 export function SignUpForm() {

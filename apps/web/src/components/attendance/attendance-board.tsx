@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { useState } from 'react';
 import type { attendance } from '@gutta/contracts';
 import { RequestReview } from '@/components/planning/request-review';
-import { Button } from '@/components/ui/button';
-import { Alert, Badge, Card } from '@/components/ui/card';
-import { Field, Input, Select } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert, Badge, Card } from '@gutta/ui/card';
+import { Field, Input, Select } from '@gutta/ui/field';
 import { api, ClientApiError } from '@/lib/client-api';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 type Dto = attendance.AttendanceDto;
 

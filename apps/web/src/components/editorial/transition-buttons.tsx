@@ -6,9 +6,9 @@ import {
   type EditorialState,
 } from '@/features/editorial/actions';
 import type { Status } from '@/features/editorial/service';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
-import { Field, Textarea } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
+import { Field, Textarea } from '@gutta/ui/field';
 
 type Props = { id: string; status: Status; isAuthor: boolean; isReviewer: boolean };
 

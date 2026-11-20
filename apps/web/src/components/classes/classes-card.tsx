@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button';
-import { Alert, Card } from '@/components/ui/card';
-import { Field, Input } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert, Card } from '@gutta/ui/card';
+import { Field, Input } from '@gutta/ui/field';
 import { joinClassAction, leaveClassAction } from '@/features/classes/actions';
 
 type Joined = { id: string; name: string; joinedAt: Date; teacherName: string | null };

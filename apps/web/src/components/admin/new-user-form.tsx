@@ -2,9 +2,9 @@
 import Link from 'next/link';
 import { useActionState, useEffect, useRef } from 'react';
 import { Checkbox } from '@/components/admin/ui';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
-import { Field, Input, Select } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
+import { Field, Input, Select } from '@gutta/ui/field';
 import { createUserAction, type NewUserState } from '@/features/admin/actions';
 
 /*

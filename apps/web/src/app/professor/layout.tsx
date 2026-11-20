@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Wordmark } from '@/components/shared/logo';
-import { ThemeToggle } from '@/components/shared/theme-toggle';
+import { Wordmark } from '@gutta/ui/logo';
+import { ThemeToggle } from '@gutta/ui/theme-toggle';
 import { requireRole } from '@/lib/auth/session';
 
 // Área do professor: turmas e desempenho. Papel professor (ou admin, com 2FA).

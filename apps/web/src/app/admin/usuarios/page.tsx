@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { NewUserForm } from '@/components/admin/new-user-form';
 import { AdminHeader, Flash, tableClass } from '@/components/admin/ui';
-import { Button } from '@/components/ui/button';
-import { Badge, Card } from '@/components/ui/card';
-import { Input, Select } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Badge, Card } from '@gutta/ui/card';
+import { Input, Select } from '@gutta/ui/field';
 import { ASSIGNABLE_ROLES, listUsers, ROLE_LABEL } from '@/features/admin/service';
 import { requireRole, type Role } from '@/lib/auth/session';
 

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { AdminHeader, Flash } from '@/components/admin/ui';
-import { Button } from '@/components/ui/button';
-import { Alert, Badge, Card } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert, Badge, Card } from '@gutta/ui/card';
 import { revokeSessionsAction, setRoleAction, verifyEmailAction } from '@/features/admin/actions';
 import { ASSIGNABLE_ROLES, getUserAdmin, ROLE_LABEL } from '@/features/admin/service';
 import { requireRole } from '@/lib/auth/session';

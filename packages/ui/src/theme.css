@@ -1,0 +1,128 @@
+/* Tema do Cognuss (ADR 0007 e 0010), compartilhado pelo web e pelo kids (SPEC Kids 6.5).
+   Cada app importa depois de 'tailwindcss' e declara @source deste pacote. */
+@import './tokens.css';
+@import './glass.css';
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-pulse: var(--pulse);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-cover-fg: var(--cover-fg);
+  --color-cover-muted: var(--cover-muted);
+  --color-login-panel: var(--login-panel);
+  --color-login-surface: var(--login-surface);
+  --color-login-line: var(--login-line);
+  --color-cat-1: var(--cat-1);
+  --color-cat-1-fg: var(--cat-1-fg);
+  --color-cat-1-line: var(--cat-1-line);
+  --color-cat-2: var(--cat-2);
+  --color-cat-2-fg: var(--cat-2-fg);
+  --color-cat-2-line: var(--cat-2-line);
+  --color-cat-3: var(--cat-3);
+  --color-cat-3-fg: var(--cat-3-fg);
+  --color-cat-3-line: var(--cat-3-line);
+  --color-cat-4: var(--cat-4);
+  --color-cat-4-fg: var(--cat-4-fg);
+  --color-cat-4-line: var(--cat-4-line);
+  --color-cat-5: var(--cat-5);
+  --color-cat-5-fg: var(--cat-5-fg);
+  --color-cat-5-line: var(--cat-5-line);
+  --color-cat-6: var(--cat-6);
+  --color-cat-6-fg: var(--cat-6-fg);
+  --color-cat-6-line: var(--cat-6-line);
+  --color-cat-7: var(--cat-7);
+  --color-cat-7-fg: var(--cat-7-fg);
+  --color-cat-7-line: var(--cat-7-line);
+  --color-cat-8: var(--cat-8);
+  --color-cat-8-fg: var(--cat-8-fg);
+  --color-cat-8-line: var(--cat-8-line);
+  --font-display: var(--font-archivo), 'Hind', system-ui, sans-serif;
+  --font-sans: var(--font-hind), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Rótulos curtos (eyebrows, selos) usam o texto em caixa alta e espaçado, como no protótipo. */
+  --font-mono: var(--font-hind), system-ui, sans-serif;
+  --shadow-card: var(--card-shadow);
+  --radius-card: var(--radius-lg);
+  --radius-control: var(--radius);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  /* Archivo Black só tem um peso: sem negrito sintético nos títulos. */
+  .font-display,
+  h1,
+  h2,
+  h3 {
+    font-synthesis-weight: none;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  /* Link em texto não depende só da cor (WCAG 1.4.1): sublinhado por padrão.
+     Botões e itens de navegação tiram o sublinhado com no-underline. */
+  a {
+    color: var(--accent);
+    text-decoration-line: underline;
+    text-underline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Capa de disciplina/módulo: degradê no matiz da disciplina, como as capas do protótipo. */
+.course-cover {
+  background: linear-gradient(
+    135deg,
+    oklch(0.45 0.16 var(--course-hue, 27)),
+    oklch(0.18 0.05 var(--course-hue, 27))
+  );
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}

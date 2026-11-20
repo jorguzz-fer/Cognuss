@@ -19,7 +19,10 @@
     "db:setup": "pnpm --filter @gutta/db setup:local",
     "db:migrate": "pnpm --filter @gutta/db migrate",
     "db:seed": "pnpm --filter @gutta/db seed",
-    "db:generate": "pnpm --filter @gutta/db generate"
+    "db:generate": "pnpm --filter @gutta/db generate",
+    "kids:dev": "pnpm --filter @gutta/kids dev",
+    "kids:build": "pnpm --filter @gutta/kids build",
+    "kids:db:setup": "pnpm --filter @gutta/db-kids setup:local"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

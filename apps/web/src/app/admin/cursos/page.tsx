@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AdminHeader, Checkbox, Flash, tableClass } from '@/components/admin/ui';
-import { Button } from '@/components/ui/button';
-import { Badge, Card, DemoBadge } from '@/components/ui/card';
-import { Field, Input } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Badge, Card, DemoBadge } from '@gutta/ui/card';
+import { Field, Input } from '@gutta/ui/field';
 import { saveCourseAction } from '@/features/admin/actions';
 import { listCourses } from '@/features/admin/service';
 import { requireRole } from '@/lib/auth/session';

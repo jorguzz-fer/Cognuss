@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import type { lessonStudy } from '@gutta/contracts';
-import { Button } from '@/components/ui/button';
+import { Button } from '@gutta/ui/button';
 import { ClientApiError, api } from '@/lib/client-api';
 import { NoteView } from './note-view';
 import type { Region } from './slide-canvas';

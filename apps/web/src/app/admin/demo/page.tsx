@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { AdminHeader } from '@/components/admin/ui';
 import { DemoForm } from '@/components/admin/demo-form';
-import { Card } from '@/components/ui/card';
+import { Card } from '@gutta/ui/card';
 import { DEMO_DOWNLOADS } from '@/features/demo/service';
 import { requireRole } from '@/lib/auth/session';
 

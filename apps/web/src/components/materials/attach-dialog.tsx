@@ -2,9 +2,9 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import type { materials } from '@gutta/contracts';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
-import { Field, Input, Select } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
+import { Field, Input, Select } from '@gutta/ui/field';
 import { ClientApiError, api } from '@/lib/client-api';
 import { uploadFile } from '@/lib/upload';
 

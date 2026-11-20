@@ -1,7 +1,7 @@
 'use client';
 import { Download } from 'lucide-react';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@gutta/ui/button';
 import { api, ClientApiError } from '@/lib/client-api';
 
 /** Baixa o original de um arquivo pela URL assinada de vida curta (DSC-04). */

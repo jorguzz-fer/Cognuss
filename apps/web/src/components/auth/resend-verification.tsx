@@ -1,8 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { authClient } from '@/lib/auth/client';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
 
 export function ResendVerification({ email }: { email: string }) {
   const [state, setState] = useState<'idle' | 'pending' | 'sent' | 'error'>('idle');

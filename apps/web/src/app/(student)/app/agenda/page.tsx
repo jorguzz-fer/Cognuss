@@ -3,13 +3,13 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CalendarView, type View } from '@/components/calendar/calendar-view';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Card } from '@gutta/ui/card';
 import { currentDisciplines } from '@/features/academics/service';
 import { getAgenda, userToday } from '@/features/agenda/service';
 import { featureEnabled, requireFeature } from '@/features/flags/service';
 import { requireStudent } from '@/lib/auth/session';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 export const metadata: Metadata = { title: 'Agenda' };
 
