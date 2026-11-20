@@ -68,8 +68,14 @@ export async function pdfText(pdf: Buffer, pages: number, timeoutMs = 120_000): 
 }
 
 /** Miniatura JPEG de cada página, com 320 px de largura. */
-export async function pdfThumbnails(
+export function pdfThumbnails(pdf: Buffer, timeoutMs = 300_000): Promise<Map<number, Buffer>> {
+  return pdfImages(pdf, 320, timeoutMs);
+}
+
+/** JPEG de cada página na largura pedida (a produção de aulas usa 1024 px). */
+export async function pdfImages(
   pdf: Buffer,
+  width: number,
   timeoutMs = 300_000,
 ): Promise<Map<number, Buffer>> {
   return withTempDir(async (dir) => {
@@ -82,7 +88,7 @@ export async function pdfThumbnails(
         '-jpegopt',
         'quality=70',
         '-scale-to-x',
-        '320',
+        String(width),
         '-scale-to-y',
         '-1',
         src,

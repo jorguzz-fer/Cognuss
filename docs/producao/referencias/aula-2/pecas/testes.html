@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Testes dinâmicos do eixo do GH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Identidade Cognuss (tokens de apps/web/src/styles/tokens.css): quase-preto quente, coral da marca,
+   Archivo Black nos títulos, Hind no texto. Layout: diagrama do eixo à esquerda, gráfico e controles à direita. */
+:root{
+  --bg:oklch(0.985 0 0);--surface:oklch(1 0 0);--surface-2:oklch(0.95 0.003 20);
+  --fg:oklch(0.21 0.006 20);--muted:oklch(0.46 0.006 20);--line:oklch(0.86 0.003 20);--line-strong:oklch(0.72 0.004 20);
+  --accent:oklch(0.52 0.2 27);--accent-hover:oklch(0.46 0.19 27);--accent-ink:oklch(0.99 0 0);--accent-soft:oklch(0.94 0.03 27);
+  --success:oklch(0.48 0.12 152);--success-soft:oklch(0.95 0.04 152);--warn:oklch(0.5 0.11 70);--warn-soft:oklch(0.95 0.05 85);
+  --danger:oklch(0.5 0.19 25);--danger-soft:oklch(0.95 0.03 25);
+  --h1:oklch(0.55 0.13 250);--h2:oklch(0.55 0.14 300);--h3:oklch(0.52 0.2 27);
+  --card-shadow:0 8px 24px -12px oklch(0.2 0 0 / .22);
+  --f-display:"Archivo Black","Arial Black",system-ui,sans-serif;--f-body:"Hind",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --radius:6px;--radius-lg:8px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto;padding:20px 24px 48px;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);color:var(--accent);font-size:18px;letter-spacing:-.2px}
+.crumb{font-size:14px;color:var(--muted)}
+.sp{flex:1}
+.badge{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--warn-soft);color:var(--warn)}
+.ibtn{border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:6px 10px;font-size:13px;color:var(--muted)}
+.ibtn:hover{color:var(--fg);border-color:var(--accent)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(28px,3.4vw,40px);line-height:1.08;margin:6px 0 8px;letter-spacing:-.5px;text-wrap:balance}
+.lead{margin:0;color:var(--muted);font-size:17px;line-height:1.55;max-width:70ch}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{border:0;background:transparent;padding:10px 14px 12px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--card-shadow)}
+.stage{padding:8px;position:relative}
+.stage svg{display:block;width:100%;height:auto}
+.panel{padding:18px;display:flex;flex-direction:column;gap:14px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line-strong);background:var(--surface-2);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--fg)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip.act{border-style:dashed}
+canvas{display:block;width:100%;height:220px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.ctl{display:flex;align-items:center;gap:12px}
+.ctl label{font-size:14px;font-weight:600;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--accent) var(--p,50%),var(--line-strong) var(--p,50%));margin:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+.ctl .v{font-family:var(--f-mono);font-size:14px;min-width:52px;text-align:right}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--surface-2);border-radius:var(--radius);padding:8px 10px;border-left:4px solid var(--c)}
+.tile .k{font-size:12px;color:var(--muted);font-weight:600}
+.tile .n{font-family:var(--f-mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;font-weight:700}
+.up{color:var(--danger)}.down{color:var(--h1)}.ok{color:var(--success)}
+.explain{padding:18px 20px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px}
+.explain h2{font-family:var(--f-display);font-weight:400;font-size:20px;margin:4px 0 8px;text-wrap:balance}
+.explain p{margin:0 0 10px;line-height:1.6;max-width:68ch}
+.exam{background:var(--accent-soft);border-radius:var(--radius);padding:14px 16px}
+.exam p{margin:6px 0 0;line-height:1.55}
+.foot{font-size:13px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line);padding-top:12px;margin:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:var(--radius);background:var(--accent);color:var(--accent-ink);font-weight:700;padding:9px 14px;font-size:14px}
+.btn:hover{background:var(--accent-hover)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line-strong)}
+.dil{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.dil span{display:block;height:100%;background:var(--accent);width:0}
+@media (max-width:960px){.grid,.explain{grid-template-columns:1fr}}
+@media (max-width:480px){.wrap{padding:14px 16px 40px}.tiles{grid-template-columns:1fr 1fr 1fr}.tile .n{font-size:17px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.case{background:var(--surface-2);border-radius:var(--radius);padding:12px 14px;line-height:1.5;font-size:15px}
+.case .labs{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:14px}
+.case .labs span{font-family:var(--f-mono);font-size:13px}
+.tbtn{display:grid;gap:6px}
+.tbtn button{text-align:left;border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:9px 12px;font-size:14px}
+.tbtn button b{display:block;font-size:14px}
+.tbtn button small{color:var(--muted);font-size:12.5px}
+.tbtn button:hover{border-color:var(--accent)}
+.tbtn button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.tbtn button.done::after{content:" ✓";color:var(--success);font-weight:700}
+#cv{height:300px}
+.verd{border-radius:var(--radius);padding:12px 14px;line-height:1.5;font-size:15px;border-left:4px solid var(--c);background:var(--surface-2)}
+.verd b{display:block;margin-bottom:2px;color:var(--c)}
+.dx{border:2px solid var(--success);border-radius:var(--radius);padding:10px 14px;font-weight:700}</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brand"><svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#c2181d"/><path d="M44 21A15 15 0 1 0 44 43" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round"/><circle cx="45.5" cy="32" r="4.6" fill="#fff"/></svg>COGNUSS</span>
+    <span class="crumb">Fisiologia endócrina · Aula 2 · Eixo somatotrófico</span>
+    <span class="sp"></span>
+    <span class="badge">Demonstração · sem revisão</span>
+    <button class="ibtn" id="themeBtn" type="button">Alternar tema</button>
+  </header>
+  <section>
+    <div class="eyebrow">Peça interativa · Raciocínio diagnóstico</div>
+    <h1>Testes dinâmicos do eixo do GH</h1>
+    <p class="lead">Como o GH sai em pulsos, um valor isolado não decide nada: é preciso provocar o eixo. Na suspeita de <b>deficiência</b>, tenta-se forçar o GH a subir. Na suspeita de <b>excesso</b>, tenta-se fazê-lo cair. Escolha um paciente e o teste certo para ele.</p>
+  </section>
+  <div class="grid">
+    <div class="card panel">
+      <div class="lbl">Paciente</div>
+      <div class="chips" id="cs"></div>
+      <div class="case" id="case"></div>
+      <div class="lbl">Teste</div>
+      <div class="tbtn" id="tb"></div>
+    </div>
+    <div class="card panel">
+      <div class="lbl" id="cvT">Resultado</div>
+      <canvas id="cv" role="img" aria-label="Curva do teste dinâmico"></canvas>
+      <div class="verd" id="vd" style="--c:var(--muted)" aria-live="polite"><b>Escolha um teste</b>O resultado aparece aqui, com a leitura.</div>
+      <div class="dx" id="dx" hidden></div>
+    </div>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow">Para fixar</div><h2>Para deficiência, estimule; para excesso, suprima</h2>
+      <p><b>Estímulo</b>: hipoglicemia induzida por insulina (ITT), clonidina, arginina, glucagon ou GHRH. Na criança, são precisos dois testes com pico baixo para diagnosticar deficiência. O ponto de corte varia com o ensaio e a diretriz; aqui usamos 7 ng/mL como linha didática.</p>
+      <p><b>Supressão</b>: teste oral de tolerância à glicose com 75 g. No normal, a glicose derruba o GH para menos de 1 ng/mL. Na acromegalia, o nadir fica acima disso e às vezes o GH sobe (resposta paradoxal).</p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p>A triagem é sempre o IGF-1; os testes dinâmicos confirmam. GH alto com IGF-1 baixo pede o <b>teste de geração de IGF-1</b>: se o IGF-1 não sobe com GH exógeno, há resistência (Laron). O ITT é contraindicado em epilepsia e doença cardiovascular.</p></div>
+  </div>
+  <p class="foot">Esquema didático, simplificado para fins de ensino. Base: Aires, <i>Fisiologia</i>, 5ª ed., cap. 73, p. 1219–1227 (Guanabara Koogan, 2018), conforme a aula do Dr. Rafael.</p>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const ss=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('#themeBtn').onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark';window.onTheme&&window.onTheme()};
+const CASES={
+ a:{n:'Lucas, 8 anos',d:'Sempre o menor da turma; cresceu 3,5 cm no último ano. Proporções corporais normais, idade óssea atrasada.',labs:[['Altura','abaixo do p3'],['IGF-1','baixo para a idade'],['GH basal','0,3 ng/mL']],
+  dx:'Deficiência de GH: dois testes de estímulo com pico baixo. Próximo passo: ressonância da sela e reposição de GH.',need:['itt','clo']},
+ b:{n:'Marcos, 45 anos',d:'A aliança não serve mais, trocou o número do sapato duas vezes. Dentes separados, mandíbula projetada, ronco e suor excessivo.',labs:[['IGF-1','2,5 × o limite superior'],['GH basal','11 ng/mL'],['Glicemia','118 mg/dL']],
+  dx:'Acromegalia: IGF-1 alto e GH que não suprime com glicose. Próximo passo: ressonância da sela à procura de adenoma.',need:['totg']},
+ c:{n:'Ana, 9 anos',d:'Baixa estatura importante desde os 2 anos, fronte proeminente, nariz em sela. Pais consanguíneos.',labs:[['Altura','muito abaixo do p3'],['IGF-1','muito baixo'],['GH basal','9 ng/mL (alto)']],
+  dx:'Resistência ao GH (síndrome de Laron): GH sobe bem, mas o IGF-1 não responde. Tratamento: IGF-1 recombinante.',need:['itt','igf']},
+ d:{n:'Júlia, 7 anos',d:'Baixa como os pais (mãe 1,52 m, pai 1,63 m). Cresce num ritmo constante, 5,5 cm por ano, sempre no mesmo canal.',labs:[['Altura','p3'],['IGF-1','normal para a idade'],['GH basal','0,8 ng/mL']],
+  dx:'Baixa estatura familiar: eixo normal, ritmo de crescimento normal. Não há indicação de reposição.',need:['itt']}};
+const TESTS={itt:{n:'Estímulo: hipoglicemia insulínica (ITT)',s:'insulina IV, coletas até 120 min',k:'stim'},clo:{n:'Estímulo: clonidina',s:'oral, coletas até 120 min',k:'stim'},totg:{n:'Supressão: glicose oral 75 g (TOTG)',s:'coletas de GH até 120 min',k:'sup'},igf:{n:'Geração de IGF-1',s:'GH por 4 dias, IGF-1 antes e depois',k:'gen'}};
+const DATA={a:{itt:[.3,1.2,2.8,2.1,1],clo:[.2,1.5,3.1,2.4,1.1],totg:[.3,.2,.2,.2,.2],igf:[60,140]},
+ b:{itt:[12,18,22,20,16],clo:[11,14,15,13,12],totg:[11,9.5,10.2,11.5,10.8],igf:[620,690]},
+ c:{itt:[9,18,28,24,15],clo:[8,16,22,19,12],totg:[9,6,4,5,7],igf:[25,30]},
+ d:{itt:[.8,5,12.5,9,4],clo:[.5,4,11,8,3],totg:[1.2,.4,.3,.3,.4],igf:[160,260]}};
+const OK='var(--success)',NO='var(--danger)',MID='var(--warn)';
+const READ={
+ a:{itt:[OK,'Resposta deficiente','Pico de 2,8 ng/mL, abaixo do corte. Na criança, o diagnóstico exige um segundo teste de estímulo, com outro agente.'],
+    clo:[OK,'Segundo estímulo também baixo','Pico de 3,1 ng/mL. Dois testes com resposta baixa confirmam deficiência de GH.'],
+    totg:[NO,'Teste errado para essa dúvida','A supressão prova que o GH desliga e serve na suspeita de excesso. Aqui a pergunta é se ele liga.'],
+    igf:[MID,'O receptor funciona','O IGF-1 sobe de 60 para 140 ng/mL com GH exógeno. Isso afasta resistência ao GH, mas quem confirma a deficiência são os testes de estímulo.']},
+ b:{itt:[NO,'Teste errado para essa dúvida','Em suspeita de excesso o GH já está alto; estimular não diz nada e expõe o paciente à hipoglicemia. A pergunta é se o GH desliga.'],
+    clo:[NO,'Teste errado para essa dúvida','Estimular um eixo que já está ligado não ajuda. Use a supressão com glicose.'],
+    totg:[OK,'O GH não suprime','A glicose deveria derrubar o GH para menos de 1 ng/mL. O nadir ficou em 9,5 ng/mL. Com IGF-1 alto, confirma acromegalia.'],
+    igf:[NO,'Teste sem indicação','O IGF-1 já está alto; dar GH a quem tem excesso não acrescenta nada ao diagnóstico.']},
+ c:{itt:[OK,'A hipófise responde muito bem','Pico de 28 ng/mL. Com IGF-1 muito baixo, o problema está depois do GH. Faça o teste de geração de IGF-1.'],
+    clo:[OK,'A hipófise responde muito bem','Pico de 22 ng/mL: não é deficiência de GH. Com IGF-1 baixo, investigue resistência com o teste de geração de IGF-1.'],
+    totg:[NO,'Teste errado para essa dúvida','Não há suspeita de excesso. O GH alto aqui é consequência da falta de freio pelo IGF-1.'],
+    igf:[OK,'O IGF-1 não responde ao GH','Sobe só de 25 para 30 ng/mL (aumento menor que 15 ng/mL). É resistência ao GH, a síndrome de Laron.']},
+ d:{itt:[OK,'Resposta normal','Pico de 12,5 ng/mL, acima do corte. Com IGF-1 e ritmo de crescimento normais, o quadro é de baixa estatura familiar.'],
+    clo:[OK,'Resposta normal','Pico de 11 ng/mL. O eixo funciona; a altura segue o alvo genético dos pais.'],
+    totg:[NO,'Teste errado para essa dúvida','Não há suspeita de excesso; a supressão não ajuda a investigar baixa estatura.'],
+    igf:[MID,'Resposta normal, mas pouco útil','O IGF-1 sobe normalmente. O teste que responde à dúvida é o de estímulo.']}};
+let C='a',Tt=null,done={},anim=0,t0=0;const cv=$('#cv'),cx=cv.getContext('2d');
+function panel(){const c=CASES[C];$('#case').innerHTML=`${c.d}<div class="labs">${c.labs.map(([k,v])=>`<b>${k}:</b><span>${v}</span>`).join('')}</div>`;
+ $('#tb').innerHTML=Object.entries(TESTS).map(([k,v])=>`<button type="button" data-k="${k}" aria-pressed="${k===Tt}" class="${done[C+k]?'done':''}"><b>${v.n}</b><small>${v.s}</small></button>`).join('');
+ $$('#tb button').forEach(b=>b.onclick=()=>run(b.dataset.k));$$('#cs .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===C));
+ const ok=c.need.every(k=>done[C+k]);$('#dx').hidden=!ok;if(ok)$('#dx').textContent='Diagnóstico: '+c.dx}
+function run(k){Tt=k;done[C+k]=1;t0=performance.now();panel();const r=READ[C][k];
+ $('#vd').style.setProperty('--c',r[0]);$('#vd').innerHTML=`<b>${r[1]}</b>${r[2]}`;$('#cvT').textContent=TESTS[k].n;loop()}
+function loop(){const p=reduce?1:Math.min(1,(performance.now()-t0)/1400);draw(p);if(p<1)requestAnimationFrame(loop)}
+function draw(p=1){const dpr=devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,W,H);
+ const mu=css('--muted'),ln=css('--line'),ac=css('--accent'),b1=css('--h1'),fg=css('--fg'),dn=css('--danger'),ok=css('--success');
+ cx.font='600 12px Hind, sans-serif';cx.textBaseline='middle';
+ if(!Tt){cx.fillStyle=mu;cx.textAlign='center';cx.fillText('Escolha um teste à esquerda',W/2,H/2);return}
+ const l=50,r=W-14,t=16,b=H-36;
+ if(TESTS[Tt].k==='gen'){const v=DATA[C].igf,mx=Math.max(300,Math.ceil(Math.max(...v)/100)*100),Y=x=>b-(b-t)*x/mx;
+  cx.fillStyle=mu;cx.textAlign='right';cx.strokeStyle=ln;[0,mx/2,mx].forEach(x=>{cx.beginPath();cx.moveTo(l,Y(x));cx.lineTo(r,Y(x));cx.stroke();cx.fillText(x,l-6,Y(x))});
+  const bw=(r-l)/5;[['Antes',v[0],mu],['Depois do GH',v[0]+(v[1]-v[0])*p,b1]].forEach(([n,x,c],i)=>{const x0=l+bw*(1+i*2);cx.fillStyle=c;cx.fillRect(x0,Y(x),bw,b-Y(x));cx.fillStyle=fg;cx.textAlign='center';cx.fillText(Math.round(x)+' ng/mL',x0+bw/2,Y(x)-10);cx.fillStyle=mu;cx.fillText(n,x0+bw/2,b+14)});
+  cx.save();cx.translate(12,(t+b)/2);cx.rotate(-Math.PI/2);cx.textAlign='center';cx.fillStyle=b1;cx.fillText('IGF-1 (ng/mL)',0,0);cx.restore();return}
+ const v=DATA[C][Tt],tm=[0,30,60,90,120],mx=Math.max(8,Math.ceil(Math.max(...v)/4)*4),X=m=>l+(r-l)*m/120,Y=x=>b-(b-t)*x/mx;
+ cx.strokeStyle=ln;cx.fillStyle=mu;cx.textAlign='right';for(let k=0;k<=4;k++){const x=mx*k/4;cx.beginPath();cx.moveTo(l,Y(x));cx.lineTo(r,Y(x));cx.stroke();cx.fillText(x,l-6,Y(x))}
+ cx.textAlign='center';tm.forEach(m=>cx.fillText(m+' min',X(m),b+14));
+ cx.save();cx.translate(12,(t+b)/2);cx.rotate(-Math.PI/2);cx.fillStyle=ac;cx.fillText('GH (ng/mL)',0,0);cx.restore();
+ const stim=TESTS[Tt].k==='stim',cut=stim?7:1;cx.strokeStyle=stim?ok:dn;cx.setLineDash([6,5]);cx.lineWidth=2;cx.beginPath();cx.moveTo(l,Y(cut));cx.lineTo(r,Y(cut));cx.stroke();cx.setLineDash([]);
+ cx.fillStyle=stim?ok:dn;cx.textAlign='left';cx.fillText(stim?'pico normal acima de 7 (corte didático)':'nadir normal abaixo de 1',l+6,Y(cut)-10);
+ const n=p*4;cx.strokeStyle=ac;cx.lineWidth=3;cx.beginPath();for(let i=0;i<=Math.floor(n);i++){const y=Y(v[i]);i===0?cx.moveTo(X(tm[i]),y):cx.lineTo(X(tm[i]),y)}
+ if(n<4){const i=Math.floor(n),f=n-i;cx.lineTo(X(tm[i]+30*f),Y(v[i]+(v[i+1]-v[i])*f))}cx.stroke();
+ for(let i=0;i<=Math.floor(n);i++){cx.fillStyle=ac;cx.beginPath();cx.arc(X(tm[i]),Y(v[i]),5,0,7);cx.fill()}
+ if(p>=1){const ex=stim?Math.max(...v):Math.min(...v),i=v.indexOf(ex);cx.fillStyle=fg;cx.textAlign='center';cx.font='700 12px Hind, sans-serif';cx.fillText((stim?'pico ':'nadir ')+String(ex).replace('.',','),X(tm[i]),Y(ex)-14)}}
+$('#cs').innerHTML=Object.entries(CASES).map(([k,v])=>`<button class="chip" type="button" data-k="${k}">${v.n}</button>`).join('');
+$$('#cs .chip').forEach(b=>b.onclick=()=>{C=b.dataset.k;Tt=null;$('#vd').style.setProperty('--c','var(--muted)');$('#vd').innerHTML='<b>Escolha um teste</b>O resultado aparece aqui, com a leitura.';$('#cvT').textContent='Resultado';panel();draw()});
+panel();draw();addEventListener('resize',()=>draw());window.onTheme=()=>draw();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>draw());
+const hs=location.hash.slice(1).split('-');if(CASES[hs[0]]){C=hs[0];panel();if(TESTS[hs[1]])run(hs[1])}
+window.__t={go:(c,k)=>{C=c;panel();if(k)run(k)}};
+
+</script>
+</body>
+</html>

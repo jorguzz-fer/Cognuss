@@ -1,0 +1,46 @@
+@@TITLE
+Aula 1 · Introdução à fisiologia endócrina
+@@STYLE
+.items{display:grid;gap:8px}
+.it{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface);text-decoration:none;color:var(--fg)}
+a.it:hover{border-color:var(--accent)}
+.it .no{font-family:var(--f-mono);font-weight:600;font-size:15px;color:var(--muted)}
+.it b{display:block;font-size:17px}
+.it small{display:block;color:var(--muted);font-size:14px;line-height:1.4;margin-top:2px}
+.st{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;border-radius:4px;white-space:nowrap}
+.st.ok{background:var(--success-soft);color:var(--success)}.st.wait{background:var(--warn-soft);color:var(--warn)}
+.sec{font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+@media (max-width:560px){.it{grid-template-columns:32px 1fr}.it .st{grid-column:2}}
+@@BODY
+  <section>
+    <div class="eyebrow">Fisiologia endócrina · Aula 1 de 7</div>
+    <h1>Introdução à fisiologia endócrina</h1>
+    <p class="lead">Peças interativas produzidas a partir dos pedidos do Dr. Rafael nos slides da aula, na ordem em que aparecem. Cada peça é uma página independente, pronta para entrar no Cognuss como item próprio.</p>
+  </section>
+  <div class="items" id="items"></div>
+@@FOOT
+Conteúdo em modo demonstração, aguardando revisão do Dr. Rafael. Base: Aires, <i>Fisiologia</i>, 5ª ed., cap. 64 (Guanabara Koogan, 2018).
+@@SCRIPT
+const L=[
+ ['sec','O paradigma da comunicação'],
+ [1,'Da célula única ao organismo','Linha do tempo evolutiva e as quatro peças da comunicação (slide 4)','https://claude.ai/artifact/51bzdQSwNH6oE3T8URpZzh'],
+ ['sec','Modalidades de sinalização'],
+ [2,'Sinalização autócrina','IL-2, fatores de crescimento em tumores, insulina na célula β (slide 6)','https://claude.ai/artifact/JToBnjsx4b3mwmdEaK9mBb'],
+ [3,'Sinalização parácrina','Óxido nítrico, histamina, tromboxano A2 (slide 8)','https://claude.ai/artifact/UnGpw3piindRkboAe3pN29'],
+ [4,'Sinalização justácrina','Sinapse imunológica e Fas–FasL; separe as células para cortar o sinal (slide 10)','https://claude.ai/artifact/1qFmqvrRcAsMZX5WK558nJ'],
+ [5,'Sinalização sináptica','Glutamato (PPSE) e GABA (PPSI), com benzodiazepínico (slide 12)','https://claude.ai/artifact/RH2Wj6jsdu9waDex1SgsKR'],
+ [6,'Sinalização neuroendócrina','TRH, CRH, GnRH, GHRH/somatostatina e dopamina no sistema porta (slide 14)','https://claude.ai/artifact/JbCfdnfhAk4YVf7DgsMe4h'],
+ [7,'Sinalização endócrina','PTH com controle do cálcio no sangue (slide 16)','https://claude.ai/artifact/1Nvs1VUf8Amp8Qjf5JBFLW'],
+ [8,'Mapa das glândulas endócrinas','Órgãos primários e secundários, ligados às aulas do curso (slide 18)','https://claude.ai/artifact/T1tMVV73t82fSphivrF9VP'],
+ ['sec','Mensageiros químicos'],
+ [9,'Vídeo: como a célula β fabrica insulina','Zoom do corpo ao núcleo: transcrição, tradução, Golgi e vesícula (slide 20)',null],
+ [10,'Do colesterol a cinco hormônios','Mapa da esteroidogênese, deficiências enzimáticas e travessia de membrana (slide 21)','https://claude.ai/artifact/Mox7atCg3ZFmyXyaQ6k8Ps'],
+ [11,'Da tirosina à adrenalina','Anatomia da adrenal até as quatro enzimas, com e sem cortisol (slide 22)','https://claude.ai/artifact/BCo3AT6kmDSLDJ5S8ucyDo'],
+ ['sec','Sinalização intracelular'],
+ [12,'O efeito dominó dentro da célula','AMPc, IP3/DAG, Gi, tirosina-quinase, JAK-STAT e receptor nuclear (slides 28–29)','https://claude.ai/artifact/UNFo6sqLHNsVXXudDYPaMx'],
+ ['sec','Feedback: a parte mais importante da aula'],
+ [13,'O termostato hormonal','Simulador do eixo HHA e da ocitocina no parto (slide 32)','https://claude.ai/artifact/FFsUgQJ1RDwiAzNBZR5UeG'],
+ ['Q','Questões de feedback hormonal','3 questões com explicação interativa ligada ao simulador','https://claude.ai/artifact/NP1Pg7BPVzJS3BHKC6pEjy']];
+$('#items').innerHTML=L.map(x=>{if(x[0]==='sec')return `<div class="sec">${x[1]}</div>`;const [n,t,d,u]=x;
+  const inner=`<span class="no">${typeof n==='number'?String(n).padStart(2,'0'):n}</span><span><b>${t}</b><small>${d}</small></span><span class="st ${u?'ok':'wait'}">${u?'Pronta':'Aguardando vídeo'}</span>`;
+  return u?`<a class="it" href="${u}" target="_blank" rel="noopener">${inner}</a>`:`<div class="it">${inner}</div>`}).join('');

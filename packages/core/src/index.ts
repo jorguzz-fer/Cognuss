@@ -16,3 +16,4 @@ export * from './grades';
 export * from './lesson';
 export * from './progress';
 export * from './planner';
+export * from './production';

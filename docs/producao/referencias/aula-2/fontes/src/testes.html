@@ -1,0 +1,109 @@
+@@TITLE
+Testes dinâmicos do eixo do GH
+@@STYLE
+.case{background:var(--surface-2);border-radius:var(--radius);padding:12px 14px;line-height:1.5;font-size:15px}
+.case .labs{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:14px}
+.case .labs span{font-family:var(--f-mono);font-size:13px}
+.tbtn{display:grid;gap:6px}
+.tbtn button{text-align:left;border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:9px 12px;font-size:14px}
+.tbtn button b{display:block;font-size:14px}
+.tbtn button small{color:var(--muted);font-size:12.5px}
+.tbtn button:hover{border-color:var(--accent)}
+.tbtn button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.tbtn button.done::after{content:" ✓";color:var(--success);font-weight:700}
+#cv{height:300px}
+.verd{border-radius:var(--radius);padding:12px 14px;line-height:1.5;font-size:15px;border-left:4px solid var(--c);background:var(--surface-2)}
+.verd b{display:block;margin-bottom:2px;color:var(--c)}
+.dx{border:2px solid var(--success);border-radius:var(--radius);padding:10px 14px;font-weight:700}
+@@BODY
+  <section>
+    <div class="eyebrow">Peça interativa · Raciocínio diagnóstico</div>
+    <h1>Testes dinâmicos do eixo do GH</h1>
+    <p class="lead">Como o GH sai em pulsos, um valor isolado não decide nada: é preciso provocar o eixo. Na suspeita de <b>deficiência</b>, tenta-se forçar o GH a subir. Na suspeita de <b>excesso</b>, tenta-se fazê-lo cair. Escolha um paciente e o teste certo para ele.</p>
+  </section>
+  <div class="grid">
+    <div class="card panel">
+      <div class="lbl">Paciente</div>
+      <div class="chips" id="cs"></div>
+      <div class="case" id="case"></div>
+      <div class="lbl">Teste</div>
+      <div class="tbtn" id="tb"></div>
+    </div>
+    <div class="card panel">
+      <div class="lbl" id="cvT">Resultado</div>
+      <canvas id="cv" role="img" aria-label="Curva do teste dinâmico"></canvas>
+      <div class="verd" id="vd" style="--c:var(--muted)" aria-live="polite"><b>Escolha um teste</b>O resultado aparece aqui, com a leitura.</div>
+      <div class="dx" id="dx" hidden></div>
+    </div>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow">Para fixar</div><h2>Para deficiência, estimule; para excesso, suprima</h2>
+      <p><b>Estímulo</b>: hipoglicemia induzida por insulina (ITT), clonidina, arginina, glucagon ou GHRH. Na criança, são precisos dois testes com pico baixo para diagnosticar deficiência. O ponto de corte varia com o ensaio e a diretriz; aqui usamos 7 ng/mL como linha didática.</p>
+      <p><b>Supressão</b>: teste oral de tolerância à glicose com 75 g. No normal, a glicose derruba o GH para menos de 1 ng/mL. Na acromegalia, o nadir fica acima disso e às vezes o GH sobe (resposta paradoxal).</p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p>A triagem é sempre o IGF-1; os testes dinâmicos confirmam. GH alto com IGF-1 baixo pede o <b>teste de geração de IGF-1</b>: se o IGF-1 não sobe com GH exógeno, há resistência (Laron). O ITT é contraindicado em epilepsia e doença cardiovascular.</p></div>
+  </div>
+@@SCRIPT
+const CASES={
+ a:{n:'Lucas, 8 anos',d:'Sempre o menor da turma; cresceu 3,5 cm no último ano. Proporções corporais normais, idade óssea atrasada.',labs:[['Altura','abaixo do p3'],['IGF-1','baixo para a idade'],['GH basal','0,3 ng/mL']],
+  dx:'Deficiência de GH: dois testes de estímulo com pico baixo. Próximo passo: ressonância da sela e reposição de GH.',need:['itt','clo']},
+ b:{n:'Marcos, 45 anos',d:'A aliança não serve mais, trocou o número do sapato duas vezes. Dentes separados, mandíbula projetada, ronco e suor excessivo.',labs:[['IGF-1','2,5 × o limite superior'],['GH basal','11 ng/mL'],['Glicemia','118 mg/dL']],
+  dx:'Acromegalia: IGF-1 alto e GH que não suprime com glicose. Próximo passo: ressonância da sela à procura de adenoma.',need:['totg']},
+ c:{n:'Ana, 9 anos',d:'Baixa estatura importante desde os 2 anos, fronte proeminente, nariz em sela. Pais consanguíneos.',labs:[['Altura','muito abaixo do p3'],['IGF-1','muito baixo'],['GH basal','9 ng/mL (alto)']],
+  dx:'Resistência ao GH (síndrome de Laron): GH sobe bem, mas o IGF-1 não responde. Tratamento: IGF-1 recombinante.',need:['itt','igf']},
+ d:{n:'Júlia, 7 anos',d:'Baixa como os pais (mãe 1,52 m, pai 1,63 m). Cresce num ritmo constante, 5,5 cm por ano, sempre no mesmo canal.',labs:[['Altura','p3'],['IGF-1','normal para a idade'],['GH basal','0,8 ng/mL']],
+  dx:'Baixa estatura familiar: eixo normal, ritmo de crescimento normal. Não há indicação de reposição.',need:['itt']}};
+const TESTS={itt:{n:'Estímulo: hipoglicemia insulínica (ITT)',s:'insulina IV, coletas até 120 min',k:'stim'},clo:{n:'Estímulo: clonidina',s:'oral, coletas até 120 min',k:'stim'},totg:{n:'Supressão: glicose oral 75 g (TOTG)',s:'coletas de GH até 120 min',k:'sup'},igf:{n:'Geração de IGF-1',s:'GH por 4 dias, IGF-1 antes e depois',k:'gen'}};
+const DATA={a:{itt:[.3,1.2,2.8,2.1,1],clo:[.2,1.5,3.1,2.4,1.1],totg:[.3,.2,.2,.2,.2],igf:[60,140]},
+ b:{itt:[12,18,22,20,16],clo:[11,14,15,13,12],totg:[11,9.5,10.2,11.5,10.8],igf:[620,690]},
+ c:{itt:[9,18,28,24,15],clo:[8,16,22,19,12],totg:[9,6,4,5,7],igf:[25,30]},
+ d:{itt:[.8,5,12.5,9,4],clo:[.5,4,11,8,3],totg:[1.2,.4,.3,.3,.4],igf:[160,260]}};
+const OK='var(--success)',NO='var(--danger)',MID='var(--warn)';
+const READ={
+ a:{itt:[OK,'Resposta deficiente','Pico de 2,8 ng/mL, abaixo do corte. Na criança, o diagnóstico exige um segundo teste de estímulo, com outro agente.'],
+    clo:[OK,'Segundo estímulo também baixo','Pico de 3,1 ng/mL. Dois testes com resposta baixa confirmam deficiência de GH.'],
+    totg:[NO,'Teste errado para essa dúvida','A supressão prova que o GH desliga e serve na suspeita de excesso. Aqui a pergunta é se ele liga.'],
+    igf:[MID,'O receptor funciona','O IGF-1 sobe de 60 para 140 ng/mL com GH exógeno. Isso afasta resistência ao GH, mas quem confirma a deficiência são os testes de estímulo.']},
+ b:{itt:[NO,'Teste errado para essa dúvida','Em suspeita de excesso o GH já está alto; estimular não diz nada e expõe o paciente à hipoglicemia. A pergunta é se o GH desliga.'],
+    clo:[NO,'Teste errado para essa dúvida','Estimular um eixo que já está ligado não ajuda. Use a supressão com glicose.'],
+    totg:[OK,'O GH não suprime','A glicose deveria derrubar o GH para menos de 1 ng/mL. O nadir ficou em 9,5 ng/mL. Com IGF-1 alto, confirma acromegalia.'],
+    igf:[NO,'Teste sem indicação','O IGF-1 já está alto; dar GH a quem tem excesso não acrescenta nada ao diagnóstico.']},
+ c:{itt:[OK,'A hipófise responde muito bem','Pico de 28 ng/mL. Com IGF-1 muito baixo, o problema está depois do GH. Faça o teste de geração de IGF-1.'],
+    clo:[OK,'A hipófise responde muito bem','Pico de 22 ng/mL: não é deficiência de GH. Com IGF-1 baixo, investigue resistência com o teste de geração de IGF-1.'],
+    totg:[NO,'Teste errado para essa dúvida','Não há suspeita de excesso. O GH alto aqui é consequência da falta de freio pelo IGF-1.'],
+    igf:[OK,'O IGF-1 não responde ao GH','Sobe só de 25 para 30 ng/mL (aumento menor que 15 ng/mL). É resistência ao GH, a síndrome de Laron.']},
+ d:{itt:[OK,'Resposta normal','Pico de 12,5 ng/mL, acima do corte. Com IGF-1 e ritmo de crescimento normais, o quadro é de baixa estatura familiar.'],
+    clo:[OK,'Resposta normal','Pico de 11 ng/mL. O eixo funciona; a altura segue o alvo genético dos pais.'],
+    totg:[NO,'Teste errado para essa dúvida','Não há suspeita de excesso; a supressão não ajuda a investigar baixa estatura.'],
+    igf:[MID,'Resposta normal, mas pouco útil','O IGF-1 sobe normalmente. O teste que responde à dúvida é o de estímulo.']}};
+let C='a',Tt=null,done={},anim=0,t0=0;const cv=$('#cv'),cx=cv.getContext('2d');
+function panel(){const c=CASES[C];$('#case').innerHTML=`${c.d}<div class="labs">${c.labs.map(([k,v])=>`<b>${k}:</b><span>${v}</span>`).join('')}</div>`;
+ $('#tb').innerHTML=Object.entries(TESTS).map(([k,v])=>`<button type="button" data-k="${k}" aria-pressed="${k===Tt}" class="${done[C+k]?'done':''}"><b>${v.n}</b><small>${v.s}</small></button>`).join('');
+ $$('#tb button').forEach(b=>b.onclick=()=>run(b.dataset.k));$$('#cs .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===C));
+ const ok=c.need.every(k=>done[C+k]);$('#dx').hidden=!ok;if(ok)$('#dx').textContent='Diagnóstico: '+c.dx}
+function run(k){Tt=k;done[C+k]=1;t0=performance.now();panel();const r=READ[C][k];
+ $('#vd').style.setProperty('--c',r[0]);$('#vd').innerHTML=`<b>${r[1]}</b>${r[2]}`;$('#cvT').textContent=TESTS[k].n;loop()}
+function loop(){const p=reduce?1:Math.min(1,(performance.now()-t0)/1400);draw(p);if(p<1)requestAnimationFrame(loop)}
+function draw(p=1){const dpr=devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,W,H);
+ const mu=css('--muted'),ln=css('--line'),ac=css('--accent'),b1=css('--h1'),fg=css('--fg'),dn=css('--danger'),ok=css('--success');
+ cx.font='600 12px Hind, sans-serif';cx.textBaseline='middle';
+ if(!Tt){cx.fillStyle=mu;cx.textAlign='center';cx.fillText('Escolha um teste à esquerda',W/2,H/2);return}
+ const l=50,r=W-14,t=16,b=H-36;
+ if(TESTS[Tt].k==='gen'){const v=DATA[C].igf,mx=Math.max(300,Math.ceil(Math.max(...v)/100)*100),Y=x=>b-(b-t)*x/mx;
+  cx.fillStyle=mu;cx.textAlign='right';cx.strokeStyle=ln;[0,mx/2,mx].forEach(x=>{cx.beginPath();cx.moveTo(l,Y(x));cx.lineTo(r,Y(x));cx.stroke();cx.fillText(x,l-6,Y(x))});
+  const bw=(r-l)/5;[['Antes',v[0],mu],['Depois do GH',v[0]+(v[1]-v[0])*p,b1]].forEach(([n,x,c],i)=>{const x0=l+bw*(1+i*2);cx.fillStyle=c;cx.fillRect(x0,Y(x),bw,b-Y(x));cx.fillStyle=fg;cx.textAlign='center';cx.fillText(Math.round(x)+' ng/mL',x0+bw/2,Y(x)-10);cx.fillStyle=mu;cx.fillText(n,x0+bw/2,b+14)});
+  cx.save();cx.translate(12,(t+b)/2);cx.rotate(-Math.PI/2);cx.textAlign='center';cx.fillStyle=b1;cx.fillText('IGF-1 (ng/mL)',0,0);cx.restore();return}
+ const v=DATA[C][Tt],tm=[0,30,60,90,120],mx=Math.max(8,Math.ceil(Math.max(...v)/4)*4),X=m=>l+(r-l)*m/120,Y=x=>b-(b-t)*x/mx;
+ cx.strokeStyle=ln;cx.fillStyle=mu;cx.textAlign='right';for(let k=0;k<=4;k++){const x=mx*k/4;cx.beginPath();cx.moveTo(l,Y(x));cx.lineTo(r,Y(x));cx.stroke();cx.fillText(x,l-6,Y(x))}
+ cx.textAlign='center';tm.forEach(m=>cx.fillText(m+' min',X(m),b+14));
+ cx.save();cx.translate(12,(t+b)/2);cx.rotate(-Math.PI/2);cx.fillStyle=ac;cx.fillText('GH (ng/mL)',0,0);cx.restore();
+ const stim=TESTS[Tt].k==='stim',cut=stim?7:1;cx.strokeStyle=stim?ok:dn;cx.setLineDash([6,5]);cx.lineWidth=2;cx.beginPath();cx.moveTo(l,Y(cut));cx.lineTo(r,Y(cut));cx.stroke();cx.setLineDash([]);
+ cx.fillStyle=stim?ok:dn;cx.textAlign='left';cx.fillText(stim?'pico normal acima de 7 (corte didático)':'nadir normal abaixo de 1',l+6,Y(cut)-10);
+ const n=p*4;cx.strokeStyle=ac;cx.lineWidth=3;cx.beginPath();for(let i=0;i<=Math.floor(n);i++){const y=Y(v[i]);i===0?cx.moveTo(X(tm[i]),y):cx.lineTo(X(tm[i]),y)}
+ if(n<4){const i=Math.floor(n),f=n-i;cx.lineTo(X(tm[i]+30*f),Y(v[i]+(v[i+1]-v[i])*f))}cx.stroke();
+ for(let i=0;i<=Math.floor(n);i++){cx.fillStyle=ac;cx.beginPath();cx.arc(X(tm[i]),Y(v[i]),5,0,7);cx.fill()}
+ if(p>=1){const ex=stim?Math.max(...v):Math.min(...v),i=v.indexOf(ex);cx.fillStyle=fg;cx.textAlign='center';cx.font='700 12px Hind, sans-serif';cx.fillText((stim?'pico ':'nadir ')+String(ex).replace('.',','),X(tm[i]),Y(ex)-14)}}
+$('#cs').innerHTML=Object.entries(CASES).map(([k,v])=>`<button class="chip" type="button" data-k="${k}">${v.n}</button>`).join('');
+$$('#cs .chip').forEach(b=>b.onclick=()=>{C=b.dataset.k;Tt=null;$('#vd').style.setProperty('--c','var(--muted)');$('#vd').innerHTML='<b>Escolha um teste</b>O resultado aparece aqui, com a leitura.';$('#cvT').textContent='Resultado';panel();draw()});
+panel();draw();addEventListener('resize',()=>draw());window.onTheme=()=>draw();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>draw());
+const hs=location.hash.slice(1).split('-');if(CASES[hs[0]]){C=hs[0];panel();if(TESTS[hs[1]])run(hs[1])}
+window.__t={go:(c,k)=>{C=c;panel();if(k)run(k)}};

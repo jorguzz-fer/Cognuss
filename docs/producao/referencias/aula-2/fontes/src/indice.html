@@ -1,0 +1,38 @@
+@@TITLE
+Aula 2 · Fisiologia do eixo somatotrófico
+@@STYLE
+.items{display:grid;gap:8px}
+.it{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface);text-decoration:none;color:var(--fg)}
+a.it:hover{border-color:var(--accent)}
+.it .no{font-family:var(--f-mono);font-weight:600;font-size:15px;color:var(--muted)}
+.it b{display:block;font-size:17px}
+.it small{display:block;color:var(--muted);font-size:14px;line-height:1.4;margin-top:2px}
+.st{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;border-radius:4px;white-space:nowrap}
+.st.ok{background:var(--success-soft);color:var(--success)}.st.wait{background:var(--warn-soft);color:var(--warn)}
+.sec{font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+@media (max-width:560px){.it{grid-template-columns:32px 1fr}.it .st{grid-column:2}}
+@@BODY
+  <section>
+    <div class="eyebrow">Fisiologia endócrina · Aula 2 de 7</div>
+    <h1>Fisiologia do eixo somatotrófico</h1>
+    <p class="lead">Os 27 slides desta aula não trazem pedidos de peça, então as peças foram propostas a partir do conteúdo: os mecanismos que mudam com o tempo viraram simuladores e o diagnóstico virou casos interativos. Cada peça é uma página independente.</p>
+  </section>
+  <div class="items" id="items"></div>
+@@FOOT
+Conteúdo em modo demonstração, aguardando revisão do Dr. Rafael. Base: Aires, <i>Fisiologia</i>, 5ª ed., cap. 73, p. 1219–1227 (Guanabara Koogan, 2018).
+@@SCRIPT
+const L=[
+ ['sec','Arquitetura e regulação'],
+ [1,'O eixo GH–IGF-1 em equilíbrio','GHRH, somatostatina, grelina e o freio do IGF-1, com sete cenários (slides 3–6, 10–11 e 21)','https://claude.ai/artifact/PSTSYSonPgA95wiJnVFCs7'],
+ [2,'O pulso do GH em 24 horas','Sono N3, fases da vida e o desafio da dosagem: colete sangue em qualquer horário (slides 7–9 e 19)','https://claude.ai/artifact/9pL7Wt3enBrB7YSsZ4FHjA'],
+ ['sec','Ação nos tecidos'],
+ [3,'Como a célula lê o GH: a via JAK2–STAT5','Do encaixe do GH ao gene do IGF-1, com o defeito de Laron (slide 12)','https://claude.ai/artifact/D2TNYpmwff6bZzuMFwY8xR'],
+ [4,'O duplo mandato do GH','Ação direta × via IGF-1 por tecido, complexo ternário e IGF-1 × insulina (slides 5, 13–14 e 16–17)','https://claude.ai/artifact/RrB51jbpRQyPbMHxPtNUz2'],
+ [5,'Placa de crescimento: gigantismo ou acromegalia','Zonas da placa e curva de altura conforme a idade de início do excesso ou da falta (slides 15, 23–24)','https://claude.ai/artifact/7SuFDNS1bqjVnJDWc69mNZ'],
+ ['sec','Clínica'],
+ [6,'Testes dinâmicos do eixo do GH','Quatro pacientes, quatro testes: estímulo, supressão e geração de IGF-1 (slides 22 e 25)','https://claude.ai/artifact/766ajXi6xBeUToRakMh8L6'],
+ [7,'O adenoma hipofisário e o quiasma óptico','Micro × macroadenoma, efeito de massa e campo visual (slide 26)','https://claude.ai/artifact/63JdHCTeb3Su8vrD23Xnzg'],
+ ['Q','Questões do eixo somatotrófico','3 questões com explicação ligada às peças','https://claude.ai/artifact/LpHysRZ3UqFERSZ7FeGXGK']];
+$('#items').innerHTML=L.map(x=>{if(x[0]==='sec')return `<div class="sec">${x[1]}</div>`;const [n,t,d,u]=x;
+  const inner=`<span class="no">${typeof n==='number'?String(n).padStart(2,'0'):n}</span><span><b>${t}</b><small>${d}</small></span><span class="st ${u?'ok':'wait'}">${u?'Pronta':'Aguardando vídeo'}</span>`;
+  return u?`<a class="it" href="${u}" target="_blank" rel="noopener">${inner}</a>`:`<div class="it">${inner}</div>`}).join('');

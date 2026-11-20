@@ -3,6 +3,7 @@ import {
   FlaskConical,
   BadgeDollarSign,
   Building2,
+  Clapperboard,
   FileQuestion,
   GraduationCap,
   LayoutGrid,
@@ -36,6 +37,11 @@ const items: NavItem[] = [
 // Só admin: catálogo, pessoas, instituições e métricas da empresa.
 const adminItems: NavItem[] = [
   { href: '/admin/cursos', label: 'Cursos', icon: <GraduationCap className={icon} aria-hidden /> },
+  {
+    href: '/admin/producao',
+    label: 'Produção de aulas',
+    icon: <Clapperboard className={icon} aria-hidden />,
+  },
   { href: '/admin/usuarios', label: 'Usuários', icon: <Users className={icon} aria-hidden /> },
   {
     href: '/admin/instituicoes',

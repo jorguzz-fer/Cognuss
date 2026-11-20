@@ -43,6 +43,8 @@ export const keys = {
   pdf: (userId: string, fileId: string) => `u/${userId}/f/${fileId}/pdf`,
   thumbnail: (userId: string, fileId: string, page: number) =>
     `u/${userId}/f/${fileId}/pages/${page}.jpg`,
+  // Produção de aulas (ADR 0021): o lote é da equipe, fora da pasta de quem enviou.
+  productionSlide: (batchId: string, slide: number) => `p/b/${batchId}/slides/${slide}.jpg`,
 };
 
 /** Content-Disposition seguro: nome ASCII de reserva e o nome real em UTF-8 (RFC 6266). */

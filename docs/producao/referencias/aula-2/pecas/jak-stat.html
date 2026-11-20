@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Como a célula lê o GH: a via JAK2–STAT5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Identidade Cognuss (tokens de apps/web/src/styles/tokens.css): quase-preto quente, coral da marca,
+   Archivo Black nos títulos, Hind no texto. Layout: diagrama do eixo à esquerda, gráfico e controles à direita. */
+:root{
+  --bg:oklch(0.985 0 0);--surface:oklch(1 0 0);--surface-2:oklch(0.95 0.003 20);
+  --fg:oklch(0.21 0.006 20);--muted:oklch(0.46 0.006 20);--line:oklch(0.86 0.003 20);--line-strong:oklch(0.72 0.004 20);
+  --accent:oklch(0.52 0.2 27);--accent-hover:oklch(0.46 0.19 27);--accent-ink:oklch(0.99 0 0);--accent-soft:oklch(0.94 0.03 27);
+  --success:oklch(0.48 0.12 152);--success-soft:oklch(0.95 0.04 152);--warn:oklch(0.5 0.11 70);--warn-soft:oklch(0.95 0.05 85);
+  --danger:oklch(0.5 0.19 25);--danger-soft:oklch(0.95 0.03 25);
+  --h1:oklch(0.55 0.13 250);--h2:oklch(0.55 0.14 300);--h3:oklch(0.52 0.2 27);
+  --card-shadow:0 8px 24px -12px oklch(0.2 0 0 / .22);
+  --f-display:"Archivo Black","Arial Black",system-ui,sans-serif;--f-body:"Hind",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --radius:6px;--radius-lg:8px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto;padding:20px 24px 48px;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);color:var(--accent);font-size:18px;letter-spacing:-.2px}
+.crumb{font-size:14px;color:var(--muted)}
+.sp{flex:1}
+.badge{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--warn-soft);color:var(--warn)}
+.ibtn{border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:6px 10px;font-size:13px;color:var(--muted)}
+.ibtn:hover{color:var(--fg);border-color:var(--accent)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(28px,3.4vw,40px);line-height:1.08;margin:6px 0 8px;letter-spacing:-.5px;text-wrap:balance}
+.lead{margin:0;color:var(--muted);font-size:17px;line-height:1.55;max-width:70ch}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{border:0;background:transparent;padding:10px 14px 12px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--card-shadow)}
+.stage{padding:8px;position:relative}
+.stage svg{display:block;width:100%;height:auto}
+.panel{padding:18px;display:flex;flex-direction:column;gap:14px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line-strong);background:var(--surface-2);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--fg)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip.act{border-style:dashed}
+canvas{display:block;width:100%;height:220px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.ctl{display:flex;align-items:center;gap:12px}
+.ctl label{font-size:14px;font-weight:600;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--accent) var(--p,50%),var(--line-strong) var(--p,50%));margin:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+.ctl .v{font-family:var(--f-mono);font-size:14px;min-width:52px;text-align:right}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--surface-2);border-radius:var(--radius);padding:8px 10px;border-left:4px solid var(--c)}
+.tile .k{font-size:12px;color:var(--muted);font-weight:600}
+.tile .n{font-family:var(--f-mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;font-weight:700}
+.up{color:var(--danger)}.down{color:var(--h1)}.ok{color:var(--success)}
+.explain{padding:18px 20px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px}
+.explain h2{font-family:var(--f-display);font-weight:400;font-size:20px;margin:4px 0 8px;text-wrap:balance}
+.explain p{margin:0 0 10px;line-height:1.6;max-width:68ch}
+.exam{background:var(--accent-soft);border-radius:var(--radius);padding:14px 16px}
+.exam p{margin:6px 0 0;line-height:1.55}
+.foot{font-size:13px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line);padding-top:12px;margin:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:var(--radius);background:var(--accent);color:var(--accent-ink);font-weight:700;padding:9px 14px;font-size:14px}
+.btn:hover{background:var(--accent-hover)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line-strong)}
+.dil{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.dil span{display:block;height:100%;background:var(--accent);width:0}
+@media (max-width:960px){.grid,.explain{grid-template-columns:1fr}}
+@media (max-width:480px){.wrap{padding:14px 16px 40px}.tiles{grid-template-columns:1fr 1fr 1fr}.tile .n{font-size:17px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.cgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start}
+.cstage{padding:0;overflow:hidden}
+.cstage svg{display:block;width:100%;height:auto}
+.cstage svg text{font-family:var(--f-body)}
+.plist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.plist li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;padding:8px 10px;border-radius:var(--radius);border:1px solid transparent;cursor:pointer}
+.plist li:hover{border-color:var(--line-strong)}
+.plist li .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--surface-2);border:1px solid var(--line-strong)}
+.plist li.on{background:var(--accent-soft);border-color:var(--accent)}
+.plist li.on .n{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.plist li.done .n{background:var(--line-strong);color:var(--fg)}
+.plist b{display:block}.plist small{color:var(--muted);font-size:13px;line-height:1.35;display:block}
+.capb{padding:14px 16px;border-top:1px solid var(--line);font-size:16px;line-height:1.5;min-height:78px}
+@media (max-width:960px){.cgrid{grid-template-columns:1fr}}</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brand"><svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#c2181d"/><path d="M44 21A15 15 0 1 0 44 43" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round"/><circle cx="45.5" cy="32" r="4.6" fill="#fff"/></svg>COGNUSS</span>
+    <span class="crumb">Fisiologia endócrina · Aula 2 · Eixo somatotrófico</span>
+    <span class="sp"></span>
+    <span class="badge">Demonstração · sem revisão</span>
+    <button class="ibtn" id="themeBtn" type="button">Alternar tema</button>
+  </header>
+  <section>
+    <div class="eyebrow">Peça interativa · Tradução do sinal</div>
+    <h1>Como a célula lê o GH: a via JAK2–STAT5</h1>
+    <p class="lead">O receptor do GH não tem atividade enzimática própria: ele usa uma quinase emprestada, a JAK2. Avance passo a passo do encaixe do hormônio até o gene do IGF-1, e depois veja o que acontece quando o receptor tem defeito.</p>
+  </section>
+  <div class="cgrid">
+    <div class="card cstage">
+      <svg id="c" viewBox="0 0 760 560" role="img" aria-label="Animação da via JAK2-STAT5 ativada pelo GH"></svg>
+      <div class="capb" id="cap" aria-live="polite"></div>
+      <div class="row" style="padding:0 16px 14px"><button class="btn ghost" id="prev" type="button">← Voltar</button><button class="btn" id="next" type="button">Avançar →</button><button class="ibtn" id="play" type="button">▶ Reproduzir tudo</button>
+        <span class="sp"></span><label class="ibtn" for="mut" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="mut"> Receptor com defeito (Laron)</label></div>
+    </div>
+    <div class="card panel">
+      <div class="lbl">Sequência</div>
+      <ol class="plist" id="pl"></ol>
+    </div>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow">Para fixar</div><h2>Receptor de citocina, quinase associada</h2>
+      <p>O GHR pertence à família dos receptores de citocinas, como os de prolactina, leptina e eritropoetina. Uma molécula de GH, com dois sítios de ligação, une os dois receptores do dímero; a mudança de forma aproxima as JAK2, que se ativam por fosforilação cruzada.</p>
+      <p>A STAT5 fosforilada vira fator de transcrição: no fígado, liga os genes do IGF-1, da IGFBP-3 e da ALS. As SOCS, produzidas pelo próprio sinal, desligam a via.</p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p>A síndrome de Laron é um defeito no receptor do GH (ou, mais raramente, na STAT5b). O quadro é de deficiência de GH, mas com GH alto e IGF-1 muito baixo; o tratamento é IGF-1 recombinante, porque dar GH não adianta. Ligue o defeito e avance os passos.</p></div>
+  </div>
+  <p class="foot">Esquema didático, simplificado para fins de ensino. Base: Aires, <i>Fisiologia</i>, 5ª ed., cap. 73, p. 1219–1227 (Guanabara Koogan, 2018), conforme a aula do Dr. Rafael.</p>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const ss=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('#themeBtn').onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark';window.onTheme&&window.onTheme()};
+const ST=[
+ {t:'Repouso',s:'GHR já dimerizado, JAK2 inativa',cap:'Na membrana, o receptor do GH já existe como dímero. Cada metade carrega, na parte de dentro, uma JAK2 inativa.',m:'Mesmo com defeito, o receptor está na membrana. O problema aparece no próximo passo.'},
+ {t:'Encaixe do GH',s:'Um hormônio, dois sítios',cap:'Uma molécula de GH se liga às duas metades do receptor pelos seus dois sítios. O receptor gira e muda de forma.',m:'O GH chega, mas não consegue se ligar ao receptor defeituoso. Nada muda dentro da célula.'},
+ {t:'Ativação da JAK2',s:'Fosforilação cruzada',cap:'A mudança de forma aproxima as duas JAK2, que fosforilam uma à outra e depois fosforilam tirosinas do receptor. Vias paralelas (MAPK/ERK e PI3K) também são ligadas aqui.',m:'Sem ligação, as JAK2 continuam afastadas e inativas.'},
+ {t:'Recrutamento da STAT5',s:'Encaixe nas fosfotirosinas',cap:'As fosfotirosinas do receptor servem de encaixe para a STAT5 (pelo domínio SH2). Já presa, a STAT5 é fosforilada pela JAK2.',m:'Sem fosfotirosinas no receptor, a STAT5 não tem onde se encaixar.'},
+ {t:'Dímero e núcleo',s:'STAT5 fosforilada se pareia',cap:'Duas STAT5 fosforiladas se soltam, formam um dímero e entram no núcleo.',m:'A STAT5 continua solta no citoplasma, sem fosfato.'},
+ {t:'Transcrição',s:'Genes do IGF-1, IGFBP-3 e ALS',cap:'No núcleo, o dímero liga-se ao DNA e ativa genes. No fígado, os principais são o do IGF-1 e os das duas proteínas que o transportam, IGFBP-3 e ALS.',m:'Sem STAT5 no núcleo, o gene do IGF-1 fica desligado: o IGF-1 cai e, sem o freio dele, o GH sobe.'},
+ {t:'Desligamento',s:'SOCS bloqueia a JAK2',cap:'A própria STAT5 induz as SOCS, que se ligam à JAK2 e ao receptor e encerram o sinal. É um feedback negativo dentro da célula.',m:'Não houve sinal, então também não há SOCS. O quadro final é GH alto com IGF-1 muito baixo.'}];
+let S=0,timer=null;
+const T=(x,y,s,o={})=>`<text x="${x}" y="${y}" font-size="${o.fs||14}" font-weight="${o.fw||700}" fill="${o.c||'var(--fg)'}" text-anchor="${o.a||'middle'}" paint-order="stroke" stroke="var(--surface)" stroke-width="${o.halo??4}">${s}</text>`;
+const P=(x,y)=>`<circle cx="${x}" cy="${y}" r="9" fill="var(--warn)"/><text x="${x}" y="${y+4}" font-size="11" font-weight="700" fill="var(--surface)" text-anchor="middle">P</text>`;
+function scene(){const mut=$('#mut').checked,act=mut?0:S;let s='';
+ // compartimentos
+ s+=`<rect x="0" y="0" width="760" height="168" fill="var(--h1)" fill-opacity=".06"/>`+T(20,26,'Meio extracelular',{a:'start',fs:13,c:'var(--muted)'});
+ s+=`<rect x="0" y="168" width="760" height="30" fill="var(--warn)" fill-opacity=".18"/><line x1="0" y1="168" x2="760" y2="168" stroke="var(--warn)" stroke-width="2"/><line x1="0" y1="198" x2="760" y2="198" stroke="var(--warn)" stroke-width="2"/>`+T(20,188,'Membrana',{a:'start',fs:12,c:'var(--warn)'});
+ s+=T(20,224,'Citoplasma',{a:'start',fs:13,c:'var(--muted)'});
+ s+=`<ellipse cx="380" cy="486" rx="340" ry="66" fill="var(--h2)" fill-opacity=".1" stroke="var(--h2)" stroke-width="2.5"/>`+T(70,470,'Núcleo',{a:'start',fs:13,c:'var(--h2)'});
+ // DNA
+ s+=`<path d="M190 482 C230 470 250 494 290 482 S350 470 390 482 S450 494 490 482 S550 470 580 482" fill="none" stroke="var(--h2)" stroke-width="3"/><path d="M190 490 C230 502 250 478 290 490 S350 502 390 490 S450 478 490 490 S550 502 580 490" fill="none" stroke="var(--h2)" stroke-width="3" opacity=".6"/>`;
+ s+=`<rect x="330" y="476" width="110" height="20" rx="4" fill="${act>=5?'var(--accent)':'var(--surface-2)'}" fill-opacity="${act>=5?.85:1}" stroke="var(--line-strong)"/>`+T(385,491,'gene do IGF-1',{fs:12,c:act>=5?'var(--accent-ink)':'var(--muted)',halo:0});
+ // receptores
+ const tilt=act>=1?10:0;
+ [[330,-1],[430,1]].forEach(([x,sd])=>{const dx=tilt*sd*-0.6;
+   s+=`<g transform="rotate(${tilt*sd*-1} ${x} 183)"><rect x="${x-22}" y="70" width="44" height="98" rx="16" fill="var(--h1)" fill-opacity=".35" stroke="var(--h1)" stroke-width="2.5"/><rect x="${x-7}" y="168" width="14" height="30" fill="var(--h1)" fill-opacity=".7"/><rect x="${x-9}" y="198" width="18" height="96" rx="8" fill="var(--h1)" fill-opacity=".35" stroke="var(--h1)" stroke-width="2"/></g>`;
+   if(mut)s+=T(x+dx,120,'✕',{fs:22,c:'var(--danger)'});
+   // JAK2
+   const jx=x+sd*(act>=2?28:52),jy=250,on=act>=2&&act<6;
+   s+=`<ellipse cx="${jx}" cy="${jy}" rx="30" ry="22" fill="${on?'var(--accent)':'var(--surface-2)'}" fill-opacity="${on?.8:1}" stroke="${on?'var(--accent)':'var(--line-strong)'}" stroke-width="2.5"/>`+T(jx,jy+5,'JAK2',{fs:12,c:on?'var(--accent-ink)':'var(--muted)',halo:0});
+   if(act>=2&&act<6){s+=P(jx+sd*24,jy-18);s+=P(x+sd*14,286)}
+   if(act===6)s+=`<rect x="${jx-22}" y="${jy+14}" width="44" height="22" rx="6" fill="var(--danger)"/>`+T(jx,jy+30,'SOCS',{fs:11,c:'var(--surface)',halo:0});
+   // STAT5 acoplado
+   if(act===3){const sx=x+sd*62,sy=306;s+=`<ellipse cx="${sx}" cy="${sy}" rx="34" ry="18" fill="var(--success)" fill-opacity=".85"/>`+T(sx,sy+5,'STAT5',{fs:12,c:'var(--surface)',halo:0})+P(sx+sd*30,sy-12)}});
+ // GH
+ if(act>=1&&!mut){s+=`<ellipse cx="380" cy="58" rx="62" ry="30" fill="var(--accent)" fill-opacity=".9"/>`+T(380,63,'GH',{fs:16,c:'var(--accent-ink)',halo:0})}
+ else{const gx=S>=1&&mut?560:600;s+=`<ellipse cx="${gx}" cy="62" rx="56" ry="28" fill="var(--accent)" fill-opacity=".9"/>`+T(gx,67,'GH',{fs:16,c:'var(--accent-ink)',halo:0});
+  if(S>=1&&mut)s+=T(560,112,'não se liga',{fs:13,c:'var(--danger)'})}
+ // STAT5 livre (repouso e mutação)
+ if(act<3||mut){[[200,330],[590,340]].forEach(([x,y])=>{s+=`<ellipse cx="${x}" cy="${y}" rx="34" ry="18" fill="var(--success)" fill-opacity=".35" stroke="var(--success)" stroke-width="2"/>`+T(x,y+5,'STAT5',{fs:12,c:'var(--success)',halo:0})})}
+ // dímero
+ if(act===4){s+=`<ellipse cx="358" cy="372" rx="30" ry="17" fill="var(--success)" fill-opacity=".85"/><ellipse cx="402" cy="372" rx="30" ry="17" fill="var(--success)" fill-opacity=".85"/>`+P(340,358)+P(420,358)+`<path d="M380 394 L380 418" stroke="var(--success)" stroke-width="3" marker-end="url(#ar)"/>`}
+ if(act>=5){s+=`<ellipse cx="362" cy="456" rx="26" ry="15" fill="var(--success)" fill-opacity=".9"/><ellipse cx="408" cy="456" rx="26" ry="15" fill="var(--success)" fill-opacity=".9"/>`+P(345,443)+P(425,443);
+  if(act===5){s+=`<path d="M470 484 C540 470 600 430 640 380" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="6 5" marker-end="url(#ar2)"/>`+T(655,360,'mRNA',{fs:13,c:'var(--accent)',a:'middle'})+T(655,232,'IGF-1',{fs:15,c:'var(--h1)'})+T(655,252,'IGFBP-3 · ALS',{fs:12,c:'var(--muted)'})+`<path d="M655 340 L655 268" stroke="var(--accent)" stroke-width="2" marker-end="url(#ar2)"/>`}}
+ if(act===6)s+=T(380,412,'SOCS (induzida pela STAT5) encerra o sinal',{fs:13,c:'var(--danger)'});
+ if(mut&&S>=5)s+=T(380,412,'gene do IGF-1 desligado → IGF-1 baixo, GH alto',{fs:14,c:'var(--danger)'});
+ s=`<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--success)"/></marker><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker></defs>`+s;
+ $('#c').innerHTML=s;$('#cap').textContent=mut?ST[S].m:ST[S].cap;
+ $$('#pl li').forEach((li,i)=>{li.classList.toggle('on',i===S);li.classList.toggle('done',i<S)});
+ $('#prev').disabled=S===0;$('#next').disabled=S===ST.length-1}
+$('#pl').innerHTML=ST.map((x,i)=>`<li data-i="${i}" tabindex="0"><span class="n">${i+1}</span><span><b>${x.t}</b><small>${x.s}</small></span></li>`).join('');
+$$('#pl li').forEach(li=>{const go=()=>{stop();S=+li.dataset.i;scene()};li.onclick=go;li.onkeydown=e=>{if(e.key==='Enter')go()}});
+function stop(){if(timer){clearInterval(timer);timer=null;$('#play').textContent='▶ Reproduzir tudo'}}
+$('#next').onclick=()=>{stop();if(S<ST.length-1){S++;scene()}};$('#prev').onclick=()=>{stop();if(S>0){S--;scene()}};
+$('#play').onclick=()=>{if(timer){stop();return}S=0;scene();$('#play').textContent='⏸ Pausar';timer=setInterval(()=>{if(S<ST.length-1){S++;scene()}else stop()},3200)};
+$('#mut').onchange=scene;if(location.hash==='#laron')$('#mut').checked=true;scene();
+window.__c={go:n=>{S=n;scene()},mut:v=>{$('#mut').checked=v;scene()}};
+
+</script>
+</body>
+</html>

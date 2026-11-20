@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>O adenoma hipofisário e o quiasma óptico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Identidade Cognuss (tokens de apps/web/src/styles/tokens.css): quase-preto quente, coral da marca,
+   Archivo Black nos títulos, Hind no texto. Layout: diagrama do eixo à esquerda, gráfico e controles à direita. */
+:root{
+  --bg:oklch(0.985 0 0);--surface:oklch(1 0 0);--surface-2:oklch(0.95 0.003 20);
+  --fg:oklch(0.21 0.006 20);--muted:oklch(0.46 0.006 20);--line:oklch(0.86 0.003 20);--line-strong:oklch(0.72 0.004 20);
+  --accent:oklch(0.52 0.2 27);--accent-hover:oklch(0.46 0.19 27);--accent-ink:oklch(0.99 0 0);--accent-soft:oklch(0.94 0.03 27);
+  --success:oklch(0.48 0.12 152);--success-soft:oklch(0.95 0.04 152);--warn:oklch(0.5 0.11 70);--warn-soft:oklch(0.95 0.05 85);
+  --danger:oklch(0.5 0.19 25);--danger-soft:oklch(0.95 0.03 25);
+  --h1:oklch(0.55 0.13 250);--h2:oklch(0.55 0.14 300);--h3:oklch(0.52 0.2 27);
+  --card-shadow:0 8px 24px -12px oklch(0.2 0 0 / .22);
+  --f-display:"Archivo Black","Arial Black",system-ui,sans-serif;--f-body:"Hind",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --radius:6px;--radius-lg:8px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:oklch(0.13 0.005 20);--surface:oklch(0.19 0.006 20);--surface-2:oklch(0.26 0.006 20);
+  --fg:oklch(0.97 0 0);--muted:oklch(0.74 0.01 20);--line:oklch(0.3 0.006 20);--line-strong:oklch(0.42 0.008 20);
+  --accent:oklch(0.72 0.18 27);--accent-hover:oklch(0.78 0.15 27);--accent-ink:oklch(0.15 0.006 20);--accent-soft:oklch(0.3 0.07 27);
+  --success:oklch(0.78 0.14 152);--success-soft:oklch(0.27 0.05 152);--warn:oklch(0.83 0.13 80);--warn-soft:oklch(0.29 0.05 80);
+  --danger:oklch(0.72 0.17 22);--danger-soft:oklch(0.28 0.07 22);
+  --h1:oklch(0.75 0.12 250);--h2:oklch(0.76 0.13 300);--h3:oklch(0.72 0.18 27);
+  --card-shadow:0 10px 30px -10px oklch(0 0 0 / .8);color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto;padding:20px 24px 48px;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);color:var(--accent);font-size:18px;letter-spacing:-.2px}
+.crumb{font-size:14px;color:var(--muted)}
+.sp{flex:1}
+.badge{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--warn-soft);color:var(--warn)}
+.ibtn{border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:6px 10px;font-size:13px;color:var(--muted)}
+.ibtn:hover{color:var(--fg);border-color:var(--accent)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(28px,3.4vw,40px);line-height:1.08;margin:6px 0 8px;letter-spacing:-.5px;text-wrap:balance}
+.lead{margin:0;color:var(--muted);font-size:17px;line-height:1.55;max-width:70ch}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{border:0;background:transparent;padding:10px 14px 12px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--card-shadow)}
+.stage{padding:8px;position:relative}
+.stage svg{display:block;width:100%;height:auto}
+.panel{padding:18px;display:flex;flex-direction:column;gap:14px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line-strong);background:var(--surface-2);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--fg)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip.act{border-style:dashed}
+canvas{display:block;width:100%;height:220px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.ctl{display:flex;align-items:center;gap:12px}
+.ctl label{font-size:14px;font-weight:600;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--accent) var(--p,50%),var(--line-strong) var(--p,50%));margin:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--accent)}
+.ctl .v{font-family:var(--f-mono);font-size:14px;min-width:52px;text-align:right}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--surface-2);border-radius:var(--radius);padding:8px 10px;border-left:4px solid var(--c)}
+.tile .k{font-size:12px;color:var(--muted);font-weight:600}
+.tile .n{font-family:var(--f-mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;font-weight:700}
+.up{color:var(--danger)}.down{color:var(--h1)}.ok{color:var(--success)}
+.explain{padding:18px 20px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px}
+.explain h2{font-family:var(--f-display);font-weight:400;font-size:20px;margin:4px 0 8px;text-wrap:balance}
+.explain p{margin:0 0 10px;line-height:1.6;max-width:68ch}
+.exam{background:var(--accent-soft);border-radius:var(--radius);padding:14px 16px}
+.exam p{margin:6px 0 0;line-height:1.55}
+.foot{font-size:13px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line);padding-top:12px;margin:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:var(--radius);background:var(--accent);color:var(--accent-ink);font-weight:700;padding:9px 14px;font-size:14px}
+.btn:hover{background:var(--accent-hover)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line-strong)}
+.dil{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.dil span{display:block;height:100%;background:var(--accent);width:0}
+@media (max-width:960px){.grid,.explain{grid-template-columns:1fr}}
+@media (max-width:480px){.wrap{padding:14px 16px 40px}.tiles{grid-template-columns:1fr 1fr 1fr}.tile .n{font-size:17px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.stage svg text{font-family:var(--f-body)}
+.fx{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.fx li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:14.5px;line-height:1.4;color:var(--muted)}
+.fx li::before{content:"○";font-weight:700;color:var(--line-strong)}
+.fx li.on{color:var(--fg)}
+.fx li.on::before{content:"●";color:var(--danger)}
+.fx li b{font-weight:700}
+.fx li span{display:block}
+.vf{display:flex;gap:18px;align-items:center;justify-content:center}
+.vf svg{width:120px;height:120px}
+.vf div{text-align:center;font-size:12px;font-weight:700;color:var(--muted)}</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brand"><svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#c2181d"/><path d="M44 21A15 15 0 1 0 44 43" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round"/><circle cx="45.5" cy="32" r="4.6" fill="#fff"/></svg>COGNUSS</span>
+    <span class="crumb">Fisiologia endócrina · Aula 2 · Eixo somatotrófico</span>
+    <span class="sp"></span>
+    <span class="badge">Demonstração · sem revisão</span>
+    <button class="ibtn" id="themeBtn" type="button">Alternar tema</button>
+  </header>
+  <section>
+    <div class="eyebrow">Peça interativa · Origem estrutural da doença</div>
+    <h1>O adenoma hipofisário e o quiasma óptico</h1>
+    <p class="lead">A maior parte do excesso de GH vem de um adenoma, tumor benigno dos somatotrofos. Pequeno, ele só produz hormônio. Grande, ele empurra o que está em volta: a hipófise normal, a haste e, logo acima, o quiasma óptico. Aumente o tumor e veja os efeitos aparecerem.</p>
+  </section>
+  <div class="grid">
+    <div class="card stage"><svg id="d" viewBox="0 0 600 540" role="img" aria-label="Corte coronal da sela túrcica com o adenoma, a hipófise, a haste e o quiasma óptico"></svg></div>
+    <div class="card panel">
+      <div class="lbl">Tipo de adenoma</div>
+      <div class="chips" id="ty"></div>
+      <div class="ctl"><label for="sz" style="width:120px">Diâmetro</label><input type="range" id="sz" min="2" max="40" step="1"><span class="v" id="szV"></span></div>
+      <div class="tiles">
+        <div class="tile" style="--c:var(--danger)"><div class="k">Classificação</div><div class="n" id="tC" style="font-size:16px"></div></div>
+        <div class="tile" style="--c:var(--h1)"><div class="k">Quiasma</div><div class="n" id="tQ" style="font-size:16px"></div></div>
+        <div class="tile" style="--c:var(--h2)"><div class="k">Hipófise normal</div><div class="n" id="tH" style="font-size:16px"></div></div>
+      </div>
+      <div class="lbl">Campo visual (o que o paciente vê)</div>
+      <div class="vf"><div><svg id="oe" viewBox="0 0 120 120" aria-label="Campo visual do olho esquerdo"></svg>Olho esquerdo</div><div><svg id="od" viewBox="0 0 120 120" aria-label="Campo visual do olho direito"></svg>Olho direito</div></div>
+      <div class="lbl">Efeitos</div>
+      <ul class="fx" id="fx"></ul>
+    </div>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow">Para fixar</div><h2>Efeito hormonal e efeito de massa</h2>
+      <p><b>Microadenoma</b> (menor que 1 cm): fica dentro da sela; o quadro é só hormonal. <b>Macroadenoma</b> (1 cm ou mais): pode crescer para cima, comprimir a hipófise normal e a haste, e alcançar o quiasma, que fica cerca de 1 cm acima do diafragma da sela.</p>
+      <p>No quiasma cruzam as fibras da metade nasal de cada retina, que enxergam o campo temporal. Comprimidas por baixo, elas falham primeiro nos quadrantes temporais superiores.</p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p><b>Hemianopsia bitemporal</b> = lesão do quiasma, classicamente por macroadenoma. A compressão da hipófise normal tira primeiro GH e gonadotrofinas, depois TSH e ACTH. A compressão da haste corta a dopamina e eleva um pouco a prolactina (efeito haste), sem que o tumor seja prolactinoma.</p></div>
+  </div>
+  <p class="foot">Esquema didático, simplificado para fins de ensino. Base: Aires, <i>Fisiologia</i>, 5ª ed., cap. 73, p. 1219–1227 (Guanabara Koogan, 2018), conforme a aula do Dr. Rafael.</p>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const ss=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('#themeBtn').onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark';window.onTheme&&window.onTheme()};
+const TY={gh:{n:'Somatotrófico (GH)'},nf:{n:'Não funcionante'}};
+let ty='gh',sz=6;
+const T=(x,y,s,o={})=>`<text x="${x}" y="${y}" font-size="${o.fs||13}" font-weight="${o.fw||700}" fill="${o.c||'var(--fg)'}" text-anchor="${o.a||'middle'}" paint-order="stroke" stroke="var(--surface)" stroke-width="4">${s}</text>`;
+function geo(){const r=sz*2,cx=310,cy=393-r,top=cy-r;const comp=clamp((301-top)/50,0,1);return{r,cx,cy,top,comp}}
+function draw(){const g=geo(),{r,cx,cy,comp}=g;let s='';
+ s+=`<path d="M60 520 L60 335 L225 335 Q228 395 300 395 Q372 395 375 335 L540 335 L540 520Z" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="2.5"/>`+T(300,470,'seio esfenoidal',{fs:12,c:'var(--muted)',fw:600});
+ s+=T(470,360,'sela túrcica',{fs:12,c:'var(--muted)',fw:600})+`<path d="M420 356 L376 350" stroke="var(--muted)" stroke-width="1.2"/>`;
+ [[178,-1],[422,1]].forEach(([x])=>{s+=`<ellipse cx="${x}" cy="300" rx="36" ry="32" fill="var(--h2)" fill-opacity=".08" stroke="var(--h2)" stroke-opacity=".5" stroke-dasharray="4 4"/><circle cx="${x}" cy="302" r="13" fill="var(--danger)" fill-opacity=".55" stroke="var(--danger)" stroke-width="2"/>`});
+ s+=T(100,250,'seio cavernoso',{fs:12,c:'var(--h2)',fw:600})+T(100,266,'e carótida',{fs:12,c:'var(--h2)',fw:600});
+ s+=`<path d="M190 50 Q300 32 410 50 L410 170 Q300 192 190 170Z" fill="var(--warn)" fill-opacity=".14" stroke="var(--warn)" stroke-width="2"/>`+T(300,110,'hipotálamo',{fs:14,c:'var(--warn)'});
+ const qy=Math.min(290,g.top-12),qc=comp>0?'var(--danger)':'var(--h1)';
+ // haste
+ const prx=Math.max(12,60-r*.7),pry=Math.max(8,24-r*.2),pcx=Math.max(228+prx,300-Math.min(60,r*.9)),pcy=393-pry;
+ const sb=r>20?Math.min(300,cx-r-10):300,stC=sz>=18?'var(--danger)':'var(--warn)';
+ s+=`<path d="M300 182 C${sb} 230 ${sb} ${pcy-30} ${Math.min(Math.max(sb,pcx),pcx+prx*.3)} ${pcy-pry+2}" fill="none" stroke="${stC}" stroke-width="${sz>=18?4:7}" stroke-linecap="round" opacity=".85"/>`;
+ s+=T(110,190,'haste hipofisária',{fs:12,c:stC,fw:600})+`<path d="M160 196 L${sb+(300-sb)*.4-4} 240" stroke="${stC}" stroke-width="1.2"/>`;
+ s+=`<rect x="236" y="${qy-11}" width="128" height="22" rx="11" fill="var(--surface)"/><rect x="236" y="${qy-11}" width="128" height="22" rx="11" fill="${qc}" fill-opacity="${comp>0?.8:.6}" stroke="${qc}" stroke-width="2"/>`+T(480,qy-30<200?200:qy-30,'quiasma óptico',{fs:13,c:qc})+`<path d="M436 ${qy-26<204?204:qy-26} L366 ${qy}" stroke="${qc}" stroke-width="1.2"/>`;
+ s+=`<line x1="225" y1="335" x2="375" y2="335" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/>`+T(560,330,'diafragma da sela',{fs:11,c:'var(--muted)',fw:600,a:'end'});
+ s+=`<ellipse cx="${pcx}" cy="${pcy}" rx="${prx}" ry="${pry}" fill="var(--h2)" fill-opacity=".5" stroke="var(--h2)" stroke-width="2"/>`;
+ s+=T(110,420,'hipófise normal',{fs:12,c:'var(--h2)',fw:600})+`<path d="M150 412 L${pcx-prx*.5} ${pcy+2}" stroke="var(--h2)" stroke-width="1.2"/>`;
+ s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--accent)" fill-opacity=".55" stroke="var(--accent)" stroke-width="2.5"/>`;
+ s+=T(490,430,'adenoma · '+sz+' mm',{fs:13,c:'var(--accent)'})+`<path d="M450 424 L${cx+r*.7} ${cy+r*.7}" stroke="var(--accent)" stroke-width="1.2"/>`;
+ $('#d').innerHTML=s;
+ // campos visuais
+ const vf=(id,temporalLeft)=>{let v=`<circle cx="60" cy="60" r="54" fill="#f1efec" stroke="var(--line-strong)" stroke-width="2"/>`;
+  const up=clamp(comp/.5,0,1),lo=clamp((comp-.5)/.5,0,1),sx=temporalLeft?-1:1;
+  const wedge=(a0,a1)=>{const p=a=>[60+54*Math.cos(a),60+54*Math.sin(a)];const[x0,y0]=p(a0),[x1,y1]=p(a1);return `M60 60 L${x0} ${y0} A54 54 0 0 ${a1>a0?1:0} ${x1} ${y1}Z`};
+  const base=temporalLeft?Math.PI:0;
+  if(up>0)v+=`<path d="${wedge(temporalLeft?Math.PI:-Math.PI/2*up,temporalLeft?Math.PI+Math.PI/2*up:0)}" fill="#1b1918"/>`;
+  if(lo>0)v+=`<path d="${wedge(temporalLeft?Math.PI-Math.PI/2*lo:0,temporalLeft?Math.PI:Math.PI/2*lo)}" fill="#1b1918"/>`;
+  v+=`<line x1="60" y1="6" x2="60" y2="114" stroke="#9a948f" stroke-dasharray="3 3"/><circle cx="60" cy="60" r="3" fill="var(--accent)"/>`;
+  v+=`<text x="${temporalLeft?14:106}" y="64" font-size="10" font-weight="700" text-anchor="middle" fill="#6b6460" font-family="Hind,sans-serif" paint-order="stroke" stroke="#f1efec" stroke-width="3">T</text><text x="${temporalLeft?106:14}" y="64" font-size="10" font-weight="700" text-anchor="middle" fill="#6b6460" font-family="Hind,sans-serif">N</text>`;
+  $('#'+id).innerHTML=v};
+ vf('oe',true);vf('od',false);
+ $('#tC').textContent=sz<10?'Microadenoma':'Macroadenoma';$('#tQ').textContent=comp<=0?'Livre':comp<.5?'Comprimido':'Muito comprimido';
+ $('#tH').textContent=sz<12?'Preservada':sz<22?'Comprimida':'Muito comprimida';
+ const fx=[[ty==='gh','<b>Excesso de GH e IGF-1</b>: acromegalia (ou gigantismo, antes do fechamento das placas)'],[ty==='nf'&&sz<10,'<b>Sem sintomas hormonais</b>: costuma ser achado de exame (incidentaloma)'],
+  [sz>=10,'<b>Cefaleia</b> por distensão da dura-máter da sela'],[sz>=18,'<b>Efeito haste</b>: a dopamina não chega e a prolactina sobe um pouco'],
+  [sz>=12,'<b>Hipogonadismo</b>: falta de LH e FSH'+(ty==='nf'?' e de GH':'')],[sz>=24,'<b>Hipotireoidismo e insuficiência adrenal centrais</b>: TSH e ACTH caem por último'],
+  [comp>0,'<b>Defeito de campo visual</b>: começa nos quadrantes temporais superiores'+(comp>=.99?' e chega à hemianopsia bitemporal completa':'')],[sz>=30,'<b>Invasão do seio cavernoso</b>: pode causar diplopia (nervos III, IV e VI)']];
+ $('#fx').innerHTML=fx.map(([o,t])=>`<li class="${o?'on':''}"><span>${t}</span></li>`).join('');
+ $('#sz').value=sz;$('#sz').style.setProperty('--p',((sz-2)/38*100)+'%');$('#szV').textContent=sz+' mm';
+ $$('#ty .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===ty))}
+$('#ty').innerHTML=Object.entries(TY).map(([k,v])=>`<button class="chip" type="button" data-k="${k}">${v.n}</button>`).join('');
+$$('#ty .chip').forEach(b=>b.onclick=()=>{ty=b.dataset.k;draw()});$('#sz').oninput=e=>{sz=+e.target.value;draw()};
+const h=+location.hash.slice(1);if(h>=2&&h<=40)sz=h;
+draw();window.onTheme=draw;window.__a={set:v=>{sz=v;draw()},type:v=>{ty=v;draw()}};
+
+</script>
+</body>
+</html>

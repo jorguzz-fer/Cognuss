@@ -15,3 +15,4 @@ export * as materials from './routes/materials';
 export * as lessonStudy from './routes/lesson-study';
 export * as planning from './routes/planning';
 export * as ajuda from './routes/ajuda';
+export * as production from './routes/production';

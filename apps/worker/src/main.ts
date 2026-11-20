@@ -2,8 +2,10 @@ import http from 'node:http';
 import Anthropic from '@anthropic-ai/sdk';
 import {
   AnthropicCreator,
+  AnthropicLessonPlanner,
   AnthropicScheduleExtractor,
   FakeCreator,
+  FakeLessonPlanner,
   FakeScheduleExtractor,
   FakeEmbedder,
   VoyageEmbedder,
@@ -57,7 +59,24 @@ async function main() {
         ? new VoyageEmbedder(cfg.VOYAGE_API_KEY, cfg.EMBEDDING_MODEL)
         : null;
   if (!embedder) logger.warn('worker.no_embeddings', { reason: 'VOYAGE_API_KEY ausente' });
-  const handlers = createHandlers({ storage, scanner, scheduleExtractor, creator, embedder });
+  const planner =
+    cfg.AI_PROVIDER === 'anthropic' && cfg.ANTHROPIC_API_KEY
+      ? new AnthropicLessonPlanner(
+          new Anthropic({ apiKey: cfg.ANTHROPIC_API_KEY }),
+          cfg.AI_PRODUCTION_MODEL,
+          cfg.AI_PRODUCTION_EFFORT,
+        )
+      : cfg.AI_PROVIDER === 'fake'
+        ? new FakeLessonPlanner()
+        : null;
+  const handlers = createHandlers({
+    storage,
+    scanner,
+    scheduleExtractor,
+    creator,
+    embedder,
+    planner,
+  });
   const pool = createPool(cfg.DATABASE_URL, cfg.DB_POOL_MAX);
   const db = createDb(pool);
   // Uma conexão para filas e outra para os workers: comandos bloqueantes não podem segurar
@@ -77,6 +96,7 @@ async function main() {
       ai: cfg.WORKER_CONCURRENCY_AI,
       notifications: cfg.WORKER_CONCURRENCY_NOTIFICATIONS,
       maintenance: cfg.WORKER_CONCURRENCY_MAINTENANCE,
+      production: cfg.WORKER_CONCURRENCY_PRODUCTION,
     },
   });
   const relay = startRelay({ db, queues, log: logger, intervalMs: cfg.WORKER_RELAY_INTERVAL_MS });

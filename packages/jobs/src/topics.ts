@@ -18,6 +18,9 @@ export const topics = {
   // Vetores da busca por conceito dos materiais do aluno (ADR 0014): gera o que falta e apaga o
   // que não vale mais (versão antiga, material excluído, autorização retirada).
   'ai.embed_user': z.object({ userId: id }),
+  // Produção de aulas (ADR 0021): separar os slides do arquivo do professor e planejar as peças.
+  'production.extract': z.object({ batchId: z.uuid(), userId: id }),
+  'production.plan': z.object({ batchId: z.uuid(), userId: id }),
   // Conta excluída: apagar do bucket tudo o que estava sob u/{userId}/ (LGPD, ADR 0009).
   'maintenance.erase_user_objects': z.object({ userId: id }),
 } as const;
@@ -25,7 +28,14 @@ export const topics = {
 export type Topic = keyof typeof topics;
 export type Payload<T extends Topic> = z.infer<(typeof topics)[T]>;
 
-export const QUEUES = ['system', 'files', 'ai', 'notifications', 'maintenance'] as const;
+export const QUEUES = [
+  'system',
+  'files',
+  'ai',
+  'notifications',
+  'maintenance',
+  'production',
+] as const;
 export type QueueName = (typeof QUEUES)[number];
 
 export function queueOf(topic: string): QueueName {

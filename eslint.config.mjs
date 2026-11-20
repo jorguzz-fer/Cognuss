@@ -12,6 +12,7 @@ export default tseslint.config(
       'apps/web/next-env.d.ts',
       'packages/db/migrations/**',
       'loadtest/**',
+      'docs/producao/referencias/**',
       '**/playwright-report/**',
     ],
   },

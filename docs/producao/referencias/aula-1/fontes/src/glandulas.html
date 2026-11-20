@@ -1,0 +1,82 @@
+@@TITLE
+Mapa das glândulas endócrinas
+@@STYLE
+.ggrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;align-items:start}
+.body{padding:8px}
+.body svg{display:block;width:100%;max-width:440px;margin:0 auto;height:auto}
+.gl{cursor:pointer}
+.gl circle.hit{fill:transparent}
+.gl:focus-visible .ring{stroke-width:5}
+.glist{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.gi{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--radius);border:1px solid var(--line);background:var(--surface-2);font-weight:600;font-size:14px;cursor:pointer;text-align:left}
+.gi i{width:10px;height:10px;border-radius:50%;flex:none}
+.gi.on{border-color:var(--accent);background:var(--accent-soft)}
+.gi.off{opacity:.35}
+.htags{display:flex;flex-wrap:wrap;gap:6px}
+.htag{font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line-strong)}
+.lesson{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--accent)}
+@media (max-width:960px){.ggrid{grid-template-columns:1fr}}
+@@BODY
+  <section>
+    <div class="eyebrow">Peça interativa · Órgãos endócrinos</div>
+    <h1>Onde o corpo fabrica hormônios</h1>
+    <p class="lead">Órgãos endócrinos primários existem para secretar hormônios. Os secundários têm outra função principal e, além dela, também secretam hormônios. Toque numa glândula para ver o que ela produz e em que aula do curso ela aparece.</p>
+  </section>
+  <div class="row"><span class="chips" id="flt"><button type="button" class="chip" data-f="all" aria-pressed="true">Todos</button><button type="button" class="chip" data-f="p">Primários</button><button type="button" class="chip" data-f="s">Secundários</button></span>
+    <span class="sp"></span><span class="chips" id="sex"><button type="button" class="chip" data-s="m" aria-pressed="true">Corpo masculino</button><button type="button" class="chip" data-s="f">Corpo feminino</button></span></div>
+  <div class="ggrid">
+    <div class="card body"><svg id="b" viewBox="0 0 400 760" role="img" aria-label="Silhueta humana com as glândulas endócrinas marcadas"></svg></div>
+    <div class="card panel">
+      <div><div class="eyebrow" id="gEy"></div><h2 id="gT" style="font-family:var(--f-display);font-weight:400;font-size:24px;margin:4px 0 8px"></h2>
+        <p id="gD" style="margin:0 0 10px;line-height:1.55"></p>
+        <div class="lbl" style="margin-bottom:6px">Hormônios</div><div class="htags" id="gH"></div>
+        <p id="gL" style="margin:12px 0 0"></p></div>
+      <div><div class="lbl" style="margin-bottom:8px">Todas as glândulas</div><div class="glist" id="gl"></div></div>
+    </div>
+  </div>
+  <div class="card explain">
+    <div><div class="eyebrow">Para fixar</div><h2>Primário ou secundário depende da função principal</h2>
+      <p>Hipotálamo, hipófise, pineal, tireoide, paratireoides, adrenais, ilhotas pancreáticas e gônadas são órgãos endócrinos primários. Coração, rim, fígado, trato gastrointestinal, tecido adiposo, pele e placenta têm outra função principal, mas também liberam hormônios.</p></div>
+    <div class="exam"><div class="lbl" style="color:var(--accent)">Na prova</div><p>Hormônios de órgãos secundários aparecem muito em casos clínicos: eritropoetina e calcitriol na doença renal crônica (anemia e hipocalcemia), peptídeo natriurético na insuficiência cardíaca (BNP) e GLP-1 nos remédios para diabetes e obesidade.</p></div>
+  </div>
+@@SCRIPT
+/* x, y em coordenadas do corpo (400x760); t: p primário, s secundário; sex: m/f/null */
+const G={
+ hipot:{n:'Hipotálamo',t:'p',x:200,y:62,c:'--h1',d:'Liga o sistema nervoso ao endócrino: seus neurônios liberam hormônios que comandam a hipófise.',h:['TRH','CRH','GnRH','GHRH','Somatostatina','Dopamina','ADH e ocitocina (produzidos aqui)'],l:'Todas as aulas de eixo'},
+ hipof:{n:'Hipófise',t:'p',x:200,y:80,c:'--h1',d:'A adeno-hipófise produz os hormônios tróficos; a neuro-hipófise libera ADH e ocitocina vindos do hipotálamo.',h:['GH','TSH','ACTH','LH','FSH','Prolactina','ADH','Ocitocina'],l:'Aulas 2, 3 e 4 (eixos)'},
+ pineal:{n:'Pineal',t:'p',x:214,y:52,c:'--h1',d:'Converte a informação de claro e escuro em sinal hormonal: secreta melatonina à noite.',h:['Melatonina'],l:'Aula 1 · Introdução'},
+ tireo:{n:'Tireoide',t:'p',x:200,y:150,c:'--h2',d:'Produz os hormônios tireoidianos, que regulam o metabolismo de quase todas as células, e a calcitonina.',h:['T4 (tiroxina)','T3','Calcitonina'],l:'Aula 4 · Eixo tireotrófico'},
+ parat:{n:'Paratireoides',t:'p',x:214,y:158,c:'--h2',d:'Quatro pequenas glândulas atrás da tireoide que controlam o cálcio do sangue.',h:['PTH (paratormônio)'],l:'Aula 1 · Sinalização endócrina'},
+ adrenal:{n:'Adrenais',t:'p',x:168,y:318,x2:232,c:'--h3',d:'O córtex produz aldosterona, cortisol e andrógenos; a medula produz adrenalina e noradrenalina.',h:['Aldosterona','Cortisol','DHEA','Adrenalina','Noradrenalina'],l:'Aula 3 · Eixo HHS'},
+ panc:{n:'Pâncreas endócrino',t:'p',x:215,y:345,c:'--h3',d:'As ilhotas de Langerhans, 1 a 2% do pâncreas, controlam a glicemia.',h:['Insulina (β)','Glucagon (α)','Somatostatina (δ)','Polipeptídeo pancreático'],l:'Aula 5 · Pâncreas endócrino'},
+ test:{n:'Testículos',t:'p',sex:'m',x:186,y:520,x2:214,c:'--warn',d:'As células de Leydig produzem testosterona; as de Sertoli, inibina.',h:['Testosterona','Inibina B','AMH'],l:'Aula 6 · Endócrina masculina'},
+ ovar:{n:'Ovários',t:'p',sex:'f',x:166,y:440,x2:234,c:'--warn',d:'Folículos e corpo lúteo produzem os hormônios do ciclo menstrual.',h:['Estradiol','Progesterona','Inibina','AMH'],l:'Aula 7 · Endócrina feminina'},
+ cor:{n:'Coração',t:'s',x:212,y:228,c:'--success',d:'Os átrios e ventrículos distendidos liberam peptídeos natriuréticos, que eliminam sódio e água.',h:['ANP','BNP'],l:'Fisiologia cardiovascular'},
+ rim:{n:'Rins',t:'s',x:160,y:350,x2:240,c:'--success',d:'Além de filtrar o sangue, produzem hormônios para o sangue, a pressão e o cálcio.',h:['Eritropoetina','Renina','Calcitriol (vitamina D ativa)'],l:'Aula 1 · Sinalização endócrina'},
+ figado:{n:'Fígado',t:'s',x:170,y:290,c:'--success',d:'Responde ao GH produzindo IGF-1 e fornece o angiotensinogênio do sistema renina-angiotensina.',h:['IGF-1','Angiotensinogênio','Hepcidina','Trombopoetina'],l:'Aula 2 · Eixo somatotrófico'},
+ tgi:{n:'Estômago e intestino',t:'s',x:205,y:390,c:'--success',d:'O maior órgão endócrino em número de células: seus hormônios coordenam digestão, apetite e insulina.',h:['Gastrina','Grelina','Secretina','CCK','GLP-1','GIP'],l:'Fisiologia do digestório'},
+ adip:{n:'Tecido adiposo',t:'s',x:248,y:410,c:'--success',d:'Informa ao cérebro o tamanho dos estoques de energia e modula a sensibilidade à insulina.',h:['Leptina','Adiponectina','Estrogênio (aromatase)'],l:'Aula 5 · Pâncreas endócrino'},
+ pele:{n:'Pele',t:'s',x:100,y:300,c:'--success',d:'A radiação UVB converte o 7-desidrocolesterol em vitamina D3, primeiro passo da via do calcitriol.',h:['Vitamina D3 (colecalciferol)'],l:'Aula 1 · Introdução'},
+ timo:{n:'Timo',t:'s',x:200,y:188,c:'--success',d:'Local de maturação dos linfócitos T; libera fatores que participam desse processo.',h:['Timosina','Timopoetina'],l:'Imunologia'},
+ plac:{n:'Placenta',t:'s',sex:'f',x:200,y:430,c:'--success',d:'Órgão temporário da gestação que mantém o corpo lúteo e adapta o metabolismo materno.',h:['hCG','Progesterona','Estriol','Lactogênio placentário'],l:'Aula 7 · Endócrina feminina'}};
+let F='all',SX='m',SEL='hipof';
+const BODY=`<path d="M200 20 C240 20 252 52 250 84 C248 110 232 126 222 132 L222 146 C262 152 300 166 312 196 L340 340 C344 366 334 380 322 380 L300 250 L292 470 C292 480 286 492 280 500 L272 740 L224 740 L210 520 L190 520 L176 740 L128 740 L120 500 C114 492 108 480 108 470 L100 250 L78 380 C66 380 56 366 60 340 L88 196 C100 166 138 152 178 146 L178 132 C168 126 152 110 150 84 C148 52 160 20 200 20Z" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="2"/>`;
+function visible(k){const g=G[k];if(g.sex&&g.sex!==SX)return false;return F==='all'||g.t===F}
+function draw(){let s=BODY;
+  Object.entries(G).forEach(([k,g])=>{if(g.sex&&g.sex!==SX)return;const v=visible(k),on=k===SEL,col=`var(${g.c})`;
+    const pts=[[g.x,g.y]];if(g.x2)pts.push([g.x2,g.y]);
+    s+=`<g class="gl" data-k="${k}" tabindex="${v?0:-1}" role="button" aria-label="${g.n}" opacity="${v?1:.15}">`;
+    pts.forEach(([x,y])=>{s+=`<circle class="ring" cx="${x}" cy="${y}" r="${on?13:9}" fill="${col}" fill-opacity="${on?.95:.75}" stroke="${on?'var(--fg)':col}" stroke-width="${on?3:2}"/><circle class="hit" cx="${x}" cy="${y}" r="18"/>`});
+    s+=`</g>`});
+  const g=G[SEL];const lx=g.x<200?Math.max(8,g.x-170):Math.min(392,g.x+20);
+  s+=`<text x="${g.x2?Math.max(g.x2,g.x)+20:g.x+20}" y="${g.y+5}" font-family="Hind,sans-serif" font-size="15" font-weight="700" fill="var(--fg)" paint-order="stroke" stroke="var(--surface)" stroke-width="5">${g.n}</text>`;
+  $('#b').innerHTML=s;
+  $$('#b .gl').forEach(n=>{n.onclick=()=>sel(n.dataset.k);n.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();sel(n.dataset.k)}}});
+  $('#gl').innerHTML=Object.entries(G).filter(([k,g])=>!g.sex||g.sex===SX).map(([k,g])=>`<button type="button" class="gi${k===SEL?' on':''}${visible(k)?'':' off'}" data-k="${k}"><i style="background:var(${g.c})"></i>${g.n}</button>`).join('');
+  $$('#gl .gi').forEach(b=>b.onclick=()=>sel(b.dataset.k));}
+function sel(k){SEL=k;const g=G[k];$('#gEy').textContent=g.t==='p'?'Órgão endócrino primário':'Órgão endócrino secundário';$('#gEy').style.color=g.t==='p'?'var(--accent)':'var(--muted)';
+  $('#gT').textContent=g.n;$('#gD').textContent=g.d;$('#gH').innerHTML=g.h.map(h=>`<span class="htag">${h}</span>`).join('');
+  $('#gL').innerHTML=`<span class="lesson">◆ No curso: ${g.l}</span>`;draw();try{history.replaceState(null,'','#'+k)}catch(e){}}
+$$('#flt .chip').forEach(b=>b.onclick=()=>{F=b.dataset.f;$$('#flt .chip').forEach(x=>x.setAttribute('aria-pressed',x===b));if(!visible(SEL)){const k=Object.keys(G).find(visible);if(k)SEL=k}sel(SEL)});
+$$('#sex .chip').forEach(b=>b.onclick=()=>{SX=b.dataset.s;$$('#sex .chip').forEach(x=>x.setAttribute('aria-pressed',x===b));if(G[SEL].sex&&G[SEL].sex!==SX)SEL=SX==='m'?'test':'ovar';sel(SEL)});
+const h0=location.hash.slice(1);if(G[h0]){if(G[h0].sex){SX=G[h0].sex;$$('#sex .chip').forEach(x=>x.setAttribute('aria-pressed',x.dataset.s===SX))}SEL=h0}sel(SEL);
