@@ -48,7 +48,7 @@ Opção 3.
   - armazenamento `t/{tenant}/…`;
   - `tenant_id` nos registros;
   - `tenant_id` no conteúdo dos trabalhos da fila.
-- **Reaproveitamento:** `packages/core` (SRS e regras novas de nota e recuperação), `contracts`, `storage`, `jobs`, `apps/worker`, a configuração do Better Auth com Argon2id e 2FA (ADR 0002) e o desenho de LGPD do ADR 0009. O trigger editorial e as funções de RLS são copiados para `packages/db-kids`, adaptados ao inquilino.
+- **Reaproveitamento:** `packages/core` (SRS e regras novas de nota e recuperação), `contracts`, `storage`, `jobs`, `apps/worker`, a configuração do Better Auth com Argon2id e 2FA (ADR 0002) e o desenho de LGPD do ADR 0009. A UX e a UI são as do Cognuss (ADRs 0007 e 0010, `docs/ux.md`): tokens, fontes e componentes saem de `apps/web` para um pacote compartilhado `packages/ui`, usado pelos dois apps. O trigger editorial e as funções de RLS são copiados para `packages/db-kids`, adaptados ao inquilino.
 - **Deploy:** serviço `kids` no `infra/compose.yml`, com a mesma imagem-base, aplicando as migrations como `kids_owner` no start. O backup diário passa a incluir o `cognuss_kids`.
 
 ## Consequências

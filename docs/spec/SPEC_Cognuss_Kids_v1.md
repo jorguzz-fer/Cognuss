@@ -177,7 +177,7 @@ EST define quais anos existem → PLA cria um plano por ano e matéria → CON e
 | INS-01 | O Super Admin cadastra a instituição com nome, nome curto (slug), CNPJ (opcional), cidade, UF, tipo (pública ou privada) e e-mail de contato. | E |
 | INS-02 | Estados possíveis: `active`, `suspended` e `closed`. Uma instituição suspensa bloqueia o login de todos os seus membros e preserva os dados. | E |
 | INS-03 | Ao criar a instituição, o Super Admin convida o primeiro gestor por e-mail. | E |
-| INS-04 | White-label leve: logo e cor primária por instituição, aplicados ao app do aluno (Blueprint §9). **[ENG]** | D |
+| INS-04 | White-label leve: o logo da instituição aparece no cabeçalho, ao lado da marca Cognuss (Blueprint §9). A cor da marca não muda por instituição, para manter a identidade do Cognuss (K-D06). **[ENG]** | D |
 | INS-05 | Exportação completa dos dados da instituição (portabilidade) e exclusão auditada (Blueprint §7, ciclo de vida). | D |
 | INS-06 | Endereço próprio por instituição (`escola.cognusskids…`) ou só login com escolha da instituição. **[PEND D-K06]** | F |
 
@@ -271,7 +271,35 @@ Frases curtas, voz ativa, vocabulário do ano. As palavras "fracasso", "reprovad
 
 ### 6.2 Acessibilidade
 
-O alvo é WCAG 2.2 AA. Alvos de toque de 44 px ou mais, fonte base de 18 px no Fundamental I, nada que dependa só de cor e navegação por teclado. O axe roda no E2E.
+O alvo é WCAG 2.2 AA, com o mesmo design system do Cognuss (K-D06, seção 6.5).
+
+- Alvos de toque de 48 px ou mais, como nas questões do Cognuss (`docs/ux.md`).
+- Fonte base de 18 px no Fundamental I, por um token de escala, sem trocar a tipografia.
+- Nada depende só de cor.
+- Navegação completa por teclado.
+- O axe roda no E2E, nos dois temas.
+
+### 6.5 UX e UI: as do Cognuss (K-D06)
+
+O Kids usa a mesma identidade visual e o mesmo padrão de UX do Cognuss:
+
+- **Identidade visual (ADR 0007 e 0010):**
+  - tema escuro por padrão, com botão para o claro;
+  - vermelho da marca;
+  - Archivo Black nos títulos e Hind no texto;
+  - cantos retos de 6 px;
+  - capas em degradê para matérias e planos;
+  - logo Cognuss.
+- **Padrão de UX (leis de UX, `docs/ux.md`):**
+  - um único botão primário por tela;
+  - próxima ação com o motivo logo abaixo;
+  - progresso visível ("Questão 2 de 5");
+  - barra de ação fixa ao alcance do polegar no celular;
+  - explicação da resposta aberta logo depois de responder;
+  - domínio em faixas, sem porcentagem enquanto houver poucos dados;
+  - nada de sequência de dias que zera.
+- **Telas que se repetem:** a sessão de questões e a revisão de flashcards do Kids têm a mesma estrutura das telas do Cognuss. O que muda é o texto (tom da seção 6.1) e o tamanho da fonte no Fundamental I.
+- **Onde fica o código:** tokens (`apps/web/src/styles/tokens.css`), fontes, `components/ui`, `components/shared` (capa, logo, layout) e os componentes de questões e flashcards saem para um pacote compartilhado `packages/ui`, usado pelos dois apps. **[ENG]** A extração é feita na Fase 0, sem mudar o visual do Cognuss, conferida pelo E2E e pelo axe dele.
 
 ### 6.3 Áudio e HTTPS
 
@@ -302,7 +330,8 @@ A decisão está no **ADR 0022**: o Kids é um novo app do mesmo monorepo (`apps
 | `@gutta/storage` (ADR 0012) | Igual, com prefixo `t/{tenant_id}/`. |
 | `@gutta/jobs` e `apps/worker` (ADR 0013) | Igual, com `tenant_id` no conteúdo de cada trabalho. |
 | `@gutta/contracts` e OpenAPI (ADR 0019) | Rotas do Kids num arquivo de contrato próprio, gerado dos esquemas Zod. |
-| `MailProvider`, design system, CI, k6 | Iguais. A identidade visual do Kids é própria, clara e colorida. **[PEND D-K08]** |
+| Design system e UX (ADR 0007 e 0010, `docs/ux.md`) | **Iguais** (K-D06): tema, cores, tipografia, componentes e padrões de tela. Vão para `packages/ui` (seção 6.5). |
+| `MailProvider`, CI, k6 | Iguais. |
 
 ### 7.2 Conformidade com o Engineering Blueprint
 
@@ -317,7 +346,7 @@ A decisão está no **ADR 0022**: o Kids é um novo app do mesmo monorepo (`apps
 | §6 Segurança | Cookie httpOnly/Secure/SameSite, Argon2id, 2FA obrigatório para Super Admin e Gestor, RBAC por membership no servidor, rate limit e lockout progressivo, CSP, URL assinada para arquivos, gitleaks, CodeQL e varredura de imagem na CI. | O aluno do Fundamental I pode ter login sem e-mail (D-K02). A recuperação de senha passa pelo professor e fica na auditoria (USR-07). |
 | **§7 Multitenancy** | **Aplica-se integralmente.** Banco compartilhado, schema compartilhado, `tenant_id` + RLS: o padrão do blueprint. Cada requisição abre uma transação com `SET LOCAL app.tenant_id` e `app.user_id`. O papel `kids_app` não tem BYPASSRLS. O tenant aparece em todas as camadas: sessão (tenant ativo validado contra `memberships`), cache (chaves `t:{tenant}:…`), armazenamento (`t/{tenant}/…`), registros (`tenant_id` no log), filas (`tenant_id` no conteúdo do trabalho). Usuário em vários tenants via `memberships`. Ciclo de vida: provisionamento com seed de matérias, suspensão, exportação e exclusão auditada (INS-02, INS-05). Dados globais (lista de etapas e anos, lista BNCC sugerida) ficam separados e são só leitura. | **Teste obrigatório na CI: o tenant A nunca lê nem escreve dados do tenant B, em toda tabela.** Índices compostos começam por `tenant_id`. |
 | §8 API-first | **Não se aplica na v1**: não há terceiros consumindo a API. | Se entrar integração com sistema escolar, aplicar a §8 inteira (OAuth2 Client Credentials, escopos, webhooks com HMAC). |
-| §9 UX e design system | Pensado primeiro para tablet e celular, PWA, tokens próprios do Kids, navegação em contexto, sem botão inerte, um painel por perfil, white-label leve por tenant (INS-04), acessibilidade (6.2). | A interface é só em português na v1, com os textos centralizados para permitir i18n. |
+| §9 UX e design system | O design system do Cognuss, num pacote compartilhado (`packages/ui`), com tokens e componentes base isolando a lib visual, como pede o Blueprint (§4 `design-tokens`, §9). Pensado primeiro para tablet e celular, PWA, navegação em contexto, sem botão inerte, um painel por perfil, white-label leve só com o logo (INS-04), acessibilidade (6.2). | A interface é só em português na v1, com os textos centralizados para permitir i18n. |
 | §10 Dados | `uuid`, `timestamptz`, migrations SQL versionadas, FKs e restrições. Exclusão lógica (`archived_at`) em planos, turmas e membros, com auditoria. | Retenção na seção 10. |
 | §11 Observabilidade | Logs JSON com `request_id`, `tenant_id` e `user_id`, sem nome de aluno nem e-mail. Captura de erros. Métricas por tenant. Healthcheck em `/api/health`. | Nenhum. |
 | §12 Qualidade | Pirâmide de testes (seção 13), testes de autorização e de isolamento de tenant, CI bloqueia o merge e chaves de funcionalidade por módulo. | Nenhum. |
@@ -336,6 +365,7 @@ packages/
   core/           + kids/ (nota, recuperação, liberação de tópicos), sem I/O
   db-kids/        schema Drizzle, migrations SQL, RLS, seeds, withTenantUser()
   contracts/      + rotas do Kids
+  ui/             novo: tokens, fontes e componentes do Cognuss, usados por web e kids
   storage/, jobs/ sem mudança de interface
 infra/compose.yml + serviço kids
 ```
@@ -525,7 +555,7 @@ Mesmas regras do Cognuss:
 ## 12. Fases e backlog
 
 ### Fase 0: fundação
-`apps/kids` e `packages/db-kids` criados, papéis `kids_owner`/`kids_app`, `withTenantUser`, teste de isolamento de tenant na CI, Better Auth com 2FA, serviço `kids` no Compose, ADR 0022 aceito.
+`apps/kids` e `packages/db-kids` criados, papéis `kids_owner`/`kids_app`, `withTenantUser`, teste de isolamento de tenant na CI, Better Auth com 2FA, serviço `kids` no Compose, extração do design system para `packages/ui` sem mudar o visual do Cognuss (6.5), ADR 0022 aceito.
 
 ### Fase 1: instituição e estrutura
 INS-01 a 03, EST-01 a 03, EST-05 a 07, USR-01 a 04, USR-06 e 07, painel mínimo do Super Admin e do gestor.
@@ -579,6 +609,7 @@ INS-06, PAI-05, login do responsável, biblioteca compartilhada, IA.
 | K-D03 | O que é um plano de estudos | Matérias → tópicos + conteúdo, flashcards, simulado e prova (o modelo do piloto de Ciências). | Fernando, 20/11/2026 |
 | K-D04 | Compartilhamento de planos entre instituições | Não na v1. Cada instituição cria os seus. | Fernando, 20/11/2026 |
 | K-D05 | Stack | Next.js + Drizzle + Postgres, no repositório Cognuss, branch `cognuss-kids`. | Fernando, 20/11/2026 |
+| K-D06 | UX e UI | **As mesmas do Cognuss original:** identidade visual dos ADRs 0007 e 0010 (tema escuro e vermelho, com o claro opcional), padrões de `docs/ux.md` e componentes compartilhados em `packages/ui` (seção 6.5). | Fernando, 20/11/2026 |
 
 ### 14.2 Abertas
 
@@ -591,7 +622,7 @@ INS-06, PAI-05, login do responsável, biblioteca compartilhada, IA.
 | D-K05 | 2FA obrigatório para Professor | Opcional na v1, obrigatório se o professor puder exportar dados. | Fase 1 |
 | D-K06 | Endereço por instituição (subdomínio) | Um domínio só, com escolha da instituição no login. | Não bloqueia |
 | D-K07 | Modelo comercial (por aluno ou por escola) | | Antes da venda |
-| D-K08 | Identidade visual do Kids e domínio | Identidade clara e colorida, separada do tema escuro do Cognuss. | Fase 2 |
+| D-K08 | Domínio do Kids e tema padrão para o Fundamental I | Domínio próprio (exemplo: `kids.` no domínio do Cognuss). Manter o escuro como padrão, como no Cognuss, e medir no piloto se as crianças do Fundamental I trocam para o claro. | Fase 2 |
 | D-K09 | Banco separado ou o mesmo banco do Cognuss com `tenant_id` | Banco separado (ADR 0022). | Fase 0 |
 
 ---
