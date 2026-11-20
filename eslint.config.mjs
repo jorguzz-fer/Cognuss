@@ -10,7 +10,9 @@ export default tseslint.config(
       '**/dist/**',
       'public/**',
       'apps/web/next-env.d.ts',
+      'apps/kids/next-env.d.ts',
       'packages/db/migrations/**',
+      'packages/db-kids/migrations/**',
       'loadtest/**',
       'docs/producao/referencias/**',
       '**/playwright-report/**',
@@ -22,6 +24,11 @@ export default tseslint.config(
     files: ['apps/web/**/*.{ts,tsx}'],
     extends: [...nextVitals],
     settings: { next: { rootDir: 'apps/web' } },
+  },
+  {
+    files: ['apps/kids/**/*.{ts,tsx}'],
+    extends: [...nextVitals],
+    settings: { next: { rootDir: 'apps/kids' } },
   },
   {
     rules: {

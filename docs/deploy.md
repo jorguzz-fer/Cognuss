@@ -92,6 +92,28 @@ A migration 0051 precisa da extensão `vector`, que só um superusuário cria. O
 
 Os vetores vêm da Voyage AI (decisão do Fernando, 14/11/2026). Cadastre `VOYAGE_API_KEY` no `web` e no `worker`. No painel da Voyage, em Organization → Terms of Service, mude para **Opted Out** (retenção zero, sem uso para treino; pede cartão cadastrado e conta de admin). Sem a chave, a busca por conceito fica desligada e a busca por palavra continua.
 
+## Cognuss Kids (ADR 0022)
+
+O Kids sobe no mesmo compose, com app próprio (`kids`) e **banco próprio** (`cognuss_kids`) no mesmo Postgres. Só os papéis `kids_owner` e `kids_app` conectam a esse banco; o `gutta_app` não alcança os dados das crianças, e o `kids_app` não alcança os do Cognuss.
+
+1. Variáveis novas no Coolify (gere as senhas com `openssl rand -hex 32`: vão dentro da URL de conexão):
+
+   | Variável | Observação |
+   | --- | --- |
+   | `KIDS_APP_URL` | endereço do Kids, sem barra no fim (domínio em aberto, D-K08) |
+   | `KIDS_BETTER_AUTH_SECRET` | 32+ caracteres; **diferente** do `BETTER_AUTH_SECRET` do Cognuss |
+   | `KIDS_OWNER_PASSWORD` | dono do banco do Kids; usado só pelas migrations |
+   | `KIDS_APP_PASSWORD` | papel da aplicação do Kids (sem BYPASSRLS) |
+   | `KIDS_BOOTSTRAP_ADMIN_EMAILS` | e-mails que viram Super Admin no start, se a conta existir e o e-mail estiver confirmado |
+   | `KIDS_MAIL_FROM` | opcional; remetente do Kids no Resend (usa o mesmo `RESEND_API_KEY`) |
+
+2. Domínio no serviço `kids`, porta `3100`.
+3. A cada deploy, o serviço `db-kids-roles` roda `kids-roles.sh` (dentro da imagem do `db`) e cria ou atualiza os papéis e o banco. Ele é idempotente e também funciona no volume que já existe em produção, onde o init do Postgres não roda de novo. Depois, o `kids` aplica as migrations como `kids_owner` e só então sobe.
+4. Confira `KIDS_APP_URL/api/health`, que deve responder `{"status":"ok","db":"ok"}`.
+5. Backup: acrescente o banco `cognuss_kids` ao dump diário do serviço `db` e ao teste mensal de restauração.
+
+Localmente: `pnpm kids:db:setup` cria papéis, banco, migrations e a escola de demonstração (usuários `superadmin@kids.test`, `gestor@kids.test`, `professor@kids.test` e `aluno@kids.test`, senha `gutta-demo-2026`); `pnpm kids:dev` sobe em `http://localhost:3100`.
+
 ## Atualizações
 
 Cada deploy reconstrói a imagem e aplica as migrations novas no start. Migrations são só para a frente; para desfazer, crie uma migration nova.
@@ -109,6 +131,10 @@ Cada deploy reconstrói a imagem e aplica as migrations novas no start. Migratio
 
 ```bash
 docker build -f apps/web/Dockerfile -t gutta-web .
+```
+
+```bash
+docker build -f apps/kids/Dockerfile -t gutta-kids .
 ```
 
 Atrás de proxy com certificado próprio, acrescente `--secret id=ca,src=/caminho/ca.crt`.

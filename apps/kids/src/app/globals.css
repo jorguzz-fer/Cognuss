@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+@import '@gutta/ui/theme.css';
+
+/* Mesmo tema do Cognuss (K-D06). Classes usadas nos componentes do pacote de UI: */
+@source '../../../../packages/ui/src';

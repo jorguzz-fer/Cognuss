@@ -18,6 +18,8 @@ env:
   DATABASE_OWNER_URL: postgres://gutta_owner:gutta_owner_ci@localhost:5432/gutta
   TEST_DATABASE_URL: postgres://gutta_app:gutta_app_ci@localhost:5432/gutta_test
   TEST_DATABASE_OWNER_URL: postgres://gutta_owner:gutta_owner_ci@localhost:5432/gutta_test
+  KIDS_TEST_DATABASE_URL: postgres://kids_app:kids_app_ci@localhost:5432/cognuss_kids_test
+  KIDS_TEST_DATABASE_OWNER_URL: postgres://kids_owner:kids_owner_ci@localhost:5432/cognuss_kids_test
   NEXT_TELEMETRY_DISABLED: 1
 
 jobs:
@@ -37,6 +39,8 @@ jobs:
       - run: pnpm --filter @gutta/web test
       - run: pnpm --filter @gutta/contracts test
       - run: pnpm --filter @gutta/ai test
+      - run: pnpm --filter @gutta/ui test
+      - run: pnpm --filter @gutta/kids test
       - name: Contrato OpenAPI em dia (ADR 0019)
         run: pnpm --filter @gutta/contracts check
       - name: Auditoria de dependências (alta ou crítica bloqueia)
@@ -72,6 +76,8 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq --no-install-recommends poppler-utils libreoffice-writer-nogui libreoffice-calc-nogui libreoffice-impress-nogui unzip fonts-dejavu-core
       - run: pnpm --filter @gutta/db test
+      - name: Kids, isolamento entre instituições (ADR 0022)
+        run: pnpm --filter @gutta/db-kids test
       - run: pnpm --filter @gutta/jobs test
       - run: pnpm --filter @gutta/storage test
       - run: pnpm --filter @gutta/worker test
@@ -146,6 +152,15 @@ jobs:
           load: true
           cache-from: type=gha,scope=worker
           cache-to: type=gha,mode=max,scope=worker
+      - name: Imagem do Kids (ADR 0022)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/kids/Dockerfile
+          push: false
+          tags: gutta-kids:ci
+          cache-from: type=gha,scope=kids
+          cache-to: type=gha,mode=max,scope=kids
       - name: Ferramentas de arquivo na imagem do worker
         run: docker run --rm --entrypoint sh gutta-worker:ci -c "soffice --version && pdftotext -v && pdftoppm -v && unzip -v | head -1"
       - name: Imagem do Postgres (com pgvector)
