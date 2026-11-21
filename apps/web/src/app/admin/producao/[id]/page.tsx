@@ -41,7 +41,7 @@ export default async function BatchPage({ params }: { params: Promise<{ id: stri
           {batch.status === 'planning'
             ? 'A IA está planejando as peças a partir dos slides. Uma aula inteira leva alguns minutos.'
             : batch.status === 'generating'
-              ? 'As peças estão sendo escritas e testadas, uma de cada vez. Cada peça leva alguns minutos; esta tela se atualiza sozinha.'
+              ? 'As peças estão sendo escritas e testadas, uma de cada vez. Cada peça leva alguns minutos; esta tela se atualiza sozinha. Os vídeos esperam a sua aprovação do roteiro e das imagens, na tela de cada um.'
               : 'O arquivo está sendo verificado e convertido. Esta tela se atualiza sozinha.'}
         </Alert>
       ) : null}
@@ -68,7 +68,9 @@ export default async function BatchPage({ params }: { params: Promise<{ id: stri
           </p>
           {tasks.length ? (
             <TaskBoard
-              key={tasks.map((t) => `${t.id}:${t.status}:${t.currentVersion}`).join(',')}
+              key={tasks
+                .map((t) => `${t.id}:${t.status}:${t.currentVersion}:${t.mediaStage}`)
+                .join(',')}
               batchId={batch.id}
               tasks={tasks}
               slides={slides}

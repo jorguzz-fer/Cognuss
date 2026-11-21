@@ -3,7 +3,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { production } from '@gutta/contracts';
-import { PIECE_TYPE_LABEL, PIECE_TYPES, slidesLabel, type PieceType } from '@gutta/core';
+import {
+  MEDIA_STAGE_LABEL,
+  PIECE_TYPE_LABEL,
+  PIECE_TYPES,
+  isMediaStage,
+  slidesLabel,
+  type PieceType,
+} from '@gutta/core';
 import { Button } from '@/components/ui/button';
 import { Alert, Badge, Card } from '@/components/ui/card';
 import { Field, Input, Select } from '@/components/ui/field';
@@ -28,9 +35,8 @@ const STATUS_LABEL: Record<
 const decidable = (t: Task) =>
   t.status === 'proposed' || t.status === 'approved' || t.status === 'discarded';
 
-/** Vai para a geração de peça HTML ao liberar (o vídeo fica para a fase de mídia). */
-const releasable = (t: Task) =>
-  t.status === 'approved' && t.pieceType !== null && t.pieceType !== 'video';
+/** Vai para a geração ao liberar: peça HTML direto; o vídeo começa pelo roteiro. */
+const releasable = (t: Task) => t.status === 'approved' && t.pieceType !== null;
 
 export type Plan = {
   lead?: string;
@@ -150,6 +156,11 @@ function TaskCard({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const status = STATUS_LABEL[task.status];
+  // Vídeo em produção: a etapa da mídia diz o que espera (roteiro ou imagens para aprovar).
+  const stage =
+    task.status === 'generating' && task.mediaStage && isMediaStage(task.mediaStage)
+      ? task.mediaStage
+      : null;
   const titleId = `tarefa-${task.id}`;
 
   async function patch(body: Record<string, unknown>) {
@@ -204,7 +215,9 @@ function TaskCard({
           <Badge tone="neutral">
             {task.pieceType ? PIECE_TYPE_LABEL[task.pieceType] : 'Tipo a definir'}
           </Badge>
-          <Badge tone={status.tone}>{status.text}</Badge>
+          <Badge tone={stage === 'paused' ? 'danger' : status.tone}>
+            {stage ? MEDIA_STAGE_LABEL[stage] : status.text}
+          </Badge>
         </div>
       </div>
 
@@ -242,7 +255,9 @@ function TaskCard({
             <p className="text-sm text-muted">Mídia estimada: {task.credits} créditos.</p>
           ) : null}
           {task.status === 'approved' && task.pieceType === 'video' ? (
-            <p className="text-sm text-muted">O vídeo é gerado na fase de mídia.</p>
+            <p className="text-sm text-muted">
+              O vídeo começa pelo roteiro; imagens e clipes só depois das suas aprovações.
+            </p>
           ) : null}
           {task.status === 'failed' && task.lastError ? (
             <p className="text-sm whitespace-pre-line text-danger">{task.lastError}</p>

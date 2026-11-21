@@ -24308,6 +24308,18 @@
                               "string",
                               "null"
                             ]
+                          },
+                          "mediaStage": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "mediaAlert": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
                           }
                         },
                         "required": [
@@ -24325,7 +24337,9 @@
                           "status",
                           "credits",
                           "currentVersion",
-                          "lastError"
+                          "lastError",
+                          "mediaStage",
+                          "mediaAlert"
                         ],
                         "additionalProperties": false
                       }
@@ -24396,7 +24410,7 @@
     },
     "/api/v1/production/batches/{id}/generate": {
       "post": {
-        "summary": "Libera a geração das peças HTML das tarefas aprovadas (o vídeo fica para a fase de mídia).",
+        "summary": "Libera a geração das tarefas aprovadas: peças HTML e, nos vídeos, o roteiro (a mídia só depois das aprovações).",
         "tags": [
           "producao"
         ],
@@ -24601,6 +24615,277 @@
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/production/settings": {
+      "get": {
+        "summary": "Vozes de narração por disciplina e cota diária de créditos de mídia.",
+        "tags": [
+          "producao"
+        ],
+        "operationId": "getApiV1ProductionSettings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "settings": {
+                      "type": "object",
+                      "properties": {
+                        "voices": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "dailyCredits": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "spentToday": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "disciplines": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "voices",
+                        "dailyCredits",
+                        "spentToday",
+                        "disciplines"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "settings"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid_request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "email_not_verified, forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Grava as vozes por disciplina e a cota diária de créditos de mídia.",
+        "tags": [
+          "producao"
+        ],
+        "operationId": "putApiV1ProductionSettings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "settings": {
+                      "type": "object",
+                      "properties": {
+                        "voices": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "dailyCredits": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "spentToday": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "disciplines": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "voices",
+                        "dailyCredits",
+                        "spentToday",
+                        "disciplines"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "settings"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid_request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "email_not_verified, forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "voices": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9]{8,40}$"
+                    }
+                  },
+                  "dailyCredits": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100000
+                  }
+                },
+                "required": [
+                  "voices",
+                  "dailyCredits"
+                ]
               }
             }
           }
@@ -24856,6 +25141,18 @@
                             "string",
                             "null"
                           ]
+                        },
+                        "mediaStage": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "mediaAlert": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         }
                       },
                       "required": [
@@ -24873,7 +25170,9 @@
                         "status",
                         "credits",
                         "currentVersion",
-                        "lastError"
+                        "lastError",
+                        "mediaStage",
+                        "mediaAlert"
                       ],
                       "additionalProperties": false
                     },
@@ -24985,13 +25284,255 @@
                         ],
                         "additionalProperties": false
                       }
+                    },
+                    "media": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "stage": {
+                              "type": "string"
+                            },
+                            "alert": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "storyboard": {
+                              "anyOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "title": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 160
+                                    },
+                                    "scenes": {
+                                      "minItems": 1,
+                                      "maxItems": 8,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "id": {
+                                            "type": "string",
+                                            "pattern": "^[a-z0-9-]{1,40}$"
+                                          },
+                                          "narration": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 600
+                                          },
+                                          "imagePrompt": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 2000
+                                          },
+                                          "motionPrompt": {
+                                            "type": "string",
+                                            "maxLength": 1000
+                                          },
+                                          "labels": {
+                                            "maxItems": 3,
+                                            "type": "array",
+                                            "items": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "maxLength": 40
+                                            }
+                                          },
+                                          "referenceScene": {
+                                            "type": [
+                                              "string",
+                                              "null"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "id",
+                                          "narration",
+                                          "imagePrompt",
+                                          "motionPrompt",
+                                          "labels",
+                                          "referenceScene"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "title",
+                                    "scenes"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "scenes": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "image": {
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "url": {
+                                            "type": [
+                                              "string",
+                                              "null"
+                                            ]
+                                          },
+                                          "status": {
+                                            "type": "string",
+                                            "enum": [
+                                              "submitting",
+                                              "pending",
+                                              "ready",
+                                              "failed"
+                                            ]
+                                          },
+                                          "error": {
+                                            "type": [
+                                              "string",
+                                              "null"
+                                            ]
+                                          },
+                                          "attempt": {
+                                            "type": "integer",
+                                            "minimum": -9007199254740991,
+                                            "maximum": 9007199254740991
+                                          },
+                                          "credits": {
+                                            "type": "integer",
+                                            "minimum": -9007199254740991,
+                                            "maximum": 9007199254740991
+                                          }
+                                        },
+                                        "required": [
+                                          "url",
+                                          "status",
+                                          "error",
+                                          "attempt",
+                                          "credits"
+                                        ],
+                                        "additionalProperties": false
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "clip": {
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "url": {
+                                            "type": [
+                                              "string",
+                                              "null"
+                                            ]
+                                          },
+                                          "status": {
+                                            "type": "string",
+                                            "enum": [
+                                              "submitting",
+                                              "pending",
+                                              "ready",
+                                              "failed"
+                                            ]
+                                          },
+                                          "error": {
+                                            "type": [
+                                              "string",
+                                              "null"
+                                            ]
+                                          },
+                                          "attempt": {
+                                            "type": "integer",
+                                            "minimum": -9007199254740991,
+                                            "maximum": 9007199254740991
+                                          },
+                                          "credits": {
+                                            "type": "integer",
+                                            "minimum": -9007199254740991,
+                                            "maximum": 9007199254740991
+                                          }
+                                        },
+                                        "required": [
+                                          "url",
+                                          "status",
+                                          "error",
+                                          "attempt",
+                                          "credits"
+                                        ],
+                                        "additionalProperties": false
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "image",
+                                  "clip"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "narrationUrl": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "videoUrl": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "credits": {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            }
+                          },
+                          "required": [
+                            "stage",
+                            "alert",
+                            "storyboard",
+                            "scenes",
+                            "narrationUrl",
+                            "videoUrl",
+                            "credits"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
                     }
                   },
                   "required": [
                     "batch",
                     "task",
                     "slides",
-                    "versions"
+                    "versions",
+                    "media"
                   ],
                   "additionalProperties": false
                 }
@@ -25190,6 +25731,18 @@
                             "string",
                             "null"
                           ]
+                        },
+                        "mediaStage": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "mediaAlert": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         }
                       },
                       "required": [
@@ -25207,7 +25760,9 @@
                         "status",
                         "credits",
                         "currentVersion",
-                        "lastError"
+                        "lastError",
+                        "mediaStage",
+                        "mediaAlert"
                       ],
                       "additionalProperties": false
                     },
@@ -25327,6 +25882,406 @@
                     ]
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/production/tasks/{id}/media": {
+      "post": {
+        "summary": "Decisões do admin na mídia do vídeo: aprovar ou refazer o roteiro, refazer uma imagem, aprovar as imagens e retomar.",
+        "tags": [
+          "producao"
+        ],
+        "operationId": "postApiV1ProductionTasksIdMedia",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "task": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "position": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "origin": {
+                          "type": "string",
+                          "enum": [
+                            "instruction",
+                            "proposed"
+                          ]
+                        },
+                        "sourceSlides": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          }
+                        },
+                        "targetSlides": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          }
+                        },
+                        "targetAssumed": {
+                          "type": "boolean"
+                        },
+                        "instruction": {
+                          "type": "string"
+                        },
+                        "priority": {
+                          "type": "boolean"
+                        },
+                        "pieceType": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": [
+                                "simulator",
+                                "animation",
+                                "stepper",
+                                "map",
+                                "defect_map",
+                                "timeline",
+                                "video"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "plan": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "propertyNames": {
+                                "type": "string"
+                              },
+                              "additionalProperties": {}
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "proposed",
+                            "approved",
+                            "discarded",
+                            "generating",
+                            "generated",
+                            "failed"
+                          ]
+                        },
+                        "credits": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "currentVersion": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "lastError": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "mediaStage": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "mediaAlert": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "position",
+                        "origin",
+                        "sourceSlides",
+                        "targetSlides",
+                        "targetAssumed",
+                        "instruction",
+                        "priority",
+                        "pieceType",
+                        "title",
+                        "plan",
+                        "status",
+                        "credits",
+                        "currentVersion",
+                        "lastError",
+                        "mediaStage",
+                        "mediaAlert"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "task"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid_request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "email_not_verified, forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "const": "approve_storyboard"
+                      },
+                      "storyboard": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 160
+                          },
+                          "scenes": {
+                            "minItems": 1,
+                            "maxItems": 8,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "pattern": "^[a-z0-9-]{1,40}$"
+                                },
+                                "narration": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 600
+                                },
+                                "imagePrompt": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 2000
+                                },
+                                "motionPrompt": {
+                                  "type": "string",
+                                  "maxLength": 1000
+                                },
+                                "labels": {
+                                  "maxItems": 3,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  }
+                                },
+                                "referenceScene": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "narration",
+                                "imagePrompt",
+                                "motionPrompt",
+                                "labels",
+                                "referenceScene"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "title",
+                          "scenes"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "action"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "const": "redo_storyboard"
+                      },
+                      "note": {
+                        "type": "string",
+                        "maxLength": 2000
+                      }
+                    },
+                    "required": [
+                      "action"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "const": "redo_image"
+                      },
+                      "scene": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40
+                      },
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2000
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "scene",
+                      "prompt"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "const": "approve_images"
+                      }
+                    },
+                    "required": [
+                      "action"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "const": "resume"
+                      }
+                    },
+                    "required": [
+                      "action"
+                    ]
+                  }
+                ]
               }
             }
           }
@@ -25474,6 +26429,18 @@
                             "string",
                             "null"
                           ]
+                        },
+                        "mediaStage": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "mediaAlert": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         }
                       },
                       "required": [
@@ -25491,7 +26458,9 @@
                         "status",
                         "credits",
                         "currentVersion",
-                        "lastError"
+                        "lastError",
+                        "mediaStage",
+                        "mediaAlert"
                       ],
                       "additionalProperties": false
                     }

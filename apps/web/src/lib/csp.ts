@@ -14,6 +14,8 @@ export function buildCsp(env: { lessonOrigins?: string; storageEndpoint?: string
     "font-src 'self'",
     `img-src 'self' data: blob: ${storage}`.trim(),
     `connect-src 'self' ${storage}`.trim(),
+    // Narração e vídeo da produção de aulas, no admin, lidos do bucket por URL assinada.
+    `media-src 'self' blob: ${storage}`.trim(),
     `frame-src 'self' ${lessons}`.trim(),
     "frame-ancestors 'none'",
     "base-uri 'self'",
@@ -27,8 +29,11 @@ export function buildCsp(env: { lessonOrigins?: string; storageEndpoint?: string
  * (sandbox sem mesma origem: não lê cookie nem a página do app), sem rede, só com o que traz
  * dentro de si; pode ser emoldurada só pelo próprio app.
  */
-export function buildPieceCsp(env: { storageEndpoint?: string; dev?: boolean }) {
+export function buildPieceCsp(env: { storageEndpoint?: string; appUrl?: string; dev?: boolean }) {
   const storage = storageOrigin(env.storageEndpoint, env.dev);
+  // O vídeo da peça vem por URL assinada: do bucket ou, no armazenamento em disco, do próprio app.
+  const local = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/?$/.test(env.appUrl ?? '');
+  const app = storageOrigin(env.appUrl, env.dev || local);
   return [
     'sandbox allow-scripts',
     "default-src 'none'",
@@ -36,7 +41,7 @@ export function buildPieceCsp(env: { storageEndpoint?: string; dev?: boolean }) 
     "style-src 'unsafe-inline'",
     'font-src data:',
     'img-src data: blob:',
-    `media-src data: blob: ${storage}`.trim(),
+    `media-src data: blob: ${storage} ${app}`.replace(/\s+/g, ' ').trim(),
     "frame-ancestors 'self'",
     "base-uri 'none'",
     "form-action 'none'",

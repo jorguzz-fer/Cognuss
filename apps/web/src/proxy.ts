@@ -27,7 +27,11 @@ export function proxy(request: NextRequest) {
   res.headers.set(
     'Content-Security-Policy',
     PIECE_PREVIEW.test(pathname)
-      ? buildPieceCsp({ storageEndpoint: process.env.STORAGE_ENDPOINT, dev })
+      ? buildPieceCsp({
+          storageEndpoint: process.env.STORAGE_ENDPOINT,
+          appUrl: process.env.APP_URL,
+          dev,
+        })
       : buildCsp({
           lessonOrigins: process.env.LESSON_ORIGINS,
           storageEndpoint: process.env.STORAGE_ENDPOINT,

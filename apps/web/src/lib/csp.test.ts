@@ -41,4 +41,17 @@ describe('prévia das peças', () => {
     expect(csp).toContain("frame-ancestors 'self'");
     expect(csp).toContain('media-src data: blob: https://bucket.r2.dev');
   });
+
+  it('vídeo da peça: aceita o bucket e o próprio app, http só em ambiente local', () => {
+    expect(
+      buildPieceCsp({
+        storageEndpoint: 'https://bucket.r2.dev',
+        appUrl: 'https://app.cognuss.com.br',
+      }),
+    ).toContain('media-src data: blob: https://bucket.r2.dev https://app.cognuss.com.br;');
+    expect(buildPieceCsp({ appUrl: 'http://localhost:3100' })).toContain(
+      'media-src data: blob: http://localhost:3100;',
+    );
+    expect(buildPieceCsp({ appUrl: 'http://exemplo.com' })).toContain('media-src data: blob:;');
+  });
 });

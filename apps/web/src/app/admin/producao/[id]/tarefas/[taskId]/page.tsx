@@ -1,9 +1,16 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { PIECE_TYPE_LABEL, slidesLabel } from '@gutta/core';
+import {
+  MEDIA_AUTO_STAGES,
+  MEDIA_STAGE_LABEL,
+  PIECE_TYPE_LABEL,
+  isMediaStage,
+  slidesLabel,
+} from '@gutta/core';
 import { AdminHeader } from '@/components/admin/ui';
 import { AutoRefresh } from '@/components/production/auto-refresh';
+import { MediaPanel } from '@/components/production/media-panel';
 import { RegenerateForm } from '@/components/production/regenerate-form';
 import { PlanSummary, type Plan } from '@/components/production/task-board';
 import { Alert, Badge, Card } from '@/components/ui/card';
@@ -49,7 +56,12 @@ export default async function TaskPage({
     if (err instanceof ApiError && err.status === 404) notFound();
     throw err;
   });
-  const { batch, task, slides, versions } = data;
+  const { batch, task, slides, versions, media } = data;
+  const stage = media && isMediaStage(media.stage) ? media.stage : null;
+  // No vídeo, a tela só se atualiza sozinha nas etapas em que o worker trabalha.
+  const working =
+    task.status === 'generating' &&
+    (!stage || stage === 'storyboard' || MEDIA_AUTO_STAGES.includes(stage));
   if (batch.id !== id) notFound();
   const shown = versions.find((v) => v.version === Number(versao)) ?? versions[0] ?? null;
   const st = STATUS[task.status] ?? STATUS.proposed!;
@@ -65,15 +77,25 @@ export default async function TaskPage({
           { href: `/admin/producao/${batch.id}`, label: batch.title },
         ]}
         lead={`${String(task.position).padStart(2, '0')} · ${task.pieceType ? PIECE_TYPE_LABEL[task.pieceType] : 'Tipo a definir'} · ${slidesLabel(task.targetSlides)}`}
-        action={<Badge tone={st.tone}>{st.text}</Badge>}
+        action={
+          <Badge tone={st.tone}>
+            {stage && task.status === 'generating' ? MEDIA_STAGE_LABEL[stage] : st.text}
+          </Badge>
+        }
       />
 
-      {task.status === 'generating' ? (
+      {working && !stage ? (
         <Alert>
           <AutoRefresh />A IA está escrevendo a peça; depois vêm o linter e o teste nos temas claro
           e escuro. Leva alguns minutos e esta tela se atualiza sozinha.
         </Alert>
+      ) : working && stage ? (
+        <Alert>
+          <AutoRefresh everyMs={5000} />
+          {MEDIA_STAGE_LABEL[stage]}. Esta tela se atualiza sozinha.
+        </Alert>
       ) : null}
+      {media ? <MediaPanel taskId={task.id} media={media} /> : null}
       {task.status === 'failed' && task.lastError ? (
         <Alert tone="danger">
           <p className="font-semibold">A peça não passou depois das tentativas de correção.</p>
@@ -113,7 +135,7 @@ export default async function TaskPage({
             ))}
           </div>
         </section>
-      ) : task.status !== 'generating' ? (
+      ) : task.status !== 'generating' && !media ? (
         <Alert>Esta tarefa ainda não tem peça gerada.</Alert>
       ) : null}
 

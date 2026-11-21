@@ -85,6 +85,10 @@ export const TaskDto = z.object({
   currentVersion: z.number().int().nullable(),
   /** Por que a última geração falhou. */
   lastError: z.string().nullable(),
+  /** Etapa da mídia do vídeo (Fase 3), ou null nas peças sem mídia. */
+  mediaStage: z.string().nullable(),
+  /** Aviso da mídia: cota do dia, fila cheia, saldo, falta de chave. */
+  mediaAlert: z.string().nullable(),
 });
 export type TaskDto = z.infer<typeof TaskDto>;
 
@@ -143,7 +147,7 @@ export const generateBatch = defineRoute({
   method: 'post',
   path: '/api/v1/production/batches/{id}/generate',
   summary:
-    'Libera a geração das peças HTML das tarefas aprovadas (o vídeo fica para a fase de mídia).',
+    'Libera a geração das tarefas aprovadas: peças HTML e, nos vídeos, o roteiro (a mídia só depois das aprovações).',
   tags: ['producao'],
   params,
   response: z.object({ batch: BatchDto, released: z.number().int() }),
@@ -163,6 +167,49 @@ export const VersionDto = z.object({
 });
 export type VersionDto = z.infer<typeof VersionDto>;
 
+export const StoryboardScene = z.object({
+  id: z
+    .string()
+    .regex(/^[a-z0-9-]{1,40}$/, 'Use letras minúsculas, números e hífen no identificador da cena.'),
+  narration: z.string().trim().min(1, 'A cena precisa de narração.').max(600),
+  imagePrompt: z.string().trim().min(1, 'Descreva a imagem da cena.').max(2000),
+  motionPrompt: z.string().trim().max(1000),
+  labels: z.array(z.string().trim().min(1).max(40)).max(3),
+  referenceScene: z.string().nullable(),
+});
+export const Storyboard = z.object({
+  title: z.string().trim().min(1).max(160),
+  scenes: z.array(StoryboardScene).min(1).max(8),
+});
+
+export const MediaFileDto = z.object({
+  /** URL assinada de vida curta, quando o arquivo já chegou. */
+  url: z.string().nullable(),
+  status: z.enum(['submitting', 'pending', 'ready', 'failed']),
+  error: z.string().nullable(),
+  /** Quantas vezes a cena já foi pedida (as anteriores ficam no histórico). */
+  attempt: z.number().int(),
+  credits: z.number().int(),
+});
+
+export const MediaDto = z.object({
+  stage: z.string(),
+  alert: z.string().nullable(),
+  storyboard: Storyboard.nullable(),
+  scenes: z.array(
+    z.object({
+      id: z.string(),
+      image: MediaFileDto.nullable(),
+      clip: MediaFileDto.nullable(),
+    }),
+  ),
+  narrationUrl: z.string().nullable(),
+  videoUrl: z.string().nullable(),
+  /** Créditos da Higgsfield gastos nesta tarefa. */
+  credits: z.number().int(),
+});
+export type MediaDto = z.infer<typeof MediaDto>;
+
 export const getTask = defineRoute({
   method: 'get',
   path: '/api/v1/production/tasks/{id}',
@@ -174,6 +221,7 @@ export const getTask = defineRoute({
     task: TaskDto,
     slides: z.array(SlideDto),
     versions: z.array(VersionDto),
+    media: MediaDto.nullable(),
   }),
   errors: ['forbidden', 'not_found'],
 });
@@ -197,4 +245,80 @@ export const regenerateTask = defineRoute({
   body: regenerateTaskBody,
   response: z.object({ task: TaskDto }),
   errors: ['forbidden', 'not_found', 'conflict'],
+});
+
+export const mediaActionBody = z.discriminatedUnion('action', [
+  /** Aprova o roteiro (com as edições do admin, se houver) e libera as imagens. */
+  z.object({ action: z.literal('approve_storyboard'), storyboard: Storyboard.optional() }),
+  /** Pede outro roteiro à IA, com um ajuste opcional. */
+  z.object({
+    action: z.literal('redo_storyboard'),
+    note: z
+      .string()
+      .trim()
+      .max(2000)
+      .optional()
+      .transform((v) => v || null),
+  }),
+  /** Refaz a imagem de uma cena com outra descrição (novo pedido, novos créditos). */
+  z.object({
+    action: z.literal('redo_image'),
+    scene: z.string().min(1).max(40),
+    prompt: z.string().trim().min(1, 'Descreva a imagem.').max(2000),
+  }),
+  /** Aprova as imagens e libera os clipes, a narração e a montagem. */
+  z.object({ action: z.literal('approve_images') }),
+  /** Retoma a mídia pausada (saldo, chave, falha); os pedidos que falharam são refeitos. */
+  z.object({ action: z.literal('resume') }),
+]);
+
+export const mediaAction = defineRoute({
+  method: 'post',
+  path: '/api/v1/production/tasks/{id}/media',
+  summary:
+    'Decisões do admin na mídia do vídeo: aprovar ou refazer o roteiro, refazer uma imagem, aprovar as imagens e retomar.',
+  tags: ['producao'],
+  params,
+  body: mediaActionBody,
+  response: z.object({ task: TaskDto }),
+  errors: ['forbidden', 'not_found', 'conflict'],
+});
+
+export const MediaSettingsDto = z.object({
+  /** Voz da ElevenLabs por disciplina (id da disciplina → id da voz). */
+  voices: z.record(z.string(), z.string()),
+  /** Créditos da Higgsfield por dia, somando todos os lotes. */
+  dailyCredits: z.number().int(),
+  spentToday: z.number().int(),
+  disciplines: z.array(z.object({ id: Uuid, name: z.string() })),
+});
+
+export const getMediaSettings = defineRoute({
+  method: 'get',
+  path: '/api/v1/production/settings',
+  summary: 'Vozes de narração por disciplina e cota diária de créditos de mídia.',
+  tags: ['producao'],
+  response: z.object({ settings: MediaSettingsDto }),
+  errors: ['forbidden'],
+});
+
+export const updateMediaSettingsBody = z.object({
+  voices: z.record(
+    Uuid,
+    z
+      .string()
+      .trim()
+      .regex(/^[A-Za-z0-9]{8,40}$/, 'O id da voz da ElevenLabs tem só letras e números.'),
+  ),
+  dailyCredits: z.number().int().min(0).max(100_000),
+});
+
+export const updateMediaSettings = defineRoute({
+  method: 'put',
+  path: '/api/v1/production/settings',
+  summary: 'Grava as vozes por disciplina e a cota diária de créditos de mídia.',
+  tags: ['producao'],
+  body: updateMediaSettingsBody,
+  response: z.object({ settings: MediaSettingsDto }),
+  errors: ['forbidden'],
 });
