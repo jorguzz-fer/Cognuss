@@ -39,7 +39,7 @@ const SHOT_NAMES: Record<string, string> = {
 };
 
 /** Quando não sobra tarefa gerando, o lote termina a geração. */
-async function settleBatch(tx: Tx, batchId: string) {
+export async function settleBatch(tx: Tx, batchId: string) {
   const still = await tx
     .select({ id: s.productionTasks.id })
     .from(s.productionTasks)
@@ -54,7 +54,7 @@ async function settleBatch(tx: Tx, batchId: string) {
       );
 }
 
-async function failTask(tx: Tx, taskId: string, batchId: string, error: string) {
+export async function failTask(tx: Tx, taskId: string, batchId: string, error: string) {
   await tx
     .update(s.productionTasks)
     .set({ status: 'failed', lastError: error, pendingNote: null })

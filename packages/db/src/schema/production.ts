@@ -144,6 +144,19 @@ export const productionTasks = pgTable(
     lastError: text('last_error'),
     /** Pedido de ajuste para a próxima geração (admin ou, na Fase 4, o revisor). */
     pendingNote: text('pending_note'),
+    /**
+     * Etapa da mídia de um vídeo (Fase 3): storyboard, storyboard_review, images, images_review,
+     * clips, narration, assembling, paused, done. Null nas peças sem mídia.
+     */
+    mediaStage: text('media_stage'),
+    /** Roteiro do vídeo (Storyboard de @gutta/core), editável pelo admin antes da mídia. */
+    storyboard: jsonb('storyboard').$type<Record<string, unknown>>(),
+    /** Aviso da mídia para o admin: cota do dia, fila cheia, saldo, moderação. */
+    mediaAlert: text('media_alert'),
+    /** Etapa a retomar quando a mídia estiver pausada. */
+    mediaResume: text('media_resume'),
+    /** Um trabalho de mídia por vez em cada tarefa: quem pega a vez marca até quando. */
+    mediaLeaseUntil: timestamp('media_lease_until', { withTimezone: true }),
     decidedBy: text('decided_by').references(() => authUsers.id, { onDelete: 'set null' }),
     decidedAt: timestamp('decided_at', { withTimezone: true }),
     createdAt: createdAt(),

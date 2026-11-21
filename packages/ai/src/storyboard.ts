@@ -49,6 +49,8 @@ export type StoryboardInput = {
   instruction: string;
   plan: PiecePlan | null;
   slides: { number: number; text: string; image?: Buffer | null }[];
+  /** Pedido de ajuste do admin para um novo roteiro. */
+  note?: string | null;
 };
 
 export type StoryboardResult = {
@@ -103,7 +105,12 @@ export class AnthropicStoryboardWriter implements StoryboardWriter {
           source: { type: 'base64', media_type: 'image/jpeg', data: s.image.toString('base64') },
         });
     }
-    content.push({ type: 'text', text: 'Escreva o roteiro.' });
+    content.push({
+      type: 'text',
+      text: input.note
+        ? `<pedido_de_ajuste>\n${input.note}\n</pedido_de_ajuste>\n\nEscreva o roteiro levando o ajuste em conta.`
+        : 'Escreva o roteiro.',
+    });
     const stream = this.client.beta.messages.stream({
       model: this.model,
       max_tokens: 32000,
@@ -134,7 +141,9 @@ export class AnthropicStoryboardWriter implements StoryboardWriter {
 
 /** Roteiro de teste, sem rede: três cenas a partir do título. */
 export class FakeStoryboardWriter implements StoryboardWriter {
+  calls: StoryboardInput[] = [];
   async write(input: StoryboardInput): Promise<StoryboardResult> {
+    this.calls.push(input);
     const scenes = ['abertura', 'mecanismo', 'fechamento'].map((id, i) => ({
       id,
       narration: `Cena ${i + 1} de teste sobre ${input.title.toLowerCase()}. Texto de exemplo, sem revisão.`,

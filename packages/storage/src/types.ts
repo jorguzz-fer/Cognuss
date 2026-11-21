@@ -49,6 +49,9 @@ export const keys = {
     `p/b/${batchId}/t/${taskId}/v${version}.json`,
   productionShot: (batchId: string, taskId: string, version: number, name: string) =>
     `p/b/${batchId}/t/${taskId}/v${version}-${name}.jpg`,
+  /** Mídia de vídeo (imagem, clipe, narração, vídeo montado), pelo id do registro em production_assets. */
+  productionMedia: (batchId: string, taskId: string, assetId: string, ext: string) =>
+    `p/b/${batchId}/t/${taskId}/m/${assetId}.${ext}`,
 };
 
 /** Content-Disposition seguro: nome ASCII de reserva e o nome real em UTF-8 (RFC 6266). */

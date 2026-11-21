@@ -25,6 +25,49 @@ export const CLIP_SECONDS = 8;
 /** Limite de cenas por vídeo: o vídeo-resumo do piloto usou 6 clipes. */
 export const MAX_SCENES = 8;
 
+/**
+ * Créditos da Higgsfield por pedido, para a cota do dia e o custo do lote. O clipe de 8 s
+ * custou 14 no piloto; a imagem, "baixo por imagem" (a estimativa da API substitui quando houver).
+ */
+export const MEDIA_CREDITS = { image: 2, clip: 14 } as const;
+
+/** Etapas da mídia de um vídeo, na ordem. "paused" espera o admin (saldo, chave, falha). */
+export const MEDIA_STAGES = [
+  'storyboard',
+  'storyboard_review',
+  'images',
+  'images_review',
+  'clips',
+  'narration',
+  'assembling',
+  'done',
+  'paused',
+] as const;
+export type MediaStage = (typeof MEDIA_STAGES)[number];
+
+/** Etapas em que o trabalho de mídia age sozinho (as outras esperam o admin). */
+export const MEDIA_AUTO_STAGES: readonly MediaStage[] = [
+  'images',
+  'clips',
+  'narration',
+  'assembling',
+];
+
+export const MEDIA_STAGE_LABEL: Record<MediaStage, string> = {
+  storyboard: 'Escrevendo o roteiro',
+  storyboard_review: 'Roteiro para aprovar',
+  images: 'Gerando as imagens',
+  images_review: 'Imagens para aprovar',
+  clips: 'Animando os clipes',
+  narration: 'Gravando a narração',
+  assembling: 'Montando o vídeo',
+  done: 'Vídeo pronto',
+  paused: 'Pausado',
+};
+
+export const isMediaStage = (x: unknown): x is MediaStage =>
+  typeof x === 'string' && (MEDIA_STAGES as readonly string[]).includes(x);
+
 export function validateStoryboard(sb: Storyboard): string[] {
   const problems: string[] = [];
   if (!sb.scenes.length) problems.push('O roteiro não tem cenas.');
