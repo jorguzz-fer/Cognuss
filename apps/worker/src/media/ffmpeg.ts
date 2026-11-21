@@ -14,10 +14,11 @@ const run = promisify(execFile);
 export const VIDEO_SIZE = { width: 1280, height: 720 };
 const FPS = 30;
 
-async function ffmpeg(args: string[], timeoutMs = 300_000) {
+async function ffmpeg(args: string[], timeoutMs = 300_000, cwd?: string) {
   await run('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', ...args], {
     timeout: timeoutMs,
     maxBuffer: 16 * 1024 * 1024,
+    cwd,
   });
 }
 
@@ -87,8 +88,8 @@ export async function assembleVideo(input: AssembleInput): Promise<Buffer> {
         '-i',
         audio,
         '-vf',
-        // O caminho vai escapado para o filtro (dois-pontos e barras têm sentido no ffmpeg).
-        `ass=${subs.replace(/\\/g, '/').replace(/:/g, '\\:')}`,
+        // Nome relativo, com o ffmpeg rodando na pasta temporária: nada a escapar no filtro.
+        `ass=${path.basename(subs)}`,
         '-c:v',
         'libx264',
         '-preset',
@@ -107,6 +108,7 @@ export async function assembleVideo(input: AssembleInput): Promise<Buffer> {
         out,
       ],
       600_000,
+      dir,
     );
     return readFile(out);
   });
