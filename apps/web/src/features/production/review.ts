@@ -12,7 +12,7 @@ import { ApiError, conflict, notFound } from '@/lib/api';
 import { db } from '@/lib/db';
 import { audit } from '@/lib/events';
 import { storage } from '@/lib/storage';
-import { getTask, startGeneration } from './service';
+import { escapeAttr, getTask, startGeneration } from './service';
 
 // Revisão e publicação (docs/producao/ESPECIFICACAO.md, Fase 4; ADR 0021). A peça gerada vira
 // módulo e as questões do plano viram questões, as duas em revisão e com o selo de demonstração.
@@ -453,7 +453,7 @@ export async function lessonHtml(userId: string, moduleId: string): Promise<stri
           expiresIn: 60 * 60,
         })
       : '';
-    blocks.body = blocks.body.replaceAll(VIDEO_SRC_PLACEHOLDER, src.replace(/"/g, '&quot;'));
+    blocks.body = blocks.body.replaceAll(VIDEO_SRC_PLACEHOLDER, escapeAttr(src));
   }
   return assemblePiece(blocks, {
     crumb: bundle.crumb,

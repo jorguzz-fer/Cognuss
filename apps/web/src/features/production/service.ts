@@ -35,6 +35,10 @@ const DECIDABLE = new Set<TaskRow['status']>(['proposed', 'approved', 'discarded
 /** Imagens dos slides: URL assinada que vale o tempo de a tela ser usada. */
 const IMAGE_TTL = 60 * 60;
 
+/** Valor de atributo HTML: & primeiro, depois as aspas e os sinais de tag. */
+export const escapeAttr = (v: string) =>
+  v.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
 const pieceOf = (v: string | null): PieceType | null => (v && isPieceType(v) ? v : null);
 
 function taskDto(t: TaskRow): contract.TaskDto {
@@ -730,7 +734,7 @@ export async function previewPiece(
           expiresIn: IMAGE_TTL,
         })
       : '';
-    blocks.body = blocks.body.replaceAll(VIDEO_SRC_PLACEHOLDER, src.replace(/"/g, '&quot;'));
+    blocks.body = blocks.body.replaceAll(VIDEO_SRC_PLACEHOLDER, escapeAttr(src));
   }
   return assemblePiece(blocks, {
     crumb: `${discipline?.name ?? 'Disciplina'} · ${batch.title}`,

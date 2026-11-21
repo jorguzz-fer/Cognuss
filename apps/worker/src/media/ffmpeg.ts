@@ -71,7 +71,8 @@ export async function assembleVideo(input: AssembleInput): Promise<Buffer> {
       parts.push(out);
     }
     const list = path.join(dir, 'lista.txt');
-    await writeFile(list, parts.map((p) => `file '${p.replace(/'/g, "'\\''")}'`).join('\n'));
+    // Nomes relativos à pasta da lista (seg-0.mp4…): nada a escapar.
+    await writeFile(list, parts.map((p) => `file '${path.basename(p)}'`).join('\n'));
     const joined = path.join(dir, 'juntos.mp4');
     await ffmpeg(['-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', joined]);
     const audio = path.join(dir, 'narracao.mp3');
