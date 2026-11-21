@@ -103,8 +103,9 @@ async function main() {
     ? new FakeMediaProvider()
     : cfg.HIGGSFIELD_API_KEY_ID && cfg.HIGGSFIELD_API_KEY_SECRET
       ? new HiggsfieldProvider(cfg.HIGGSFIELD_API_KEY_ID, cfg.HIGGSFIELD_API_KEY_SECRET, {
-          imageEndpoint: cfg.HIGGSFIELD_IMAGE_ENDPOINT,
-          videoEndpoint: cfg.HIGGSFIELD_VIDEO_ENDPOINT,
+          // O compose passa variável não cadastrada como texto vazio: vale o padrão.
+          imageEndpoint: cfg.HIGGSFIELD_IMAGE_ENDPOINT || undefined,
+          videoEndpoint: cfg.HIGGSFIELD_VIDEO_ENDPOINT || undefined,
         })
       : null;
   const narrator = fakeMedia
@@ -126,7 +127,7 @@ async function main() {
     storyboardWriter,
     media,
     narrator,
-    defaultVoice: cfg.ELEVENLABS_VOICE_ID ?? (fakeMedia ? 'voz-de-teste' : null),
+    defaultVoice: cfg.ELEVENLABS_VOICE_ID || (fakeMedia ? 'voz-de-teste' : null),
     dailyCredits: cfg.PRODUCTION_DAILY_CREDITS,
     mediaPollMs: cfg.PRODUCTION_MEDIA_POLL_MS,
   });
