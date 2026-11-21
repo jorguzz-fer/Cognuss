@@ -40,7 +40,9 @@ export default async function BatchPage({ params }: { params: Promise<{ id: stri
           <AutoRefresh />
           {batch.status === 'planning'
             ? 'A IA está planejando as peças a partir dos slides. Uma aula inteira leva alguns minutos.'
-            : 'O arquivo está sendo verificado e convertido. Esta tela se atualiza sozinha.'}
+            : batch.status === 'generating'
+              ? 'As peças estão sendo escritas e testadas, uma de cada vez. Cada peça leva alguns minutos; esta tela se atualiza sozinha.'
+              : 'O arquivo está sendo verificado e convertido. Esta tela se atualiza sozinha.'}
         </Alert>
       ) : null}
       {batch.status === 'failed' ? (
@@ -56,7 +58,7 @@ export default async function BatchPage({ params }: { params: Promise<{ id: stri
         </Alert>
       ) : null}
 
-      {batch.status === 'ready' ? (
+      {batch.status === 'ready' || batch.status === 'generating' || batch.status === 'generated' ? (
         <>
           <p className="text-sm text-muted">
             {batch.mode === 'content'
@@ -66,10 +68,12 @@ export default async function BatchPage({ params }: { params: Promise<{ id: stri
           </p>
           {tasks.length ? (
             <TaskBoard
+              key={tasks.map((t) => `${t.id}:${t.status}:${t.currentVersion}`).join(',')}
+              batchId={batch.id}
               tasks={tasks}
               slides={slides}
               estimatedCredits={batch.estimatedCredits}
-              editable
+              editable={batch.status !== 'generating'}
             />
           ) : (
             <Alert>Nenhuma tarefa neste lote.</Alert>

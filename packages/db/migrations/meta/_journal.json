@@ -400,6 +400,13 @@
       "when": 1795284509021,
       "tag": "0056_rls_producao_pecas",
       "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "7",
+      "when": 1795284805142,
+      "tag": "0057_producao_nota",
+      "breakpoints": true
     }
   ]
 }

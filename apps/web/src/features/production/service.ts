@@ -1,5 +1,14 @@
 import 'server-only';
-import { PIECE_CREDITS, estimateCredits, isPieceType, type PieceType } from '@gutta/core';
+import {
+  PIECE_CREDITS,
+  assemblePiece,
+  estimateCredits,
+  isPieceType,
+  pieceFoot,
+  type PieceBlocks,
+  type PieceType,
+} from '@gutta/core';
+import { PIECE_FONT_CSS } from '@gutta/core/piece-fonts';
 import { and, asc, desc, eq, schema as s, withUser, type Tx } from '@gutta/db';
 import type { production as contract } from '@gutta/contracts';
 import { emit } from '@gutta/jobs';
@@ -16,6 +25,9 @@ import { storage } from '@/lib/storage';
 
 type BatchRow = typeof s.productionBatches.$inferSelect;
 type TaskRow = typeof s.productionTasks.$inferSelect;
+
+/** Situações em que o admin ainda decide a tarefa (antes de ir para a geração). */
+const DECIDABLE = new Set<TaskRow['status']>(['proposed', 'approved', 'discarded']);
 
 /** Imagens dos slides: URL assinada que vale o tempo de a tela ser usada. */
 const IMAGE_TTL = 60 * 60;
@@ -38,6 +50,8 @@ function taskDto(t: TaskRow): contract.TaskDto {
     plan: t.plan ?? null,
     status: t.status,
     credits: pieceType && t.status !== 'discarded' ? PIECE_CREDITS[pieceType] : 0,
+    currentVersion: t.currentVersion,
+    lastError: t.lastError,
   };
 }
 
@@ -189,8 +203,10 @@ export async function updateTask(
     const batch = await tx.query.productionBatches.findFirst({
       where: eq(s.productionBatches.id, task.batchId),
     });
-    if (batch?.status !== 'ready')
+    if (batch?.status !== 'ready' && batch?.status !== 'generated')
       throw conflict('O plano deste lote ainda não está pronto para aprovação.');
+    if (!DECIDABLE.has(task.status))
+      throw conflict('Esta tarefa já foi para a geração. Use "Gerar de novo" na tela da peça.');
     const patch: Partial<typeof s.productionTasks.$inferInsert> = {};
     if (body.title !== undefined) patch.title = body.title;
     if (body.pieceType !== undefined) patch.pieceType = body.pieceType;
@@ -217,5 +233,203 @@ export async function updateTask(
       .where(eq(s.productionBatches.id, task.batchId));
     await audit(tx, userId, 'production.task_updated', { type: 'production_task', id }, body);
     return { task: taskDto(updated!), estimatedCredits };
+  });
+}
+
+/** Tarefas que viram peça HTML na Fase 2: aprovadas, com tipo, e não vídeo (fase de mídia). */
+const htmlPiece = (t: TaskRow) =>
+  t.status === 'approved' && t.pieceType !== null && t.pieceType !== 'video';
+
+export async function generateBatch(
+  userId: string,
+  id: string,
+): Promise<{ batch: contract.BatchDto; released: number }> {
+  return withUser(db(), userId, async (tx) => {
+    const [b] = await tx
+      .select()
+      .from(s.productionBatches)
+      .where(eq(s.productionBatches.id, id))
+      .for('update');
+    if (!b) throw notFound('Lote');
+    if (b.status !== 'ready' && b.status !== 'generated')
+      throw conflict('O plano deste lote ainda não está pronto para gerar.');
+    const tasks = (
+      await tx.select().from(s.productionTasks).where(eq(s.productionTasks.batchId, id))
+    ).filter(htmlPiece);
+    if (!tasks.length)
+      throw conflict(
+        'Aprove ao menos uma tarefa com tipo de peça definido. O vídeo entra na fase de mídia.',
+      );
+    for (const t of tasks) {
+      await tx
+        .update(s.productionTasks)
+        .set({ status: 'generating', lastError: null })
+        .where(eq(s.productionTasks.id, t.id));
+      await emit(tx, 'production.generate_piece', { taskId: t.id, userId });
+    }
+    const [updated] = await tx
+      .update(s.productionBatches)
+      .set({ status: 'generating' })
+      .where(eq(s.productionBatches.id, id))
+      .returning();
+    await audit(
+      tx,
+      userId,
+      'production.generation_released',
+      {
+        type: 'production_batch',
+        id,
+      },
+      { tasks: tasks.length },
+    );
+    return { batch: await batchDto(tx, updated!), released: tasks.length };
+  });
+}
+
+export async function regenerateTask(
+  userId: string,
+  id: string,
+  body: z.output<typeof contract.regenerateTaskBody>,
+): Promise<{ task: contract.TaskDto }> {
+  return withUser(db(), userId, async (tx) => {
+    const [t] = await tx
+      .select()
+      .from(s.productionTasks)
+      .where(eq(s.productionTasks.id, id))
+      .for('update');
+    if (!t) throw notFound('Tarefa');
+    if (t.status !== 'generated' && t.status !== 'failed')
+      throw conflict('Só dá para gerar de novo uma peça que já terminou de gerar.');
+    if (body.note && !t.currentVersion)
+      throw conflict('Ainda não há versão para ajustar. Gere sem pedido de ajuste.');
+    const [updated] = await tx
+      .update(s.productionTasks)
+      .set({ status: 'generating', lastError: null, pendingNote: body.note })
+      .where(eq(s.productionTasks.id, id))
+      .returning();
+    await tx
+      .update(s.productionBatches)
+      .set({ status: 'generating' })
+      .where(eq(s.productionBatches.id, t.batchId));
+    await emit(tx, 'production.generate_piece', { taskId: id, userId });
+    await audit(
+      tx,
+      userId,
+      'production.task_regenerated',
+      { type: 'production_task', id },
+      {
+        note: Boolean(body.note),
+      },
+    );
+    return { task: taskDto(updated!) };
+  });
+}
+
+type VersionMeta = {
+  ok?: boolean;
+  tested?: boolean;
+  problems?: string[];
+  warnings?: string[];
+};
+
+export async function getTask(userId: string, id: string) {
+  const store = storage();
+  const data = await withUser(db(), userId, async (tx) => {
+    const t = await tx.query.productionTasks.findFirst({ where: eq(s.productionTasks.id, id) });
+    if (!t) throw notFound('Tarefa');
+    const b = (await tx.query.productionBatches.findFirst({
+      where: eq(s.productionBatches.id, t.batchId),
+    }))!;
+    const slides = await tx
+      .select()
+      .from(s.productionSlides)
+      .where(eq(s.productionSlides.batchId, t.batchId))
+      .orderBy(asc(s.productionSlides.number));
+    const assets = await tx
+      .select()
+      .from(s.productionAssets)
+      .where(eq(s.productionAssets.taskId, id))
+      .orderBy(desc(s.productionAssets.version));
+    return { task: t, batch: await batchDto(tx, b), slides, assets };
+  });
+  const url = (key: string | null) =>
+    key && store
+      ? store.getUrl(key, {
+          contentType: 'image/jpeg',
+          disposition: 'inline',
+          expiresIn: IMAGE_TTL,
+        })
+      : Promise.resolve(null);
+  const targets = new Set([...data.task.targetSlides, ...data.task.sourceSlides]);
+  const slides: contract.SlideDto[] = await Promise.all(
+    data.slides
+      .filter((x) => targets.has(x.number))
+      .map(async (x) => ({
+        number: x.number,
+        kind: x.kind,
+        text: x.text,
+        notes: x.notes,
+        hidden: x.hidden,
+        imageUrl: x.hasImage ? await url(keys.productionSlide(data.task.batchId, x.number)) : null,
+      })),
+  );
+  const versions: contract.VersionDto[] = [];
+  for (const a of data.assets.filter((x) => x.kind === 'html')) {
+    const meta = a.meta as VersionMeta;
+    const screenshots: Record<string, string> = {};
+    for (const shot of data.assets.filter(
+      (x) => x.kind === 'screenshot' && x.version === a.version,
+    )) {
+      const view = (shot.meta as { view?: string }).view;
+      const u = await url(shot.storageKey);
+      if (view && u) screenshots[view] = u;
+    }
+    versions.push({
+      version: a.version,
+      ok: meta.ok === true,
+      tested: meta.tested === true,
+      problems: meta.problems ?? [],
+      warnings: meta.warnings ?? [],
+      screenshots,
+      costMicros: a.costMicros,
+      createdAt: a.createdAt.toISOString(),
+    });
+  }
+  return { batch: data.batch, task: taskDto(data.task), slides, versions };
+}
+
+/**
+ * HTML de uma versão da peça, montado na hora com a base do piloto, para a prévia no admin.
+ * O selo de demonstração segue o banco (Fase 4: some depois da revisão).
+ */
+export async function previewPiece(
+  userId: string,
+  id: string,
+  opts: { version?: number | null; theme?: 'light' | 'dark' | null },
+): Promise<string> {
+  const store = storage();
+  if (!store) throw notFound('Armazenamento');
+  const { task, batch, discipline } = await withUser(db(), userId, async (tx) => {
+    const task = await tx.query.productionTasks.findFirst({ where: eq(s.productionTasks.id, id) });
+    if (!task) throw notFound('Tarefa');
+    const batch = (await tx.query.productionBatches.findFirst({
+      where: eq(s.productionBatches.id, task.batchId),
+    }))!;
+    const discipline = await tx.query.disciplines.findFirst({
+      where: eq(s.disciplines.id, batch.disciplineId),
+    });
+    return { task, batch, discipline };
+  });
+  const version = opts.version ?? task.currentVersion;
+  if (!version) throw notFound('Versão da peça');
+  const blocks = JSON.parse(
+    (await store.get(keys.productionPiece(batch.id, id, version))).toString(),
+  ) as PieceBlocks;
+  return assemblePiece(blocks, {
+    crumb: `${discipline?.name ?? 'Disciplina'} · ${batch.title}`,
+    foot: pieceFoot(batch.bibliography),
+    demo: true,
+    theme: opts.theme ?? null,
+    fontCss: PIECE_FONT_CSS,
   });
 }

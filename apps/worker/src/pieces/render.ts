@@ -1,6 +1,3 @@
-/// <reference lib="dom" />
-/// <reference lib="dom.iterable" />
-// O inspect() roda dentro da página (Chromium), por isso os tipos do navegador.
 import { existsSync } from 'node:fs';
 import { chromium, type Browser, type Page } from 'playwright-core';
 
@@ -51,18 +48,20 @@ const RUNS: { theme: Theme; viewport: Viewport; blocking: boolean }[] = [
   { theme: 'light', viewport: 'mobile', blocking: false },
 ];
 
-/** Roda dentro da página: o que dá para medir sem olhar a imagem. */
-function inspect() {
-  const visible = (el: Element) => {
+/**
+ * Roda dentro da página: o que dá para medir sem olhar a imagem. Fica como texto (JavaScript
+ * puro) porque o compilador do worker acrescenta auxiliares às funções que não existem na página.
+ */
+export const INSPECT_SOURCE = `(() => {
+  const visible = (el) => {
     const s = getComputedStyle(el);
     return s.visibility !== 'hidden' && s.display !== 'none' && Number(s.opacity) > 0.05;
   };
-  type Box = { el: Element; r: DOMRect; label: string };
-  const boxes: Box[] = [];
+  const boxes = [];
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   while (walker.nextNode()) {
     const n = walker.currentNode;
-    const text = n.textContent?.trim();
+    const text = n.textContent && n.textContent.trim();
     const el = n.parentElement;
     if (!text || !el || el.closest('svg,script,style,noscript')) continue;
     if (!visible(el)) continue;
@@ -72,16 +71,15 @@ function inspect() {
       if (r.width > 2 && r.height > 2) boxes.push({ el, r, label: text.slice(0, 40) });
   }
   for (const t of document.querySelectorAll('svg text')) {
-    const text = t.textContent?.trim();
+    const text = t.textContent && t.textContent.trim();
     if (!text || !visible(t) || t.closest('[aria-hidden="true"] text, defs')) continue;
     const r = t.getBoundingClientRect();
     if (r.width > 2 && r.height > 2) boxes.push({ el: t, r, label: text.slice(0, 40) });
   }
-  const overlaps: { a: string; b: string }[] = [];
+  const overlaps = [];
   for (let i = 0; i < boxes.length && overlaps.length < 10; i++) {
     for (let j = i + 1; j < boxes.length; j++) {
-      const A = boxes[i]!;
-      const B = boxes[j]!;
+      const A = boxes[i], B = boxes[j];
       if (A.el === B.el || A.el.contains(B.el) || B.el.contains(A.el)) continue;
       const w = Math.min(A.r.right, B.r.right) - Math.max(A.r.left, B.r.left);
       const h = Math.min(A.r.bottom, B.r.bottom) - Math.max(A.r.top, B.r.top);
@@ -92,23 +90,18 @@ function inspect() {
       if (area > 24 && area > 0.3 * smaller) overlaps.push({ a: A.label, b: B.label });
     }
   }
-
   // Cena: um canvas desenhado ou um SVG com conteúdo, grande o bastante para ser a cena.
   let stage = false;
   for (const c of document.querySelectorAll('canvas')) {
     const r = c.getBoundingClientRect();
-    if (r.width * r.height < 20_000 || !visible(c)) continue;
+    if (r.width * r.height < 20000 || !visible(c)) continue;
     try {
-      const ctx = (c as HTMLCanvasElement).getContext('2d');
-      const { width, height } = c as HTMLCanvasElement;
-      if (!ctx || !width || !height) continue;
-      const data = ctx.getImageData(0, 0, width, height).data;
+      const ctx = c.getContext('2d');
+      if (!ctx || !c.width || !c.height) continue;
+      const data = ctx.getImageData(0, 0, c.width, c.height).data;
       for (let k = 3; k < data.length; k += 4 * 97)
-        if (data[k]! > 0) {
-          stage = true;
-          break;
-        }
-    } catch {
+        if (data[k] > 0) { stage = true; break; }
+    } catch (e) {
       stage = true;
     }
     if (stage) break;
@@ -116,14 +109,16 @@ function inspect() {
   if (!stage)
     for (const s of document.querySelectorAll('svg')) {
       const r = s.getBoundingClientRect();
-      if (r.width * r.height >= 20_000 && visible(s) && s.querySelectorAll('*').length > 3) {
+      if (r.width * r.height >= 20000 && visible(s) && s.querySelectorAll('*').length > 3) {
         stage = true;
         break;
       }
     }
   const doc = document.documentElement;
   return { overlaps, emptyStage: !stage, overflow: doc.scrollWidth > doc.clientWidth + 1 };
-}
+})()`;
+
+type Inspection = { overlaps: Overlap[]; emptyStage: boolean; overflow: boolean };
 
 /** Chromium do sistema (imagem do worker, Alpine); sem ele, o do Playwright instalado. */
 export function systemChromium(configured?: string) {
@@ -165,22 +160,30 @@ export class PlaywrightRenderer implements PieceRenderer {
       // Nada sai da peça: qualquer pedido de rede é bloqueado (e vira erro se a peça depender).
       await page.route(/^(?!data:|about:)/, (r) => r.abort('blockedbyclient'));
       try {
-        await page.setContent(html, { waitUntil: 'load', timeout: 20_000 });
-        await page.evaluate(() => document.fonts.ready);
+        let opened = true;
+        try {
+          await page.setContent(html, { waitUntil: 'load', timeout: 20_000 });
+        } catch (e) {
+          opened = false;
+          errors.push(`A peça não abriu: ${(e as Error).message}`);
+        }
+        if (!opened) {
+          checks.push({
+            ...run,
+            errors,
+            overflow: false,
+            emptyStage: true,
+            overlaps: [],
+            screenshot: Buffer.alloc(0),
+          });
+          continue;
+        }
+        await page.evaluate('document.fonts.ready');
         await page.waitForTimeout(800);
-        const r = await page.evaluate(inspect);
+        // Falha aqui é do teste, não da peça: sobe e o trabalho tenta de novo.
+        const r = (await page.evaluate(INSPECT_SOURCE)) as Inspection;
         const screenshot = await page.screenshot({ fullPage: true, type: 'jpeg', quality: 70 });
         checks.push({ ...run, errors, ...r, screenshot });
-      } catch (e) {
-        errors.push(`A peça não abriu: ${(e as Error).message}`);
-        checks.push({
-          ...run,
-          errors,
-          overflow: false,
-          emptyStage: true,
-          overlaps: [],
-          screenshot: Buffer.alloc(0),
-        });
       } finally {
         await ctx.close();
       }

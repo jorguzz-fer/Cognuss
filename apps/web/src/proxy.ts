@@ -1,6 +1,8 @@
 import { getSessionCookie } from 'better-auth/cookies';
 import { NextResponse, type NextRequest } from 'next/server';
-import { buildCsp } from './lib/csp';
+import { buildCsp, buildPieceCsp } from './lib/csp';
+
+const PIECE_PREVIEW = /^\/api\/v1\/production\/tasks\/[^/]+\/preview$/;
 
 const PROTECTED = ['/app', '/admin', '/professor', '/onboarding', '/comecar', '/seguranca'];
 
@@ -21,13 +23,16 @@ export function proxy(request: NextRequest) {
   } else {
     res = NextResponse.next();
   }
+  const dev = process.env.NODE_ENV === 'development';
   res.headers.set(
     'Content-Security-Policy',
-    buildCsp({
-      lessonOrigins: process.env.LESSON_ORIGINS,
-      storageEndpoint: process.env.STORAGE_ENDPOINT,
-      dev: process.env.NODE_ENV === 'development',
-    }),
+    PIECE_PREVIEW.test(pathname)
+      ? buildPieceCsp({ storageEndpoint: process.env.STORAGE_ENDPOINT, dev })
+      : buildCsp({
+          lessonOrigins: process.env.LESSON_ORIGINS,
+          storageEndpoint: process.env.STORAGE_ENDPOINT,
+          dev,
+        }),
   );
   return res;
 }

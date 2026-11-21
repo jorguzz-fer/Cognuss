@@ -18,7 +18,7 @@ test.describe('produção de aulas', () => {
   test('envia a aula, vê os pedidos ao lado dos slides e aprova, edita e descarta', async ({
     page,
   }) => {
-    test.setTimeout(150_000);
+    test.setTimeout(300_000);
     const title = `Aula de teste · ${Date.now().toString(36)}`;
     await becomeAdmin(page, 'Paula Produção');
     await page.goto('/admin/producao');
@@ -82,6 +82,44 @@ test.describe('produção de aulas', () => {
     // O slide oculto com o pedido aparece na lista completa, sem imagem.
     await page.getByText('Todos os slides (7)').click();
     await expect(page.getByText('Slide oculto').first()).toBeVisible();
+
+    // Fase 2: liberar a geração. Só a aprovada vai (a descartada fica de fora).
+    await page.getByRole('button', { name: 'Liberar geração' }).click();
+    await expect(page.getByText('1 peça foi para a geração.')).toBeVisible();
+    await expect(tasks.nth(0).getByText('Peça pronta', { exact: true })).toBeVisible({
+      timeout: 90_000,
+    });
+    await expect(page.getByText('Peças geradas', { exact: true })).toBeVisible();
+
+    // Tela da peça: prévia isolada nos dois temas, versão que passou e as capturas do teste.
+    await tasks.nth(0).getByRole('link', { name: 'Abrir a peça' }).click();
+    await expect(page.getByRole('heading', { name: 'Prévia da versão 1' })).toBeVisible();
+    await expect(page.getByText('Passou no linter e no teste nos dois temas.')).toBeVisible();
+    for (const tema of ['claro', 'escuro']) {
+      const frame = page.frameLocator(`iframe[title="Peça no tema ${tema}"]`);
+      await expect(frame.getByRole('heading', { level: 1 })).toBeVisible();
+      await expect(frame.getByText('Demonstração · sem revisão')).toBeVisible();
+      await expect(frame.getByText('Na prova')).toBeVisible();
+    }
+    const versoes = page.getByRole('region', { name: 'Versões' });
+    await expect(versoes.getByText('Passou', { exact: true })).toBeVisible();
+    await expect(versoes.getByRole('img', { name: /Captura do teste, versão 1/ })).toHaveCount(3);
+    expect(
+      (
+        await new AxeBuilder({ page })
+          .withTags(['wcag2a', 'wcag2aa', 'wcag22aa'])
+          .exclude('iframe')
+          .analyze()
+      ).violations,
+    ).toEqual([]);
+
+    // Gerar de novo com pedido de ajuste: vira a versão 2.
+    await page.getByLabel('Pedido de ajuste').fill('Aumentar o contraste das setas.');
+    await page.getByRole('button', { name: 'Gerar de novo' }).click();
+    await expect(page.getByRole('heading', { name: 'Prévia da versão 2' })).toBeVisible({
+      timeout: 90_000,
+    });
+    await expect(versoes.getByRole('link', { name: 'Versão 1', exact: true })).toBeVisible();
 
     await page.goto('/admin/producao');
     await expect(page.getByRole('link', { name: title })).toBeVisible();

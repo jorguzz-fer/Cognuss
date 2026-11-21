@@ -57,7 +57,7 @@ async function settleBatch(tx: Tx, batchId: string) {
 async function failTask(tx: Tx, taskId: string, batchId: string, error: string) {
   await tx
     .update(s.productionTasks)
-    .set({ status: 'failed', lastError: error })
+    .set({ status: 'failed', lastError: error, pendingNote: null })
     .where(and(eq(s.productionTasks.id, taskId), eq(s.productionTasks.status, 'generating')));
   await settleBatch(tx, batchId);
 }
@@ -118,6 +118,13 @@ export function productionGeneratePiece(deps: PieceDeps): Handler<'production.ge
       let version = task.currentVersion ?? 0;
       let previous: PieceBlocks | null = null;
       let problems: string[] = [];
+      // Pedido de ajuste (admin, ou o revisor na Fase 4): a IA parte da versão atual.
+      if (task.pendingNote && version > 0) {
+        previous = JSON.parse(
+          (await storage.get(keys.productionPiece(batch.id, taskId, version))).toString(),
+        ) as PieceBlocks;
+        problems = [`Pedido de ajuste: ${task.pendingNote}`];
+      }
       for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         const res = await deps.writer.write({
           discipline: disciplineName,
@@ -211,7 +218,7 @@ export function productionGeneratePiece(deps: PieceDeps): Handler<'production.ge
           await inTx(async (tx) => {
             await tx
               .update(s.productionTasks)
-              .set({ status: 'generated', lastError: null })
+              .set({ status: 'generated', lastError: null, pendingNote: null })
               .where(
                 and(eq(s.productionTasks.id, taskId), eq(s.productionTasks.status, 'generating')),
               );

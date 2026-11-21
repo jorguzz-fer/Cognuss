@@ -22,6 +22,27 @@ export function buildCsp(env: { lessonOrigins?: string; storageEndpoint?: string
   ].join('; ');
 }
 
+/**
+ * Política da prévia das peças (produção de aulas, ADR 0021): a peça gerada por IA roda isolada
+ * (sandbox sem mesma origem: não lê cookie nem a página do app), sem rede, só com o que traz
+ * dentro de si; pode ser emoldurada só pelo próprio app.
+ */
+export function buildPieceCsp(env: { storageEndpoint?: string; dev?: boolean }) {
+  const storage = storageOrigin(env.storageEndpoint, env.dev);
+  return [
+    'sandbox allow-scripts',
+    "default-src 'none'",
+    "script-src 'unsafe-inline'",
+    "style-src 'unsafe-inline'",
+    'font-src data:',
+    'img-src data: blob:',
+    `media-src data: blob: ${storage}`.trim(),
+    "frame-ancestors 'self'",
+    "base-uri 'none'",
+    "form-action 'none'",
+  ].join('; ');
+}
+
 function storageOrigin(endpoint: string | undefined, dev?: boolean): string {
   if (!endpoint) return '';
   try {

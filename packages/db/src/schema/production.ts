@@ -142,6 +142,8 @@ export const productionTasks = pgTable(
     currentVersion: integer('current_version'),
     /** Por que a última geração falhou (linter ou teste de render), para o admin. */
     lastError: text('last_error'),
+    /** Pedido de ajuste para a próxima geração (admin ou, na Fase 4, o revisor). */
+    pendingNote: text('pending_note'),
     decidedBy: text('decided_by').references(() => authUsers.id, { onDelete: 'set null' }),
     decidedAt: timestamp('decided_at', { withTimezone: true }),
     createdAt: createdAt(),

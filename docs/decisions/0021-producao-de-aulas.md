@@ -21,8 +21,11 @@ A especificação do módulo de produção (`docs/producao/ESPECIFICACAO.md`) pe
 
 **Custo.** O plano por IA grava modelo, tokens e custo em `ai_usage` (recurso `producao_plano`) e no lote. Os créditos de mídia estimados vêm do tipo de cada tarefa aprovada (tabela do piloto) e aparecem antes de liberar a geração.
 
+**Fase 2: peças HTML.** A peça é guardada em blocos (título, estilo, corpo, script) no armazenamento e montada na hora de servir com a base aprovada no piloto (`packages/core/piece.ts`): cabeçalho, tokens, fontes do app embutidas em base64 e rodapé com a referência da aula. Assim o selo de demonstração vem do banco, e a peça é autocontida (iframe isolado, sem rede). O escritor (Claude, saída estruturada) recebe o plano aprovado, as imagens dos slides, a base CSS e uma peça aprovada do mesmo tipo como modelo. Cada versão passa por um linter (estrutura dos quatro blocos, nada de fora, nada de rede ou armazenamento, script que compila) e por um teste de render com Playwright no worker, nos temas claro e escuro: erro de script, rolagem lateral, cena vazia e texto sobreposto; o celular só avisa. Se falhar, a IA recebe os problemas e corrige, até 3 tentativas; cada tentativa vira uma versão em `production_assets`, com as capturas. As 18 peças aprovadas do piloto passam no linter e as 7 da Aula 2 passam no teste, o que mostra que o teste não reprova peça boa. A prévia no admin é servida com política própria: sandbox sem mesma origem, sem rede, emoldurada só pelo app. O worker usa o Chromium do sistema (Alpine) com `playwright-core`, que fica fora do pacote do esbuild.
+
 ## Consequências
 
 - O admin aprova o plano antes de qualquer gasto de mídia.
 - A detecção é previsível e testada com o texto real das aulas; pedidos escritos de outro jeito podem escapar, e por isso a IA propõe peças quando não há pedidos e o admin pode editar ou descartar.
-- O worker precisa do `unzip` para ler o PPTX.
+- O worker precisa do `unzip` para ler o PPTX e do Chromium para o teste de render.
+- A peça montada carrega cerca de 115 kB de fontes embutidas; em troca, abre igual em qualquer lugar.
