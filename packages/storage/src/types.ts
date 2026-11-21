@@ -45,6 +45,10 @@ export const keys = {
     `u/${userId}/f/${fileId}/pages/${page}.jpg`,
   // Produção de aulas (ADR 0021): o lote é da equipe, fora da pasta de quem enviou.
   productionSlide: (batchId: string, slide: number) => `p/b/${batchId}/slides/${slide}.jpg`,
+  productionPiece: (batchId: string, taskId: string, version: number) =>
+    `p/b/${batchId}/t/${taskId}/v${version}.json`,
+  productionShot: (batchId: string, taskId: string, version: number, name: string) =>
+    `p/b/${batchId}/t/${taskId}/v${version}-${name}.jpg`,
 };
 
 /** Content-Disposition seguro: nome ASCII de reserva e o nome real em UTF-8 (RFC 6266). */

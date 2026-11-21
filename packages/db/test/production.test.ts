@@ -78,8 +78,9 @@ describe('produção de aulas: acesso', () => {
         batches: await tx.select().from(s.productionBatches),
         slides: await tx.select().from(s.productionSlides),
         tasks: await tx.select().from(s.productionTasks),
+        assets: await tx.select().from(s.productionAssets),
       }));
-      expect(rows).toEqual({ batches: [], slides: [], tasks: [] });
+      expect(rows).toEqual({ batches: [], slides: [], tasks: [], assets: [] });
       await expect(
         withUser(app, user, (tx) =>
           tx.insert(s.productionSlides).values({ batchId, number: 2, kind: 'content' }),

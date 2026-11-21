@@ -26,6 +26,8 @@ export const productionBatchStatus = pgEnum('production_batch_status', [
   'planning', // a IA está planejando as peças
   'ready', // plano pronto para o admin aprovar
   'failed',
+  'generating', // peças aprovadas sendo geradas (Fase 2)
+  'generated', // geração terminou (com ou sem falhas por tarefa)
 ]);
 
 export const productionSlideKind = pgEnum('production_slide_kind', [
@@ -38,6 +40,18 @@ export const productionTaskStatus = pgEnum('production_task_status', [
   'proposed', // detectada ou proposta, esperando o admin
   'approved',
   'discarded',
+  'generating', // peça sendo escrita e testada
+  'generated', // peça pronta e aprovada no teste de render
+  'failed', // a peça não passou no linter ou no teste depois das tentativas
+]);
+
+export const productionAssetKind = pgEnum('production_asset_kind', [
+  'html', // versão da peça (blocos em JSON no armazenamento)
+  'screenshot', // captura do teste de render
+  'image',
+  'clip',
+  'audio',
+  'video',
 ]);
 
 export const productionBatches = pgTable(
@@ -124,10 +138,41 @@ export const productionTasks = pgTable(
     status: productionTaskStatus('status').notNull().default('proposed'),
     /** Peça publicada (Fase 4). */
     moduleId: uuid('module_id').references(() => modules.id, { onDelete: 'set null' }),
+    /** Última versão da peça gerada (production_assets, tipo html). */
+    currentVersion: integer('current_version'),
+    /** Por que a última geração falhou (linter ou teste de render), para o admin. */
+    lastError: text('last_error'),
     decidedBy: text('decided_by').references(() => authUsers.id, { onDelete: 'set null' }),
     decidedAt: timestamp('decided_at', { withTimezone: true }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
   (t) => [uniqueIndex('production_tasks_batch_position_uq').on(t.batchId, t.position)],
+);
+
+export const productionAssets = pgTable(
+  'production_assets',
+  {
+    id: pk(),
+    batchId: uuid('batch_id')
+      .notNull()
+      .references(() => productionBatches.id, { onDelete: 'cascade' }),
+    taskId: uuid('task_id')
+      .notNull()
+      .references(() => productionTasks.id, { onDelete: 'cascade' }),
+    kind: productionAssetKind('kind').notNull(),
+    /** Versão da peça a que o arquivo pertence. */
+    version: integer('version').notNull(),
+    /** claude, fake, playwright, higgsfield, elevenlabs, ffmpeg. */
+    provider: text('provider').notNull(),
+    /** Trabalho no provedor, para nunca repetir uma geração paga sem conferir a anterior. */
+    externalJobId: text('external_job_id'),
+    storageKey: text('storage_key'),
+    /** Detalhes: linter, teste de render, tema da captura, prompt da mídia. */
+    meta: jsonb('meta').$type<Record<string, unknown>>().notNull().default({}),
+    credits: integer('credits').notNull().default(0),
+    costMicros: bigint('cost_micros', { mode: 'number' }).notNull().default(0),
+    createdAt: createdAt(),
+  },
+  (t) => [index('production_assets_task_idx').on(t.taskId, t.kind, t.version)],
 );

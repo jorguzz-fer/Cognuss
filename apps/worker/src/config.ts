@@ -38,6 +38,10 @@ const schema = z.object({
   // Plano das peças da produção de aulas (ADR 0021): aula inteira, com imagens dos slides.
   AI_PRODUCTION_MODEL: z.string().default('claude-opus-5-5'),
   AI_PRODUCTION_EFFORT: z.enum(['low', 'medium', 'high']).default('high'),
+  // Peças HTML da produção de aulas (Fase 2) e o Chromium do teste de render.
+  AI_PIECE_MODEL: z.string().default('claude-opus-5-5'),
+  AI_PIECE_EFFORT: z.enum(['low', 'medium', 'high']).default('high'),
+  PIECE_CHROMIUM_PATH: z.string().optional(),
   // Vetores da busca por conceito (ADR 0014): Voyage AI. Sem chave, a busca por palavra segue.
   VOYAGE_API_KEY: z.string().optional(),
   EMBEDDING_MODEL: z.string().default('voyage-4'),

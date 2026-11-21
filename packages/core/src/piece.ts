@@ -77,6 +77,20 @@ ${b.script}
 `;
 }
 
+/**
+ * Rodapé padrão da aula: o aviso do piloto e a referência bibliográfica que o professor pôs na
+ * aula (sem o título "Referência bibliográfica"). Sem referência, só o aviso.
+ */
+export function pieceFoot(bibliography: string | null | undefined): string {
+  const base = 'Esquema didático, simplificado para fins de ensino.';
+  const ref = (bibliography ?? '')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => l && !/^refer[eê]ncias?( bibliogr[aá]ficas?)?:?$/i.test(l))
+    .join(' ');
+  return ref ? `${base} Base: ${esc(ref)}` : base;
+}
+
 /** Lê uma peça no formato-fonte do piloto: blocos @@TITLE, @@STYLE, @@BODY, @@SCRIPT, @@FOOT. */
 export function parsePieceSource(src: string): PieceBlocks {
   const block = (name: string) => {

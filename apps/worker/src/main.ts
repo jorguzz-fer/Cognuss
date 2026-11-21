@@ -3,9 +3,11 @@ import Anthropic from '@anthropic-ai/sdk';
 import {
   AnthropicCreator,
   AnthropicLessonPlanner,
+  AnthropicPieceWriter,
   AnthropicScheduleExtractor,
   FakeCreator,
   FakeLessonPlanner,
+  FakePieceWriter,
   FakeScheduleExtractor,
   FakeEmbedder,
   VoyageEmbedder,
@@ -23,6 +25,7 @@ import { LogMailer, ResendMailer } from './notify/mail';
 import { startNotifier } from './notify/dispatch';
 import { checkSpend } from './notify/spend';
 import { startWorkers } from './workers';
+import { PlaywrightRenderer } from './pieces/render';
 
 // Processo worker (ADR 0013): publica o outbox na fila e executa os trabalhos.
 async function main() {
@@ -69,6 +72,17 @@ async function main() {
       : cfg.AI_PROVIDER === 'fake'
         ? new FakeLessonPlanner()
         : null;
+  const pieceWriter =
+    cfg.AI_PROVIDER === 'anthropic' && cfg.ANTHROPIC_API_KEY
+      ? new AnthropicPieceWriter(
+          new Anthropic({ apiKey: cfg.ANTHROPIC_API_KEY }),
+          cfg.AI_PIECE_MODEL,
+          cfg.AI_PIECE_EFFORT,
+        )
+      : cfg.AI_PROVIDER === 'fake'
+        ? new FakePieceWriter()
+        : null;
+  const renderer = new PlaywrightRenderer(cfg.PIECE_CHROMIUM_PATH);
   const handlers = createHandlers({
     storage,
     scanner,
@@ -76,6 +90,8 @@ async function main() {
     creator,
     embedder,
     planner,
+    pieceWriter,
+    renderer,
   });
   const pool = createPool(cfg.DATABASE_URL, cfg.DB_POOL_MAX);
   const db = createDb(pool);
@@ -168,6 +184,7 @@ async function main() {
     await notifier.stop();
     // close() espera os trabalhos em andamento terminarem.
     await Promise.all(workers.map((w) => w.close()));
+    await renderer.close().catch(() => {});
     await closeQueues(queues);
     await Promise.all([queueConn.quit(), workerConn.quit()]);
     await pool.end();

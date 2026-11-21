@@ -1,10 +1,12 @@
-import type { Creator, Embedder, LessonPlanner, ScheduleExtractor } from '@gutta/ai';
+import type { Creator, Embedder, LessonPlanner, PieceWriter, ScheduleExtractor } from '@gutta/ai';
+import type { PieceRenderer } from '../pieces/render';
 import type { ObjectStorage } from '@gutta/storage';
 import type { Scanner } from '../files/scanner';
 import { createCreation } from './creations';
 import { embedUser } from './embeddings';
 import { filesProcess } from './files';
 import { eraseUserObjects } from './maintenance';
+import { productionGeneratePiece } from './pieces';
 import { productionExtract, productionPlan } from './production';
 import { extractSchedule } from './schedule';
 import type { Handler, Handlers } from './types';
@@ -20,6 +22,9 @@ export type HandlerDeps = {
   embedder?: Embedder | null;
   /** Null: sem chave do Claude; a produção de aulas lista os pedidos sem plano (ADR 0021). */
   planner?: LessonPlanner | null;
+  /** Peças HTML (Fase 2): escritor com IA e teste de render. */
+  pieceWriter?: PieceWriter | null;
+  renderer?: PieceRenderer | null;
 };
 
 function unavailable<T extends 'files.process'>(): Handler<T> {
@@ -53,6 +58,11 @@ export function createHandlers(deps: HandlerDeps): Handlers {
       planner: deps.planner ?? null,
     }),
     'production.plan': productionPlan({ storage: deps.storage, planner: deps.planner ?? null }),
+    'production.generate_piece': productionGeneratePiece({
+      storage: deps.storage,
+      writer: deps.pieceWriter ?? null,
+      renderer: deps.renderer ?? null,
+    }),
     'maintenance.erase_user_objects': eraseUserObjects(deps.storage),
   };
 }
