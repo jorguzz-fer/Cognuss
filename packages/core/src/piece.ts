@@ -171,7 +171,7 @@ export function lintPiece(b: PieceBlocks): LintIssue[] {
   if (!/Para fixar/i.test(b.body) && !/class\s*=\s*["'][^"']*\bexplain\b/.test(b.body))
     error('closing', 'Falta o bloco "Para fixar".');
   if (!/Na prova/i.test(b.body)) error('closing', 'Falta o bloco "Na prova".');
-  if (!/<(?:canvas|svg)\b/i.test(b.body) && !/createElementNS|getContext\(/.test(b.script))
+  if (!/<(?:canvas|svg|video)\b/i.test(b.body) && !/createElementNS|getContext\(/.test(b.script))
     error('stage', 'Falta a cena (canvas ou SVG) da área interativa.');
   if (/<h1\b[\s\S]*<h1\b/i.test(b.body)) warn('opening', 'Mais de um h1 na peça.');
   if (/<(?:canvas|svg)\b(?![^>]*(?:aria-label|aria-hidden|role=))/i.test(b.body))

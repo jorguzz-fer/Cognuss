@@ -106,6 +106,12 @@ export const INSPECT_SOURCE = `(() => {
     }
     if (stage) break;
   }
+  // Peça de vídeo: o player é a cena (no teste ele não carrega o arquivo).
+  if (!stage)
+    for (const v of document.querySelectorAll('video')) {
+      const r = v.getBoundingClientRect();
+      if (r.width * r.height >= 20000 && visible(v)) { stage = true; break; }
+    }
   if (!stage)
     for (const s of document.querySelectorAll('svg')) {
       const r = s.getBoundingClientRect();
