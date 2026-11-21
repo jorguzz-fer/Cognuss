@@ -89,6 +89,8 @@ export const TaskDto = z.object({
   mediaStage: z.string().nullable(),
   /** Aviso da mídia: cota do dia, fila cheia, saldo, falta de chave. */
   mediaAlert: z.string().nullable(),
+  /** Já foi para a revisão (virou módulo, Fase 4). */
+  inReview: z.boolean(),
 });
 export type TaskDto = z.infer<typeof TaskDto>;
 
@@ -321,4 +323,153 @@ export const updateMediaSettings = defineRoute({
   body: updateMediaSettingsBody,
   response: z.object({ settings: MediaSettingsDto }),
   errors: ['forbidden'],
+});
+
+// ── Fase 4: revisão e publicação ─────────────────────────────────────────
+
+export const sendToReview = defineRoute({
+  method: 'post',
+  path: '/api/v1/production/batches/{id}/review',
+  summary:
+    'Envia para revisão as peças prontas do lote: cada uma vira módulo e as questões do plano viram questões, em revisão e com o selo de demonstração.',
+  tags: ['producao'],
+  params,
+  response: z.object({
+    sent: z.number().int(),
+    questions: z.number().int(),
+    /** Questões que não foram (sem exatamente uma alternativa correta). */
+    skipped: z.array(z.string()),
+  }),
+  errors: ['forbidden', 'not_found', 'conflict'],
+});
+
+export const ReviewItemDto = z.object({
+  taskId: Uuid,
+  batchId: Uuid,
+  batchTitle: z.string(),
+  disciplineName: z.string(),
+  title: z.string(),
+  position: z.number().int(),
+  pieceType: PieceType.nullable(),
+  /** Publicada fica na fila por 7 dias, para quem publicou ver o resultado. */
+  moduleStatus: z.enum(['in_review', 'approved', 'published']),
+  taskStatus: TaskStatus,
+  questions: z.number().int(),
+  /** Voltou de um pedido de ajuste do revisor. */
+  backFromChanges: z.boolean(),
+});
+export type ReviewItemDto = z.infer<typeof ReviewItemDto>;
+
+export const reviewQueue = defineRoute({
+  method: 'get',
+  path: '/api/v1/production/reviews',
+  summary: 'Fila do revisor: peças em revisão e peças aprovadas esperando a publicação da aula.',
+  tags: ['producao'],
+  response: z.object({ items: z.array(ReviewItemDto) }),
+  errors: ['forbidden'],
+});
+
+export const ModuleDto = z.object({
+  id: Uuid,
+  status: z.enum(['draft', 'in_review', 'approved', 'published', 'archived']),
+  isDemo: z.boolean(),
+  publishedAt: z.iso.datetime().nullable(),
+});
+export type ModuleDto = z.infer<typeof ModuleDto>;
+
+export const ReviewDto = z.object({
+  id: Uuid,
+  version: z.number().int(),
+  decision: z.enum(['approved', 'changes']),
+  excerpt: z.string().nullable(),
+  comment: z.string().nullable(),
+  reviewer: z.string(),
+  createdAt: z.iso.datetime(),
+});
+
+export const getReview = defineRoute({
+  method: 'get',
+  path: '/api/v1/production/reviews/{id}',
+  summary:
+    'Peça em revisão: prévia, versões, o que a IA pediu para conferir, as questões com o gabarito e o histórico de decisões.',
+  tags: ['producao'],
+  params,
+  response: z.object({
+    batch: BatchDto,
+    task: TaskDto,
+    slides: z.array(SlideDto),
+    versions: z.array(VersionDto),
+    media: MediaDto.nullable(),
+    module: ModuleDto,
+    reviewNotes: z.array(z.string()),
+    scenarios: z.array(z.string()),
+    questions: z.array(
+      z.object({
+        id: Uuid,
+        stem: z.string(),
+        status: ModuleDto.shape.status,
+        options: z.array(
+          z.object({ body: z.string(), correct: z.boolean(), explanation: z.string() }),
+        ),
+      }),
+    ),
+    reviews: z.array(ReviewDto),
+  }),
+  errors: ['forbidden', 'not_found'],
+});
+
+export const approveReviewBody = z.object({
+  /** Questões que o revisor tira da aula (voltam para rascunho no banco de questões). */
+  discardQuestions: z.array(Uuid).max(10).default([]),
+  comment: z
+    .string()
+    .trim()
+    .max(2000)
+    .optional()
+    .transform((v) => v || null),
+});
+
+export const approveReview = defineRoute({
+  method: 'post',
+  path: '/api/v1/production/reviews/{id}/approve',
+  summary:
+    'Aprova a versão atual da peça e as questões: saem do modo demonstração. Quem enviou à revisão não aprova.',
+  tags: ['producao'],
+  params,
+  body: approveReviewBody,
+  response: z.object({ module: ModuleDto }),
+  errors: ['forbidden', 'not_found', 'conflict'],
+});
+
+export const requestChangesBody = z.object({
+  excerpt: z
+    .string()
+    .trim()
+    .max(200)
+    .optional()
+    .transform((v) => v || null),
+  comment: z.string().trim().min(5, 'Diga o que precisa mudar.').max(2000),
+});
+
+export const requestChanges = defineRoute({
+  method: 'post',
+  path: '/api/v1/production/reviews/{id}/changes',
+  summary:
+    'Pede ajuste num trecho da peça: o comentário vai para a IA, que gera uma nova versão; a peça volta à fila.',
+  tags: ['producao'],
+  params,
+  body: requestChangesBody,
+  response: z.object({ ok: z.literal(true) }),
+  errors: ['forbidden', 'not_found', 'conflict'],
+});
+
+export const publishBatch = defineRoute({
+  method: 'post',
+  path: '/api/v1/production/batches/{id}/publish',
+  summary:
+    'Publica as peças aprovadas da aula: os módulos e as questões ficam visíveis para os alunos.',
+  tags: ['producao'],
+  params,
+  response: z.object({ published: z.number().int() }),
+  errors: ['forbidden', 'not_found', 'conflict'],
 });

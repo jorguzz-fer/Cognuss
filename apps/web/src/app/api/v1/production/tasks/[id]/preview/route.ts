@@ -12,7 +12,8 @@ export const GET = async (req: Request, ctx: { params: Promise<Record<string, st
   const tema = q.get('tema');
   const theme = tema === 'escuro' ? 'dark' : tema === 'claro' ? 'light' : null;
   const res = await apiRoute(async ({ userId, params }) => {
-    await requireApiRole(userId, ['admin']);
+    // O revisor também vê a prévia (Fase 4); a RLS da produção libera a leitura para ele.
+    await requireApiRole(userId, ['admin', 'reviewer']);
     return { html: await previewPiece(userId, params.id!, { version, theme }) };
   })(req, ctx);
   if (!res.ok) return res;

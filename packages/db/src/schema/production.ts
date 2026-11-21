@@ -157,6 +157,12 @@ export const productionTasks = pgTable(
     mediaResume: text('media_resume'),
     /** Um trabalho de mídia por vez em cada tarefa: quem pega a vez marca até quando. */
     mediaLeaseUntil: timestamp('media_lease_until', { withTimezone: true }),
+    /** Questões do plano enviadas à revisão junto com a peça (Fase 4). */
+    questionIds: uuid('question_ids').array().notNull().default([]),
+    /** Versão da peça que o revisor aprovou: é a que o aluno vê depois de publicada. */
+    approvedVersion: integer('approved_version'),
+    /** Ajuste pedido na revisão: ao terminar de gerar, a peça volta sozinha para a fila. */
+    backToReview: boolean('back_to_review').notNull().default(false),
     decidedBy: text('decided_by').references(() => authUsers.id, { onDelete: 'set null' }),
     decidedAt: timestamp('decided_at', { withTimezone: true }),
     createdAt: createdAt(),
@@ -190,4 +196,28 @@ export const productionAssets = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index('production_assets_task_idx').on(t.taskId, t.kind, t.version)],
+);
+
+/** Decisões e comentários do revisor sobre uma peça (docs/producao, telas do admin, item 4). */
+export const productionReviews = pgTable(
+  'production_reviews',
+  {
+    id: pk(),
+    batchId: uuid('batch_id')
+      .notNull()
+      .references(() => productionBatches.id, { onDelete: 'cascade' }),
+    taskId: uuid('task_id')
+      .notNull()
+      .references(() => productionTasks.id, { onDelete: 'cascade' }),
+    /** Versão da peça revisada. */
+    version: integer('version').notNull(),
+    reviewerId: text('reviewer_id').references(() => authUsers.id, { onDelete: 'set null' }),
+    /** approved: aprovou; changes: pediu ajuste (a peça é gerada de novo com o comentário). */
+    decision: text('decision').notNull(),
+    /** Trecho comentado ("Cenário 2", "Questão 1", "Narração da cena 3"), ou null para a peça toda. */
+    excerpt: text('excerpt'),
+    comment: text('comment'),
+    createdAt: createdAt(),
+  },
+  (t) => [index('production_reviews_task_idx').on(t.taskId, t.createdAt)],
 );

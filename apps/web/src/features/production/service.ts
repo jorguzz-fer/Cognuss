@@ -57,6 +57,7 @@ function taskDto(t: TaskRow): contract.TaskDto {
     lastError: t.lastError,
     mediaStage: t.mediaStage,
     mediaAlert: t.mediaAlert,
+    inReview: t.moduleId !== null,
   };
 }
 
@@ -248,7 +249,17 @@ const releasable = (t: TaskRow) => t.status === 'approved' && t.pieceType !== nu
  * Começa a geração de uma tarefa: a peça HTML vai direto para a IA; o vídeo começa pelo
  * roteiro, e nada pago acontece antes de o admin aprovar o roteiro e as imagens (Fase 3).
  */
-async function startGeneration(tx: Tx, userId: string, t: TaskRow, note: string | null) {
+/**
+ * `jobUser` é quem o worker representa: no pedido de ajuste do revisor, o admin dono do lote,
+ * porque a geração grava versões e mídia, que só o admin escreve.
+ */
+export async function startGeneration(
+  tx: Tx,
+  userId: string,
+  t: TaskRow,
+  note: string | null,
+  jobUser: string = userId,
+) {
   const video = t.pieceType === 'video';
   await tx
     .update(s.productionTasks)
@@ -270,8 +281,8 @@ async function startGeneration(tx: Tx, userId: string, t: TaskRow, note: string 
           inArray(s.productionAssets.kind, ['image', 'clip', 'audio']),
         ),
       );
-    await emit(tx, 'production.write_storyboard', { taskId: t.id, userId });
-  } else await emit(tx, 'production.generate_piece', { taskId: t.id, userId });
+    await emit(tx, 'production.write_storyboard', { taskId: t.id, userId: jobUser });
+  } else await emit(tx, 'production.generate_piece', { taskId: t.id, userId: jobUser });
 }
 
 export async function generateBatch(
@@ -676,7 +687,7 @@ export async function previewPiece(
 ): Promise<string> {
   const store = storage();
   if (!store) throw notFound('Armazenamento');
-  const { task, batch, discipline } = await withUser(db(), userId, async (tx) => {
+  const { task, batch, discipline, mod } = await withUser(db(), userId, async (tx) => {
     const task = await tx.query.productionTasks.findFirst({ where: eq(s.productionTasks.id, id) });
     if (!task) throw notFound('Tarefa');
     const batch = (await tx.query.productionBatches.findFirst({
@@ -685,7 +696,10 @@ export async function previewPiece(
     const discipline = await tx.query.disciplines.findFirst({
       where: eq(s.disciplines.id, batch.disciplineId),
     });
-    return { task, batch, discipline };
+    const mod = task.moduleId
+      ? await tx.query.modules.findFirst({ where: eq(s.modules.id, task.moduleId) })
+      : undefined;
+    return { task, batch, discipline, mod };
   });
   const version = opts.version ?? task.currentVersion;
   if (!version) throw notFound('Versão da peça');
@@ -721,7 +735,8 @@ export async function previewPiece(
   return assemblePiece(blocks, {
     crumb: `${discipline?.name ?? 'Disciplina'} · ${batch.title}`,
     foot: pieceFoot(batch.bibliography),
-    demo: true,
+    // O selo segue o banco: some depois que o revisor aprova.
+    demo: mod?.isDemo ?? true,
     theme: opts.theme ?? null,
     fontCss: PIECE_FONT_CSS,
   });

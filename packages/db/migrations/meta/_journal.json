@@ -414,6 +414,20 @@
       "when": 1795287324687,
       "tag": "0058_producao_midia",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "7",
+      "when": 1795289439279,
+      "tag": "0059_producao_revisao",
+      "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "7",
+      "when": 1795289449640,
+      "tag": "0060_rls_producao_revisao",
+      "breakpoints": true
     }
   ]
 }
