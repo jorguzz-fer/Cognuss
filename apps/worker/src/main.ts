@@ -101,8 +101,9 @@ async function main() {
   const fakeMedia = cfg.MEDIA_PROVIDER === 'fake';
   const media = fakeMedia
     ? new FakeMediaProvider()
-    : cfg.HIGGSFIELD_API_KEY_ID && cfg.HIGGSFIELD_API_KEY_SECRET
-      ? new HiggsfieldProvider(cfg.HIGGSFIELD_API_KEY_ID, cfg.HIGGSFIELD_API_KEY_SECRET, {
+    : cfg.HIGGSFIELD_API_KEY_ID
+      ? // O secret pode vir separado ou já junto do key ID ("ID:SECRET").
+        new HiggsfieldProvider(cfg.HIGGSFIELD_API_KEY_ID, cfg.HIGGSFIELD_API_KEY_SECRET, {
           // O compose passa variável não cadastrada como texto vazio: vale o padrão.
           imageEndpoint: cfg.HIGGSFIELD_IMAGE_ENDPOINT || undefined,
           videoEndpoint: cfg.HIGGSFIELD_VIDEO_ENDPOINT || undefined,
