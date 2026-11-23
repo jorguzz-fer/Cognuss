@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { AutoRefresh } from '@/components/production/auto-refresh';
 import { CertificateForm, DeleteCertificate } from '@/components/portfolio/certificate-form';
-import { Alert, Badge, Card } from '@/components/ui/card';
+import { Alert, Badge, Card } from '@gutta/ui/card';
 import { requireFeature } from '@/features/flags/service';
 import { getItem, listPortfolio } from '@/features/portfolio/service';
 import { ApiError } from '@/lib/api';

@@ -8,11 +8,11 @@ import {
 } from '@gutta/core';
 import { AutoRefresh } from '@/components/production/auto-refresh';
 import { FolderManager, NewCertificate } from '@/components/portfolio/portfolio-actions';
-import { Alert, Badge, Card } from '@/components/ui/card';
+import { Alert, Badge, Card } from '@gutta/ui/card';
 import { requireFeature } from '@/features/flags/service';
 import { listPortfolio } from '@/features/portfolio/service';
 import { requireStudent } from '@/lib/auth/session';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 export const metadata: Metadata = { title: 'Meus Certificados' };
 
