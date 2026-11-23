@@ -7,6 +7,7 @@ import type { Scanner } from '../files/scanner';
 import { EXT_BY_MIME, pdfPageCount, pdfText, pdfThumbnails, toPdf } from '../files/tools';
 import { releaseProductionBatches } from './production';
 import { releaseScheduleImports } from './schedule';
+import { releasePortfolioItems } from './certificates';
 import type { Handler } from './types';
 
 export type FileDeps = { storage: ObjectStorage; scanner: Scanner };
@@ -53,6 +54,7 @@ export function filesProcess(deps: FileDeps): Handler<'files.process'> {
           ) {
             await releaseScheduleImports(tx, fileId, userId);
             await releaseProductionBatches(tx, fileId, userId);
+            await releasePortfolioItems(tx, fileId, userId);
           }
           // Arquivo pronto: os vetores da busca por conceito podem ser gerados (ADR 0014).
           if (patch.status === 'ready')

@@ -17,7 +17,13 @@ const UPLOAD_TTL = 600;
 const READ_TTL = 300;
 
 // Quem pode enviar arquivos: os módulos da v2 que usam arquivo.
-const FILE_FEATURES: FeatureKey[] = ['materiais', 'disciplinas', 'aula', 'cadastro'];
+const FILE_FEATURES: FeatureKey[] = [
+  'materiais',
+  'disciplinas',
+  'aula',
+  'cadastro',
+  'competencias',
+];
 
 export async function assertFilesEnabled() {
   const on = await flags();

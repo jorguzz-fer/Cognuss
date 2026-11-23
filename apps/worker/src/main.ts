@@ -1,12 +1,14 @@
 import http from 'node:http';
 import Anthropic from '@anthropic-ai/sdk';
 import {
+  AnthropicCertificateReader,
   AnthropicCreator,
   AnthropicLessonPlanner,
   AnthropicPieceWriter,
   AnthropicScheduleExtractor,
   AnthropicStoryboardWriter,
   ElevenLabsNarrator,
+  FakeCertificateReader,
   FakeCreator,
   FakeStoryboardWriter,
   HiggsfieldProvider,
@@ -88,6 +90,16 @@ async function main() {
         ? new FakePieceWriter()
         : null;
   const renderer = new PlaywrightRenderer(cfg.PIECE_CHROMIUM_PATH);
+  const certificateReader =
+    cfg.AI_PROVIDER === 'anthropic' && cfg.ANTHROPIC_API_KEY
+      ? new AnthropicCertificateReader(
+          new Anthropic({ apiKey: cfg.ANTHROPIC_API_KEY }),
+          cfg.AI_CERTIFICATE_MODEL,
+          cfg.AI_CERTIFICATE_EFFORT,
+        )
+      : cfg.AI_PROVIDER === 'fake'
+        ? new FakeCertificateReader()
+        : null;
   const storyboardWriter =
     cfg.AI_PROVIDER === 'anthropic' && cfg.ANTHROPIC_API_KEY
       ? new AnthropicStoryboardWriter(
@@ -126,6 +138,7 @@ async function main() {
     pieceWriter,
     renderer,
     storyboardWriter,
+    certificateReader,
     media,
     narrator,
     defaultVoice: cfg.ELEVENLABS_VOICE_ID || (fakeMedia ? 'voz-de-teste' : null),

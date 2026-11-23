@@ -18,6 +18,8 @@ export const topics = {
   // Vetores da busca por conceito dos materiais do aluno (ADR 0014): gera o que falta e apaga o
   // que não vale mais (versão antiga, material excluído, autorização retirada).
   'ai.embed_user': z.object({ userId: id }),
+  // Ler com IA o certificado enviado e propor os campos para o aluno conferir (Competências, K1).
+  'ai.read_certificate': z.object({ itemId: z.uuid(), userId: id }),
   // Produção de aulas (ADR 0021): separar os slides do arquivo do professor e planejar as peças.
   'production.extract': z.object({ batchId: z.uuid(), userId: id }),
   'production.plan': z.object({ batchId: z.uuid(), userId: id }),

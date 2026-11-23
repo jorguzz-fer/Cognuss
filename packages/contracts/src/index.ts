@@ -16,3 +16,4 @@ export * as lessonStudy from './routes/lesson-study';
 export * as planning from './routes/planning';
 export * as ajuda from './routes/ajuda';
 export * as production from './routes/production';
+export * as portfolio from './routes/portfolio';

@@ -50,6 +50,11 @@ export const FEATURES = [
     text: 'Criar com IA, tutor sobre os materiais e minhas criações.',
   },
   {
+    key: 'competencias',
+    label: 'Competências: Meus Certificados',
+    text: 'Certificados, horas complementares e, em breve, o currículo.',
+  },
+  {
     key: 'audio',
     label: 'Áudio inteligente (AUD)',
     text: 'Só depois do parecer jurídico (SPEC v2, D10).',

@@ -81,6 +81,7 @@ export default async function TodayPage({
             aula: on.aula,
             equilibrio: on.equilibrio,
             ajuda: on.ajuda,
+            competencias: on.competencias,
           }}
           planning={planning}
         />
