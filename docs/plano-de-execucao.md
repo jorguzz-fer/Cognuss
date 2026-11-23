@@ -132,3 +132,25 @@ Pedido do Fernando em 17/11/2026: módulo de produção (`docs/producao/ESPECIFI
 - [x] P2. Fase 2, peças HTML: base comum (cabeçalho, tokens, rodapé), modelos de cada tipo, teste com Playwright nos dois temas, prévia no admin. Pronto quando as peças da Aula 2 passam no teste sem ajuste manual. Feito: montagem e linter em `packages/core/piece.ts` (as 18 peças aprovadas passam); teste de render no worker com Playwright (as 7 peças da Aula 2 passam nos dois temas; quebradas são pegas); `production_assets` (migrations 0055 a 0057); escritor com o Claude e trabalho `production.generate_piece` com correção automática (até 3 tentativas); liberar geração no lote; tela da peça com prévia isolada nos dois temas, capturas, versões e "Gerar de novo" com pedido de ajuste. Falta a prova real: gerar as peças da Aula 2 pelo app, com a chave do Claude, e conferir que passam sem ajuste.
 - [x] P3. Fase 3, mídia: imagens, vídeos e narração com cota e custo; montagem do vídeo com legenda e rótulos. Pronto quando o vídeo da insulina (Aula 1, peça 9) sai pelo módulo. Feito: roteiro com IA (`packages/ai/storyboard.ts`), clientes Higgsfield e ElevenLabs (`packages/ai/media.ts`), tempos das cenas, legendas do texto autoral e arquivo ASS (`packages/core/media.ts`); trabalhos `production.write_storyboard` e `production.generate_media` com idempotência pelo registro do pedido, cota diária com retomada no dia seguinte, espera na fila cheia e pausa por saldo ou chave; montagem com ffmpeg no worker; migration 0058; tela da tarefa com aprovação do roteiro, imagens por cena (refazer com outra descrição), narração, vídeo e retomar; vozes por disciplina e cota em `/admin/producao/vozes`; prévia isolada tocando o vídeo. Teste do worker do roteiro ao MP4 e E2E do fluxo completo com provedores falsos. Falta a prova real: o vídeo da insulina da Aula 1 com as chaves da Higgsfield e da ElevenLabs e a voz escolhida.
 - [x] P4. Fase 4, revisão e publicação: fila do revisor, comentários que geram refação, publicação como `modules` e `questions`. Pronto quando o Dr. Rafael revisa e publica a Aula 1 pelo admin. Feito: enviar o lote para a revisão (módulos e questões em revisão, com selo); fila do revisor em `/admin/revisao` com prévia nos dois temas, pontos de atenção da IA, questões com gabarito e histórico; aprovar (tirando questões) ou pedir ajuste num trecho, que gera a nova versão e volta à fila; publicar a aula; a aula publicada servida ao aluno com a política isolada e sem selo; migrations 0059 e 0060. Teste de integração (só outro revisor aprova, ajuste volta à geração, publicação) e E2E do fluxo inteiro até o aluno. Falta a prova real: o Dr. Rafael revisar e publicar a Aula 1 pelo admin.
+
+### Cognuss Conecta (salas de estudo)
+
+Proposta do Dr. Hugo e do Dr. Rafael recebida em 23/11/2026: `docs/conecta/ESPECIFICACAO.md`. Esperando as decisões C-D1 a C-D7 (seção 9 da especificação) antes da C1.
+
+- [ ] C0. Fundação: ADR 0022 (tempo real e mídia) e ADR 0023 (visibilidade entre alunos); serviço `apps/realtime` no compose; perfil do Conecta, descoberta, bloqueios; Meus Colegas (turma, favoritos, grupos).
+- [ ] C1. Salas e galeria sem mídia: criar sala (pública, moderada, privada), galeria ao vivo e agendada, convites com prazo, pedido de entrada, capacidade, encerramento por inatividade; na sala, tema, participantes, chat, quadro colaborativo, contador.
+- [ ] C2. Áudio, vídeo e tela (LiveKit), opção só áudio, quem fala, estado de microfone e câmera.
+- [ ] C3. Estudar agora: disponibilidade, preferências, matching por tema equivalente, convite com aceite mútuo, salas sugeridas.
+- [ ] C4. Materiais do Cognuss na sala, arquivos compartilhados, notas colaborativas, Tutor IA do grupo.
+- [ ] C5. Depois da sessão (resumo, flashcards e questões com consentimento de todos), histórico com busca, "estudado em grupo", salas recorrentes, Pomodoro, reações, perguntas anônimas, quiz.
+- [ ] C6. Modo Avatar e modo discreto, apelido por sessão, "só ouvir"; moderação com vínculo interno auditado.
+
+### Cognuss Competências (portfólio e currículo)
+
+Proposta do Dr. Hugo e do Dr. Rafael recebida em 23/11/2026: `docs/competencias/ESPECIFICACAO.md`. LinkedIn e Coursera não têm API aberta para o que o documento pede (seção 5 da especificação). Esperando as decisões K-D1 a K-D6 antes da K2; a K1 pode começar.
+
+- [ ] K1. Meus Certificados: pastas, envio, leitura com IA, conferência pelo aluno, grade e lista, busca, filtros, soma de horas.
+- [ ] K2. Currículo em duas versões (profissional e acadêmica), prévia, PDF pelo worker, apresentação com IA (com selo), link público opcional.
+- [ ] K3. Verificação: selos, QR Code, links de domínios aceitos (lista no admin, proteção contra SSRF), conferência de nome.
+- [ ] K4. LinkedIn e Coursera: importar o arquivo de dados do LinkedIn, botão "Adicionar ao perfil do LinkedIn", link de verificação da Coursera.
+- [ ] K5. Competências: referencial, associação sugerida e confirmada, radar, linha do tempo, sugestões do Tutor IA.
