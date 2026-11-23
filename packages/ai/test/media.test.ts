@@ -45,6 +45,31 @@ describe('Higgsfield', () => {
     });
   });
 
+  it('credencial: key ID e secret separados, ou a credencial inteira num campo só', async () => {
+    const f = fakeFetch([json(200, { request_id: 'a' }), json(200, { request_id: 'b' })]);
+    await new HiggsfieldProvider('id1', 'seg1', {}, f.fn).submitClip(
+      { prompt: 'p', imageUrl: 'https://x/a.jpg', seconds: 8 },
+      'k',
+    );
+    await new HiggsfieldProvider(' id2:seg2 ', '', {}, f.fn).submitClip(
+      { prompt: 'p', imageUrl: 'https://x/a.jpg', seconds: 8 },
+      'k',
+    );
+    const auth = f.calls.map((c) => (c.init.headers as Record<string, string>).Authorization);
+    expect(auth).toEqual(['Key id1:seg1', 'Key id2:seg2']);
+  });
+
+  it('chave expirada ou desativada bloqueia como chave, não como saldo', async () => {
+    const f = fakeFetch([
+      json(403, { code: 'api_key_expired', detail: 'This API key has expired.' }),
+      json(403, { detail: 'Not enough credits' }),
+    ]);
+    const hf = new HiggsfieldProvider('id', 's', {}, f.fn);
+    const input = { prompt: 'p', imageUrl: 'https://x/a.jpg', seconds: 8 };
+    await expect(hf.submitClip(input, 'k')).rejects.toMatchObject({ reason: 'auth' });
+    await expect(hf.submitClip(input, 'k')).rejects.toMatchObject({ reason: 'balance' });
+  });
+
   it('imagem com referências; sem referência, sem o campo', async () => {
     const f = fakeFetch([json(200, { request_id: 'a' }), json(200, { request_id: 'b' })]);
     const hf = new HiggsfieldProvider('id', 's', {}, f.fn);
