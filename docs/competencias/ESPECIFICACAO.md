@@ -1,6 +1,6 @@
 # Cognuss Competências · Portfólio, currículo digital e Meus Certificados
 
-Especificação para implementação, a partir do documento do Dr. Hugo e do Dr. Rafael (`referencias/COGNUSS_Competencias.doc`). Situação: **rascunho para decisão**. As decisões da seção 8 precisam de resposta antes da fase K2. As integrações com LinkedIn e Coursera mudam em relação ao documento (seção 5).
+Especificação para implementação, a partir do documento do Dr. Hugo e do Dr. Rafael (`referencias/COGNUSS_Competencias.doc`). Situação: **decisões tomadas em 23/11/2026** (seção 8); pronto para implementar a partir da K1. As integrações com LinkedIn e Coursera mudam em relação ao documento (seção 5), com a troca aceita (K-D4).
 
 ## 1. O que é
 
@@ -118,12 +118,12 @@ A carga horária fica em minutos, para somar sem erro de arredondamento.
 
 | # | Pergunta | Proposta |
 | --- | --- | --- |
-| K-D1 | Quais tipos de atividade entram, e as horas complementares seguem alguma regra (limite por tipo, conforme a instituição)? | Usar os tipos da seção 3.1 e só somar as horas, sem aplicar regra de instituição no começo. |
-| K-D2 | Qual referencial de competências: as Diretrizes Curriculares Nacionais de Medicina (2014: atenção, gestão e educação em saúde), a matriz de cada instituição, ou outro? | DCN de Medicina 2014, por ser nacional e público. O texto exato do referencial vem de vocês; não vamos inventá-lo. |
-| K-D3 | Que nome damos aos selos? Podemos usar "Validado" se o Cognuss não é o emissor? | Usar "Conferido por link", "Dados conferidos" e "A conferir". |
-| K-D4 | Aceitam a troca do OAuth do LinkedIn e da Coursera pelo arquivo do LinkedIn e pelo link de verificação (seção 5)? Vale tentar o programa de parceiros do LinkedIn? | Sim para a troca agora, e a tentativa de parceria em paralelo. |
-| K-D5 | O currículo acadêmico segue algum modelo (Lattes, ABNT, edital de residência)? | Seções do Lattes, sem integração com a Plataforma Lattes. |
-| K-D6 | O link público do currículo pode mostrar os comprovantes, ou só a lista? | Só a lista e os selos. Comprovantes, só quando o aluno marcar o item. |
+| K-D1 | Tipos de atividade e regra das horas complementares | **Decidido (23/11/2026):** os tipos da seção 3.1; horas só somadas, sem limite por instituição. |
+| K-D2 | Referencial de competências | **Decidido (23/11/2026):** DCN de Medicina 2014 (atenção, gestão e educação em saúde). O texto do referencial vem do Dr. Hugo e do Dr. Rafael; não é escrito por nós. |
+| K-D3 | Nome dos selos | **Decidido (23/11/2026):** "Conferido por link", "Dados conferidos" e "A conferir"; nunca "Validado". |
+| K-D4 | Troca do OAuth do LinkedIn e da Coursera | **Decidido (23/11/2026):** arquivo de dados do LinkedIn, botão "Adicionar ao perfil do LinkedIn" e link de verificação da Coursera; pedido ao programa de parceiros do LinkedIn em paralelo. |
+| K-D5 | Modelo do currículo acadêmico | **Decidido (23/11/2026):** seções do Lattes, sem integração com a Plataforma Lattes. |
+| K-D6 | O link público mostra os comprovantes? | **Decidido (23/11/2026):** só a lista e os selos; o comprovante aparece apenas no item que o aluno marcar. |
 
 ## 9. Riscos
 

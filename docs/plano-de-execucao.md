@@ -135,10 +135,10 @@ Pedido do Fernando em 17/11/2026: módulo de produção (`docs/producao/ESPECIFI
 
 ### Cognuss Conecta (salas de estudo)
 
-Proposta do Dr. Hugo e do Dr. Rafael recebida em 23/11/2026: `docs/conecta/ESPECIFICACAO.md`. Áudio, vídeo e chat em espera (Fernando, 23/11/2026): a C2 fica parada. Esperando as decisões C-D2 a C-D5, C-D7 e C-D8 (seção 9 da especificação) antes da C1.
+Proposta do Dr. Hugo e do Dr. Rafael recebida em 23/11/2026: `docs/conecta/ESPECIFICACAO.md`. **Módulo em espera** (Fernando, 23/11/2026): áudio, vídeo e chat ficam para depois, e as salas (C1) só saem junto com eles (C-D8). As demais decisões estão tomadas (seção 9 da especificação), para quando o módulo voltar.
 
 - [ ] C0. Fundação: ADR 0022 (tempo real, sem mídia por enquanto) e ADR 0023 (visibilidade entre alunos); serviço `apps/realtime` no compose; perfil do Conecta, descoberta, bloqueios; Meus Colegas (turma, favoritos, grupos).
-- [ ] C1. Salas e galeria sem áudio, vídeo e chat: criar sala (pública, moderada, privada), galeria ao vivo e agendada, convites com prazo, pedido de entrada, capacidade, encerramento por inatividade; na sala, tema, participantes presentes, quadro e notas colaborativas, reações, contador, link da chamada externa (C-D8).
+- [ ] C1. Salas e galeria sem áudio, vídeo e chat: criar sala (pública, moderada, privada), galeria ao vivo e agendada, convites com prazo, pedido de entrada, capacidade, encerramento por inatividade; na sala, tema, participantes presentes, quadro e notas colaborativas, reações, contador. **Em espera:** sai junto com a C2 (C-D8).
 - [ ] C2. **Em espera (Fernando, 23/11/2026).** Áudio, vídeo e tela (LiveKit), chat de texto, opção só áudio, quem fala, estado de microfone e câmera.
 - [ ] C3. Estudar agora: disponibilidade, preferências, matching por tema equivalente, convite com aceite mútuo, salas sugeridas.
 - [ ] C4. Materiais do Cognuss na sala, arquivos compartilhados, notas colaborativas, Tutor IA do grupo.
@@ -147,7 +147,7 @@ Proposta do Dr. Hugo e do Dr. Rafael recebida em 23/11/2026: `docs/conecta/ESPEC
 
 ### Cognuss Competências (portfólio e currículo)
 
-Proposta do Dr. Hugo e do Dr. Rafael recebida em 23/11/2026: `docs/competencias/ESPECIFICACAO.md`. LinkedIn e Coursera não têm API aberta para o que o documento pede (seção 5 da especificação). Esperando as decisões K-D1 a K-D6 antes da K2; a K1 pode começar.
+Proposta do Dr. Hugo e do Dr. Rafael recebida em 23/11/2026: `docs/competencias/ESPECIFICACAO.md`. Decisões K-D1 a K-D6 tomadas pelo Fernando em 23/11/2026 (seção 8 da especificação). LinkedIn e Coursera entram pelo arquivo de dados e pelo link de verificação (K-D4). Falta o texto do referencial de competências (DCN 2014) para a K5.
 
 - [ ] K1. Meus Certificados: pastas, envio, leitura com IA, conferência pelo aluno, grade e lista, busca, filtros, soma de horas.
 - [ ] K2. Currículo em duas versões (profissional e acadêmica), prévia, PDF pelo worker, apresentação com IA (com selo), link público opcional.
