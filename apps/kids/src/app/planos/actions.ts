@@ -1,11 +1,13 @@
 'use server';
 import {
+  addConcept,
   and,
   asc,
   createPlan,
   eq,
   newPlanVersion,
   NEXT_STATUS,
+  parseKeywordGroups,
   schema,
   transitionPlan,
   withTenantUser,
@@ -314,4 +316,131 @@ export async function deleteFlashcard(fd: FormData) {
   await onPlan(p.data.planId, 'flashcard-apagado', (tx) =>
     tx.delete(schema.flashcards).where(eq(schema.flashcards.id, p.data.cardId)),
   );
+}
+
+// ── Questões e avaliações (Fase 3: AVA-01, AVA-03, AVA-04) ─────────────────
+
+const conceptForm = z.object({
+  planId: uuid,
+  topicId: uuid,
+  explanation: z.string().trim().max(600),
+  mcStem: z.string().trim().max(500),
+  mcOptions: z.string().trim().max(2000),
+  tfStem: z.string().trim().max(500),
+  tfValue: z.enum(['true', 'false']),
+  saStem: z.string().trim().max(500),
+  saKeywords: z.string().trim().max(500),
+  saMin: z.coerce.number().int().min(1).max(10),
+  saModel: z.string().trim().max(600),
+});
+
+/**
+ * AVA-01: um conceito em até três formatos. Alternativas: uma por linha, a certa começa com
+ * "*". Escrita: grupos de palavras-chave separados por ";", radicais alternativos por "/".
+ */
+export async function addConceptAction(fd: FormData) {
+  const p = conceptForm.safeParse(formObject(fd));
+  if (!p.success) redirect('/planos?aviso=dados-invalidos');
+  const f = p.data;
+  const lines = f.mcOptions
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+  const correct = lines.findIndex((l) => l.startsWith('*'));
+  const mc =
+    f.mcStem && lines.length
+      ? lines.length >= 2 &&
+        lines.length <= 5 &&
+        correct >= 0 &&
+        lines.filter((l) => l.startsWith('*')).length === 1
+        ? { stem: f.mcStem, options: lines.map((l) => l.replace(/^\*\s*/, '')), correct }
+        : 'invalid'
+      : null;
+  const groups = parseKeywordGroups(f.saKeywords);
+  const sa = f.saStem
+    ? groups.length && f.saMin <= groups.length
+      ? { stem: f.saStem, groups, min: f.saMin, modelAnswer: f.saModel || null }
+      : 'invalid'
+    : null;
+  const tf = f.tfStem ? { stem: f.tfStem, value: f.tfValue === 'true' } : null;
+  if (mc === 'invalid' || sa === 'invalid' || (!mc && !tf && !sa))
+    back(f.planId, 'questao-invalida');
+  await onPlan(f.planId, 'questao-salva', async (tx) => {
+    const topic = await tx.query.planTopics.findFirst({
+      where: and(eq(schema.planTopics.id, f.topicId), eq(schema.planTopics.planId, f.planId)),
+    });
+    if (!topic) back(f.planId, 'dados-invalidos');
+    await addConcept(tx, {
+      tenantId: topic!.tenantId,
+      topicId: f.topicId,
+      explanation: f.explanation || null,
+      multipleChoice: mc && mc !== 'invalid' ? mc : null,
+      trueFalse: tf,
+      shortAnswer: sa && sa !== 'invalid' ? sa : null,
+    });
+  });
+}
+
+export async function deleteConceptAction(fd: FormData) {
+  const p = z.object({ planId: uuid, groupId: uuid }).safeParse(formObject(fd));
+  if (!p.success) redirect('/planos?aviso=dados-invalidos');
+  await onPlan(p.data.planId, 'questao-apagada', (tx) =>
+    tx.delete(schema.questions).where(eq(schema.questions.groupId, p.data.groupId)),
+  );
+}
+
+const assessmentForm = z.object({
+  planId: uuid,
+  kind: z.enum(['practice', 'exam']),
+  title: z.string().trim().min(3).max(120),
+  questionCount: z.coerce.number().int().min(1).max(40),
+  passingScore: z.coerce.number().min(0).max(10),
+  maxAttempts: z.union([z.literal(''), z.coerce.number().int().min(1).max(10)]),
+  opensAt: z.union([z.literal(''), z.iso.date()]),
+  closesAt: z.union([z.literal(''), z.iso.date()]),
+});
+
+/** Datas do formulário são dias no fuso da escola (início às 00:00, fim às 23:59). */
+function dayStart(d: string) {
+  return new Date(`${d}T00:00:00-03:00`);
+}
+function dayEnd(d: string) {
+  return new Date(`${d}T23:59:59-03:00`);
+}
+
+/** AVA-03 e AVA-04: simulado (treino) ou prova (nota mínima, tentativas, prazo). */
+export async function createAssessmentAction(fd: FormData) {
+  const ctx = await requireTenant([...EDITORS], '/planos');
+  const p = assessmentForm.safeParse(formObject(fd));
+  if (!p.success) redirect('/planos?aviso=dados-invalidos');
+  const f = p.data;
+  await onPlan(f.planId, 'avaliacao-criada', (tx) =>
+    tx.insert(schema.assessments).values({
+      tenantId: ctx.tenantId,
+      planId: f.planId,
+      kind: f.kind,
+      title: f.title,
+      questionCount: f.questionCount,
+      passingScore: f.passingScore.toFixed(1),
+      maxAttempts: f.kind === 'exam' ? (f.maxAttempts === '' ? 1 : f.maxAttempts) : null,
+      opensAt: f.opensAt ? dayStart(f.opensAt) : null,
+      closesAt: f.closesAt ? dayEnd(f.closesAt) : null,
+      createdBy: ctx.user.id,
+    }),
+  );
+}
+
+export async function deleteAssessmentAction(fd: FormData) {
+  const p = z.object({ planId: uuid, assessmentId: uuid }).safeParse(formObject(fd));
+  if (!p.success) redirect('/planos?aviso=dados-invalidos');
+  await onPlan(p.data.planId, 'avaliacao-apagada', async (tx) => {
+    // Com tentativa de aluno, não apaga: o histórico (AVA-08) fica.
+    const used = await tx
+      .select({ id: schema.assessmentAttempts.id })
+      .from(schema.assessmentAttempts)
+      .where(eq(schema.assessmentAttempts.assessmentId, p.data.assessmentId))
+      .limit(1);
+    if (used.length) back(p.data.planId, 'avaliacao-com-tentativas');
+    await tx.delete(schema.assessments).where(eq(schema.assessments.id, p.data.assessmentId));
+  });
 }

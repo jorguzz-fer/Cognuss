@@ -1,0 +1,816 @@
+[
+ {
+  "t": "cl",
+  "mc": {
+   "stem": "Classificar os animais é...",
+   "options": [
+    "separá-los em grupos por critérios de semelhança",
+    "dar um nome a cada animal",
+    "contar quantos animais existem"
+   ],
+   "correct": 0
+  },
+  "tf": {
+   "stem": "Classificar é separar em grupos usando critérios de semelhança.",
+   "value": true
+  },
+  "sa": {
+   "stem": "O que é classificar?",
+   "groups": [
+    [
+     "grup",
+     "separ",
+     "organiz",
+     "junt"
+    ]
+   ],
+   "min": 1,
+   "model": "Separar e organizar em grupos usando um critério de semelhança."
+  }
+ },
+ {
+  "t": "cl",
+  "mc": {
+   "stem": "O que diferencia um vertebrado de um invertebrado?",
+   "options": [
+    "o tamanho do animal",
+    "ter ou não coluna vertebral",
+    "a cor do animal"
+   ],
+   "correct": 1
+  },
+  "tf": {
+   "stem": "Os invertebrados têm coluna vertebral.",
+   "value": false
+  },
+  "sa": {
+   "stem": "O que é um animal vertebrado?",
+   "groups": [
+    [
+     "coluna",
+     "vertebra",
+     "espinha"
+    ]
+   ],
+   "min": 1,
+   "model": "É o animal que tem coluna vertebral (e esqueleto interno)."
+  }
+ },
+ {
+  "t": "cl",
+  "mc": {
+   "stem": "Qual destes animais é invertebrado?",
+   "options": [
+    "avestruz",
+    "crocodilo",
+    "polvo"
+   ],
+   "correct": 2
+  },
+  "tf": {
+   "stem": "A maioria dos animais do planeta é invertebrada.",
+   "value": true
+  },
+  "sa": {
+   "stem": "Dê dois exemplos de animais invertebrados.",
+   "groups": [
+    [
+     "borbolet"
+    ],
+    [
+     "minhoc"
+    ],
+    [
+     "polvo"
+    ],
+    [
+     "caranguej",
+     "siri"
+    ],
+    [
+     "formig"
+    ],
+    [
+     "joaninh"
+    ],
+    [
+     "aranh"
+    ],
+    [
+     "tatuzinh"
+    ],
+    [
+     "inset"
+    ],
+    [
+     "mosc",
+     "mosquit",
+     "pernilong"
+    ],
+    [
+     "lesm",
+     "caracol"
+    ],
+    [
+     "abelh"
+    ],
+    [
+     "barat"
+    ],
+    [
+     "agua-viva",
+     "agua viva",
+     "medusa",
+     "estrela"
+    ]
+   ],
+   "min": 2,
+   "model": "Por exemplo: borboleta, minhoca, polvo, caranguejo, formiga, aranha."
+  }
+ },
+ {
+  "t": "cl",
+  "mc": {
+   "stem": "Um animal que come animais e também vegetais é...",
+   "options": [
+    "onívoro",
+    "herbívoro",
+    "carnívoro"
+   ],
+   "correct": 0
+  },
+  "tf": {
+   "stem": "O animal onívoro come somente vegetais.",
+   "value": false
+  },
+  "sa": {
+   "stem": "O que come um animal onívoro?",
+   "groups": [
+    [
+     "anima",
+     "carne",
+     "inset"
+    ],
+    [
+     "vegeta",
+     "planta",
+     "frut",
+     "semente",
+     "folha",
+     "raiz"
+    ]
+   ],
+   "min": 2,
+   "model": "Come animais e vegetais."
+  }
+ },
+ {
+  "t": "cl",
+  "mc": {
+   "stem": "O animal cujo filhote se desenvolve dentro do ovo é...",
+   "options": [
+    "vivíparo",
+    "ovíparo",
+    "invertebrado"
+   ],
+   "correct": 1
+  },
+  "tf": {
+   "stem": "Nos animais ovíparos, o filhote se desenvolve dentro do corpo da mãe.",
+   "value": false
+  },
+  "sa": {
+   "stem": "O que é um animal ovíparo?",
+   "groups": [
+    [
+     "ovo"
+    ]
+   ],
+   "min": 1,
+   "model": "É o animal cujo filhote se desenvolve dentro do ovo até nascer."
+  }
+ },
+ {
+  "t": "cl",
+  "mc": {
+   "stem": "Qual destes NÃO é um dos 5 grupos de vertebrados?",
+   "options": [
+    "anfíbios",
+    "répteis",
+    "insetos"
+   ],
+   "correct": 2
+  },
+  "tf": {
+   "stem": "Os cinco grupos de vertebrados são peixes, anfíbios, répteis, aves e mamíferos.",
+   "value": true
+  },
+  "sa": {
+   "stem": "Quais são os 5 grupos de vertebrados?",
+   "groups": [
+    [
+     "peix"
+    ],
+    [
+     "anfib"
+    ],
+    [
+     "reptil",
+     "repteis"
+    ],
+    [
+     "ave"
+    ],
+    [
+     "mamif"
+    ]
+   ],
+   "min": 4,
+   "model": "Peixes, anfíbios, répteis, aves e mamíferos."
+  }
+ },
+ {
+  "t": "pe",
+  "mc": {
+   "stem": "Os peixes respiram por meio das...",
+   "options": [
+    "brânquias",
+    "narinas",
+    "escamas"
+   ],
+   "correct": 0
+  },
+  "tf": {
+   "stem": "Os peixes respiram por pulmões.",
+   "value": false
+  },
+  "sa": {
+   "stem": "Como os peixes respiram?",
+   "groups": [
+    [
+     "branqui",
+     "guelra"
+    ]
+   ],
+   "min": 1,
+   "model": "Pelas brânquias, que tiram o gás oxigênio da água."
+  }
+ },
+ {
+  "t": "pe",
+  "mc": {
+   "stem": "O que ajuda o peixe a nadar para a frente?",
+   "options": [
+    "o opérculo",
+    "o corpo e a nadadeira caudal",
+    "as escamas"
+   ],
+   "correct": 1
+  },
+  "tf": {
+   "stem": "O peixe nada mexendo o corpo e a nadadeira caudal; as outras nadadeiras dão a direção.",
+   "value": true
+  },
+  "sa": {
+   "stem": "Como o peixe se locomove na água?",
+   "groups": [
+    [
+     "nadadeira",
+     "barbatana",
+     "cauda",
+     "rabo"
+    ]
+   ],
+   "min": 1,
+   "model": "Mexendo o corpo e a nadadeira caudal; as outras nadadeiras ajudam na direção."
+  }
+ },
+ {
+  "t": "pe",
+  "mc": {
+   "stem": "Os filhotes de peixe são chamados de...",
+   "options": [
+    "girinos",
+    "embriões",
+    "alevinos"
+   ],
+   "correct": 2
+  },
+  "tf": {
+   "stem": "Os filhotes de peixe são chamados de girinos.",
+   "value": false
+  },
+  "sa": {
+   "stem": "Como se chamam os filhotes de peixe?",
+   "groups": [
+    [
+     "alevin"
+    ]
+   ],
+   "min": 1,
+   "model": "Alevinos."
+  }
+ },
+ {
+  "t": "an",
+  "mc": {
+   "stem": "Por que os anfíbios precisam da pele úmida?",
+   "options": [
+    "porque também respiram pela pele",
+    "para ficarem brilhantes",
+    "para não sentirem fome"
+   ],
+   "correct": 0
+  },
+  "tf": {
+   "stem": "Os anfíbios respiram também pela pele, por isso ela precisa ficar úmida.",
+   "value": true
+  },
+  "sa": {
+   "stem": "Por que os anfíbios precisam manter a pele úmida?",
+   "groups": [
+    [
+     "respir",
+     "oxigeni"
+    ]
+   ],
+   "min": 1,
+   "model": "Porque respiram também pela pele: se ela secar, o oxigênio não entra e eles morrem."
+  }
+ },
+ {
+  "t": "an",
+  "mc": {
+   "stem": "A mudança completa do corpo do girino até virar adulto chama-se...",
+   "options": [
+    "incubação",
+    "metamorfose",
+    "camuflagem"
+   ],
+   "correct": 1
+  },
+  "tf": {
+   "stem": "Metamorfose é a mudança completa da forma do corpo durante a vida.",
+   "value": true
+  },
+  "sa": {
+   "stem": "O que é metamorfose?",
+   "groups": [
+    [
+     "mud",
+     "transform",
+     "vir"
+    ],
+    [
+     "corpo",
+     "forma",
+     "girino",
+     "sapo",
+     "perereca",
+     "adult"
+    ]
+   ],
+   "min": 2,
+   "model": "É a mudança completa da forma do corpo durante a vida, como o girino que vira perereca."
+  }
+ },
+ {
+  "t": "an",
+  "mc": {
+   "stem": "O girino vive na água e respira por...",
+   "options": [
+    "pulmões",
+    "penas",
+    "brânquias"
+   ],
+   "correct": 2
+  },
+  "tf": {
+   "stem": "O girino vive na água, tem cauda e respira por brânquias.",
+   "value": true
+  },
+  "sa": {
+   "stem": "Como é o girino?",
+   "groups": [
+    [
+     "agua"
+    ],
+    [
+     "cauda",
+     "rabo",
+     "branqui",
+     "nad",
+     "vegeta"
+    ]
+   ],
+   "min": 2,
+   "model": "Vive na água, respira por brânquias, nada com a cauda e come vegetais."
+  }
+ },
+ {
+  "t": "an",
+  "mc": {
+   "stem": "Qual anfíbio tem ventosas na ponta dos dedos?",
+   "options": [
+    "perereca",
+    "sapo",
+    "rã"
+   ],
+   "correct": 0
+  },
+  "tf": {
+   "stem": "O sapo tem ventosas na ponta dos dedos.",
+   "value": false
+  },
+  "sa": {
+   "stem": "O que a perereca tem de diferente do sapo?",
+   "groups": [
+    [
+     "ventos",
+     "gruda",
+     "adesiv",
+     "disco"
+    ]
+   ],
+   "min": 1,
+   "model": "A perereca tem ventosas (discos adesivos) nos dedos; o sapo tem pele rugosa e não tem ventosas."
+  }
+ },
+ {
+  "t": "re",
+  "mc": {
+   "stem": "Por que os lagartos ficam tomando sol?",
+   "options": [
+    "para trocar de pele",
+    "para se aquecer, pois não mantêm a temperatura do corpo",
+    "para dormir"
+   ],
+   "correct": 1
+  },
+  "tf": {
+   "stem": "Os répteis conseguem manter a temperatura do corpo sempre igual.",
+   "value": false
+  },
+  "sa": {
+   "stem": "Por que o terrário dos répteis precisa de lâmpada?",
+   "groups": [
+    [
+     "aquec",
+     "quent",
+     "calor",
+     "esquent",
+     "temperatura"
+    ]
+   ],
+   "min": 1,
+   "model": "Para aquecer os répteis, que não mantêm a temperatura do corpo constante."
+  }
+ },
+ {
+  "t": "re",
+  "mc": {
+   "stem": "Por que as serpentes trocam de pele?",
+   "options": [
+    "porque ficam sujas",
+    "porque sentem frio",
+    "porque as escamas não crescem junto com o corpo"
+   ],
+   "correct": 2
+  },
+  "tf": {
+   "stem": "As serpentes trocam de pele porque as escamas não crescem junto com o corpo.",
+   "value": true
+  },
+  "sa": {
+   "stem": "Por que as serpentes trocam de pele?",
+   "groups": [
+    [
+     "cresc"
+    ]
+   ],
+   "min": 1,
+   "model": "Porque as escamas não crescem: elas trocam a pele para poder crescer."
+  }
+ },
+ {
+  "t": "re",
+  "mc": {
+   "stem": "O chocalho da cascavel serve para...",
+   "options": [
+    "espantar os inimigos",
+    "contar a idade",
+    "ajudar a nadar"
+   ],
+   "correct": 0
+  },
+  "tf": {
+   "stem": "Contando os anéis do chocalho sabemos a idade da cascavel.",
+   "value": false
+  },
+  "sa": {
+   "stem": "Para que serve o chocalho da cascavel?",
+   "groups": [
+    [
+     "espant",
+     "defe",
+     "assust",
+     "inimig",
+     "proteg",
+     "afast"
+    ]
+   ],
+   "min": 1,
+   "model": "Para espantar os inimigos (defesa). Ele não mostra a idade."
+  }
+ },
+ {
+  "t": "re",
+  "mc": {
+   "stem": "Como é a pele dos répteis?",
+   "options": [
+    "fina e úmida",
+    "grossa, seca e com escamas",
+    "coberta de penas"
+   ],
+   "correct": 1
+  },
+  "tf": {
+   "stem": "A pele dos répteis é fina e úmida.",
+   "value": false
+  },
+  "sa": {
+   "stem": "Como é a pele dos répteis?",
+   "groups": [
+    [
+     "gross",
+     "dura"
+    ],
+    [
+     "sec",
+     "imperme"
+    ],
+    [
+     "escam",
+     "placa"
+    ]
+   ],
+   "min": 2,
+   "model": "Grossa, seca e impermeável, com escamas e placas ósseas."
+  }
+ },
+ {
+  "t": "av",
+  "mc": {
+   "stem": "O que só as aves têm?",
+   "options": [
+    "escamas",
+    "pelos",
+    "bico e penas"
+   ],
+   "correct": 2
+  },
+  "tf": {
+   "stem": "Bico e penas são características das aves.",
+   "value": true
+  },
+  "sa": {
+   "stem": "Quais são duas características que só as aves têm?",
+   "groups": [
+    [
+     "bico"
+    ],
+    [
+     "pena"
+    ]
+   ],
+   "min": 2,
+   "model": "Bico e penas."
+  }
+ },
+ {
+  "t": "av",
+  "mc": {
+   "stem": "Para que servem as penas?",
+   "options": [
+    "aquecer, proteger e permitir o voo",
+    "respirar debaixo da água",
+    "produzir leite"
+   ],
+   "correct": 0
+  },
+  "tf": {
+   "stem": "As penas servem para aquecer, proteger e permitir o voo.",
+   "value": true
+  },
+  "sa": {
+   "stem": "Para que servem as penas das aves?",
+   "groups": [
+    [
+     "aquec",
+     "quent",
+     "calor",
+     "frio"
+    ],
+    [
+     "proteg"
+    ],
+    [
+     "voa",
+     "voo"
+    ]
+   ],
+   "min": 2,
+   "model": "Aquecem o corpo, protegem e permitem o voo. A cor pode servir de camuflagem."
+  }
+ },
+ {
+  "t": "av",
+  "mc": {
+   "stem": "O beija-flor é uma ave...",
+   "options": [
+    "granívora",
+    "nectarívora",
+    "necrófaga"
+   ],
+   "correct": 1
+  },
+  "tf": {
+   "stem": "O urubu é uma ave que se alimenta de animais mortos.",
+   "value": true
+  },
+  "sa": {
+   "stem": "Como o bico do beija-flor ajuda na alimentação dele?",
+   "groups": [
+    [
+     "fino",
+     "comprid",
+     "long"
+    ],
+    [
+     "nectar",
+     "flor"
+    ]
+   ],
+   "min": 2,
+   "model": "O bico é fino e comprido e alcança o néctar dentro das flores."
+  }
+ },
+ {
+  "t": "av",
+  "mc": {
+   "stem": "O tempo em que o filhote fica no ovo até nascer chama-se...",
+   "options": [
+    "metamorfose",
+    "cardume",
+    "período de incubação"
+   ],
+   "correct": 2
+  },
+  "tf": {
+   "stem": "No pinguim-imperador, é a mãe que choca o ovo.",
+   "value": false
+  },
+  "sa": {
+   "stem": "O que é o período de incubação?",
+   "groups": [
+    [
+     "ovo"
+    ],
+    [
+     "nasc",
+     "tempo",
+     "dentro"
+    ]
+   ],
+   "min": 2,
+   "model": "É o tempo em que o filhote fica dentro do ovo antes de nascer."
+  }
+ },
+ {
+  "t": "ma",
+  "mc": {
+   "stem": "O nome \"mamífero\" vem de...",
+   "options": [
+    "ter glândulas mamárias que produzem leite",
+    "ter pelos",
+    "viver na terra"
+   ],
+   "correct": 0
+  },
+  "tf": {
+   "stem": "Os mamíferos têm glândulas mamárias que produzem leite.",
+   "value": true
+  },
+  "sa": {
+   "stem": "Por que esse grupo se chama mamíferos?",
+   "groups": [
+    [
+     "leite",
+     "mama",
+     "glandul"
+    ]
+   ],
+   "min": 1,
+   "model": "Porque têm glândulas mamárias que produzem leite para os filhotes."
+  }
+ },
+ {
+  "t": "ma",
+  "mc": {
+   "stem": "Para que servem os pelos dos mamíferos?",
+   "options": [
+    "respirar",
+    "proteger e manter o corpo aquecido",
+    "voar"
+   ],
+   "correct": 1
+  },
+  "tf": {
+   "stem": "Os pelos ajudam a manter o corpo dos mamíferos aquecido.",
+   "value": true
+  },
+  "sa": {
+   "stem": "Para que servem os pelos dos mamíferos?",
+   "groups": [
+    [
+     "aquec",
+     "quent",
+     "calor",
+     "frio",
+     "proteg",
+     "corte",
+     "queimad",
+     "sol"
+    ]
+   ],
+   "min": 1,
+   "model": "Protegem contra cortes e queimaduras do sol e mantêm o corpo aquecido."
+  }
+ },
+ {
+  "t": "ma",
+  "mc": {
+   "stem": "Quais grupos mantêm a temperatura do corpo sempre igual?",
+   "options": [
+    "peixes e répteis",
+    "anfíbios e répteis",
+    "aves e mamíferos"
+   ],
+   "correct": 2
+  },
+  "tf": {
+   "stem": "Aves e mamíferos mantêm a temperatura do corpo sempre igual.",
+   "value": true
+  },
+  "sa": {
+   "stem": "Quais grupos de vertebrados mantêm a temperatura do corpo constante?",
+   "groups": [
+    [
+     "ave",
+     "passaro"
+    ],
+    [
+     "mamif"
+    ]
+   ],
+   "min": 2,
+   "model": "Aves e mamíferos."
+  }
+ },
+ {
+  "t": "ma",
+  "mc": {
+   "stem": "A raposa-do-ártico fica branca no inverno para...",
+   "options": [
+    "se camuflar na neve",
+    "sentir menos fome",
+    "trocar de pele"
+   ],
+   "correct": 0
+  },
+  "tf": {
+   "stem": "A raposa-do-ártico fica branca no inverno para se camuflar na neve.",
+   "value": true
+  },
+  "sa": {
+   "stem": "O que é camuflagem?",
+   "groups": [
+    [
+     "parec",
+     "igual",
+     "cor",
+     "mistur",
+     "semelh"
+    ],
+    [
+     "escond",
+     "ambient",
+     "nao ve",
+     "nao enxerg"
+    ]
+   ],
+   "min": 1,
+   "model": "É quando o animal fica parecido com o ambiente e consegue se esconder."
+  }
+ }
+]

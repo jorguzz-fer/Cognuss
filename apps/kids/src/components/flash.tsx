@@ -45,6 +45,21 @@ const MESSAGES = {
   'flashcards-salvos': ['success', 'Flashcards adicionados.'],
   'flashcards-invalidos': ['danger', 'Use uma linha por cartão: frente | verso.'],
   'flashcard-apagado': ['success', 'Flashcard apagado.'],
+  'questao-salva': ['success', 'Questão adicionada.'],
+  'questao-apagada': ['success', 'Questão apagada.'],
+  'questao-invalida': [
+    'danger',
+    'Confira a questão: alternativas são de 2 a 5, uma começando com *; a escrita precisa de palavras-chave.',
+  ],
+  'avaliacao-criada': [
+    'success',
+    'Avaliação criada. Os alunos veem quando o plano estiver publicado.',
+  ],
+  'avaliacao-apagada': ['success', 'Avaliação apagada.'],
+  'avaliacao-com-tentativas': [
+    'danger',
+    'Essa avaliação já tem tentativas de alunos e não pode ser apagada.',
+  ],
   'responsavel-convidado': ['success', 'Link enviado ao responsável. Ele vale por 30 dias.'],
   'papel-registrado': ['success', 'Autorização em papel registrada.'],
   'pedido-resolvido': ['success', 'Pedido marcado como resolvido.'],

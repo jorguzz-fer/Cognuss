@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import type { Tx } from './client';
+import type { Db, Tx } from './client';
 import * as s from './schema';
 
 // Fase 3 (SPEC Kids, AVA-01): uma questão é um conceito em até três formatos, como no piloto.
@@ -44,7 +44,7 @@ export function parseKeywordGroups(raw: string): string[][] {
 }
 
 /** Cria o conceito com os formatos informados (pelo menos um). Devolve o group_id. */
-export async function addConcept(tx: Tx, input: ConceptInput): Promise<string> {
+export async function addConcept(tx: Tx | Db, input: ConceptInput): Promise<string> {
   const groupId = randomUUID();
   const base = {
     tenantId: input.tenantId,

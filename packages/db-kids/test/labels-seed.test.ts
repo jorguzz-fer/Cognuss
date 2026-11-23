@@ -59,6 +59,24 @@ describe('plano de Ciências do piloto (PLA-08)', () => {
     );
     expect(seen.map((p) => p.id)).toEqual([seed.planId]);
   });
+
+  it('25 conceitos da prova do piloto em 3 formatos; a aluna começa a prova de 10 questões', async () => {
+    const seed = await runSeed(owner);
+    const q = await owner.execute<{ n: number; g: number }>(sql`
+      select count(*)::int as n, count(distinct group_id)::int as g from questions q
+      join plan_topics t on t.id = q.topic_id where t.plan_id = ${seed.planId}`);
+    expect(q.rows[0]).toEqual({ n: 75, g: 25 });
+    const exam = await owner.query.assessments.findFirst({
+      where: (a, { and: x, eq: e }) => x(e(a.planId, seed.planId), e(a.kind, 'exam')),
+    });
+    const items = await withTenantUser(app, seed.tenantId, seed.studentWithoutEmail, async (tx) => {
+      const r = await tx.execute<{ id: string }>(
+        sql`select attempt_start(${exam!.id}, ${`seed-${Date.now()}`}, null) as id`,
+      );
+      return (await tx.execute(sql`select * from attempt_view(${r.rows[0]!.id})`)).rows;
+    });
+    expect(items).toHaveLength(10);
+  });
 });
 
 describe('bootstrap do Super Admin', () => {

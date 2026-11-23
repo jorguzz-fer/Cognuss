@@ -2,7 +2,9 @@ import { randomUUID } from 'node:crypto';
 import { and, eq } from 'drizzle-orm';
 import type { Db } from '../client';
 import * as s from '../schema';
+import { addConcept } from '../assessments';
 import cards from './ciencias-cards.json' with { type: 'json' };
+import concepts from './ciencias-questoes.json' with { type: 'json' };
 
 // PLA-08: o plano de Ciências do 3º ano do piloto (estudos.tudomudou.com.br), como plano de
 // demonstração. Conteúdo resumido da página do piloto; os flashcards são os mesmos 56 cartões.
@@ -210,6 +212,7 @@ export async function seedCienciasPlan(
     reviewerId: input.reviewerId,
     publishedAt: new Date(),
   });
+  const topicByKey = new Map<string, string>();
   for (const [i, t] of TOPICS.entries()) {
     const [topic] = await db
       .insert(s.planTopics)
@@ -222,6 +225,7 @@ export async function seedCienciasPlan(
         orderIndex: i,
       })
       .returning();
+    topicByKey.set(t.key, topic!.id);
     for (const [j, c] of t.contents.entries()) {
       await db.insert(s.topicContents).values({
         tenantId: input.tenantId,
@@ -253,5 +257,37 @@ export async function seedCienciasPlan(
     dayNumber: 4,
     orderIndex: TOPICS.length,
   });
+  // Fase 3: os 25 conceitos da prova do piloto, cada um em três formatos, e as avaliações.
+  for (const c of concepts) {
+    await addConcept(db, {
+      tenantId: input.tenantId,
+      topicId: topicByKey.get(c.t)!,
+      multipleChoice: c.mc,
+      trueFalse: c.tf,
+      shortAnswer: { stem: c.sa.stem, groups: c.sa.groups, min: c.sa.min, modelAnswer: c.sa.model },
+      explanation: c.sa.model,
+    });
+  }
+  await db.insert(s.assessments).values([
+    {
+      tenantId: input.tenantId,
+      planId,
+      kind: 'practice',
+      title: 'Simulado de Ciências',
+      questionCount: 10,
+      createdBy: input.authorId,
+    },
+    {
+      tenantId: input.tenantId,
+      planId,
+      kind: 'exam',
+      title: 'Prova de Ciências',
+      questionCount: 10,
+      passingScore: '8.0',
+      maxAttempts: 1,
+      maxRetakes: 2,
+      createdBy: input.authorId,
+    },
+  ]);
   return planId;
 }

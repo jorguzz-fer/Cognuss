@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
+  QUESTION_KIND_LABEL,
   asc,
   eq,
   gradeLabel,
@@ -37,6 +38,10 @@ import {
   savePlanDetails,
   transitionAction,
   updateTopic,
+  addConceptAction,
+  createAssessmentAction,
+  deleteAssessmentAction,
+  deleteConceptAction,
 } from '../actions';
 
 export const metadata: Metadata = { title: 'Plano de estudos' };
@@ -105,16 +110,28 @@ export default async function PlanEditorPage({
           .where(inArray(schema.flashcards.topicId, ids))
           .orderBy(asc(schema.flashcards.orderIndex))
       : [];
+    const questions = ids.length
+      ? await tx
+          .select()
+          .from(schema.questions)
+          .where(inArray(schema.questions.topicId, ids))
+          .orderBy(asc(schema.questions.createdAt), asc(schema.questions.kind))
+      : [];
+    const assessments = await tx
+      .select()
+      .from(schema.assessments)
+      .where(eq(schema.assessments.planId, id))
+      .orderBy(asc(schema.assessments.createdAt));
     const author = plan.authorId
       ? await tx.query.authUsers.findFirst({
           where: eq(schema.authUsers.id, plan.authorId),
           columns: { name: true },
         })
       : null;
-    return { plan, meta: meta[0]!, topics, contents, cards, author };
+    return { plan, meta: meta[0]!, topics, contents, cards, questions, assessments, author };
   });
   if (!data) notFound();
-  const { plan, meta, topics, contents, cards, author } = data;
+  const { plan, meta, topics, contents, cards, questions, assessments, author } = data;
   const status = plan.status as PlanStatus;
   const editable = status === 'draft' && meta.canEdit;
   const isAuthor = plan.authorId === ctx.user.id;
@@ -235,6 +252,52 @@ export default async function PlanEditorPage({
         </Card>
       ) : null}
 
+      <section className="grid gap-3">
+        <h2 className="text-2xl">Simulados e provas</h2>
+        {assessments.length === 0 ? (
+          <p className="text-muted">
+            Nenhuma avaliação ainda. As questões vêm de todos os tópicos do plano.
+          </p>
+        ) : (
+          <ul className="grid gap-2">
+            {assessments.map((a) => (
+              <li key={a.id}>
+                <Card className="flex flex-wrap items-center gap-3">
+                  <Badge tone={a.kind === 'exam' ? 'accent' : 'neutral'}>
+                    {a.kind === 'exam' ? 'Prova' : 'Simulado'}
+                  </Badge>
+                  <span className="font-semibold">{a.title}</span>
+                  <span className="text-sm text-muted">
+                    {a.questionCount} questões
+                    {a.kind === 'exam'
+                      ? ` · nota mínima ${Number(a.passingScore).toLocaleString('pt-BR')} · ${a.maxAttempts ?? 1} tentativa(s) · até ${a.maxRetakes} recuperações`
+                      : ''}
+                    {a.closesAt
+                      ? ` · até ${a.closesAt.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`
+                      : ''}
+                  </span>
+                  {meta.canEdit ? (
+                    <form action={deleteAssessmentAction} className="ml-auto">
+                      <input type="hidden" name="planId" value={plan.id} />
+                      <input type="hidden" name="assessmentId" value={a.id} />
+                      <Button type="submit" variant="ghost">
+                        Apagar
+                      </Button>
+                    </form>
+                  ) : null}
+                </Card>
+              </li>
+            ))}
+          </ul>
+        )}
+        {meta.canEdit ? (
+          <details className="rounded-[var(--radius)] border border-line p-4">
+            <summary className="cursor-pointer font-semibold">Nova avaliação</summary>
+            <AssessmentForm planId={plan.id} />
+          </details>
+        ) : null}
+      </section>
+
       <section className="grid gap-4">
         <h2 className="text-2xl">Tópicos</h2>
         {topics.length === 0 ? (
@@ -245,6 +308,10 @@ export default async function PlanEditorPage({
         {topics.map((t, i) => {
           const tc = contents.filter((c) => c.topicId === t.id);
           const tf = cards.filter((c) => c.topicId === t.id);
+          const tq = questions.filter((q) => q.topicId === t.id);
+          const concepts = [...new Set(tq.map((q) => q.groupId))].map((g) =>
+            tq.filter((q) => q.groupId === g),
+          );
           return (
             <Card key={t.id} className="grid gap-4">
               <div className="flex flex-wrap items-center gap-2">
@@ -326,6 +393,42 @@ export default async function PlanEditorPage({
                     ))}
                   </ul>
                 </div>
+              ) : null}
+
+              {concepts.length ? (
+                <div className="grid gap-2 border-t border-line pt-3">
+                  <h4 className="font-semibold">Questões ({concepts.length})</h4>
+                  <ul className="grid gap-2 text-sm">
+                    {concepts.map((qs) => (
+                      <li
+                        key={qs[0]!.groupId}
+                        className="grid gap-1 rounded-[var(--radius)] border border-line p-3"
+                      >
+                        {qs.map((q) => (
+                          <p key={q.id}>
+                            <Badge>{QUESTION_KIND_LABEL[q.kind]}</Badge> {q.stem}
+                          </p>
+                        ))}
+                        {editable ? (
+                          <form action={deleteConceptAction}>
+                            <input type="hidden" name="planId" value={plan.id} />
+                            <input type="hidden" name="groupId" value={qs[0]!.groupId} />
+                            <Button type="submit" variant="ghost">
+                              Apagar questão
+                            </Button>
+                          </form>
+                        ) : null}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              {editable ? (
+                <details className="border-t border-line pt-3">
+                  <summary className="cursor-pointer font-semibold">Adicionar questão</summary>
+                  <ConceptForm planId={plan.id} topicId={t.id} />
+                </details>
               ) : null}
 
               {editable ? (
@@ -423,6 +526,123 @@ function TopicForm({
       </Field>
       <Button type="submit" variant="secondary" className="justify-self-start">
         {topic ? 'Salvar tópico' : 'Adicionar tópico'}
+      </Button>
+    </form>
+  );
+}
+
+function ConceptForm({ planId, topicId }: { planId: string; topicId: string }) {
+  return (
+    <form action={addConceptAction} className="mt-3 grid gap-4">
+      <input type="hidden" name="planId" value={planId} />
+      <input type="hidden" name="topicId" value={topicId} />
+      <p className="text-sm text-muted">
+        O mesmo conceito em até três formatos. Na recuperação, quem errou recebe outro formato.
+        Deixe em branco o formato que não quiser.
+      </p>
+      <fieldset className="grid gap-2">
+        <legend className="font-semibold">Alternativas</legend>
+        <Field label="Pergunta" optional>
+          {(p) => <Input {...p} name="mcStem" maxLength={500} />}
+        </Field>
+        <Field label="Alternativas" hint="Uma por linha (2 a 5). A certa começa com *.">
+          {(p) => <Textarea {...p} name="mcOptions" rows={3} />}
+        </Field>
+      </fieldset>
+      <fieldset className="grid gap-2 sm:grid-cols-[1fr_10rem] sm:items-end">
+        <legend className="font-semibold">Verdadeiro ou falso</legend>
+        <Field label="Afirmação" optional>
+          {(p) => <Input {...p} name="tfStem" maxLength={500} />}
+        </Field>
+        <Field label="Resposta">
+          {(p) => (
+            <Select {...p} name="tfValue" defaultValue="true">
+              <option value="true">Verdadeiro</option>
+              <option value="false">Falso</option>
+            </Select>
+          )}
+        </Field>
+      </fieldset>
+      <fieldset className="grid gap-2">
+        <legend className="font-semibold">Escrever</legend>
+        <Field label="Pergunta" optional>
+          {(p) => <Input {...p} name="saStem" maxLength={500} />}
+        </Field>
+        <div className="grid gap-2 sm:grid-cols-[1fr_8rem]">
+          <Field
+            label="Palavras-chave"
+            hint="Grupos separados por ; e jeitos de escrever separados por /. Ex.: brânqui/guelra; oxigênio"
+          >
+            {(p) => <Input {...p} name="saKeywords" maxLength={500} />}
+          </Field>
+          <Field label="Mínimo de grupos">
+            {(p) => <Input {...p} name="saMin" type="number" min={1} max={10} defaultValue={1} />}
+          </Field>
+        </div>
+        <Field label="Resposta modelo" optional>
+          {(p) => <Input {...p} name="saModel" maxLength={600} />}
+        </Field>
+      </fieldset>
+      <Field label="Explicação" optional hint="Aparece depois que o aluno responde.">
+        {(p) => <Input {...p} name="explanation" maxLength={600} />}
+      </Field>
+      <Button type="submit" variant="secondary" className="justify-self-start">
+        Adicionar questão
+      </Button>
+    </form>
+  );
+}
+
+function AssessmentForm({ planId }: { planId: string }) {
+  return (
+    <form action={createAssessmentAction} className="mt-3 grid gap-3">
+      <input type="hidden" name="planId" value={planId} />
+      <div className="grid gap-3 sm:grid-cols-[12rem_1fr]">
+        <Field label="Tipo">
+          {(p) => (
+            <Select {...p} name="kind" defaultValue="exam">
+              <option value="exam">Prova (nota mínima e recuperação)</option>
+              <option value="practice">Simulado (treino)</option>
+            </Select>
+          )}
+        </Field>
+        <Field label="Título">
+          {(p) => <Input {...p} name="title" required minLength={3} maxLength={120} />}
+        </Field>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-5">
+        <Field label="Questões">
+          {(p) => (
+            <Input {...p} name="questionCount" type="number" min={1} max={40} defaultValue={10} />
+          )}
+        </Field>
+        <Field label="Nota mínima">
+          {(p) => (
+            <Input
+              {...p}
+              name="passingScore"
+              type="number"
+              min={0}
+              max={10}
+              step={0.5}
+              defaultValue={8}
+            />
+          )}
+        </Field>
+        <Field label="Tentativas" hint="Só na prova">
+          {(p) => (
+            <Input {...p} name="maxAttempts" type="number" min={1} max={10} defaultValue={1} />
+          )}
+        </Field>
+        <Field label="Abre em" optional>
+          {(p) => <Input {...p} name="opensAt" type="date" />}
+        </Field>
+        <Field label="Fecha em" optional>
+          {(p) => <Input {...p} name="closesAt" type="date" />}
+        </Field>
+      </div>
+      <Button type="submit" variant="secondary" className="justify-self-start">
+        Criar avaliação
       </Button>
     </form>
   );

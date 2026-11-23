@@ -567,8 +567,9 @@ Entrou também o PLA-04 (dicas para quem ajuda) e o RES-04 (autorização em pap
 - **CON-02:** imagem enviada pela escola. Precisa do armazenamento por instituição.
 - **CON-04:** filtro de flashcards por tópico na revisão. Hoje a revisão do dia junta os cartões de todos os tópicos estudados.
 
-### Fase 3: avaliação
+### Fase 3: avaliação (entregue em 23/11/2026)
 AVA-01 a 05, AVA-07 e 08, PAI-02 a 04. **Critério:** prova com nota mínima 8 e recuperação em outro formato, igual ao piloto.
+Como no piloto, cada questão é um conceito em até três formatos (alternativas, verdadeiro ou falso e escrita corrigida por palavras-chave), e a recuperação troca o formato da questão errada. O aluno não lê a tabela de questões: sortear, mostrar, corrigir e dar a nota são funções do banco (AVA-02). A escrita já é corrigida no servidor por palavras-chave, e o aluno pode responder falando (ditado do navegador). Ficou para a Fase 4 a revisão manual do professor quando houver dúvida (AVA-06), e para depois os formatos ligar colunas, ordenar e completar (AVA-01).
 
 ### Fase 4: refinamento
 PLA-04, PLA-06 e 07, CON-05, AVA-06, INS-04 e 05, EST-04, USR-05, RES-04.

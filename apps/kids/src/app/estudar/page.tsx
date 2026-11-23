@@ -2,11 +2,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { eq, gradeLabel, isNull, schema, withTenantUser } from '@gutta/db-kids';
 import { buttonClass } from '@gutta/ui/button';
-import { Card } from '@gutta/ui/card';
+import { Badge, Card } from '@gutta/ui/card';
 import { EmptyState } from '@gutta/ui/states';
 import { AppShell } from '@/components/app-shell';
 import { requireTenant } from '@/lib/auth/session';
 import { db } from '@/lib/db';
+import { studentAssessments } from '@/lib/assess';
+import { examState } from '@/lib/exam-state';
 import { planTopicsWithProgress, publishedPlans, reviewQueue, studentConsented } from '@/lib/study';
 
 export const metadata: Metadata = { title: 'Hoje' };
@@ -28,7 +30,7 @@ export default async function TodayPage() {
       .innerJoin(schema.grades, eq(schema.grades.id, schema.classes.gradeId))
       .where(isNull(schema.classMembers.leftAt))
       .limit(1);
-    if (!consented) return { consented, klass: klass[0], plans: [], topics: [], due: 0 };
+    if (!consented) return { consented, klass: klass[0], plans: [], topics: [], due: 0, tests: [] };
     const plans = await publishedPlans(tx);
     const topics = await planTopicsWithProgress(
       tx,
@@ -36,7 +38,8 @@ export default async function TodayPage() {
       ctx.user.id,
     );
     const queue = await reviewQueue(tx, ctx.user.id);
-    return { consented, klass: klass[0], plans, topics, due: queue.length };
+    const tests = await studentAssessments(tx, ctx.user.id);
+    return { consented, klass: klass[0], plans, topics, due: queue.length, tests };
   });
   const first = ctx.user.name.split(' ')[0];
   const next = data.topics.find((t) => !t.done);
@@ -101,6 +104,37 @@ export default async function TodayPage() {
               </Link>
             ) : null}
           </Card>
+          {data.tests.length ? (
+            <section className="grid gap-2">
+              <h2 className="text-xl">Simulados e provas</h2>
+              <ul className="grid gap-2 sm:grid-cols-2">
+                {data.tests.map((t) => {
+                  const st = examState(t, t.attempts);
+                  const label = st.passed
+                    ? ['Aprovado', 'success']
+                    : st.inProgress
+                      ? ['Em andamento', 'neutral']
+                      : st.canRetake
+                        ? ['Recuperação', 'warn']
+                        : st.canStart
+                          ? [t.kind === 'exam' ? 'Disponível' : 'Treino', 'accent']
+                          : ['Fechado', 'neutral'];
+                  return (
+                    <li key={t.id}>
+                      <Card className="flex flex-wrap items-center gap-2">
+                        <Link href={`/estudar/avaliacoes/${t.id}`} className="font-semibold">
+                          {t.subject}: {t.title}
+                        </Link>
+                        <Badge tone={label[1] as 'success' | 'neutral' | 'warn' | 'accent'}>
+                          {label[0]}
+                        </Badge>
+                      </Card>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          ) : null}
           <section className="grid gap-2">
             <h2 className="text-xl">Meus planos</h2>
             <ul className="grid gap-3 sm:grid-cols-2">
