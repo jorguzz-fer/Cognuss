@@ -135,14 +135,14 @@ Pedido do Fernando em 17/11/2026: módulo de produção (`docs/producao/ESPECIFI
 
 ### Cognuss Conecta (salas de estudo)
 
-Proposta do Dr. Hugo e do Dr. Rafael recebida em 23/11/2026: `docs/conecta/ESPECIFICACAO.md`. Esperando as decisões C-D1 a C-D7 (seção 9 da especificação) antes da C1.
+Proposta do Dr. Hugo e do Dr. Rafael recebida em 23/11/2026: `docs/conecta/ESPECIFICACAO.md`. Áudio, vídeo e chat em espera (Fernando, 23/11/2026): a C2 fica parada. Esperando as decisões C-D2 a C-D5, C-D7 e C-D8 (seção 9 da especificação) antes da C1.
 
-- [ ] C0. Fundação: ADR 0022 (tempo real e mídia) e ADR 0023 (visibilidade entre alunos); serviço `apps/realtime` no compose; perfil do Conecta, descoberta, bloqueios; Meus Colegas (turma, favoritos, grupos).
-- [ ] C1. Salas e galeria sem mídia: criar sala (pública, moderada, privada), galeria ao vivo e agendada, convites com prazo, pedido de entrada, capacidade, encerramento por inatividade; na sala, tema, participantes, chat, quadro colaborativo, contador.
-- [ ] C2. Áudio, vídeo e tela (LiveKit), opção só áudio, quem fala, estado de microfone e câmera.
+- [ ] C0. Fundação: ADR 0022 (tempo real, sem mídia por enquanto) e ADR 0023 (visibilidade entre alunos); serviço `apps/realtime` no compose; perfil do Conecta, descoberta, bloqueios; Meus Colegas (turma, favoritos, grupos).
+- [ ] C1. Salas e galeria sem áudio, vídeo e chat: criar sala (pública, moderada, privada), galeria ao vivo e agendada, convites com prazo, pedido de entrada, capacidade, encerramento por inatividade; na sala, tema, participantes presentes, quadro e notas colaborativas, reações, contador, link da chamada externa (C-D8).
+- [ ] C2. **Em espera (Fernando, 23/11/2026).** Áudio, vídeo e tela (LiveKit), chat de texto, opção só áudio, quem fala, estado de microfone e câmera.
 - [ ] C3. Estudar agora: disponibilidade, preferências, matching por tema equivalente, convite com aceite mútuo, salas sugeridas.
 - [ ] C4. Materiais do Cognuss na sala, arquivos compartilhados, notas colaborativas, Tutor IA do grupo.
-- [ ] C5. Depois da sessão (resumo, flashcards e questões com consentimento de todos), histórico com busca, "estudado em grupo", salas recorrentes, Pomodoro, reações, perguntas anônimas, quiz.
+- [ ] C5. Depois da sessão (resumo, flashcards e questões com consentimento de todos, a partir do quadro, das notas e do tutor), histórico com busca, "estudado em grupo", salas recorrentes, Pomodoro, perguntas anônimas, quiz.
 - [ ] C6. Modo Avatar e modo discreto, apelido por sessão, "só ouvir"; moderação com vínculo interno auditado.
 
 ### Cognuss Competências (portfólio e currículo)
