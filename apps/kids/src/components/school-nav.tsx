@@ -5,6 +5,8 @@ const ITEMS = [
   { href: '/escola/estrutura', label: 'Etapas e anos' },
   { href: '/escola/turmas', label: 'Turmas' },
   { href: '/escola/materias', label: 'Matérias' },
+  { href: '/planos', label: 'Planos' },
+  { href: '/escola/responsaveis', label: 'Responsáveis' },
   { href: '/escola/pessoas', label: 'Pessoas' },
 ];
 

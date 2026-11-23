@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { afterAll, describe, expect, it } from 'vitest';
 import { gradeLabel, stageLabel } from '../src/labels';
 import { withTenantUser } from '../src/client';
@@ -39,6 +39,25 @@ describe('seed da escola de demonstração', () => {
     ).toEqual([3, 4, 5, 6, 7, 8, 9]);
     expect(grades).toHaveLength(9);
     expect(DEMO_USERS.manager).toContain('@kids.test');
+  });
+});
+
+describe('plano de Ciências do piloto (PLA-08)', () => {
+  it('publicado, com 7 tópicos e os 56 flashcards, visível para a aluna autorizada', async () => {
+    const seed = await runSeed(owner);
+    const topics = await owner
+      .select()
+      .from(s.planTopics)
+      .where(eq(s.planTopics.planId, seed.planId));
+    expect(topics).toHaveLength(7);
+    const cards = await owner.execute<{ n: number }>(
+      sql`select count(*)::int as n from flashcards f join plan_topics t on t.id = f.topic_id where t.plan_id = ${seed.planId}`,
+    );
+    expect(cards.rows[0]!.n).toBe(56);
+    const seen = await withTenantUser(app, seed.tenantId, seed.studentWithoutEmail, (tx) =>
+      tx.select().from(s.studyPlans),
+    );
+    expect(seen.map((p) => p.id)).toEqual([seed.planId]);
   });
 });
 

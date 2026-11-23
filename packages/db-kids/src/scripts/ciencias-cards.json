@@ -1,0 +1,238 @@
+{
+ "cl": [
+  [
+   "O que é classificar?",
+   "Separar e organizar em grupos usando um critério de semelhança."
+  ],
+  [
+   "Animal herbívoro come...",
+   "Só vegetais e suas partes (raízes, folhas, frutos, sementes)."
+  ],
+  [
+   "Animal carnívoro come...",
+   "Só outros animais."
+  ],
+  [
+   "Animal onívoro come...",
+   "Animais e vegetais."
+  ],
+  [
+   "O que é um animal ovíparo?",
+   "O filhote se desenvolve dentro do ovo."
+  ],
+  [
+   "O que é um animal vivíparo?",
+   "O filhote se desenvolve dentro do corpo da mãe."
+  ],
+  [
+   "O que é embrião?",
+   "O ser vivo no começo do desenvolvimento, antes de nascer."
+  ],
+  [
+   "De que é formada a coluna vertebral?",
+   "De ossos chamados vértebras. Ela dá sustentação ao corpo."
+  ],
+  [
+   "O que é um animal vertebrado?",
+   "Tem coluna vertebral e esqueleto interno."
+  ],
+  [
+   "O que é um invertebrado? Dê exemplos.",
+   "Não tem coluna vertebral. Borboleta, minhoca, polvo, caranguejo, formiga."
+  ],
+  [
+   "A maioria dos animais do planeta é...",
+   "Invertebrada!"
+  ],
+  [
+   "Quais são os 5 grupos de vertebrados?",
+   "Peixes, anfíbios, répteis, aves e mamíferos."
+  ]
+ ],
+ "pe": [
+  [
+   "Por onde os peixes respiram?",
+   "Pelas brânquias, que tiram o oxigênio da água."
+  ],
+  [
+   "Onde ficam as brânquias?",
+   "Dentro do opérculo (a \"tampa\" do lado da cabeça)."
+  ],
+  [
+   "Como o peixe se locomove?",
+   "Mexendo o corpo e a nadadeira caudal. As outras nadadeiras dão a direção."
+  ],
+  [
+   "Do que é coberto o corpo do peixe?",
+   "De escamas. A pele deixa o corpo liso e escorregadio."
+  ],
+  [
+   "Como se chamam os filhotes de peixe?",
+   "Alevinos."
+  ],
+  [
+   "Ordem do ciclo de vida do peixe",
+   "Ovos → embriões → alevinos → jovens → adultos."
+  ],
+  [
+   "O que é um cardume?",
+   "Um grupo de peixes nadando juntos."
+  ],
+  [
+   "Qual é o maior peixe?",
+   "O tubarão-baleia (até 15 m)."
+  ],
+  [
+   "Do que é feito o esqueleto de tubarões e raias?",
+   "De cartilagem, não de osso."
+  ]
+ ],
+ "an": [
+  [
+   "Como é a pele dos anfíbios?",
+   "Fina e úmida."
+  ],
+  [
+   "Por que o anfíbio precisa da pele úmida?",
+   "Porque respira também pela pele. Se secar, o oxigênio não entra e ele morre."
+  ],
+  [
+   "O que é metamorfose?",
+   "Mudança completa da forma do corpo durante a vida."
+  ],
+  [
+   "Como é o girino?",
+   "Vive na água, respira por brânquias, tem cauda e come vegetais."
+  ],
+  [
+   "O que são anfíbios anuros?",
+   "Os que não têm cauda quando adultos: sapo, rã e perereca."
+  ],
+  [
+   "Qual anfíbio tem ventosas nos dedos?",
+   "A perereca."
+  ],
+  [
+   "Sapo, rã ou salamandra: qual tem cauda?",
+   "A salamandra."
+  ],
+  [
+   "Sapo x rã",
+   "Sapo: pele bem rugosa. Rã: pele lisa e dedos longos."
+  ],
+  [
+   "Por que o macho coaxa?",
+   "Para atrair a fêmea para o acasalamento."
+  ]
+ ],
+ "re": [
+  [
+   "Como é a pele dos répteis?",
+   "Grossa, seca e impermeável, com escamas e placas ósseas."
+  ],
+  [
+   "Por onde os répteis respiram?",
+   "Só pelos pulmões."
+  ],
+  [
+   "Por que os répteis tomam sol?",
+   "Não mantêm a temperatura do corpo constante, então se aquecem no sol."
+  ],
+  [
+   "Por que o terrário tem lâmpada?",
+   "Para aquecer os répteis, que não controlam a temperatura do corpo."
+  ],
+  [
+   "Por que cobras trocam de pele?",
+   "As escamas não crescem; elas trocam a pele para poder crescer."
+  ],
+  [
+   "Pra que serve o chocalho da cascavel?",
+   "Para espantar inimigos (defesa). Ele não mostra a idade."
+  ],
+  [
+   "Cágado x jabuti x tartaruga marinha",
+   "Cágado: solo e água doce. Jabuti: só terra. Tartaruga marinha: mar."
+  ],
+  [
+   "Como a cobra se locomove?",
+   "Rastejando (não tem pernas)."
+  ],
+  [
+   "Como a tartaruga marinha nada?",
+   "Com membros parecidos com remos (nadadeiras)."
+  ],
+  [
+   "O Instituto Butantan produz...",
+   "Soros e vacinas. Fica em São Paulo."
+  ]
+ ],
+ "av": [
+  [
+   "Duas coisas que só as aves têm",
+   "Bico e penas."
+  ],
+  [
+   "Para que servem as penas?",
+   "Aquecer, proteger e voar. A cor ajuda na camuflagem ou no acasalamento."
+  ],
+  [
+   "O que é camuflagem?",
+   "Quando o animal se parece com o ambiente e consegue se esconder."
+  ],
+  [
+   "O que é período de incubação?",
+   "O tempo em que o filhote fica dentro do ovo antes de nascer."
+  ],
+  [
+   "Ave granívora come...",
+   "Grãos e sementes. Ex.: pardal."
+  ],
+  [
+   "Ave nectarívora come...",
+   "Néctar das flores. Ex.: beija-flor."
+  ],
+  [
+   "Ave necrófaga come...",
+   "Animais mortos. Ex.: urubu."
+  ],
+  [
+   "Ave piscívora come...",
+   "Peixes. Ex.: martim-pescador."
+  ],
+  [
+   "Bem-te-vi é...",
+   "Onívoro: come insetos, pequenos animais, sementes e frutos."
+  ],
+  [
+   "Quem choca o ovo do pinguim-imperador?",
+   "O pai, que segura o ovo em cima dos pés."
+  ]
+ ],
+ "ma": [
+  [
+   "Do que é coberto o corpo dos mamíferos?",
+   "De pelos."
+  ],
+  [
+   "Por que eles se chamam mamíferos?",
+   "Porque têm glândulas mamárias que produzem leite."
+  ],
+  [
+   "Para que servem os pelos?",
+   "Proteger de cortes e do sol e manter o corpo aquecido."
+  ],
+  [
+   "O ser humano é de qual grupo?",
+   "Mamífero!"
+  ],
+  [
+   "Por que a raposa-do-ártico muda de cor?",
+   "Para se camuflar: branca na neve do inverno, cinza no verão."
+  ],
+  [
+   "Quais grupos mantêm a temperatura constante?",
+   "Aves e mamíferos."
+  ]
+ ]
+}

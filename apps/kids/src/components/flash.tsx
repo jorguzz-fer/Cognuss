@@ -21,6 +21,33 @@ const MESSAGES = {
   confirmar: ['danger', 'Marque a confirmação para desativar.'],
   'sem-acesso': ['danger', 'Essa ação não faz parte do seu acesso.'],
   'nao-remove-a-si': ['danger', 'Você não pode remover o próprio acesso.'],
+  'plano-criado': ['success', 'Plano criado em rascunho.'],
+  'plano-salvo': ['success', 'Plano salvo.'],
+  'plano-apagado': ['success', 'Rascunho apagado.'],
+  'plano-in_review': ['success', 'Plano enviado para revisão.'],
+  'plano-approved': ['success', 'Plano aprovado. Já pode ser publicado.'],
+  'plano-published': ['success', 'Plano publicado para os alunos do ano.'],
+  'plano-archived': ['success', 'Plano arquivado. Os alunos não veem mais.'],
+  'plano-draft': ['success', 'Plano de volta ao rascunho.'],
+  'versao-criada': ['success', 'Nova versão criada em rascunho. A publicada continua no ar.'],
+  'plano-sem-permissao': [
+    'danger',
+    'Essa ação não é possível: só o rascunho muda, e quem escreveu o plano não o aprova.',
+  ],
+  'topico-salvo': ['success', 'Tópico salvo.'],
+  'topico-apagado': ['success', 'Tópico apagado.'],
+  'conteudo-salvo': ['success', 'Conteúdo adicionado.'],
+  'conteudo-apagado': ['success', 'Conteúdo apagado.'],
+  'conteudo-invalido': [
+    'danger',
+    'Não deu para montar esse conteúdo. Vídeo precisa de link https; tabela, de títulos e linhas.',
+  ],
+  'flashcards-salvos': ['success', 'Flashcards adicionados.'],
+  'flashcards-invalidos': ['danger', 'Use uma linha por cartão: frente | verso.'],
+  'flashcard-apagado': ['success', 'Flashcard apagado.'],
+  'responsavel-convidado': ['success', 'Link enviado ao responsável. Ele vale por 30 dias.'],
+  'papel-registrado': ['success', 'Autorização em papel registrada.'],
+  'pedido-resolvido': ['success', 'Pedido marcado como resolvido.'],
 } as const;
 
 export type FlashKey = keyof typeof MESSAGES;

@@ -52,3 +52,14 @@ export function inviteEmail(tenantName: string, role: 'manager' | 'teacher', url
     tag: 'invite',
   };
 }
+
+export function guardianEmail(tenantName: string, studentName: string, url: string) {
+  const subject = `Autorização para ${studentName} usar o Cognuss Kids`;
+  const body = `${esc(tenantName)} vai usar o Cognuss Kids nos estudos de ${esc(studentName)}. Para isso, precisamos da sua autorização como responsável. No link você lê o que é guardado, autoriza ou não, e pode pedir acesso, correção ou exclusão dos dados. O link vale por 30 dias.`;
+  return {
+    subject,
+    html: layout(subject, body, { label: 'Ver e autorizar', url }),
+    text: `${tenantName} vai usar o Cognuss Kids nos estudos de ${studentName} e precisa da sua autorização como responsável. O link vale por 30 dias:\n${url}`,
+    tag: 'guardian_consent',
+  };
+}

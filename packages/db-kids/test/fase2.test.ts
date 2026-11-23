@@ -32,9 +32,12 @@ const as = <T>(user: string, fn: Parameters<typeof withTenantUser<T>>[3]) =>
 
 beforeAll(async () => {
   escola = await makeTenant(owner);
-  [gestora, prof, prof2, profOutraMateria, aluno, alunoOutroAno] = await Promise.all(
-    Array.from({ length: 6 }, () => makeUser(owner)),
-  );
+  gestora = await makeUser(owner);
+  prof = await makeUser(owner);
+  prof2 = await makeUser(owner);
+  profOutraMateria = await makeUser(owner);
+  aluno = await makeUser(owner);
+  alunoOutroAno = await makeUser(owner);
   await addMember(owner, escola, gestora, 'manager');
   for (const t of [prof, prof2, profOutraMateria]) await addMember(owner, escola, t, 'teacher');
   for (const a of [aluno, alunoOutroAno]) await addMember(owner, escola, a, 'student');

@@ -2,7 +2,7 @@ import { withUser } from '@gutta/db';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Markdown } from '@/components/shared/markdown';
+import { Markdown } from '@gutta/ui/markdown';
 import { buttonClass } from '@gutta/ui/button';
 import { Alert, Card, DemoBadge } from '@gutta/ui/card';
 import { TutorChat } from '@/components/tutor/tutor-chat';

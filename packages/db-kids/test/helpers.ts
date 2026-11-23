@@ -126,14 +126,12 @@ export async function seedPlan(
     .insert(s.planTopics)
     .values({ tenantId, planId, title: 'Peixes', dayNumber: 1 })
     .returning();
-  await owner
-    .insert(s.topicContents)
-    .values({
-      tenantId,
-      topicId: topic!.id,
-      kind: 'text',
-      bodyMd: 'Peixes respiram por brânquias.',
-    });
+  await owner.insert(s.topicContents).values({
+    tenantId,
+    topicId: topic!.id,
+    kind: 'text',
+    bodyMd: 'Peixes respiram por brânquias.',
+  });
   const [card] = await owner
     .insert(s.flashcards)
     .values({

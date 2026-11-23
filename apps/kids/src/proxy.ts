@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { buildCsp } from './lib/csp';
 
 const PROTECTED = [
+  '/planos',
   '/inicio',
   '/escolher',
   '/escola',
@@ -28,6 +29,8 @@ export function proxy(request: NextRequest) {
   res.headers.set(
     'Content-Security-Policy',
     buildCsp({
+      // Vídeos dos tópicos (CON-01): só YouTube sem cookies e Vimeo, em iframe.
+      lessonOrigins: 'https://www.youtube-nocookie.com https://player.vimeo.com',
       storageEndpoint: process.env.STORAGE_ENDPOINT,
       dev: process.env.NODE_ENV === 'development',
     }),

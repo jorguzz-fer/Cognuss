@@ -561,8 +561,11 @@ Mesmas regras do Cognuss:
 INS-01 a 03, EST-01 a 03, EST-05 a 07, USR-01 a 04, USR-06 e 07, painel mínimo do Super Admin e do gestor.
 Ficaram para a Fase 2: o e-mail do responsável na importação de alunos (USR-02), que entra com o consentimento (RES), e o bloqueio por turma depois de várias senhas erradas (seção 10.2); por enquanto vale o limite de tentativas por minuto do login.
 
-### Fase 2: plano e estudo (MVP utilizável)
+### Fase 2: plano e estudo (MVP utilizável, entregue em 23/11/2026)
 PLA-01 a 03, PLA-05 e 08 (seed de Ciências do piloto), CON-01 a 04, PAI-01, RES-01 a 03 e RES-05. **Critério:** uma escola de demonstração com o 3º ano, uma turma e o plano de Ciências publicado, e um aluno estudando com o consentimento do responsável.
+Entrou também o PLA-04 (dicas para quem ajuda) e o RES-04 (autorização em papel, com observação; o anexo do termo entra com o armazenamento). Ficaram para depois:
+- **CON-02:** imagem enviada pela escola. Precisa do armazenamento por instituição.
+- **CON-04:** filtro de flashcards por tópico na revisão. Hoje a revisão do dia junta os cartões de todos os tópicos estudados.
 
 ### Fase 3: avaliação
 AVA-01 a 05, AVA-07 e 08, PAI-02 a 04. **Critério:** prova com nota mínima 8 e recuperação em outro formato, igual ao piloto.

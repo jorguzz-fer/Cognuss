@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "exports": {
     "./theme.css": "./src/theme.css",
     "./tokens.css": "./src/tokens.css",
@@ -19,7 +21,8 @@
     "./logo": "./src/logo.tsx",
     "./states": "./src/states.tsx",
     "./theme-toggle": "./src/theme-toggle.tsx",
-    "./look-switch": "./src/look-switch.tsx"
+    "./look-switch": "./src/look-switch.tsx",
+    "./markdown": "./src/markdown.tsx"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

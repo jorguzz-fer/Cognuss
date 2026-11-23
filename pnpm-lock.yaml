@@ -29,6 +29,9 @@ importers:
 
   apps/kids:
     dependencies:
+      '@gutta/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@gutta/db-kids':
         specifier: workspace:*
         version: link:../../packages/db-kids

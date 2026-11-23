@@ -1,61 +1,128 @@
 import type { Metadata } from 'next';
-import { asc, eq, gradeLabel, isNull, schema, withTenantUser } from '@gutta/db-kids';
+import Link from 'next/link';
+import { eq, gradeLabel, isNull, schema, withTenantUser } from '@gutta/db-kids';
+import { buttonClass } from '@gutta/ui/button';
 import { Card } from '@gutta/ui/card';
 import { EmptyState } from '@gutta/ui/states';
 import { AppShell } from '@/components/app-shell';
 import { requireTenant } from '@/lib/auth/session';
 import { db } from '@/lib/db';
+import { planTopicsWithProgress, publishedPlans, reviewQueue, studentConsented } from '@/lib/study';
 
-export const metadata: Metadata = { title: 'Estudar' };
+export const metadata: Metadata = { title: 'Hoje' };
 
-// Área do aluno. Na Fase 1 mostra a turma e as matérias; o plano de estudos chega na Fase 2.
-export default async function StudyPage() {
+// PAI-01: a tela "Hoje" do aluno. Uma ação principal (o próximo tópico), os flashcards do dia
+// e os planos. Sem consentimento do responsável, só o aviso (RES-03).
+export default async function TodayPage() {
   const ctx = await requireTenant(['student'], '/estudar');
-  const rows = await withTenantUser(db(), ctx.tenantId, ctx.user.id, (tx) =>
-    tx
+  const data = await withTenantUser(db(), ctx.tenantId, ctx.user.id, async (tx) => {
+    const consented = await studentConsented(tx, ctx.user.id);
+    const klass = await tx
       .select({
-        className: schema.classes.name,
+        name: schema.classes.name,
         stage: schema.grades.stage,
         number: schema.grades.number,
-        subject: schema.subjects.name,
       })
       .from(schema.classMembers)
       .innerJoin(schema.classes, eq(schema.classes.id, schema.classMembers.classId))
       .innerJoin(schema.grades, eq(schema.grades.id, schema.classes.gradeId))
-      .leftJoin(schema.teacherAssignments, eq(schema.teacherAssignments.classId, schema.classes.id))
-      .leftJoin(schema.subjects, eq(schema.subjects.id, schema.teacherAssignments.subjectId))
       .where(isNull(schema.classMembers.leftAt))
-      .orderBy(asc(schema.subjects.name)),
-  );
-  const first = rows[0];
-  const subjects = [...new Set(rows.map((r) => r.subject).filter(Boolean))] as string[];
+      .limit(1);
+    if (!consented) return { consented, klass: klass[0], plans: [], topics: [], due: 0 };
+    const plans = await publishedPlans(tx);
+    const topics = await planTopicsWithProgress(
+      tx,
+      plans.map((p) => p.id),
+      ctx.user.id,
+    );
+    const queue = await reviewQueue(tx, ctx.user.id);
+    return { consented, klass: klass[0], plans, topics, due: queue.length };
+  });
+  const first = ctx.user.name.split(' ')[0];
+  const next = data.topics.find((t) => !t.done);
+  const nextPlan = next ? data.plans.find((p) => p.id === next.planId) : null;
   return (
     <AppShell
       area="Estudar"
       tenantName={ctx.tenantName}
       canSwitch={ctx.user.memberships.length > 1}
     >
-      <h1 className="text-3xl">Oi, {ctx.user.name.split(' ')[0]}!</h1>
-      {first ? (
+      <h1 className="text-3xl">Oi, {first}!</h1>
+      {data.klass ? (
         <p className="text-muted">
-          {first.className} · {gradeLabel(first.stage, first.number)}
+          {data.klass.name} · {gradeLabel(data.klass.stage, data.klass.number)}
         </p>
       ) : null}
-      {subjects.length ? (
-        <ul className="grid gap-3 sm:grid-cols-3">
-          {subjects.map((s) => (
-            <li key={s}>
-              <Card>
-                <p className="text-lg font-semibold">{s}</p>
-                <p className="text-sm text-muted">O plano aparece aqui quando a escola publicar.</p>
-              </Card>
-            </li>
-          ))}
-        </ul>
-      ) : (
+
+      {!data.consented ? (
+        <EmptyState title="Falta a autorização do seu responsável">
+          A escola enviou um link para o seu responsável. Assim que ele autorizar, os planos de
+          estudo aparecem aqui.
+        </EmptyState>
+      ) : data.plans.length === 0 ? (
         <EmptyState title="Ainda não há nada aqui">
           O plano de estudos do seu ano aparece aqui quando a escola publicar.
         </EmptyState>
+      ) : (
+        <>
+          {next && nextPlan ? (
+            <Card className="grid gap-3">
+              <p className="font-mono text-xs font-semibold tracking-widest text-muted uppercase">
+                Próximo passo · {nextPlan.subject}
+                {next.dayNumber ? ` · Dia ${next.dayNumber}` : ''}
+              </p>
+              <p className="font-display text-2xl">{next.title}</p>
+              {next.summary ? <p className="text-muted">{next.summary}</p> : null}
+              <Link
+                href={`/estudar/topicos/${next.id}`}
+                className={buttonClass('primary', 'lg', 'justify-self-start')}
+              >
+                Estudar agora
+              </Link>
+            </Card>
+          ) : (
+            <Card>
+              <p className="text-lg font-semibold">Você estudou todos os tópicos publicados.</p>
+              <p className="text-muted">Agora é revisar os flashcards até a prova.</p>
+            </Card>
+          )}
+          <Card className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-semibold">Flashcards de hoje</p>
+              <p className="text-sm text-muted">
+                {data.due === 0
+                  ? 'Nenhum para hoje. Eles aparecem depois que você estuda um tópico.'
+                  : `${data.due} ${data.due === 1 ? 'cartão' : 'cartões'} para revisar.`}
+              </p>
+            </div>
+            {data.due > 0 ? (
+              <Link href="/estudar/revisar" className={buttonClass('secondary')}>
+                Revisar
+              </Link>
+            ) : null}
+          </Card>
+          <section className="grid gap-2">
+            <h2 className="text-xl">Meus planos</h2>
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {data.plans.map((p) => {
+                const ts = data.topics.filter((t) => t.planId === p.id);
+                const done = ts.filter((t) => t.done).length;
+                return (
+                  <li key={p.id}>
+                    <Card>
+                      <Link href={`/estudar/planos/${p.id}`} className="text-lg font-semibold">
+                        {p.subject}: {p.title}
+                      </Link>
+                      <p className="text-sm text-muted">
+                        {done} de {ts.length} tópicos estudados
+                      </p>
+                    </Card>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        </>
       )}
     </AppShell>
   );

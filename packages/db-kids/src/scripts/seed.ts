@@ -3,7 +3,9 @@ import { eq } from 'drizzle-orm';
 import type { Db } from '../client';
 import { hashPassword } from '../password';
 import * as s from '../schema';
+import { GUARDIAN_POLICY_VERSION } from '../plans';
 import { SUGGESTED_SUBJECTS, studentPlaceholderEmail, studentUsername } from '../school';
+import { seedCienciasPlan } from './seed-ciencias';
 
 // Senha dos usuários de demonstração, só para desenvolvimento e E2E (mesma do Cognuss).
 export const DEMO_PASSWORD = 'gutta-demo-2026';
@@ -11,6 +13,7 @@ export const DEMO_PASSWORD = 'gutta-demo-2026';
 // Turma de demonstração: a aluna sem e-mail entra com demo3a / luna / gato-azul-42.
 export const DEMO_CLASS_CODE = 'demo3a';
 export const DEMO_STUDENT_PASSWORD = 'gato-azul-42';
+export const DEMO_GUARDIAN_EMAIL = 'responsavel@kids.test';
 
 export const DEMO_USERS = {
   superAdmin: 'superadmin@kids.test',
@@ -140,5 +143,38 @@ export async function runSeed(db: Db) {
       .values({ tenantId, classId: klass!.id, userId })
       .onConflictDoNothing();
   }
-  return { tenantId, classId: klass!.id, studentWithoutEmail: luna!.id, ...ids };
+
+  // Fase 2: o plano de Ciências do piloto, publicado, e um responsável que já autorizou os dois
+  // alunos de demonstração (sem isso eles não veem o plano; RES-03).
+  const planId = await seedCienciasPlan(db, {
+    tenantId,
+    gradeId: third!.id,
+    subjectId: ciencias!.id,
+    authorId: ids.teacher,
+    reviewerId: ids.manager,
+  });
+  let guardian = await db.query.guardians.findFirst({
+    where: (g, { and: a, eq: e }) => a(e(g.tenantId, tenantId), e(g.email, DEMO_GUARDIAN_EMAIL)),
+  });
+  if (!guardian) {
+    [guardian] = await db
+      .insert(s.guardians)
+      .values({ tenantId, name: 'Responsável Demonstração', email: DEMO_GUARDIAN_EMAIL })
+      .returning();
+    for (const studentUserId of [ids.student, luna!.id]) {
+      await db
+        .insert(s.guardianLinks)
+        .values({ tenantId, guardianId: guardian!.id, studentUserId });
+      await db.insert(s.guardianConsents).values({
+        tenantId,
+        guardianId: guardian!.id,
+        studentUserId,
+        purpose: 'platform',
+        policyVersion: GUARDIAN_POLICY_VERSION,
+        granted: true,
+        source: 'online',
+      });
+    }
+  }
+  return { tenantId, classId: klass!.id, studentWithoutEmail: luna!.id, planId, ...ids };
 }

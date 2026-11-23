@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { asc, eq, gradeLabel, schema, withTenantUser } from '@gutta/db-kids';
+import { buttonClass } from '@gutta/ui/button';
 import { Card } from '@gutta/ui/card';
 import { EmptyState } from '@gutta/ui/states';
 import { AppShell } from '@/components/app-shell';
@@ -9,7 +10,7 @@ import { db } from '@/lib/db';
 
 export const metadata: Metadata = { title: 'Minhas turmas' };
 
-// Área do professor: as turmas e matérias ligadas a ele (USR-04). Os planos chegam na Fase 2.
+// Área do professor: as turmas e matérias ligadas a ele (USR-04) e o acesso aos planos.
 export default async function TeacherPage() {
   const ctx = await requireTenant(['teacher'], '/professor');
   const rows = await withTenantUser(db(), ctx.tenantId, ctx.user.id, (tx) =>
@@ -44,7 +45,12 @@ export default async function TeacherPage() {
       tenantName={ctx.tenantName}
       canSwitch={ctx.user.memberships.length > 1}
     >
-      <h1 className="text-3xl">Minhas turmas</h1>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <h1 className="text-3xl">Minhas turmas</h1>
+        <Link href="/planos" className={buttonClass('secondary')}>
+          Planos de estudo
+        </Link>
+      </div>
       {classes.size === 0 ? (
         <EmptyState title="Nenhuma turma ligada a você">
           A gestão da escola liga cada professor às turmas e matérias que ele leciona.

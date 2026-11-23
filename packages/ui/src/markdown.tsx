@@ -1,5 +1,6 @@
-// Markdown mínimo e seguro para resumos editoriais: títulos, listas, citações, parágrafos,
-// **negrito** e *itálico*. Gera elementos React; nunca injeta HTML (sem risco de XSS).
+// Markdown mínimo e seguro (resumos do Cognuss e conteúdo dos planos do Kids): títulos,
+// listas, citações, parágrafos, **negrito** e *itálico*. Gera elementos React; nunca injeta
+// HTML (sem risco de XSS).
 import { Fragment } from 'react';
 
 function inline(text: string, keyBase: string) {
