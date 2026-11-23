@@ -19,7 +19,7 @@ async function main() {
       db,
       parseEmails(process.env.KIDS_BOOTSTRAP_ADMIN_EMAILS),
     );
-    if (boot.granted.length) {
+    if (boot.granted.length || boot.created.length) {
       console.log(JSON.stringify({ level: 'info', event: 'kids_db.bootstrap_admins', ...boot }));
     }
   } finally {

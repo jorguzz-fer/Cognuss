@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { authClient } from '@/lib/auth/client';
@@ -156,6 +157,14 @@ export function SignInForm({ next }: { next: string }) {
         <Button type="submit" size="lg" loading={pending}>
           Entrar
         </Button>
+        {mode === 'email' ? (
+          <Link
+            href="/recuperar-senha"
+            className="justify-self-center text-sm text-accent underline-offset-4 hover:underline"
+          >
+            Esqueci minha senha
+          </Link>
+        ) : null}
       </form>
     </div>
   );

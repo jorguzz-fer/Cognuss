@@ -89,7 +89,21 @@ describe('bootstrap do Super Admin', () => {
     const user = await owner.query.authUsers.findFirst({ where: eq(s.authUsers.id, id) });
     const first = await bootstrapPlatformAdmins(owner, [user!.email]);
     const second = await bootstrapPlatformAdmins(owner, [user!.email]);
-    expect(first.granted).toEqual([id]);
-    expect(second.granted).toEqual([]);
+    expect(first).toEqual({ granted: [id], created: [] });
+    expect(second).toEqual({ granted: [], created: [] });
+  });
+
+  it('e-mail sem conta: cria a conta sem senha, já como Super Admin, uma vez só', async () => {
+    const email = `primeiro-${Date.now()}@kids.test`;
+    const first = await bootstrapPlatformAdmins(owner, [email]);
+    expect(first.created).toHaveLength(1);
+    expect(first.granted).toEqual(first.created);
+    const user = await owner.query.authUsers.findFirst({ where: eq(s.authUsers.email, email) });
+    expect(user?.emailVerified).toBe(true);
+    const credential = await owner.query.authAccounts.findFirst({
+      where: eq(s.authAccounts.userId, user!.id),
+    });
+    expect(credential).toBeUndefined();
+    expect(await bootstrapPlatformAdmins(owner, [email])).toEqual({ granted: [], created: [] });
   });
 });
