@@ -98,3 +98,87 @@ export async function seedSchool(
   });
   return { gradeId: grade!.id, subjectId: subject!.id, classId: klass!.id, joinCode: code };
 }
+
+/**
+ * Fase 2: plano publicado de Ciências da turma, com tópico, conteúdo, flashcard, progresso e
+ * revisão do aluno, responsável ligado, token, consentimento e pedido. Criado como dono.
+ */
+export async function seedPlan(
+  owner: Db,
+  tenantId: string,
+  school: { gradeId: string; subjectId: string },
+  people: { author: string; student: string },
+) {
+  const planId = randomUUID();
+  await owner.insert(s.studyPlans).values({
+    id: planId,
+    rootId: planId,
+    tenantId,
+    gradeId: school.gradeId,
+    subjectId: school.subjectId,
+    schoolYear: 2027,
+    title: 'Vertebrados',
+    status: 'published',
+    authorId: people.author,
+    publishedAt: new Date(),
+  });
+  const [topic] = await owner
+    .insert(s.planTopics)
+    .values({ tenantId, planId, title: 'Peixes', dayNumber: 1 })
+    .returning();
+  await owner
+    .insert(s.topicContents)
+    .values({
+      tenantId,
+      topicId: topic!.id,
+      kind: 'text',
+      bodyMd: 'Peixes respiram por brânquias.',
+    });
+  const [card] = await owner
+    .insert(s.flashcards)
+    .values({
+      tenantId,
+      topicId: topic!.id,
+      front: 'Por onde o peixe respira?',
+      back: 'Brânquias.',
+    })
+    .returning();
+  await owner.insert(s.flashcardSchedules).values({
+    tenantId,
+    flashcardId: card!.id,
+    userId: people.student,
+    dueAt: new Date(),
+  });
+  await owner
+    .insert(s.topicProgress)
+    .values({ tenantId, topicId: topic!.id, userId: people.student });
+  const [guardian] = await owner
+    .insert(s.guardians)
+    .values({ tenantId, name: 'Responsável', email: `resp-${randomUUID().slice(0, 8)}@teste.kids` })
+    .returning();
+  await owner
+    .insert(s.guardianLinks)
+    .values({ tenantId, guardianId: guardian!.id, studentUserId: people.student });
+  await owner.insert(s.guardianAccessTokens).values({
+    tenantId,
+    guardianId: guardian!.id,
+    tokenHash: randomUUID(),
+    expiresAt: new Date(Date.now() + 86_400_000),
+  });
+  await owner.insert(s.guardianConsents).values({
+    tenantId,
+    guardianId: guardian!.id,
+    studentUserId: people.student,
+    purpose: 'platform',
+    policyVersion: 'teste',
+    granted: true,
+    source: 'online',
+  });
+  await owner.insert(s.guardianRequests).values({
+    tenantId,
+    guardianId: guardian!.id,
+    studentUserId: people.student,
+    kind: 'access',
+  });
+  return { planId, topicId: topic!.id, cardId: card!.id, guardianId: guardian!.id };
+}
