@@ -3,6 +3,7 @@ import { formatSchoolSeed, seedSchool } from './seed-escola';
 
 // Entrada empacotada (esbuild) para rodar no container do Kids, pelo terminal do Coolify:
 //   node seed/seed-escola.mjs
+// Obrigatória: SEED_SENHA (senha de demonstração de todas as contas, 12+ caracteres).
 // Opcional: SEED_NOME, SEED_SLUG e SEED_DOMINIO (domínio dos e-mails de exemplo).
 async function main() {
   const url = process.env.KIDS_DATABASE_OWNER_URL;
@@ -10,6 +11,7 @@ async function main() {
   const pool = createPool(url, 1);
   try {
     const result = await seedSchool(createDb(pool), {
+      password: process.env.SEED_SENHA ?? '',
       name: process.env.SEED_NOME || undefined,
       slug: process.env.SEED_SLUG || undefined,
       emailDomain: process.env.SEED_DOMINIO || undefined,

@@ -149,7 +149,7 @@ O Kids é **outro recurso no Coolify**, com deploy, banco e backup próprios. Um
 Para conhecer o Kids com todos os papéis, rode uma vez no terminal do container `kids` (Coolify, aba Terminal):
 
 ```bash
-node seed/seed-escola.mjs
+SEED_SENHA='escolha-uma-senha-forte' node seed/seed-escola.mjs
 ```
 
 Cria o "Colégio Modelo Cognuss Kids" (slug `colegio-modelo`) com:
@@ -160,7 +160,7 @@ Cria o "Colégio Modelo Cognuss Kids" (slug `colegio-modelo`) com:
 - um responsável por aluno: dois autorizados por turma e um pendente, com o link de autorização;
 - os planos de Ciências do 3º ano (publicado, com simulado e prova), Matemática do 4º (em revisão) e Português do 6º (rascunho).
 
-As senhas e os links só aparecem nessa saída: copie para um gerenciador de senhas. Os e-mails são `@colegio-modelo.kids.test` e não recebem nada; a equipe ativa o 2FA no primeiro acesso. Rodar de novo não altera nada. Para outro nome ou domínio, use as envs `SEED_NOME`, `SEED_SLUG` e `SEED_DOMINIO` no próprio comando (ex.: `SEED_SLUG=escola-teste node seed/seed-escola.mjs`). Localmente: `pnpm --filter @gutta/db-kids seed:escola`, com `KIDS_DATABASE_OWNER_URL` definida.
+Todas as contas da escola de exemplo (equipe e alunos) usam a senha que você passar em `SEED_SENHA` (mínimo 12 caracteres); ela não aparece na saída nem fica salva em texto. A saída lista os e-mails, os códigos das turmas, os apelidos e os links dos responsáveis pendentes. Os e-mails são `@colegio-modelo.kids.test` e não recebem nada; a equipe ativa o 2FA no primeiro acesso. Rodar de novo não altera nada. Para outro nome ou domínio, use as envs `SEED_NOME`, `SEED_SLUG` e `SEED_DOMINIO` no próprio comando (ex.: `SEED_SLUG=escola-teste SEED_SENHA=... node seed/seed-escola.mjs`). Localmente: `pnpm --filter @gutta/db-kids seed:escola`, com `KIDS_DATABASE_OWNER_URL` e `SEED_SENHA` definidas.
 
 Para remover a instituição de exemplo depois, suspenda-a em `/plataforma`.
 

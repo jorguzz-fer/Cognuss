@@ -1,20 +1,23 @@
-import { randomBytes, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { eq, inArray } from 'drizzle-orm';
 import type { Db, Tx } from '../client';
 import type { Stage } from '../labels';
 import { linkGuardian, GUARDIAN_POLICY_VERSION } from '../plans';
 import { hashPassword } from '../password';
 import * as s from '../schema';
-import { createStudent, generateJoinCode, simplePassword, SUGGESTED_SUBJECTS } from '../school';
+import { createStudent, generateJoinCode, SUGGESTED_SUBJECTS } from '../school';
 import { seedCienciasPlan } from './seed-ciencias';
 
 // Instituição de exemplo completa, para conhecer o Kids em produção com todos os papéis:
 // Fundamental (3º ao 9º ano) e Médio (1ª a 3ª série), uma turma por ano, gestora, quatro
 // professores, três alunos por turma, responsáveis (dois autorizados e um pendente por turma)
-// e planos em estados diferentes. Todos os nomes são fictícios. As senhas são sorteadas aqui e
-// só aparecem no resultado: o banco guarda só o hash. Roda como dono do banco, numa transação.
+// e planos em estados diferentes. Todos os nomes são fictícios. Todas as contas usam a senha de
+// demonstração que quem roda escolhe (SEED_SENHA); ela nunca é impressa e o banco guarda só o
+// hash. Roda como dono do banco, numa transação.
 
 export type SchoolSeedOptions = {
+  /** Senha de demonstração de todas as contas da escola (mínimo 12 caracteres). */
+  password: string;
   name?: string;
   slug?: string;
   /** Domínio dos e-mails da equipe e dos responsáveis. Padrão: <slug>.kids.test (não recebe e-mail). */
@@ -30,11 +33,11 @@ export type SchoolSeedResult =
       status: 'created';
       tenantId: string;
       name: string;
-      staff: { role: string; name: string; email: string; password: string; subjects: string }[];
+      staff: { role: string; name: string; email: string; subjects: string }[];
       classes: {
         name: string;
         joinCode: string;
-        students: { name: string; nickname: string; password: string; consent: boolean }[];
+        students: { name: string; nickname: string; consent: boolean }[];
       }[];
       pendingGuardians: { student: string; email: string; link: string }[];
       plans: { title: string; grade: string; status: string }[];
@@ -100,11 +103,6 @@ const STUDENTS = [
   ['Benício', 'Fonseca'],
 ] as const;
 
-/** Senha da equipe: 16 caracteres aleatórios. A pessoa troca depois, se quiser. */
-function staffPassword(): string {
-  return randomBytes(12).toString('base64url');
-}
-
 function nicknameOf(first: string): string {
   return first.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 }
@@ -117,7 +115,15 @@ async function uniqueJoinCode(tx: Tx): Promise<string> {
   }
 }
 
-export async function seedSchool(db: Db, opts: SchoolSeedOptions = {}): Promise<SchoolSeedResult> {
+export const SEED_PASSWORD_MIN = 12;
+
+export async function seedSchool(db: Db, opts: SchoolSeedOptions): Promise<SchoolSeedResult> {
+  if ((opts.password ?? '').length < SEED_PASSWORD_MIN) {
+    throw new Error(
+      `a senha de demonstração precisa de pelo menos ${SEED_PASSWORD_MIN} caracteres`,
+    );
+  }
+  const passwordHash = await hashPassword(opts.password);
   const name = opts.name ?? 'Colégio Modelo Cognuss Kids';
   const slug = opts.slug ?? 'colegio-modelo';
   const domain = (opts.emailDomain ?? `${slug}.kids.test`).toLowerCase();
@@ -150,14 +156,13 @@ export async function seedSchool(db: Db, opts: SchoolSeedOptions = {}): Promise<
     for (const p of STAFF) {
       const id = randomUUID();
       const email = `${p.local}@${domain}`;
-      const password = staffPassword();
       await tx.insert(s.authUsers).values({ id, name: p.name, email, emailVerified: true });
       await tx.insert(s.authAccounts).values({
         id: randomUUID(),
         accountId: id,
         providerId: 'credential',
         userId: id,
-        password: await hashPassword(password),
+        password: passwordHash,
       });
       await tx.insert(s.memberships).values({ tenantId, userId: id, role: p.role });
       staffIds[p.key] = id;
@@ -166,7 +171,6 @@ export async function seedSchool(db: Db, opts: SchoolSeedOptions = {}): Promise<
         role: p.role === 'manager' ? 'Gestora' : 'Professor(a)',
         name: p.name,
         email,
-        password,
         subjects: teaches
           ? [...new Set([...teaches.fundamental, ...teaches.medio])].join(', ')
           : 'toda a escola',
@@ -234,7 +238,6 @@ export async function seedSchool(db: Db, opts: SchoolSeedOptions = {}): Promise<
       for (let i = 0; i < 3; i++) {
         const [first, last] = STUDENTS[studentIndex++]!;
         const nickname = nicknameOf(first);
-        const password = simplePassword();
         const studentName = `${first} ${last}`;
         const { userId } = await createStudent(tx, {
           tenantId,
@@ -242,7 +245,7 @@ export async function seedSchool(db: Db, opts: SchoolSeedOptions = {}): Promise<
           joinCode,
           name: studentName,
           nickname,
-          password,
+          password: opts.password,
           actorId: managerId,
         });
         const guardianName = `Responsável de ${first}`;
@@ -282,7 +285,7 @@ export async function seedSchool(db: Db, opts: SchoolSeedOptions = {}): Promise<
             link: `${appUrl}/responsavel/${token}`,
           });
         }
-        students.push({ name: studentName, nickname, password, consent });
+        students.push({ name: studentName, nickname, consent });
       }
       classes.push({ name: c.name, joinCode, students });
     }
@@ -413,28 +416,24 @@ async function seedSmallPlan(
   return planId;
 }
 
-/** Texto para o terminal: o que foi criado e as senhas (mostradas só agora). */
+/** Texto para o terminal: o que foi criado. Nenhuma senha aparece aqui. */
 export function formatSchoolSeed(r: SchoolSeedResult): string {
   if (r.status === 'exists') {
-    return `A instituição "${r.slug}" já existe. Nada foi alterado (as senhas não podem ser mostradas de novo).`;
+    return `A instituição "${r.slug}" já existe. Nada foi alterado.`;
   }
   const out: string[] = [];
   out.push(`Instituição criada: ${r.name}`, '');
-  out.push('GUARDE AGORA: as senhas não ficam salvas em lugar nenhum e não aparecem de novo.', '');
+  out.push('Todas as contas usam a senha de demonstração que você passou em SEED_SENHA.', '');
   out.push('Equipe (entra com e-mail e senha; ativa o 2FA no primeiro acesso):');
   for (const p of r.staff) {
-    out.push(
-      `  ${p.role.padEnd(13)} ${p.name.padEnd(15)} ${p.email.padEnd(40)} ${p.password}  [${p.subjects}]`,
-    );
+    out.push(`  ${p.role.padEnd(13)} ${p.name.padEnd(15)} ${p.email.padEnd(40)} [${p.subjects}]`);
   }
-  out.push('', 'Turmas e alunos (aba "Código da turma": código, apelido e senha):');
+  out.push('', 'Turmas e alunos (aba "Código da turma": código, apelido e a mesma senha):');
   for (const c of r.classes) {
     out.push(`  ${c.name.padEnd(13)} código ${c.joinCode}`);
     for (const st of c.students) {
       const flag = st.consent ? '' : '  (responsável ainda não autorizou)';
-      out.push(
-        `      ${st.name.padEnd(22)} apelido ${st.nickname.padEnd(10)} senha ${st.password}${flag}`,
-      );
+      out.push(`      ${st.name.padEnd(22)} apelido ${st.nickname}${flag}`);
     }
   }
   out.push('', 'Responsáveis pendentes (o link abre a página de autorização; vale 30 dias):');

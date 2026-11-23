@@ -8,6 +8,7 @@ import { formatSchoolSeed, seedSchool } from '../src/scripts/seed-escola';
 import { connect } from './helpers';
 
 const { app, owner, appPool, ownerPool } = connect();
+const password = 'demo-kids-seed-2027';
 
 afterAll(async () => {
   await appPool.end();
@@ -25,7 +26,7 @@ describe('seed da instituição completa', () => {
   const slug = `modelo-${Date.now()}`;
 
   it('cria as duas etapas, 10 turmas, equipe, 30 alunos, responsáveis e 3 planos', async () => {
-    const r = await seedSchool(owner, { slug, appUrl: 'https://kids.exemplo.test/' });
+    const r = await seedSchool(owner, { password, slug, appUrl: 'https://kids.exemplo.test/' });
     if (r.status !== 'created') throw new Error('esperava criar');
     expect(r.staff).toHaveLength(5);
     expect(r.classes).toHaveLength(10);
@@ -36,22 +37,18 @@ describe('seed da instituição completa', () => {
     );
     expect(r.plans.map((p) => p.status)).toEqual(['publicado', 'em revisão', 'rascunho']);
 
-    // As senhas mostradas são as que entram: equipe por e-mail, aluno por código + apelido.
+    // A senha de demonstração entra em todas as contas: equipe por e-mail, aluno por código + apelido.
     const manager = r.staff[0]!;
     const managerUser = await owner.query.authUsers.findFirst({
       where: eq(s.authUsers.email, manager.email),
     });
-    expect(
-      await verifyPassword({ hash: await passwordOf(managerUser!.id), password: manager.password }),
-    ).toBe(true);
+    expect(await verifyPassword({ hash: await passwordOf(managerUser!.id), password })).toBe(true);
     const klass = r.classes[0]!;
     const kid = klass.students[0]!;
     const kidUser = await owner.query.authUsers.findFirst({
       where: eq(s.authUsers.username, studentUsername(klass.joinCode, kid.nickname)),
     });
-    expect(
-      await verifyPassword({ hash: await passwordOf(kidUser!.id), password: kid.password }),
-    ).toBe(true);
+    expect(await verifyPassword({ hash: await passwordOf(kidUser!.id), password })).toBe(true);
 
     // A gestora vê a escola pelo RLS: 12 anos (9 + 3, com 1º e 2º inativos) e 30 alunos.
     const seen = await withTenantUser(app, r.tenantId, managerUser!.id, async (tx) => ({
@@ -64,25 +61,31 @@ describe('seed da instituição completa', () => {
     expect(seen.students).toHaveLength(30);
     expect(seen.consents).toHaveLength(20);
 
-    // O texto do terminal traz as senhas, e os hashes não.
+    // O texto do terminal não traz a senha nem os hashes.
     const text = formatSchoolSeed(r);
-    expect(text).toContain(manager.password);
+    expect(text).not.toContain(password);
     expect(text).toContain(klass.joinCode);
     expect(text).not.toContain('$argon2');
   });
 
   it('não mexe em nada se a instituição já existe', async () => {
     const before = await owner.$count(s.authUsers);
-    const r = await seedSchool(owner, { slug });
+    const r = await seedSchool(owner, { password, slug });
     expect(r).toEqual({ status: 'exists', slug });
     expect(await owner.$count(s.authUsers)).toBe(before);
     expect(formatSchoolSeed(r)).toMatch(/já existe/);
   });
 
+  it('recusa senha de demonstração curta', async () => {
+    await expect(seedSchool(owner, { password: 'curta', slug: `x-${Date.now()}` })).rejects.toThrow(
+      /12 caracteres/,
+    );
+  });
+
   it('não cria nada se um e-mail da equipe já tem conta', async () => {
     const other = `outra-${Date.now()}`;
     await expect(
-      seedSchool(owner, { slug: other, emailDomain: `${slug}.kids.test` }),
+      seedSchool(owner, { password, slug: other, emailDomain: `${slug}.kids.test` }),
     ).rejects.toThrow(/já existe conta/);
     const t = await owner.query.tenants.findFirst({ where: eq(s.tenants.slug, other) });
     expect(t).toBeUndefined();
