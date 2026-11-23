@@ -74,12 +74,20 @@ export const HIGGSFIELD_DEFAULTS = {
 
 export class HiggsfieldProvider implements MediaProvider {
   readonly name = 'higgsfield';
+  /**
+   * A credencial do console tem duas partes (key ID e secret), enviadas juntas como "ID:SECRET".
+   * Aceita as duas separadas ou a credencial inteira no primeiro campo, como o console às vezes
+   * mostra.
+   */
+  private credential: string;
   constructor(
-    private keyId: string,
-    private keySecret: string,
+    keyId: string,
+    keySecret: string | null | undefined,
     private opts: { base?: string; imageEndpoint?: string; videoEndpoint?: string } = {},
     private fetchImpl: FetchLike = fetch,
-  ) {}
+  ) {
+    this.credential = keySecret ? `${keyId.trim()}:${keySecret.trim()}` : keyId.trim();
+  }
 
   private get base() {
     return this.opts.base ?? HIGGSFIELD_DEFAULTS.base;
@@ -87,7 +95,7 @@ export class HiggsfieldProvider implements MediaProvider {
 
   private headers(extra: Record<string, string> = {}) {
     return {
-      Authorization: `Key ${this.keyId}:${this.keySecret}`,
+      Authorization: `Key ${this.credential}`,
       'Content-Type': 'application/json',
       ...extra,
     };
@@ -111,7 +119,21 @@ export class HiggsfieldProvider implements MediaProvider {
       Number(res.headers.get('retry-after')) ||
       (typeof detail === 'object' ? detail?.retry_after_seconds : undefined) ||
       60;
-    if (res.status === 401) throw new MediaBlocked('Chave da Higgsfield inválida.', 'auth');
+    if (res.status === 401)
+      throw new MediaBlocked(
+        'Chave da Higgsfield inválida. Confira o key ID e o secret no worker.',
+        'auth',
+      );
+    // 403 também é chave expirada ou desativada (docs.higgsfield.ai, Access control).
+    const code =
+      (body.code as string | undefined) ?? (typeof detail === 'object' ? detail?.code : undefined);
+    if (res.status === 403 && (code === 'api_key_expired' || code === 'api_key_disabled'))
+      throw new MediaBlocked(
+        code === 'api_key_expired'
+          ? 'A chave da Higgsfield expirou. Crie outra no console e atualize o worker.'
+          : 'A chave da Higgsfield foi desativada. Reative ou crie outra no console.',
+        'auth',
+      );
     if (res.status === 403)
       throw new MediaBlocked(
         'Saldo insuficiente na Higgsfield. Adicione créditos e retome.',

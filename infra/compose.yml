@@ -90,6 +90,20 @@ services:
       EMBEDDING_MODEL: ${EMBEDDING_MODEL:-voyage-4}
       AI_SCHEDULE_MODEL: ${AI_SCHEDULE_MODEL:-claude-opus-5-5}
       AI_SCHEDULE_EFFORT: ${AI_SCHEDULE_EFFORT:-medium}
+      # Produção de aulas (ADR 0021): plano, peças HTML e roteiro dos vídeos com o Claude;
+      # imagens e clipes na Higgsfield; narração na ElevenLabs. Só no worker.
+      AI_PRODUCTION_MODEL: ${AI_PRODUCTION_MODEL:-claude-opus-5-5}
+      AI_PRODUCTION_EFFORT: ${AI_PRODUCTION_EFFORT:-high}
+      AI_PIECE_MODEL: ${AI_PIECE_MODEL:-claude-opus-5-5}
+      AI_PIECE_EFFORT: ${AI_PIECE_EFFORT:-high}
+      HIGGSFIELD_API_KEY_ID: ${HIGGSFIELD_API_KEY_ID:-}
+      HIGGSFIELD_API_KEY_SECRET: ${HIGGSFIELD_API_KEY_SECRET:-}
+      HIGGSFIELD_IMAGE_ENDPOINT: ${HIGGSFIELD_IMAGE_ENDPOINT:-}
+      HIGGSFIELD_VIDEO_ENDPOINT: ${HIGGSFIELD_VIDEO_ENDPOINT:-}
+      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
+      ELEVENLABS_MODEL: ${ELEVENLABS_MODEL:-eleven_multilingual_v2}
+      ELEVENLABS_VOICE_ID: ${ELEVENLABS_VOICE_ID:-}
+      PRODUCTION_DAILY_CREDITS: ${PRODUCTION_DAILY_CREDITS:-300}
       # Avisos por e-mail (LEM-11): mesmo remetente e endereço do app.
       APP_URL: ${APP_URL}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
