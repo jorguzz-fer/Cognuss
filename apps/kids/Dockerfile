@@ -30,7 +30,8 @@ ENV NEXT_OUTPUT_STANDALONE=1
 COPY tsconfig.base.json ./
 COPY packages packages
 COPY apps/kids apps/kids
-RUN pnpm --filter @gutta/db-kids build:migrate && pnpm --filter @gutta/kids build
+RUN pnpm --filter @gutta/db-kids build:migrate && pnpm --filter @gutta/db-kids build:seed \
+    && pnpm --filter @gutta/kids build
 
 FROM node:22-alpine AS runner
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3100 HOSTNAME=0.0.0.0 \
@@ -42,6 +43,13 @@ COPY --from=build --chown=kids:kids /repo/apps/kids/.next/static ./apps/kids/.ne
 COPY --from=build --chown=kids:kids /repo/apps/kids/public ./apps/kids/public
 COPY --from=build --chown=kids:kids /repo/packages/db-kids/migrations ./migrations
 COPY --from=build --chown=kids:kids /repo/packages/db-kids/dist/migrate.mjs ./migrate.mjs
+# Seed opcional da instituição de exemplo: node seed/seed-escola.mjs. O standalone guarda o
+# @node-rs/argon2 só dentro de .pnpm; o link deixa o seed achar a mesma cópia que o app usa.
+COPY --from=build --chown=kids:kids /repo/packages/db-kids/dist/seed-escola.mjs ./seed/seed-escola.mjs
+RUN mkdir -p seed/node_modules/@node-rs \
+    && ln -s "$(ls -d /app/node_modules/.pnpm/@node-rs+argon2@*/node_modules/@node-rs/argon2 | head -1)" \
+       seed/node_modules/@node-rs/argon2 \
+    && test -f seed/node_modules/@node-rs/argon2/package.json
 COPY --chown=kids:kids apps/kids/docker-entrypoint.sh ./docker-entrypoint.sh
 USER kids
 EXPOSE 3100

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { and, eq } from 'drizzle-orm';
-import type { Db } from '../client';
+import type { Db, Tx } from '../client';
 import * as s from '../schema';
 import { addConcept } from '../assessments';
 import cards from './ciencias-cards.json' with { type: 'json' };
@@ -179,7 +179,7 @@ const HELPER_TIPS =
 
 /** Cria o plano publicado de Ciências na escola de demonstração. Idempotente. Roda como dono. */
 export async function seedCienciasPlan(
-  db: Db,
+  db: Db | Tx,
   input: {
     tenantId: string;
     gradeId: string;
