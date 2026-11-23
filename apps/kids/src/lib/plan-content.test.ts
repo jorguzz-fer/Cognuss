@@ -30,10 +30,22 @@ describe('conteúdo do tópico (CON-01)', () => {
   it('vídeo só com https; YouTube e Vimeo incorporados', () => {
     expect(parseContent('video', 'http://x.com/v')).toBeNull();
     expect(parseContent('video', 'https://youtu.be/abc')).toEqual({ url: 'https://youtu.be/abc' });
-    expect(embedUrl('https://www.youtube.com/watch?v=abc')).toBe(
-      'https://www.youtube-nocookie.com/embed/abc',
+    expect(embedUrl('https://www.youtube.com/watch?v=dQw4w9WgXcQ')).toBe(
+      'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+    );
+    expect(embedUrl('https://youtu.be/dQw4w9WgXcQ')).toBe(
+      'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
     );
     expect(embedUrl('https://vimeo.com/123')).toBe('https://player.vimeo.com/video/123');
     expect(embedUrl('https://exemplo.com/video')).toBeNull();
+  });
+
+  it('só incorpora hosts exatos e ids válidos (CodeQL js/incomplete-url-substring-sanitization)', () => {
+    expect(embedUrl('https://naoyoutube.com/watch?v=dQw4w9WgXcQ')).toBeNull();
+    expect(embedUrl('https://youtube.com.mal.com/watch?v=dQw4w9WgXcQ')).toBeNull();
+    expect(embedUrl('https://falsovimeo.com/123')).toBeNull();
+    expect(embedUrl('https://www.youtube.com/watch?v=abc%22onload')).toBeNull();
+    expect(embedUrl('https://youtu.be/dQw4w9WgXcQ/../x')).toBeNull();
+    expect(embedUrl('http://www.youtube.com/watch?v=dQw4w9WgXcQ')).toBeNull();
   });
 });

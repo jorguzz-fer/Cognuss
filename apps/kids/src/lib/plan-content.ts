@@ -46,15 +46,26 @@ export function parseContent(kind: ContentKind, raw: string): ParsedContent | nu
   return { data: { columns, rows: rows.map((r) => columns.map((_, i) => r[i] ?? '')) } };
 }
 
-/** Link de vídeo para incorporar (YouTube e Vimeo); outros abrem em nova aba. */
+const YOUTUBE_HOSTS = new Set(['youtube.com', 'www.youtube.com', 'm.youtube.com']);
+const VIMEO_HOSTS = new Set(['vimeo.com', 'www.vimeo.com']);
+// Id de vídeo do YouTube: 11 caracteres de letras, números, - e _.
+const YOUTUBE_ID = /^[A-Za-z0-9_-]{11}$/;
+
+/**
+ * Link de vídeo para incorporar (YouTube e Vimeo); outros abrem em nova aba. Só hosts exatos
+ * (nada de "qualquercoisayoutube.com"), e o endereço incorporado é montado aqui, com o id
+ * validado, nunca copiado do link.
+ */
 export function embedUrl(url: string): string | null {
   try {
     const u = new URL(url);
-    if (u.hostname.endsWith('youtube.com') && u.searchParams.get('v'))
-      return `https://www.youtube-nocookie.com/embed/${u.searchParams.get('v')}`;
-    if (u.hostname === 'youtu.be') return `https://www.youtube-nocookie.com/embed${u.pathname}`;
-    if (u.hostname.endsWith('vimeo.com') && /^\/\d+/.test(u.pathname))
-      return `https://player.vimeo.com/video${u.pathname}`;
+    if (u.protocol !== 'https:') return null;
+    let id: string | null = null;
+    if (YOUTUBE_HOSTS.has(u.hostname)) id = u.searchParams.get('v');
+    else if (u.hostname === 'youtu.be') id = u.pathname.slice(1);
+    if (id && YOUTUBE_ID.test(id)) return `https://www.youtube-nocookie.com/embed/${id}`;
+    const vimeo = /^\/(\d{1,12})$/.exec(u.pathname);
+    if (VIMEO_HOSTS.has(u.hostname) && vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`;
   } catch {
     // link inválido
   }
