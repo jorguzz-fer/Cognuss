@@ -21,3 +21,4 @@ export {
 export { hashPassword, verifyPassword } from './password';
 export * from './school';
 export * from './plans';
+export * from './assessments';

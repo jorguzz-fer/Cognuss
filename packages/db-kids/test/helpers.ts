@@ -178,5 +178,58 @@ export async function seedPlan(
     studentUserId: people.student,
     kind: 'access',
   });
-  return { planId, topicId: topic!.id, cardId: card!.id, guardianId: guardian!.id };
+  // Fase 3: um conceito em dois formatos, uma prova e uma tentativa com item.
+  const groupId = randomUUID();
+  const [mc] = await owner
+    .insert(s.questions)
+    .values({
+      tenantId,
+      topicId: topic!.id,
+      groupId,
+      kind: 'multiple_choice',
+      stem: 'Os peixes respiram por...',
+      options: ['brânquias', 'pulmões', 'pele'],
+      answer: { correct: 0 },
+      explanation: 'Pelas brânquias.',
+    })
+    .returning();
+  await owner.insert(s.questions).values({
+    tenantId,
+    topicId: topic!.id,
+    groupId,
+    kind: 'true_false',
+    stem: 'Os peixes respiram por pulmões.',
+    answer: { value: false },
+  });
+  const [exam] = await owner
+    .insert(s.assessments)
+    .values({
+      tenantId,
+      planId,
+      kind: 'exam',
+      title: 'Prova',
+      questionCount: 1,
+      createdBy: people.author,
+    })
+    .returning();
+  const [attempt] = await owner
+    .insert(s.assessmentAttempts)
+    .values({
+      tenantId,
+      assessmentId: exam!.id,
+      userId: people.student,
+      clientKey: randomUUID(),
+      total: 1,
+    })
+    .returning();
+  await owner
+    .insert(s.attemptItems)
+    .values({ tenantId, attemptId: attempt!.id, position: 1, questionId: mc!.id });
+  return {
+    planId,
+    topicId: topic!.id,
+    cardId: card!.id,
+    guardianId: guardian!.id,
+    examId: exam!.id,
+  };
 }

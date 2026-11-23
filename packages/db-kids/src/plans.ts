@@ -53,7 +53,7 @@ export async function transitionPlan(
   const plan = await tx.query.studyPlans.findFirst({ where: eq(s.studyPlans.id, input.planId) });
   if (!plan) throw new Error('plano não encontrado');
   if (input.to === 'published') {
-    await tx
+    const previous = await tx
       .update(s.studyPlans)
       .set({ status: 'archived' })
       .where(
@@ -62,7 +62,20 @@ export async function transitionPlan(
           eq(s.studyPlans.status, 'published'),
           ne(s.studyPlans.id, plan.id),
         ),
-      );
+      )
+      .returning({ id: s.studyPlans.id });
+    // Simulados e provas seguem para a versão publicada (as tentativas antigas ficam como estão).
+    if (previous.length) {
+      await tx
+        .update(s.assessments)
+        .set({ planId: plan.id })
+        .where(
+          inArray(
+            s.assessments.planId,
+            previous.map((p) => p.id),
+          ),
+        );
+    }
   }
   await tx
     .update(s.studyPlans)
@@ -71,8 +84,8 @@ export async function transitionPlan(
 }
 
 /**
- * Nova versão em rascunho a partir de um plano (PLA-05): copia tópicos, conteúdos e
- * flashcards. O original continua como está (publicado, por exemplo) até a nova sair.
+ * Nova versão em rascunho a partir de um plano (PLA-05): copia tópicos, conteúdos,
+ * flashcards e questões. O original continua como está (publicado, por exemplo) até a nova sair.
  */
 export async function newPlanVersion(tx: Tx, input: { planId: string; authorId: string }) {
   const plan = await tx.query.studyPlans.findFirst({ where: eq(s.studyPlans.id, input.planId) });
@@ -144,6 +157,24 @@ export async function newPlanVersion(tx: Tx, input: { planId: string; authorId: 
         front: c.front,
         back: c.back,
         orderIndex: c.orderIndex,
+      });
+    }
+    // Questões: cada conceito (group_id) ganha um id novo, comum aos formatos dele.
+    const qs = await tx.select().from(s.questions).where(inArray(s.questions.topicId, oldIds));
+    const groupMap = new Map<string, string>();
+    for (const q of qs) {
+      if (!groupMap.has(q.groupId)) groupMap.set(q.groupId, randomUUID());
+      await tx.insert(s.questions).values({
+        tenantId: q.tenantId,
+        topicId: idMap.get(q.topicId)!,
+        groupId: groupMap.get(q.groupId)!,
+        kind: q.kind,
+        stem: q.stem,
+        options: q.options,
+        answer: q.answer,
+        modelAnswer: q.modelAnswer,
+        explanation: q.explanation,
+        orderIndex: q.orderIndex,
       });
     }
   }

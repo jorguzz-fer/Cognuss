@@ -121,12 +121,12 @@ describe('isolamento entre instituições', () => {
   it('gestora da escola A não altera nem apaga linhas da escola B', async () => {
     for (const table of await tenantTables()) {
       if (table === 'audit_logs') continue; // sem UPDATE/DELETE para kids_app (teste acima)
-      // Sem UPDATE para kids_app: convites (aceite só por função), consentimentos (imutáveis)
-      // e tokens do responsável.
-      const canUpdate = !['invitations', 'guardian_consents', 'guardian_access_tokens'].includes(
-        table,
-      );
-      const canDelete = table !== 'guardian_consents';
+      // Sem UPDATE para kids_app: convites (aceite só por função), consentimentos (imutáveis),
+      // tokens do responsável e tentativas (só as funções attempt_* gravam).
+      const readOnly = ['assessment_attempts', 'attempt_items', 'guardian_consents'];
+      const canUpdate =
+        !readOnly.includes(table) && !['invitations', 'guardian_access_tokens'].includes(table);
+      const canDelete = !readOnly.includes(table);
       const changed = await withTenantUser(app, escolaA, gestoraA, async (tx) => {
         const u = canUpdate
           ? await tx.execute(
