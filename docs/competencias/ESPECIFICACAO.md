@@ -1,6 +1,6 @@
 # Cognuss Competências · Portfólio, currículo digital e Meus Certificados
 
-Especificação para implementação, a partir do documento do Dr. Hugo e do Dr. Rafael (`referencias/COGNUSS_Competencias.doc`). Situação: **decisões tomadas em 23/11/2026** (seção 8); pronto para implementar a partir da K1. As integrações com LinkedIn e Coursera mudam em relação ao documento (seção 5), com a troca aceita (K-D4).
+Especificação para implementação, a partir do documento do Dr. Hugo e do Dr. Rafael (`referencias/COGNUSS_Competencias.doc`). Situação: **decisões tomadas em 23/11/2026** (seção 8); **K1 implementada** (ADR 0022). As integrações com LinkedIn e Coursera mudam em relação ao documento (seção 5), com a troca aceita (K-D4).
 
 ## 1. O que é
 

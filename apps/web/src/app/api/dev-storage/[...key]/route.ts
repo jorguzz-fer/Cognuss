@@ -7,7 +7,9 @@ export const dynamic = 'force-dynamic';
 // bucket do R2. Só responde quando esse driver está ativo; em produção ele nem é criado.
 function fsStorage() {
   const s = storage();
-  return s instanceof FsStorage ? s : null;
+  // O armazenamento fica num global do processo e pode ter sido criado por outra rota, com
+  // outra cópia da classe no pacote compilado: instanceof falharia. Confere pelo método.
+  return s && typeof (s as FsStorage).verify === 'function' ? (s as FsStorage) : null;
 }
 
 type Ctx = { params: Promise<{ key: string[] }> };
