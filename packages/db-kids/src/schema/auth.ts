@@ -11,6 +11,10 @@ export const authUsers = pgTable('auth_users', {
   emailVerified: boolean('email_verified').notNull().default(false),
   image: text('image'),
   twoFactorEnabled: boolean('two_factor_enabled').notNull().default(false),
+  // Login do aluno do Fundamental I sem e-mail (K-D07): "<código da turma>.<apelido>".
+  // Plugin username do Better Auth. Nulo para quem entra com e-mail.
+  username: text('username').unique(),
+  displayUsername: text('display_username'),
   createdAt: ts('created_at').notNull().defaultNow(),
   updatedAt: ts('updated_at').notNull().defaultNow(),
 });

@@ -54,3 +54,47 @@ export function pgCode(err: unknown): string | undefined {
   const e = err as { code?: string; cause?: { code?: string } };
   return e?.code ?? e?.cause?.code;
 }
+
+/**
+ * Estrutura de uma escola para os testes da Fase 1: matéria, turma do 3º ano, aluno na turma,
+ * professor na turma × matéria e um convite. Criada como dono (sem RLS).
+ */
+export async function seedSchool(
+  owner: Db,
+  tenantId: string,
+  people: { teacher: string; student: string; inviter: string },
+) {
+  const grade = await owner.query.grades.findFirst({
+    where: (g, { eq: e }) => e(g.tenantId, tenantId),
+  });
+  const [subject] = await owner
+    .insert(s.subjects)
+    .values({ tenantId, name: `Ciências ${randomUUID().slice(0, 4)}` })
+    .returning();
+  const code = randomUUID()
+    .replace(/[^a-z0-9]/g, '')
+    .slice(0, 6)
+    .padEnd(6, 'a');
+  const [klass] = await owner
+    .insert(s.classes)
+    .values({ tenantId, gradeId: grade!.id, name: `3º ${code}`, schoolYear: 2027, joinCode: code })
+    .returning();
+  await owner
+    .insert(s.classMembers)
+    .values({ tenantId, classId: klass!.id, userId: people.student });
+  await owner.insert(s.teacherAssignments).values({
+    tenantId,
+    classId: klass!.id,
+    subjectId: subject!.id,
+    userId: people.teacher,
+  });
+  await owner.insert(s.invitations).values({
+    tenantId,
+    email: `convidado-${code}@teste.kids`,
+    role: 'teacher',
+    tokenHash: randomUUID(),
+    invitedBy: people.inviter,
+    expiresAt: new Date(Date.now() + 86_400_000),
+  });
+  return { gradeId: grade!.id, subjectId: subject!.id, classId: klass!.id, joinCode: code };
+}

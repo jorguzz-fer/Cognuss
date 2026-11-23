@@ -110,13 +110,9 @@
         "auth_accounts_user_id_auth_users_id_fk": {
           "name": "auth_accounts_user_id_auth_users_id_fk",
           "tableFrom": "auth_accounts",
-          "columnsFrom": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
           "tableTo": "auth_users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -203,13 +199,9 @@
         "auth_sessions_user_id_auth_users_id_fk": {
           "name": "auth_sessions_user_id_auth_users_id_fk",
           "tableFrom": "auth_sessions",
-          "columnsFrom": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
           "tableTo": "auth_users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -218,9 +210,7 @@
       "uniqueConstraints": {
         "auth_sessions_token_unique": {
           "name": "auth_sessions_token_unique",
-          "columns": [
-            "token"
-          ],
+          "columns": ["token"],
           "nullsNotDistinct": false
         }
       },
@@ -298,13 +288,9 @@
         "auth_two_factors_user_id_auth_users_id_fk": {
           "name": "auth_two_factors_user_id_auth_users_id_fk",
           "tableFrom": "auth_two_factors",
-          "columnsFrom": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
           "tableTo": "auth_users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -378,9 +364,7 @@
       "uniqueConstraints": {
         "auth_users_email_unique": {
           "name": "auth_users_email_unique",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "nullsNotDistinct": false
         }
       },
@@ -540,28 +524,18 @@
         "grades_tenant_id_tenants_id_fk": {
           "name": "grades_tenant_id_tenants_id_fk",
           "tableFrom": "grades",
-          "columnsFrom": [
-            "tenant_id"
-          ],
+          "columnsFrom": ["tenant_id"],
           "tableTo": "tenants",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         },
         "grades_tenant_stage_fk": {
           "name": "grades_tenant_stage_fk",
           "tableFrom": "grades",
-          "columnsFrom": [
-            "tenant_id",
-            "stage"
-          ],
+          "columnsFrom": ["tenant_id", "stage"],
           "tableTo": "tenant_stages",
-          "columnsTo": [
-            "tenant_id",
-            "stage"
-          ],
+          "columnsTo": ["tenant_id", "stage"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -684,39 +658,27 @@
         "memberships_tenant_id_tenants_id_fk": {
           "name": "memberships_tenant_id_tenants_id_fk",
           "tableFrom": "memberships",
-          "columnsFrom": [
-            "tenant_id"
-          ],
+          "columnsFrom": ["tenant_id"],
           "tableTo": "tenants",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         },
         "memberships_user_id_auth_users_id_fk": {
           "name": "memberships_user_id_auth_users_id_fk",
           "tableFrom": "memberships",
-          "columnsFrom": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
           "tableTo": "auth_users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         },
         "memberships_invited_by_auth_users_id_fk": {
           "name": "memberships_invited_by_auth_users_id_fk",
           "tableFrom": "memberships",
-          "columnsFrom": [
-            "invited_by"
-          ],
+          "columnsFrom": ["invited_by"],
           "tableTo": "auth_users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "set null"
         }
@@ -756,13 +718,9 @@
         "platform_admins_user_id_auth_users_id_fk": {
           "name": "platform_admins_user_id_auth_users_id_fk",
           "tableFrom": "platform_admins",
-          "columnsFrom": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
           "tableTo": "auth_users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -824,13 +782,9 @@
         "tenant_stages_tenant_id_tenants_id_fk": {
           "name": "tenant_stages_tenant_id_tenants_id_fk",
           "tableFrom": "tenant_stages",
-          "columnsFrom": [
-            "tenant_id"
-          ],
+          "columnsFrom": ["tenant_id"],
           "tableTo": "tenants",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -839,10 +793,7 @@
       "uniqueConstraints": {
         "tenant_stages_tenant_stage_key": {
           "name": "tenant_stages_tenant_stage_key",
-          "columns": [
-            "tenant_id",
-            "stage"
-          ],
+          "columns": ["tenant_id", "stage"],
           "nullsNotDistinct": false
         }
       },
@@ -1057,13 +1008,9 @@
         "audit_logs_tenant_id_tenants_id_fk": {
           "name": "audit_logs_tenant_id_tenants_id_fk",
           "tableFrom": "audit_logs",
-          "columnsFrom": [
-            "tenant_id"
-          ],
+          "columnsFrom": ["tenant_id"],
           "tableTo": "tenants",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "set null"
         }
@@ -1079,45 +1026,27 @@
     "public.member_role": {
       "name": "member_role",
       "schema": "public",
-      "values": [
-        "manager",
-        "teacher",
-        "student"
-      ]
+      "values": ["manager", "teacher", "student"]
     },
     "public.membership_status": {
       "name": "membership_status",
       "schema": "public",
-      "values": [
-        "invited",
-        "active",
-        "removed"
-      ]
+      "values": ["invited", "active", "removed"]
     },
     "public.school_stage": {
       "name": "school_stage",
       "schema": "public",
-      "values": [
-        "fundamental",
-        "medio"
-      ]
+      "values": ["fundamental", "medio"]
     },
     "public.tenant_kind": {
       "name": "tenant_kind",
       "schema": "public",
-      "values": [
-        "public",
-        "private"
-      ]
+      "values": ["public", "private"]
     },
     "public.tenant_status": {
       "name": "tenant_status",
       "schema": "public",
-      "values": [
-        "active",
-        "suspended",
-        "closed"
-      ]
+      "values": ["active", "suspended", "closed"]
     }
   },
   "schemas": {},

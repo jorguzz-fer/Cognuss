@@ -111,12 +111,8 @@
           "name": "auth_accounts_user_id_auth_users_id_fk",
           "tableFrom": "auth_accounts",
           "tableTo": "auth_users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -204,12 +200,8 @@
           "name": "auth_sessions_user_id_auth_users_id_fk",
           "tableFrom": "auth_sessions",
           "tableTo": "auth_users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -219,9 +211,7 @@
         "auth_sessions_token_unique": {
           "name": "auth_sessions_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -299,12 +289,8 @@
           "name": "auth_two_factors_user_id_auth_users_id_fk",
           "tableFrom": "auth_two_factors",
           "tableTo": "auth_users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -379,9 +365,7 @@
         "auth_users_email_unique": {
           "name": "auth_users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -541,12 +525,8 @@
           "name": "grades_tenant_id_tenants_id_fk",
           "tableFrom": "grades",
           "tableTo": "tenants",
-          "columnsFrom": [
-            "tenant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -554,14 +534,8 @@
           "name": "grades_tenant_stage_fk",
           "tableFrom": "grades",
           "tableTo": "tenant_stages",
-          "columnsFrom": [
-            "tenant_id",
-            "stage"
-          ],
-          "columnsTo": [
-            "tenant_id",
-            "stage"
-          ],
+          "columnsFrom": ["tenant_id", "stage"],
+          "columnsTo": ["tenant_id", "stage"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -685,12 +659,8 @@
           "name": "memberships_tenant_id_tenants_id_fk",
           "tableFrom": "memberships",
           "tableTo": "tenants",
-          "columnsFrom": [
-            "tenant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -698,12 +668,8 @@
           "name": "memberships_user_id_auth_users_id_fk",
           "tableFrom": "memberships",
           "tableTo": "auth_users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -711,12 +677,8 @@
           "name": "memberships_invited_by_auth_users_id_fk",
           "tableFrom": "memberships",
           "tableTo": "auth_users",
-          "columnsFrom": [
-            "invited_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["invited_by"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -757,12 +719,8 @@
           "name": "platform_admins_user_id_auth_users_id_fk",
           "tableFrom": "platform_admins",
           "tableTo": "auth_users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -825,12 +783,8 @@
           "name": "tenant_stages_tenant_id_tenants_id_fk",
           "tableFrom": "tenant_stages",
           "tableTo": "tenants",
-          "columnsFrom": [
-            "tenant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -840,10 +794,7 @@
         "tenant_stages_tenant_stage_key": {
           "name": "tenant_stages_tenant_stage_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "tenant_id",
-            "stage"
-          ]
+          "columns": ["tenant_id", "stage"]
         }
       },
       "policies": {},
@@ -1058,12 +1009,8 @@
           "name": "audit_logs_tenant_id_tenants_id_fk",
           "tableFrom": "audit_logs",
           "tableTo": "tenants",
-          "columnsFrom": [
-            "tenant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1079,45 +1026,27 @@
     "public.member_role": {
       "name": "member_role",
       "schema": "public",
-      "values": [
-        "manager",
-        "teacher",
-        "student"
-      ]
+      "values": ["manager", "teacher", "student"]
     },
     "public.membership_status": {
       "name": "membership_status",
       "schema": "public",
-      "values": [
-        "invited",
-        "active",
-        "removed"
-      ]
+      "values": ["invited", "active", "removed"]
     },
     "public.school_stage": {
       "name": "school_stage",
       "schema": "public",
-      "values": [
-        "fundamental",
-        "medio"
-      ]
+      "values": ["fundamental", "medio"]
     },
     "public.tenant_kind": {
       "name": "tenant_kind",
       "schema": "public",
-      "values": [
-        "public",
-        "private"
-      ]
+      "values": ["public", "private"]
     },
     "public.tenant_status": {
       "name": "tenant_status",
       "schema": "public",
-      "values": [
-        "active",
-        "suspended",
-        "closed"
-      ]
+      "values": ["active", "suspended", "closed"]
     }
   },
   "schemas": {},

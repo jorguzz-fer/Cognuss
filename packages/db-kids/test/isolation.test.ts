@@ -9,7 +9,7 @@ import {
   withUser,
 } from '../src/client';
 import * as s from '../src/schema';
-import { addMember, connect, makeTenant, makeUser, pgCode } from './helpers';
+import { addMember, connect, makeTenant, makeUser, pgCode, seedSchool } from './helpers';
 
 // Blueprint §7 e SPEC Kids §13: a instituição A nunca lê nem escreve dados da instituição B.
 const { app, owner, appPool, ownerPool } = connect();
@@ -39,6 +39,11 @@ beforeAll(async () => {
     entityType: 'tenant',
     entityId: escolaB,
   });
+  const profB = await makeUser(owner);
+  const alunoB = await makeUser(owner);
+  await addMember(owner, escolaB, profB, 'teacher');
+  await addMember(owner, escolaB, alunoB, 'student');
+  await seedSchool(owner, escolaB, { teacher: profB, student: alunoB, inviter: gestorB });
 });
 
 afterAll(async () => {
@@ -110,10 +115,14 @@ describe('isolamento entre instituições', () => {
   it('gestora da escola A não altera nem apaga linhas da escola B', async () => {
     for (const table of await tenantTables()) {
       if (table === 'audit_logs') continue; // sem UPDATE/DELETE para kids_app (teste acima)
+      // invitations: sem UPDATE para kids_app (o aceite é só por invitation_accept).
+      const canUpdate = table !== 'invitations';
       const changed = await withTenantUser(app, escolaA, gestoraA, async (tx) => {
-        const u = await tx.execute(
-          sql`update ${sql.identifier(table)} set tenant_id = tenant_id where tenant_id = ${escolaB}`,
-        );
+        const u = canUpdate
+          ? await tx.execute(
+              sql`update ${sql.identifier(table)} set tenant_id = tenant_id where tenant_id = ${escolaB}`,
+            )
+          : { rowCount: 0 };
         const d = await tx.execute(
           sql`delete from ${sql.identifier(table)} where tenant_id = ${escolaB}`,
         );

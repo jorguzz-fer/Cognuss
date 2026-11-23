@@ -79,6 +79,8 @@ export const grades = pgTable(
   },
   (t) => [
     uniqueIndex('grades_tenant_stage_number_key').on(t.tenantId, t.stage, t.number),
+    // Alvo das FKs compostas de classes (tenant_id, grade_id).
+    unique('grades_tenant_id_key').on(t.tenantId, t.id),
     // O ano só existe se a etapa dele estiver cadastrada na mesma instituição.
     foreignKey({
       name: 'grades_tenant_stage_fk',
