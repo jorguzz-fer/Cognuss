@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { eq, sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
@@ -222,7 +223,7 @@ describe('Super Admin', () => {
           .insert(s.tenants)
           .values({
             name: 'Escola Nova',
-            slug: 'escola-nova-teste',
+            slug: `escola-nova-${randomUUID().slice(0, 8)}`,
             city: 'Recife',
             state: 'PE',
             kind: 'public',

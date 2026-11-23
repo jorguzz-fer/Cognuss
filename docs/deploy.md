@@ -116,7 +116,7 @@ O Kids sobe no mesmo compose, com app próprio (`kids`) e **banco próprio** (`c
 4. Confira `KIDS_APP_URL/api/health`, que deve responder `{"status":"ok","db":"ok"}`.
 5. Backup: acrescente o banco `cognuss_kids` ao dump diário do serviço `db` e ao teste mensal de restauração.
 
-Localmente: `pnpm kids:db:setup` cria papéis, banco, migrations e a escola de demonstração (usuários `superadmin@kids.test`, `gestor@kids.test`, `professor@kids.test` e `aluno@kids.test`, senha `gutta-demo-2026`); `pnpm kids:dev` sobe em `http://localhost:3100`.
+Localmente: `pnpm kids:db:setup` cria papéis, banco, migrations e a escola de demonstração (usuários `superadmin@kids.test`, `gestor@kids.test`, `professor@kids.test` e `aluno@kids.test`, senha `gutta-demo-2026`; e a aluna sem e-mail da turma 3º A, que entra em "Sou aluno" com o código `demo3a`, o usuário `luna` e a senha `gato-azul-42`); `pnpm kids:dev` sobe em `http://localhost:3100`.
 
 ## Atualizações
 

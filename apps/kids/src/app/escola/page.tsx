@@ -1,52 +1,97 @@
 import type { Metadata } from 'next';
-import { asc, gradeLabel, schema, stageLabel, withTenantUser } from '@gutta/db-kids';
+import Link from 'next/link';
+import { count, eq, isNull, schema, sql, withTenantUser } from '@gutta/db-kids';
 import { Card } from '@gutta/ui/card';
-import { EmptyState } from '@gutta/ui/states';
 import { AppShell } from '@/components/app-shell';
+import { Flash } from '@/components/flash';
+import { SchoolNav } from '@/components/school-nav';
 import { requireTenant } from '@/lib/auth/session';
 import { db } from '@/lib/db';
 
 export const metadata: Metadata = { title: 'Escola' };
 
-// Área do gestor. Na Fase 0 mostra a estrutura da escola ativa, lida pelo RLS da instituição.
-// Ativar etapas, anos e turmas chega na Fase 1 (EST-01 a EST-07).
-export default async function SchoolPage() {
+// Visão geral da gestão: o que falta configurar e os números da escola.
+export default async function SchoolPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ aviso?: string }>;
+}) {
+  const { aviso } = await searchParams;
   const ctx = await requireTenant(['manager'], '/escola');
-  const { stages, grades } = await withTenantUser(db(), ctx.tenantId, ctx.user.id, async (tx) => ({
-    stages: await tx.select().from(schema.tenantStages).orderBy(asc(schema.tenantStages.stage)),
-    grades: await tx
-      .select()
-      .from(schema.grades)
-      .orderBy(asc(schema.grades.stage), asc(schema.grades.number)),
-  }));
+  const n = await withTenantUser(db(), ctx.tenantId, ctx.user.id, async (tx) => {
+    const one = async (q: Promise<{ n: number }[]>) => (await q)[0]?.n ?? 0;
+    return {
+      grades: await one(
+        tx.select({ n: count() }).from(schema.grades).where(eq(schema.grades.active, true)),
+      ),
+      classes: await one(
+        tx.select({ n: count() }).from(schema.classes).where(isNull(schema.classes.archivedAt)),
+      ),
+      subjects: await one(
+        tx.select({ n: count() }).from(schema.subjects).where(isNull(schema.subjects.archivedAt)),
+      ),
+      teachers: await one(
+        tx
+          .select({ n: count() })
+          .from(schema.memberships)
+          .where(
+            sql`${schema.memberships.role} = 'teacher' and ${schema.memberships.status} = 'active'`,
+          ),
+      ),
+      students: await one(
+        tx
+          .select({ n: count() })
+          .from(schema.memberships)
+          .where(
+            sql`${schema.memberships.role} = 'student' and ${schema.memberships.status} = 'active'`,
+          ),
+      ),
+    };
+  });
+  const steps = [
+    {
+      done: n.grades > 0,
+      href: '/escola/estrutura',
+      text: 'Ative as etapas e os anos que a escola oferece',
+    },
+    { done: n.subjects > 0, href: '/escola/materias', text: 'Cadastre as matérias' },
+    { done: n.classes > 0, href: '/escola/turmas', text: 'Crie as turmas' },
+    { done: n.teachers > 0, href: '/escola/pessoas', text: 'Convide os professores' },
+    { done: n.students > 0, href: '/escola/turmas', text: 'Cadastre os alunos nas turmas' },
+  ];
+  const next = steps.find((s) => !s.done);
   return (
     <AppShell area="Gestão" tenantName={ctx.tenantName} canSwitch={ctx.user.memberships.length > 1}>
-      <h1 className="text-3xl">Estrutura da escola</h1>
-      {stages.length === 0 ? (
-        <EmptyState title="Nenhuma etapa ativa">
-          A ativação de etapas e anos chega na próxima fase.
-        </EmptyState>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {stages.map((s) => (
-            <Card key={s.id}>
-              <h2 className="text-xl">{stageLabel(s.stage)}</h2>
-              <ul className="mt-3 flex flex-wrap gap-2">
-                {grades
-                  .filter((g) => g.stage === s.stage && g.active)
-                  .map((g) => (
-                    <li
-                      key={g.id}
-                      className="rounded-[var(--radius)] border border-line px-3 py-1 text-sm"
-                    >
-                      {gradeLabel(g.stage, g.number)}
-                    </li>
-                  ))}
-              </ul>
-            </Card>
-          ))}
-        </div>
-      )}
+      <h1 className="text-3xl">{ctx.tenantName}</h1>
+      <SchoolNav current="/escola" />
+      <Flash code={aviso} />
+      {next ? (
+        <Card>
+          <p className="font-mono text-xs font-semibold tracking-widest text-muted uppercase">
+            Próximo passo
+          </p>
+          <p className="mt-1 text-lg">
+            <Link href={next.href}>{next.text}</Link>
+          </p>
+          <p className="mt-1 text-sm text-muted">
+            {steps.filter((s) => s.done).length} de {steps.length} passos feitos
+          </p>
+        </Card>
+      ) : null}
+      <dl className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+        {[
+          ['Anos ativos', n.grades],
+          ['Turmas', n.classes],
+          ['Matérias', n.subjects],
+          ['Professores', n.teachers],
+          ['Alunos', n.students],
+        ].map(([label, value]) => (
+          <Card key={label as string}>
+            <dt className="text-sm text-muted">{label}</dt>
+            <dd className="font-display text-3xl tabular">{value}</dd>
+          </Card>
+        ))}
+      </dl>
     </AppShell>
   );
 }

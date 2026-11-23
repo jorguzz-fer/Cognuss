@@ -11,7 +11,7 @@ export default async function TwoFactorSettingsPage() {
   return (
     <AuthShell
       title="Verificação em duas etapas"
-      lead="Gestores e o Super Admin precisam de um código do celular, além da senha."
+      lead="Gestão, professores e o Super Admin precisam de um código do celular, além da senha."
     >
       {user.twoFactorEnabled ? (
         <Alert tone="success">Já está ativa nesta conta.</Alert>

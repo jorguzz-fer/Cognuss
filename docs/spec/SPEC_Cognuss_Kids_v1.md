@@ -134,7 +134,7 @@ Os papéis são **por instituição**, guardados em `memberships` (usuário × i
 | Ver dados de aluno de qualquer escola | só com motivo registrado na auditoria [ENG] | | | |
 
 Regras:
-- **2FA (TOTP) obrigatório** para Super Admin e Gestor. Para Professor fica como decisão aberta (D-K05).
+- **2FA (TOTP) obrigatório** para Super Admin, Gestor e Professor (K-D11). O aluno não usa 2FA.
 - O aluno do Fundamental I (1º ao 5º ano) pode entrar com **código da turma + nome de usuário + senha simples**, sem e-mail (K-D07).
 - A identidade vem da sessão. O tenant ativo vem da sessão e é validado contra `memberships`, nunca lido do corpo da requisição.
 
@@ -557,8 +557,9 @@ Mesmas regras do Cognuss:
 ### Fase 0: fundação
 `apps/kids` e `packages/db-kids` criados, papéis `kids_owner`/`kids_app`, `withTenantUser`, teste de isolamento de tenant na CI, Better Auth com 2FA, serviço `kids` no Compose, extração do design system para `packages/ui` sem mudar o visual do Cognuss (6.5), ADR 0022 aceito.
 
-### Fase 1: instituição e estrutura
+### Fase 1: instituição e estrutura (entregue em 23/11/2026)
 INS-01 a 03, EST-01 a 03, EST-05 a 07, USR-01 a 04, USR-06 e 07, painel mínimo do Super Admin e do gestor.
+Ficaram para a Fase 2: o e-mail do responsável na importação de alunos (USR-02), que entra com o consentimento (RES), e o bloqueio por turma depois de várias senhas erradas (seção 10.2); por enquanto vale o limite de tentativas por minuto do login.
 
 ### Fase 2: plano e estudo (MVP utilizável)
 PLA-01 a 03, PLA-05 e 08 (seed de Ciências do piloto), CON-01 a 04, PAI-01, RES-01 a 03 e RES-05. **Critério:** uma escola de demonstração com o 3º ano, uma turma e o plano de Ciências publicado, e um aluno estudando com o consentimento do responsável.
@@ -614,6 +615,7 @@ INS-06, PAI-05, login do responsável, biblioteca compartilhada, IA.
 | K-D08 | Onde ficam os dados (era D-K09) | **Banco separado** (`cognuss_kids`) no mesmo Postgres, com `tenant_id` + RLS (ADR 0022). | Fernando, 20/11/2026 |
 | K-D09 | Tema padrão (era parte de D-K08) | **Escuro, como o Cognuss**, para todas as etapas, com o botão para o claro. O piloto mede quantas crianças do Fundamental I trocam para o claro. | Fernando, 20/11/2026 |
 | K-D10 | Consentimento do responsável (era parte de D-K01) | **Online, com o papel como alternativa.** O responsável recebe um link e autoriza por finalidade. A escola pode registrar uma autorização em papel com o arquivo anexado (RES-04). Sem autorização, o aluno não estuda (RES-03). Vale para todos os menores de 18 anos até o parecer jurídico (D-K01). | Fernando, 20/11/2026 |
+| K-D11 | 2FA do professor (era D-K05) | **Obrigatório** no primeiro acesso, como para a gestão. | Fernando, 23/11/2026 |
 
 ### 14.2 Abertas
 
@@ -622,7 +624,6 @@ INS-06, PAI-05, login do responsável, biblioteca compartilhada, IA.
 | D-K01 | Contrato com a escola (controladora × operadora) e parecer jurídico sobre o art. 14 | Levar ao jurídico o modelo de K-D10 e o contrato de tratamento com a escola. | Piloto com escola real |
 | D-K03 | Biblioteca compartilhada de planos | Reavaliar depois do piloto. | Não bloqueia |
 | D-K04 | O responsável tem login próprio? | Na v1, só links com token (consentimento e pedidos). Conta própria na fase 5. | Fase 5 |
-| D-K05 | 2FA obrigatório para Professor | Opcional na v1, obrigatório se o professor puder exportar dados. | Fase 1 |
 | D-K06 | Endereço por instituição (subdomínio) | Um domínio só, com escolha da instituição no login. | Não bloqueia |
 | D-K07 | Modelo comercial (por aluno ou por escola) | | Antes da venda |
 | D-K08 | Domínio do Kids | Domínio próprio (exemplo: `kids.` no domínio do Cognuss). | Fase 2 |

@@ -14,7 +14,7 @@ export default async function TwoFactorPage({
   return (
     <AuthShell
       title="Verificação em duas etapas"
-      lead="Sua conta administra dados de alunos, então pedimos um segundo fator."
+      lead="Contas de gestão e de professores pedem um código do celular, além da senha."
     >
       <TwoFactorForm next={safeNext(next)} />
     </AuthShell>

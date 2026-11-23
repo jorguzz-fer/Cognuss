@@ -31,9 +31,10 @@ describe('instituição ativa', () => {
 });
 
 describe('regras de acesso', () => {
-  it('2FA para gestor e Super Admin', () => {
+  it('2FA para gestor, professor e Super Admin; aluno não', () => {
     expect(needsTwoFactor(['manager'], false)).toBe(true);
-    expect(needsTwoFactor(['teacher', 'student'], false)).toBe(false);
+    expect(needsTwoFactor(['teacher', 'student'], false)).toBe(true);
+    expect(needsTwoFactor(['student'], false)).toBe(false);
     expect(needsTwoFactor([], true)).toBe(true);
   });
 

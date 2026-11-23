@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { eq, sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { withAnonymous, withTenantUser, withUser } from '../src/client';
@@ -211,6 +212,8 @@ describe('aluno sem e-mail (USR-02, USR-03, K-D07)', () => {
 });
 
 describe('convites (USR-01, INS-03)', () => {
+  // Único por rodada: o banco de teste local é reaproveitado entre execuções.
+  const run = randomUUID().slice(0, 8);
   async function invite(email: string, role: 'manager' | 'teacher' = 'teacher', ttl = 86_400_000) {
     const { token, hash } = newInviteToken();
     await withTenantUser(app, escola, gestora, (tx) =>
@@ -227,7 +230,7 @@ describe('convites (USR-01, INS-03)', () => {
   }
 
   it('sem sessão, o convite só é lido pela função, pelo hash do token', async () => {
-    const token = await invite('nova.prof@teste.kids');
+    const token = await invite(`nova.prof-${run}@teste.kids`);
     const direct = await withAnonymous(app, (tx) => tx.select().from(s.invitations));
     expect(direct).toHaveLength(0);
     const r = await withAnonymous(app, (tx) =>
@@ -235,15 +238,17 @@ describe('convites (USR-01, INS-03)', () => {
         sql`select email, status, role from invitation_lookup(${hashToken(token)})`,
       ),
     );
-    expect(r.rows).toEqual([{ email: 'nova.prof@teste.kids', status: 'open', role: 'teacher' }]);
+    expect(r.rows).toEqual([
+      { email: `nova.prof-${run}@teste.kids`, status: 'open', role: 'teacher' },
+    ]);
   });
 
   it('aceite cria o vínculo, usa o convite uma vez e confere o e-mail da conta', async () => {
-    const token = await invite('aceita@teste.kids');
+    const token = await invite(`aceita-${run}@teste.kids`);
     const certo = await makeUser(owner);
     await owner
       .update(s.authUsers)
-      .set({ email: 'aceita@teste.kids' })
+      .set({ email: `aceita-${run}@teste.kids` })
       .where(eq(s.authUsers.id, certo));
     const errado = await makeUser(owner);
     await expect(
@@ -263,11 +268,11 @@ describe('convites (USR-01, INS-03)', () => {
   });
 
   it('convite vencido não é aceito', async () => {
-    const token = await invite('vencido@teste.kids', 'teacher', -1000);
+    const token = await invite(`vencido-${run}@teste.kids`, 'teacher', -1000);
     const u = await makeUser(owner);
     await owner
       .update(s.authUsers)
-      .set({ email: 'vencido@teste.kids' })
+      .set({ email: `vencido-${run}@teste.kids` })
       .where(eq(s.authUsers.id, u));
     const look = await withAnonymous(app, (tx) =>
       tx.execute<{ status: string }>(

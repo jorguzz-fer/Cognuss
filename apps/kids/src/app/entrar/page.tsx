@@ -12,7 +12,7 @@ export default async function SignInPage({
 }) {
   const { next } = await searchParams;
   return (
-    <AuthShell title="Entrar" lead="Use o e-mail cadastrado pela sua escola.">
+    <AuthShell title="Entrar" lead="O acesso é criado pela sua escola.">
       <SignInForm next={safeNext(next)} />
     </AuthShell>
   );

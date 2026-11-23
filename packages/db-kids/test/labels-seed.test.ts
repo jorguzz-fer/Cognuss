@@ -24,14 +24,20 @@ describe('rótulos (EST-03)', () => {
 });
 
 describe('seed da escola de demonstração', () => {
-  it('é idempotente e cria o 3º ao 9º ano', async () => {
+  it('é idempotente; 1º ao 9º cadastrados e só do 3º ao 9º ativos', async () => {
     const a = await runSeed(owner);
     const b = await runSeed(owner);
     expect(b.tenantId).toBe(a.tenantId);
     const grades = await withTenantUser(app, a.tenantId, a.manager, (tx) =>
       tx.select().from(s.grades).where(eq(s.grades.tenantId, a.tenantId)),
     );
-    expect(grades.map((g) => g.number).sort((x, y) => x - y)).toEqual([3, 4, 5, 6, 7, 8, 9]);
+    expect(
+      grades
+        .filter((g) => g.active)
+        .map((g) => g.number)
+        .sort((x, y) => x - y),
+    ).toEqual([3, 4, 5, 6, 7, 8, 9]);
+    expect(grades).toHaveLength(9);
     expect(DEMO_USERS.manager).toContain('@kids.test');
   });
 });

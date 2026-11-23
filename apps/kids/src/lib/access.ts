@@ -27,9 +27,9 @@ export function rolesIn(tenantId: string, memberships: Membership[]): MemberRole
   return memberships.filter((m) => m.tenantId === tenantId).map((m) => m.role);
 }
 
-/** Gestor precisa de 2FA (SPEC Kids, seção 3). Professor: decisão aberta D-K05. */
+/** Gestor e professor precisam de 2FA (SPEC Kids, seção 3; K-D11). O aluno, não. */
 export function needsTwoFactor(roles: MemberRole[], platformAdmin: boolean): boolean {
-  return platformAdmin || roles.includes('manager');
+  return platformAdmin || roles.includes('manager') || roles.includes('teacher');
 }
 
 /** Primeira tela depois do login, pelo papel mais alto na instituição ativa (seção 4.2). */

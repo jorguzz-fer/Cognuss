@@ -39,3 +39,16 @@ export function resetPasswordEmail(name: string, url: string) {
     tag: 'reset_password',
   };
 }
+
+const ROLE_LABEL = { manager: 'gestão', teacher: 'professor' } as const;
+
+export function inviteEmail(tenantName: string, role: 'manager' | 'teacher', url: string) {
+  const subject = `Convite para ${tenantName} no Cognuss Kids`;
+  const body = `Você foi convidado para a equipe de ${esc(tenantName)}, com acesso de ${ROLE_LABEL[role]}. O convite vale por 7 dias.`;
+  return {
+    subject,
+    html: layout(subject, body, { label: 'Aceitar convite', url }),
+    text: `Você foi convidado para ${tenantName} no Cognuss Kids, com acesso de ${ROLE_LABEL[role]}. O convite vale por 7 dias:\n${url}`,
+    tag: 'invite',
+  };
+}

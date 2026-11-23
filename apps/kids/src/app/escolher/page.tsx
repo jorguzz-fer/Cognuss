@@ -3,11 +3,10 @@ import { Alert } from '@gutta/ui/card';
 import { buttonClass } from '@gutta/ui/button';
 import { AuthShell } from '@/components/auth/auth-shell';
 import { requireUser } from '@/lib/auth/session';
+import { ROLE_LABEL as ROLE } from '@/lib/labels';
 import { chooseTenant } from './actions';
 
 export const metadata: Metadata = { title: 'Escolha a escola' };
-
-const ROLE: Record<string, string> = { manager: 'Gestão', teacher: 'Professor', student: 'Aluno' };
 
 export default async function ChooseTenantPage({
   searchParams,
