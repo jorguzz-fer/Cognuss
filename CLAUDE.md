@@ -16,7 +16,7 @@ Plataforma de estudo diário para o curso de Medicina. O nome da marca é **Cogn
 ```
 public/            site estático (página de espera e /roadmap), servido pelo Dockerfile raiz. Não mexer sem pedido.
 apps/web/          Next.js 16 (App Router): telas, route handlers /api/v1, server actions
-apps/kids/         Cognuss Kids (ADR 0022): app Next.js próprio, banco próprio, RLS por instituição
+apps/kids/         Cognuss Kids (ADR 0022): app Next.js próprio, RLS por instituição; deploy em infra/kids
 packages/core/     regras de domínio puras (SRS, domínio, recomendação, normalização). Sem I/O.
 packages/db/       schema Drizzle, migrations SQL, RLS, seeds, withUser()
 packages/db-kids/  banco do Kids: schema, migrations, RLS por tenant, withTenantUser(), withPlatformAdmin()

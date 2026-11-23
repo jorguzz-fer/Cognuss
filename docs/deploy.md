@@ -98,25 +98,82 @@ Os vetores vêm da Voyage AI (decisão do Fernando, 14/11/2026). Cadastre `VOYAG
 
 ## Cognuss Kids (ADR 0022)
 
-O Kids sobe no mesmo compose, com app próprio (`kids`) e **banco próprio** (`cognuss_kids`) no mesmo Postgres. Só os papéis `kids_owner` e `kids_app` conectam a esse banco; o `gutta_app` não alcança os dados das crianças, e o `kids_app` não alcança os do Cognuss.
+O Kids é **outro recurso no Coolify**, com deploy, banco e backup próprios. Um deploy do Kids não reinicia o Cognuss, e o contrário também vale. Os dados das crianças ficam num **Postgres separado**: nenhum papel do Cognuss alcança esse servidor.
 
-1. Variáveis novas no Coolify (gere as senhas com `openssl rand -hex 32`: vão dentro da URL de conexão):
+| Recurso | O que sobe | Build | Domínio |
+| --- | --- | --- | --- |
+| Cognuss Kids | `kids` (Next.js), `db` (Postgres 16 só do Kids), `db-roles` (passo de papéis) | Docker Compose, Base Directory `/infra/kids`, arquivo `/compose.yml` | o do Kids (D-K08) |
+
+### Primeira vez
+
+1. No Coolify: **New Resource → Docker Compose**, mesmo repositório, branch `main` (ou `cognuss-kids` para testar antes do merge), **Base Directory `/infra/kids`** e arquivo **`/compose.yml`**. O build usa a raiz do repositório como contexto (`../..`), porque o Kids usa os pacotes do monorepo.
+2. Variáveis (aba Environment Variables). Gere as senhas com `openssl rand -hex 32`: elas vão dentro da URL de conexão.
 
    | Variável | Observação |
    | --- | --- |
-   | `KIDS_APP_URL` | endereço do Kids, sem barra no fim (domínio em aberto, D-K08) |
+   | `KIDS_APP_URL` | endereço do Kids, sem barra no fim |
    | `KIDS_BETTER_AUTH_SECRET` | 32+ caracteres; **diferente** do `BETTER_AUTH_SECRET` do Cognuss |
-   | `KIDS_OWNER_PASSWORD` | dono do banco do Kids; usado só pelas migrations |
-   | `KIDS_APP_PASSWORD` | papel da aplicação do Kids (sem BYPASSRLS) |
+   | `KIDS_POSTGRES_PASSWORD` | superusuário do Postgres do Kids (só administração e o passo `db-roles`) |
+   | `KIDS_OWNER_PASSWORD` | dono do banco `cognuss_kids`; usado só pelas migrations |
+   | `KIDS_APP_PASSWORD` | papel da aplicação (sem BYPASSRLS) |
    | `KIDS_BOOTSTRAP_ADMIN_EMAILS` | e-mails que viram Super Admin no start, se a conta existir e o e-mail estiver confirmado |
-   | `KIDS_MAIL_FROM` | opcional; remetente do Kids no Resend (usa o mesmo `RESEND_API_KEY`) |
+   | `RESEND_API_KEY` | a mesma chave do Cognuss; sem ela, convites e links do responsável só vão para o log |
+   | `KIDS_MAIL_FROM` | opcional; remetente do Kids no Resend |
 
-2. Domínio no serviço `kids`, porta `3100`.
-3. A cada deploy, o serviço `db-kids-roles` roda `kids-roles.sh` (dentro da imagem do `db`) e cria ou atualiza os papéis e o banco. Ele é idempotente e também funciona no volume que já existe em produção, onde o init do Postgres não roda de novo. Depois, o `kids` aplica as migrations como `kids_owner` e só então sobe.
-4. Confira `KIDS_APP_URL/api/health`, que deve responder `{"status":"ok","db":"ok"}`.
-5. Backup: acrescente o banco `cognuss_kids` ao dump diário do serviço `db` e ao teste mensal de restauração.
+3. Domínio no serviço `kids`, porta `3100`. DNS: registro `A` do subdomínio apontando para o mesmo servidor. O Coolify emite o HTTPS, que a resposta por voz exige.
+4. **Watch Paths** do recurso (para só o que é do Kids disparar deploy automático):
 
-Localmente: `pnpm kids:db:setup` cria papéis, banco, migrations e a escola de demonstração (usuários `superadmin@kids.test`, `gestor@kids.test`, `professor@kids.test` e `aluno@kids.test`, senha `gutta-demo-2026`; e a aluna sem e-mail da turma 3º A, que entra em "Sou aluno" com o código `demo3a`, o usuário `luna` e a senha `gato-azul-42`); `pnpm kids:dev` sobe em `http://localhost:3100`.
+   ```
+   apps/kids/**
+   packages/db-kids/**
+   packages/ui/**
+   packages/core/**
+   infra/kids/**
+   pnpm-lock.yaml
+   ```
+
+5. Deploy. A cada deploy:
+   - o `db-roles` roda `kids-roles.sh` (dentro da imagem `cognuss-kids-db`), cria ou atualiza `kids_owner`, `kids_app` e o banco `cognuss_kids`, e termina. É idempotente: vale no volume novo e no que já existe, e é por ele que uma senha trocada no Coolify chega ao banco;
+   - o `kids` aplica as migrations como `kids_owner` e só então sobe.
+6. Confira `KIDS_APP_URL/api/health`, que deve responder `{"status":"ok","db":"ok"}`.
+7. Primeiro acesso:
+   - crie a sua conta;
+   - no próximo deploy ou restart, o bootstrap transforma você em Super Admin;
+   - ative o 2FA;
+   - em `/plataforma`, cadastre a primeira escola.
+
+### Backup
+
+No Coolify, em **Scheduled Backups** do serviço `db` **deste recurso**, configure o dump diário do banco `cognuss_kids`, com retenção de 14 dias e destino S3/R2, separado do backup do Cognuss. Teste a restauração uma vez por mês, como no Cognuss.
+
+### Recurso do Cognuss
+
+Para um commit só do Kids não redeployar o Cognuss, ponha nos Watch Paths do recurso do Cognuss (Base Directory `/infra`) só os caminhos dele:
+
+```
+apps/web/**
+apps/worker/**
+packages/ai/**
+packages/contracts/**
+packages/core/**
+packages/db/**
+packages/jobs/**
+packages/storage/**
+packages/ui/**
+infra/compose.yml
+infra/postgres/**
+pnpm-lock.yaml
+```
+
+Os pacotes compartilhados (`packages/ui`, `packages/core`) e o `pnpm-lock.yaml` disparam os dois recursos, como deve ser.
+
+### Localmente
+
+`pnpm kids:db:setup` cria papéis, banco, migrations e a escola de demonstração:
+- usuários `superadmin@kids.test`, `gestor@kids.test`, `professor@kids.test` e `aluno@kids.test`, todos com a senha `gutta-demo-2026`;
+- a aluna sem e-mail da turma 3º A, que entra em "Sou aluno" com o código `demo3a`, o usuário `luna` e a senha `gato-azul-42`.
+
+`pnpm kids:dev` sobe em `http://localhost:3100`. Para subir como no Coolify: `docker compose -f infra/kids/compose.yml --env-file <arquivo> up -d --build`.
 
 ## Atualizações
 

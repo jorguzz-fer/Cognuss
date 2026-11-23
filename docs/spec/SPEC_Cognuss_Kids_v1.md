@@ -342,7 +342,7 @@ A decisão está no **ADR 0022**: o Kids é um novo app do mesmo monorepo (`apps
 | §2 Stack | TypeScript, Next.js 16, Drizzle, PostgreSQL 16, Redis, R2, Tailwind 4. | Next.js no lugar de NestJS + React, desvio já registrado no ADR 0001. |
 | §3 Arquitetura | `packages/core` (regras puras: nota, recuperação, SRS, liberação do plano) → serviços → rotas. Efeitos colaterais (e-mails, consentimento) via outbox e fila, com nova tentativa e fila de mortos. | Nenhum. |
 | §4 Monorepo | pnpm workspaces. Novos: `apps/kids`, `packages/db-kids`. Compartilhados: `core`, `contracts`, `storage`, `jobs`. | Nenhum. |
-| §5 Deploy | Mesmo projeto Coolify. Serviço `kids` novo no `infra/compose.yml`, que usa o `db` e o `redis` existentes e não publica porta. As migrations do Kids rodam no start do container `kids`, como `kids_owner`. | O backup diário passa a incluir o banco `cognuss_kids`. Teste de restauração dos dois bancos. RPO 24 h e RTO 4 h. Ambiente de homologação do Kids igual ao de produção antes do piloto com escola. Segredos só nas variáveis do Coolify, listados em `.env.example`. **[ENG]** |
+| §5 Deploy | Recurso próprio no Coolify (`infra/kids/compose.yml`), com Postgres próprio, deploy e Watch Paths separados do Cognuss (K-D12). Nada publica porta. As migrations do Kids rodam no start do container `kids`, como `kids_owner`. | Backup diário próprio do banco `cognuss_kids`. Teste de restauração dos dois bancos. RPO 24 h e RTO 4 h. Ambiente de homologação do Kids igual ao de produção antes do piloto com escola. Segredos só nas variáveis do Coolify, listados em `.env.example`. **[ENG]** |
 | §6 Segurança | Cookie httpOnly/Secure/SameSite, Argon2id, 2FA obrigatório para Super Admin e Gestor, RBAC por membership no servidor, rate limit e lockout progressivo, CSP, URL assinada para arquivos, gitleaks, CodeQL e varredura de imagem na CI. | O aluno do Fundamental I entra sem e-mail (K-D07), com lockout por turma e usuário. A recuperação de senha passa pelo professor e fica na auditoria (USR-07). |
 | **§7 Multitenancy** | **Aplica-se integralmente.** Banco compartilhado, schema compartilhado, `tenant_id` + RLS: o padrão do blueprint. Cada requisição abre uma transação com `SET LOCAL app.tenant_id` e `app.user_id`. O papel `kids_app` não tem BYPASSRLS. O tenant aparece em todas as camadas: sessão (tenant ativo validado contra `memberships`), cache (chaves `t:{tenant}:…`), armazenamento (`t/{tenant}/…`), registros (`tenant_id` no log), filas (`tenant_id` no conteúdo do trabalho). Usuário em vários tenants via `memberships`. Ciclo de vida: provisionamento com seed de matérias, suspensão, exportação e exclusão auditada (INS-02, INS-05). Dados globais (lista de etapas e anos, lista BNCC sugerida) ficam separados e são só leitura. | **Teste obrigatório na CI: o tenant A nunca lê nem escreve dados do tenant B, em toda tabela.** Índices compostos começam por `tenant_id`. |
 | §8 API-first | **Não se aplica na v1**: não há terceiros consumindo a API. | Se entrar integração com sistema escolar, aplicar a §8 inteira (OAuth2 Client Credentials, escopos, webhooks com HMAC). |
@@ -367,7 +367,7 @@ packages/
   contracts/      + rotas do Kids
   ui/             novo: tokens, fontes e componentes do Cognuss, usados por web e kids
   storage/, jobs/ sem mudança de interface
-infra/compose.yml + serviço kids
+infra/kids/         compose.yml (kids, db, db-roles) e a imagem do Postgres do Kids
 ```
 
 ---
@@ -620,6 +620,7 @@ INS-06, PAI-05, login do responsável, biblioteca compartilhada, IA.
 | K-D09 | Tema padrão (era parte de D-K08) | **Escuro, como o Cognuss**, para todas as etapas, com o botão para o claro. O piloto mede quantas crianças do Fundamental I trocam para o claro. | Fernando, 20/11/2026 |
 | K-D10 | Consentimento do responsável (era parte de D-K01) | **Online, com o papel como alternativa.** O responsável recebe um link e autoriza por finalidade. A escola pode registrar uma autorização em papel com o arquivo anexado (RES-04). Sem autorização, o aluno não estuda (RES-03). Vale para todos os menores de 18 anos até o parecer jurídico (D-K01). | Fernando, 20/11/2026 |
 | K-D11 | 2FA do professor (era D-K05) | **Obrigatório** no primeiro acesso, como para a gestão. | Fernando, 23/11/2026 |
+| K-D12 | Deploy do Kids | **Recurso próprio no Coolify, com Postgres próprio** (`infra/kids/compose.yml`). Um deploy do Kids não reinicia o Cognuss. | Fernando, 23/11/2026 |
 
 ### 14.2 Abertas
 

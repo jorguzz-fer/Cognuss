@@ -1,0 +1,78 @@
+# Cognuss Kids no Coolify (ADR 0022): recurso próprio, separado do Cognuss.
+# Build pack "Docker Compose", Base Directory /infra/kids, arquivo /compose.yml.
+# O contexto do build é a raiz do repositório (../..): o Kids usa pacotes do monorepo
+# (packages/ui, packages/core, packages/db-kids).
+#
+# Variáveis definidas no Coolify (nunca no repositório):
+#   KIDS_APP_URL, KIDS_BETTER_AUTH_SECRET, KIDS_POSTGRES_PASSWORD, KIDS_OWNER_PASSWORD,
+#   KIDS_APP_PASSWORD, KIDS_BOOTSTRAP_ADMIN_EMAILS, RESEND_API_KEY, KIDS_MAIL_FROM (opcional)
+name: cognuss-kids
+
+services:
+  kids:
+    image: cognuss-kids:latest
+    build:
+      context: ../..
+      dockerfile: apps/kids/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      db-roles:
+        condition: service_completed_successfully
+    environment:
+      APP_URL: ${KIDS_APP_URL}
+      BETTER_AUTH_SECRET: ${KIDS_BETTER_AUTH_SECRET}
+      KIDS_DATABASE_URL: postgres://kids_app:${KIDS_APP_PASSWORD}@db:5432/cognuss_kids
+      KIDS_DATABASE_OWNER_URL: postgres://kids_owner:${KIDS_OWNER_PASSWORD}@db:5432/cognuss_kids
+      KIDS_BOOTSTRAP_ADMIN_EMAILS: ${KIDS_BOOTSTRAP_ADMIN_EMAILS:-}
+      DB_POOL_MAX: ${KIDS_DB_POOL_MAX:-10}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      MAIL_FROM: ${KIDS_MAIL_FROM:-Cognuss Kids <nao-responda@gutta.tudomudou.com.br>}
+    # Só na rede interna; o proxy do Coolify chega por ela. Domínio no serviço kids, porta 3100.
+    expose:
+      - '3100'
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:3100/api/health >/dev/null || exit 1']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  # Postgres só do Kids: os dados das crianças ficam num servidor separado do Cognuss.
+  db:
+    image: cognuss-kids-db:16
+    build:
+      context: ./postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${KIDS_POSTGRES_PASSWORD}
+    volumes:
+      - cognuss-kids-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # Sem "ports": o banco só é alcançável pela rede interna deste compose.
+
+  # Papéis kids_owner e kids_app e o banco cognuss_kids. Roda a cada deploy (idempotente) e
+  # termina, antes do kids.
+  db-roles:
+    image: cognuss-kids-db:16
+    build:
+      context: ./postgres
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: 'no'
+    environment:
+      PGHOST: db
+      PGPASSWORD: ${KIDS_POSTGRES_PASSWORD}
+      KIDS_OWNER_PASSWORD: ${KIDS_OWNER_PASSWORD}
+      KIDS_APP_PASSWORD: ${KIDS_APP_PASSWORD}
+    entrypoint: ['/usr/local/bin/kids-roles.sh']
+
+volumes:
+  cognuss-kids-pg:

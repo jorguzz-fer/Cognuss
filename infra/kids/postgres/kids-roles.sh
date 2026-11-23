@@ -1,7 +1,8 @@
 #!/bin/sh
-# Papéis e banco do Cognuss Kids (ADR 0022). Idempotente: roda a cada deploy pelo serviço
-# db-kids-roles do compose, antes das migrations do Kids. Vale para um volume novo e para o
-# volume que já existe em produção (o init do Postgres só roda na criação do volume).
+# Papéis e banco do Cognuss Kids (ADR 0022), no Postgres próprio do Kids. Idempotente: roda a
+# cada deploy pelo serviço db-roles de infra/kids/compose.yml, antes das migrations. Vale para
+# um volume novo e para um que já existe (o init do Postgres só roda na criação do volume), e
+# é também como uma senha trocada no Coolify chega ao banco.
 # Mesma lógica de packages/db-kids/src/scripts/roles.ts.
 set -eu
 : "${KIDS_DB:=cognuss_kids}"

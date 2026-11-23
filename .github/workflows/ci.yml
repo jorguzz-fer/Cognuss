@@ -154,6 +154,16 @@ jobs:
           load: true
           cache-from: type=gha,scope=worker
           cache-to: type=gha,mode=max,scope=worker
+      - name: Compose do Kids válido (recurso próprio no Coolify, infra/kids)
+        env:
+          KIDS_APP_URL: https://kids.exemplo.test
+          KIDS_BETTER_AUTH_SECRET: ci-ci-ci-ci-ci-ci-ci-ci-ci-ci-ci-ci
+          KIDS_POSTGRES_PASSWORD: ci
+          KIDS_OWNER_PASSWORD: ci
+          KIDS_APP_PASSWORD: ci
+        run: docker compose -f infra/kids/compose.yml config -q
+      - name: Imagem do Postgres do Kids
+        run: docker build -q -t cognuss-kids-db:ci infra/kids/postgres
       - name: Imagem do Kids (ADR 0022)
         uses: docker/build-push-action@v6
         with:

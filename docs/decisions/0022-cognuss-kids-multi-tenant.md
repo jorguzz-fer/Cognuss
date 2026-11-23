@@ -35,7 +35,7 @@ O Engineering Blueprint (§7) prescreve, quando há multi-inquilino: banco compa
 Opção 3.
 
 - **App:** `apps/kids` (Next.js 16), com rotas `/api/v1/kids` e contrato OpenAPI gerado dos esquemas Zod (ADR 0019).
-- **Banco:** `cognuss_kids`, no mesmo container `db`. Papéis `kids_owner` (dono, roda migrations) e `kids_app` (sem BYPASSRLS, sem ser dono). O `gutta_app` não tem acesso ao `cognuss_kids`, e o `kids_app` não tem acesso ao banco do Cognuss.
+- **Banco:** `cognuss_kids`, num **Postgres próprio do Kids** (atualizado em 23/11/2026: antes era um banco no mesmo container `db` do Cognuss). Papéis `kids_owner` (dono, roda migrations) e `kids_app` (sem BYPASSRLS, sem ser dono). O `gutta_app` não tem acesso ao `cognuss_kids`, e o `kids_app` não tem acesso ao banco do Cognuss.
 - **Isolamento:**
   - Toda tabela de domínio tem `tenant_id`, com `ENABLE` e `FORCE ROW LEVEL SECURITY`.
   - `withTenantUser(tenantId, userId, tx => …)` executa `set_config('app.tenant_id', …, true)` e `set_config('app.user_id', …, true)`.
@@ -49,12 +49,12 @@ Opção 3.
   - `tenant_id` nos registros;
   - `tenant_id` no conteúdo dos trabalhos da fila.
 - **Reaproveitamento:** `packages/core` (SRS e regras novas de nota e recuperação), `contracts`, `storage`, `jobs`, `apps/worker`, a configuração do Better Auth com Argon2id e 2FA (ADR 0002) e o desenho de LGPD do ADR 0009. A UX e a UI são as do Cognuss (ADRs 0007 e 0010, `docs/ux.md`): tokens, fontes e componentes saem de `apps/web` para um pacote compartilhado `packages/ui`, usado pelos dois apps. O trigger editorial e as funções de RLS são copiados para `packages/db-kids`, adaptados ao inquilino.
-- **Deploy:** serviço `kids` no `infra/compose.yml`, com a mesma imagem-base, aplicando as migrations como `kids_owner` no start. O backup diário passa a incluir o `cognuss_kids`.
+- **Deploy:** recurso próprio no Coolify (`infra/kids/compose.yml`: `kids`, `db` e `db-roles`), com deploy, Watch Paths e backup separados do Cognuss. O `kids` aplica as migrations como `kids_owner` no start. Decidido em 23/11/2026, para um deploy do Kids não reiniciar o Cognuss.
 
 ## Consequências
 
 - Os dados de crianças ficam num banco separado. O Cognuss (Medicina) não muda.
 - O teste "o inquilino A nunca lê nem escreve no inquilino B" é obrigatório na CI para toda tabela do Kids.
 - Há duas cópias do trigger editorial e das funções de RLS. Se a lógica divergir demais, extrair um gerador de SQL compartilhado.
-- Um único Postgres ainda é ponto de falha comum aos dois produtos. Separar o servidor de banco do Kids é só trocar a configuração, quando a escala ou um contrato pedirem.
+- Com Postgres próprio, o Kids não divide ponto de falha de banco com o Cognuss, mas são dois servidores de banco para atualizar e dois backups para conferir.
 - Seguem para decisão: o contrato com as escolas (controladora × operadora) e o parecer sobre o art. 14 (D-K01 na SPEC).

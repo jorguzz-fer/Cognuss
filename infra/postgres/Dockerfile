@@ -20,6 +20,3 @@ RUN --mount=type=secret,id=ca,required=false \
     && apk del .build-pgvector \
     && if [ -f /tmp/ca-orig.crt ]; then mv /tmp/ca-orig.crt /etc/ssl/certs/ca-certificates.crt; fi
 COPY init/ /docker-entrypoint-initdb.d/
-# Papéis e banco do Cognuss Kids (ADR 0022). Fora do initdb.d: o serviço db-kids-roles do
-# compose roda a cada deploy, também no volume que já existe.
-COPY --chmod=755 kids/kids-roles.sh /usr/local/bin/kids-roles.sh
