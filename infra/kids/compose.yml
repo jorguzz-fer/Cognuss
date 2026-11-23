@@ -29,6 +29,9 @@ services:
       DB_POOL_MAX: ${KIDS_DB_POOL_MAX:-10}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       MAIL_FROM: ${KIDS_MAIL_FROM:-Cognuss Kids <nao-responda@gutta.tudomudou.com.br>}
+      # Sem Resend: grava os e-mails neste arquivo do container (ex.: /tmp/kids-outbox.jsonl), para
+      # ler o link no terminal do Coolify. Tire depois do primeiro acesso.
+      MAIL_OUTBOX_FILE: ${MAIL_OUTBOX_FILE:-}
     # Só na rede interna; o proxy do Coolify chega por ela. Domínio no serviço kids, porta 3100.
     expose:
       - '3100'

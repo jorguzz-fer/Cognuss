@@ -110,16 +110,17 @@ O Kids é **outro recurso no Coolify**, com deploy, banco e backup próprios. Um
 1. No Coolify: **New Resource → Docker Compose**, mesmo repositório, branch `main` (ou `cognuss-kids` para testar antes do merge), **Base Directory `/infra/kids`** e arquivo **`/compose.yml`**. O build usa a raiz do repositório como contexto (`../..`), porque o Kids usa os pacotes do monorepo.
 2. Variáveis (aba Environment Variables). Gere as senhas com `openssl rand -hex 32`: elas vão dentro da URL de conexão.
 
-   | Variável                      | Observação                                                                                      |
-   | ----------------------------- | ----------------------------------------------------------------------------------------------- |
-   | `KIDS_APP_URL`                | endereço do Kids, sem barra no fim                                                              |
-   | `KIDS_BETTER_AUTH_SECRET`     | 32+ caracteres; **diferente** do `BETTER_AUTH_SECRET` do Cognuss                                |
-   | `KIDS_POSTGRES_PASSWORD`      | superusuário do Postgres do Kids (só administração e o passo `db-roles`)                        |
-   | `KIDS_OWNER_PASSWORD`         | dono do banco `cognuss_kids`; usado só pelas migrations                                         |
-   | `KIDS_APP_PASSWORD`           | papel da aplicação (sem BYPASSRLS)                                                              |
-   | `KIDS_BOOTSTRAP_ADMIN_EMAILS` | e-mails que viram Super Admin no start; se o e-mail ainda não tem conta, ela é criada sem senha |
-   | `RESEND_API_KEY`              | a mesma chave do Cognuss; sem ela, convites e links do responsável só vão para o log            |
-   | `KIDS_MAIL_FROM`              | opcional; remetente do Kids no Resend                                                           |
+   | Variável                      | Observação                                                                                                                                                               |
+   | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+   | `KIDS_APP_URL`                | endereço do Kids, sem barra no fim                                                                                                                                       |
+   | `KIDS_BETTER_AUTH_SECRET`     | 32+ caracteres; **diferente** do `BETTER_AUTH_SECRET` do Cognuss                                                                                                         |
+   | `KIDS_POSTGRES_PASSWORD`      | superusuário do Postgres do Kids (só administração e o passo `db-roles`)                                                                                                 |
+   | `KIDS_OWNER_PASSWORD`         | dono do banco `cognuss_kids`; usado só pelas migrations                                                                                                                  |
+   | `KIDS_APP_PASSWORD`           | papel da aplicação (sem BYPASSRLS)                                                                                                                                       |
+   | `KIDS_BOOTSTRAP_ADMIN_EMAILS` | e-mails que viram Super Admin no start; se o e-mail ainda não tem conta, ela é criada sem senha                                                                          |
+   | `MAIL_OUTBOX_FILE`            | opcional, sem Resend: grava os e-mails num arquivo do container (ex.: `/tmp/kids-outbox.jsonl`) para ler o link pelo terminal do Coolify; tire depois do primeiro acesso |
+   | `RESEND_API_KEY`              | a mesma chave do Cognuss; sem ela, convites e links do responsável só vão para o log                                                                                     |
+   | `KIDS_MAIL_FROM`              | opcional; remetente do Kids no Resend                                                                                                                                    |
 
 3. Domínio no serviço `kids`, porta `3100`. DNS: registro `A` do subdomínio apontando para o mesmo servidor. O Coolify emite o HTTPS, que a resposta por voz exige.
 4. **Watch Paths** do recurso (para só o que é do Kids disparar deploy automático):
