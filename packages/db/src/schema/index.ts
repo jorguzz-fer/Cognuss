@@ -18,3 +18,4 @@ export * from './lesson-notes';
 export * from './planning';
 export * from './creations';
 export * from './production';
+export * from './portfolio';

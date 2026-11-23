@@ -1,4 +1,5 @@
 import {
+  Award,
   Bell,
   BookOpen,
   CalendarDays,
@@ -58,6 +59,7 @@ export type SpaceLinks = {
   faltas: boolean;
   notas: boolean;
   materiais: boolean;
+  competencias?: boolean;
   /** Acompanhar Aula ligado: o progresso (aulas concluídas) passa a ter sentido. */
   aula: boolean;
   equilibrio: boolean;
@@ -142,6 +144,12 @@ export function MySpace({
     { href: '/app/faltas', label: 'Faltas', Icon: CalendarX, on: links.faltas },
     { href: '/app/notas', label: 'Notas', Icon: ClipboardCheck, on: links.notas },
     { href: '/app/materiais', label: 'Material de estudo', Icon: Library, on: links.materiais },
+    {
+      href: '/app/competencias',
+      label: 'Meus Certificados',
+      Icon: Award,
+      on: links.competencias ?? false,
+    },
   ].filter((m) => m.on);
 
   return (
