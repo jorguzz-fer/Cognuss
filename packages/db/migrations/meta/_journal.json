@@ -428,6 +428,20 @@
       "when": 1795289449640,
       "tag": "0060_rls_producao_revisao",
       "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "7",
+      "when": 1795448413611,
+      "tag": "0061_portfolio",
+      "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "7",
+      "when": 1795448415205,
+      "tag": "0062_rls_portfolio",
+      "breakpoints": true
     }
   ]
 }

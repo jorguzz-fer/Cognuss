@@ -7,3 +7,4 @@ export * from './production';
 export * from './pieces';
 export * from './media';
 export * from './storyboard';
+export * from './certificate';

@@ -5,7 +5,13 @@ import { appSettings } from './schema';
 // Rede de proteção da camada de IA (SPEC v2, 7.7): o admin desliga cada recurso na hora e
 // define o valor do alerta de gasto do mês. Lido pelo app e pelo worker (app_settings 'ai').
 
-export const AI_FEATURES = ['cronograma', 'criacao', 'tutor_materiais', 'busca_conceito'] as const;
+export const AI_FEATURES = [
+  'cronograma',
+  'criacao',
+  'tutor_materiais',
+  'busca_conceito',
+  'certificados',
+] as const;
 export type AiFeature = (typeof AI_FEATURES)[number];
 
 export type AiSettings = { alertMonthlyUsd: number | null; disabled: AiFeature[] };

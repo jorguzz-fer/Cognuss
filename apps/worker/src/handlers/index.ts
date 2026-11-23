@@ -1,4 +1,5 @@
 import type {
+  CertificateReader,
   Creator,
   Embedder,
   LessonPlanner,
@@ -11,6 +12,7 @@ import type {
 import type { PieceRenderer } from '../pieces/render';
 import type { ObjectStorage } from '@gutta/storage';
 import type { Scanner } from '../files/scanner';
+import { readCertificate } from './certificates';
 import { createCreation } from './creations';
 import { embedUser } from './embeddings';
 import { filesProcess } from './files';
@@ -35,6 +37,8 @@ export type HandlerDeps = {
   /** Peças HTML (Fase 2): escritor com IA e teste de render. */
   pieceWriter?: PieceWriter | null;
   renderer?: PieceRenderer | null;
+  /** Leitura dos certificados (Competências, K1). Null: o aluno preenche à mão. */
+  certificateReader?: CertificateReader | null;
   /** Vídeos (Fase 3): roteiro com IA, imagens e clipes, narração. */
   storyboardWriter?: StoryboardWriter | null;
   media?: MediaProvider | null;
@@ -70,6 +74,10 @@ export function createHandlers(deps: HandlerDeps): Handlers {
     }),
     'ai.create': createCreation({ creator: deps.creator }),
     'ai.embed_user': embedUser({ embedder: deps.embedder ?? null }),
+    'ai.read_certificate': readCertificate({
+      storage: deps.storage,
+      reader: deps.certificateReader ?? null,
+    }),
     'production.extract': productionExtract({
       storage: deps.storage,
       planner: deps.planner ?? null,
