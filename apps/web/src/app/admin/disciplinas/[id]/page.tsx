@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, DemoBadge } from '@/components/ui/card';
 import { Field, Input, Select, Textarea } from '@/components/ui/field';
 import {
+  deleteDisciplineAction,
   deleteTopicAction,
   saveDisciplineAction,
   saveModuleAction,
@@ -189,7 +190,7 @@ export default async function DisciplineAdminPage({
           <Field label="Nome">
             {(p) => <Input {...p} name="name" required defaultValue={d.name} />}
           </Field>
-          <Field label="Endereço">
+          <Field label="Endereço" hint="Acompanha o nome, a menos que você tenha escolhido outro.">
             {(p) => <Input {...p} name="slug" defaultValue={d.slug} />}
           </Field>
           <Field label="Semestre sugerido" optional>
@@ -223,6 +224,26 @@ export default async function DisciplineAdminPage({
             </Button>
           </div>
         </form>
+      </Card>
+
+      <Card as="section" aria-labelledby="excluir" className="grid gap-3">
+        <h2 id="excluir" className="text-xl">
+          Excluir disciplina
+        </h2>
+        <p className="max-w-[65ch] text-sm text-muted">
+          Apaga a disciplina e os assuntos dela. Só dá certo enquanto nada depende dela: com
+          módulos, questões, alunos ou aulas em produção ligados, desmarque “Ativa” em vez de
+          excluir.
+        </p>
+        <details>
+          <summary className="cursor-pointer text-sm font-semibold">Quero excluir {d.name}</summary>
+          <form action={deleteDisciplineAction} className="mt-3">
+            <input type="hidden" name="id" value={d.id} />
+            <Button type="submit" variant="danger">
+              Excluir de vez
+            </Button>
+          </form>
+        </details>
       </Card>
     </div>
   );

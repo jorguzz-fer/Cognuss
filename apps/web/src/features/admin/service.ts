@@ -260,6 +260,13 @@ export async function saveDiscipline(
   };
   return run(admin, async (tx) => {
     if ('id' in target) {
+      const current = await tx.query.disciplines.findFirst({
+        where: eq(s.disciplines.id, target.id),
+      });
+      if (!current) throw notFound('Disciplina');
+      // Endereço que nasceu do nome acompanha o nome; um endereço escolhido à mão fica.
+      if (v.slug === current.slug && current.slug === slugify(current.name))
+        values.slug = slugify(v.name);
       const [row] = await tx
         .update(s.disciplines)
         .set(values)
@@ -275,6 +282,31 @@ export async function saveDiscipline(
       .returning();
     await audit(tx, admin.id, 'discipline.created', { type: 'discipline', id: row!.id }, values);
     return row!;
+  });
+}
+
+/**
+ * Exclui a disciplina e os assuntos dela. Só passa se nada depende dela: com módulos, questões,
+ * alunos ou lotes de produção ligados, o banco recusa e a tela sugere desativar.
+ */
+export async function deleteDiscipline(admin: CurrentUser, id: string) {
+  return run(admin, async (tx) => {
+    const current = await tx.query.disciplines.findFirst({ where: eq(s.disciplines.id, id) });
+    if (!current) throw notFound('Disciplina');
+    // Subassuntos antes dos assuntos principais (o pai é referenciado pelo filho).
+    await tx
+      .delete(s.topics)
+      .where(and(eq(s.topics.disciplineId, id), sql`${s.topics.parentId} is not null`));
+    await tx.delete(s.topics).where(eq(s.topics.disciplineId, id));
+    await tx.delete(s.disciplines).where(eq(s.disciplines.id, id));
+    await audit(
+      tx,
+      admin.id,
+      'discipline.deleted',
+      { type: 'discipline', id },
+      { name: current.name },
+    );
+    return current;
   });
 }
 

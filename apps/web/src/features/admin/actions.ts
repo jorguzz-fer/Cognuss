@@ -64,6 +64,18 @@ export async function saveDisciplineAction(form: FormData) {
   back(target, { ok: disciplineId ? 'Disciplina salva.' : 'Disciplina criada.' });
 }
 
+export async function deleteDisciplineAction(form: FormData) {
+  const user = await admin('/admin/cursos');
+  const disciplineId = id(form);
+  let courseId = '';
+  try {
+    courseId = (await svc.deleteDiscipline(user, disciplineId)).courseId;
+  } catch (err) {
+    back(`/admin/disciplinas/${disciplineId}`, { erro: message(err) });
+  }
+  back(`/admin/cursos/${courseId}`, { ok: 'Disciplina excluída.' });
+}
+
 export async function saveTopicAction(form: FormData) {
   const user = await admin('/admin/cursos');
   const disciplineId = id(form, 'disciplineId');
