@@ -9,7 +9,7 @@ Os avisos reúnem, na plataforma, os lembretes que você criou e os alertas de a
 ## Passo a passo
 
 1. Clique no sino no topo. O título do quadro mostra "N avisos novos" ou **Tudo lido**.
-2. Leia a lista. Os avisos novos têm borda destacada.
+2. Leia a lista. Os avisos novos têm borda destacada. Cada aviso mostra o dia e a hora no fuso da sua conta, o mesmo da agenda (o padrão é o horário de Brasília).
 3. Em cada aviso, clique em **Abrir** para ir à tela dele (por exemplo, a agenda do dia ou **Meus lembretes**). Aviso sem destino mostra **Marcar como lido**.
 4. Para marcar todos de uma vez, clique em **Marcar tudo como lido**.
 5. Para ir aos seus lembretes, clique em **Meus lembretes**.

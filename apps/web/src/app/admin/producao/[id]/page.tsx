@@ -11,6 +11,7 @@ import { BATCH_STATUS, SLIDE_KIND, usd } from '@/features/production/labels';
 import { getBatch } from '@/features/production/service';
 import { ApiError } from '@/lib/api';
 import { requireRole } from '@/lib/auth/session';
+import { DeleteBatch } from '@/components/production/delete-batch';
 
 export const metadata: Metadata = { title: 'Lote de produção' };
 
@@ -50,7 +51,10 @@ export default async function BatchPage({ params }: { params: Promise<{ id: stri
         </Alert>
       ) : null}
       {batch.status === 'failed' ? (
-        <Alert tone="danger">{batch.error ?? 'Não foi possível preparar este lote.'}</Alert>
+        <>
+          <Alert tone="danger">{batch.error ?? 'Não foi possível preparar este lote.'}</Alert>
+          <DeleteBatch batchId={batch.id} />
+        </>
       ) : null}
       {batch.warnings.length ? (
         <Alert tone="warn">

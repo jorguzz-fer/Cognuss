@@ -89,6 +89,22 @@ export default async function TodayPage({
     );
   }
   const d = await loadDashboard(user.id);
+  const modules = (
+    [
+      ['/app/minhas-disciplinas', 'Minhas disciplinas', on.disciplinas],
+      ['/app/agenda', 'Agenda', on.agenda],
+      ['/app/rotina', 'Rotina semanal', on.rotina],
+      ['/app/equilibrio', 'Equilíbrio', on.equilibrio],
+      ['/app/lembretes', 'Lembretes', on.lembretes],
+      ['/app/faltas', 'Faltas', on.faltas],
+      ['/app/notas', 'Notas', on.notas],
+      ['/app/materiais', 'Material de estudo', on.materiais],
+      ['/app/ajuda', 'Ajuda Cognuss', on.ajuda],
+      ['/app/competencias', 'Meus Certificados', on.competencias],
+    ] as const
+  )
+    .filter(([, , enabled]) => enabled)
+    .map(([href, label]) => ({ href, label }));
   const fmtDate = new Intl.DateTimeFormat('pt-BR', {
     day: 'numeric',
     month: 'long',
@@ -112,6 +128,21 @@ export default async function TodayPage({
         <h1 className="text-4xl md:text-5xl">Oi{d.firstName ? `, ${d.firstName}` : ''}.</h1>
         <p className="text-muted">Seu próximo passo de estudo está pronto.</p>
       </div>
+
+      {/* Sem o Meu Espaço, os módulos da v2 que estão ligados precisam de uma entrada aqui. */}
+      {modules.length ? (
+        <nav aria-label="Organização do semestre">
+          <ul className="flex flex-wrap gap-2">
+            {modules.map((m) => (
+              <li key={m.href}>
+                <Link href={m.href} className={buttonClass('secondary', 'md')}>
+                  {m.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ) : null}
 
       {/* Números do protótipo, com dados reais do aluno; nada de ranking ou recorde inventado. */}
       <dl className="grid grid-cols-2 gap-3 md:grid-cols-4">

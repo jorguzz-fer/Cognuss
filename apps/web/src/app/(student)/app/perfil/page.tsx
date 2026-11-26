@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { removeExam } from '@/features/onboarding/actions';
 import { loadOnboardingData } from '@/features/onboarding/data';
-import { requireStudent } from '@/lib/auth/session';
+import { EDITORIAL_ROLES, hasAnyRole, requireStudent } from '@/lib/auth/session';
 
 export const metadata: Metadata = { title: 'Perfil' };
 
@@ -93,6 +93,17 @@ export default async function ProfilePage({
           <li>
             <Link href="/seguranca/senha">Trocar senha</Link>
           </li>
+          {/* No celular, o topo não tem espaço para esses atalhos. */}
+          {hasAnyRole(user, ['teacher', 'admin']) ? (
+            <li>
+              <Link href="/professor">Área do professor</Link>
+            </li>
+          ) : null}
+          {hasAnyRole(user, EDITORIAL_ROLES) ? (
+            <li>
+              <Link href="/admin">{user.roles.includes('admin') ? 'Admin' : 'Editorial'}</Link>
+            </li>
+          ) : null}
         </ul>
         <div className="mt-4 flex flex-wrap gap-3">
           <SignOutButton />

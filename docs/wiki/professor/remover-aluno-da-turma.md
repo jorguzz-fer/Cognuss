@@ -24,7 +24,7 @@ Remover tira o aluno da turma e os números dele somem do painel.
 
 ## Se der errado
 
-- **"Turma não encontrado."**: a turma é de outro professor. Volte a **Suas turmas**.
+- **"Turma não encontrada."**: a turma é de outro professor. Volte a **Suas turmas**.
 - Removeu a pessoa errada: peça para ela entrar de novo com o código. A contagem dela recomeça do dia da nova entrada.
 
 ## Veja também

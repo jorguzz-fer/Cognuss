@@ -34,11 +34,16 @@ export async function currentConsents(userId: string) {
       .where(
         and(eq(s.tutorMessages.studentId, userId), sql`${s.tutorMessages.redactedAt} IS NULL`),
       );
+    // Tutor sobre os materiais (AJU-08): as mensagens também contam e também são apagadas.
+    const [threads] = await tx
+      .select({ n: sql<number>`count(*)::int` })
+      .from(s.tutorThreadMessages)
+      .where(eq(s.tutorThreadMessages.ownerId, userId));
     return {
       latest,
       openDeletion,
       requests: requests.filter((r) => r.kind !== 'deletion'),
-      tutorMessages: tutor?.n ?? 0,
+      tutorMessages: (tutor?.n ?? 0) + (threads?.n ?? 0),
       policyVersion: POLICY_VERSION,
     };
   });
@@ -133,11 +138,19 @@ export async function cancelRequest(userId: string, id: string) {
   });
 }
 
-/** Apaga o texto das conversas com o tutor. Tokens e custo ficam (sem conteúdo). */
+/**
+ * Apaga as conversas com os dois tutores. No tutor do módulo, o texto some e a contagem de uso
+ * fica; as conversas sobre os materiais são apagadas inteiras (o custo fica em ai_usage).
+ */
 export async function redactTutorHistory(userId: string) {
   return withUser(db(), userId, async (tx) => {
     const res = await tx.execute<{ n: number }>(sql`SELECT redact_my_tutor_history() AS n`);
-    const n = Number(res.rows[0]?.n ?? 0);
+    const [threads] = await tx
+      .select({ n: sql<number>`count(*)::int` })
+      .from(s.tutorThreadMessages)
+      .where(eq(s.tutorThreadMessages.ownerId, userId));
+    await tx.delete(s.tutorThreads).where(eq(s.tutorThreads.ownerId, userId));
+    const n = Number(res.rows[0]?.n ?? 0) + (threads?.n ?? 0);
     await audit(tx, userId, 'tutor.history_redacted', { type: 'user', id: userId }, { count: n });
     return n;
   });
@@ -207,6 +220,8 @@ export async function exportData(userId: string) {
       creationQuestionAttempts,
       tutorThreads,
       tutorThreadMessages,
+      portfolioFolders,
+      portfolioItems,
     ] = await inSequence([
       () => tx.select().from(s.profiles).where(eq(s.profiles.userId, userId)),
       () => tx.select().from(s.studentProfiles).where(eq(s.studentProfiles.userId, userId)),
@@ -335,6 +350,9 @@ export async function exportData(userId: string) {
       () => tx.select().from(s.tutorThreads).where(eq(s.tutorThreads.ownerId, userId)),
       () =>
         tx.select().from(s.tutorThreadMessages).where(eq(s.tutorThreadMessages.ownerId, userId)),
+      // Cognuss Competências, Meus Certificados (ADR 0022).
+      () => tx.select().from(s.portfolioFolders).where(eq(s.portfolioFolders.ownerId, userId)),
+      () => tx.select().from(s.portfolioItems).where(eq(s.portfolioItems.ownerId, userId)),
     ]);
     await tx
       .insert(s.dataRequests)
@@ -400,6 +418,8 @@ export async function exportData(userId: string) {
       creationQuestionAttempts,
       tutorThreads,
       tutorThreadMessages,
+      portfolioFolders,
+      portfolioItems,
     };
   });
 }

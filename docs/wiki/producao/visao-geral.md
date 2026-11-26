@@ -26,13 +26,13 @@ A peça publicada vira um módulo da disciplina, sem o selo "Demonstração · s
 
 ## Se der errado
 
-| Sintoma                                                                     | Onde ver                                                             |
-| --------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| O lote mostra **Falhou**                                                    | [Como acompanhar o lote](acompanhar-lote.md)                         |
-| A tarefa mostra **Falhou**                                                  | [Como gerar uma peça de novo](gerar-de-novo.md)                      |
-| O vídeo mostra **Pausado**                                                  | [Como retomar um vídeo pausado](retomar-video.md)                    |
-| "Quem enviou a peça para revisão não pode aprová-la. Peça a outro revisor." | [Como revisar uma peça](revisar-peca.md)                             |
-| Avisos de chave ausente                                                     | [Como configurar o servidor para a produção](configurar-servidor.md) |
+| Sintoma                                                                     | Onde ver                                                                                        |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| O lote mostra **Falhou**                                                    | [Como acompanhar o lote](acompanhar-lote.md) e [Como apagar um lote que falhou](apagar-lote.md) |
+| A tarefa mostra **Falhou**                                                  | [Como gerar uma peça de novo](gerar-de-novo.md)                                                 |
+| O vídeo mostra **Pausado**                                                  | [Como retomar um vídeo pausado](retomar-video.md)                                               |
+| "Quem enviou a peça para revisão não pode aprová-la. Peça a outro revisor." | [Como revisar uma peça](revisar-peca.md)                                                        |
+| Avisos de chave ausente                                                     | [Como configurar o servidor para a produção](configurar-servidor.md)                            |
 
 ## Veja também
 

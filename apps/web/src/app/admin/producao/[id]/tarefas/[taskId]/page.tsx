@@ -218,7 +218,9 @@ export default async function TaskPage({
         </Card>
 
         <div className="grid content-start gap-4">
-          {task.status === 'generated' || task.status === 'failed' ? (
+          {task.status === 'generated' ||
+          task.status === 'failed' ||
+          task.mediaStage === 'paused' ? (
             <Card as="section" aria-labelledby="gerar" className="grid gap-3">
               <h2 id="gerar" className="text-xl">
                 Gerar de novo

@@ -1,11 +1,11 @@
 'use client';
-import { FileText, Trash2, X } from 'lucide-react';
+import { Archive, FileText, Pencil, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { disciplines } from '@gutta/contracts';
 import { Button } from '@/components/ui/button';
 import { Alert } from '@/components/ui/card';
-import { Field, Input } from '@/components/ui/field';
+import { Field, Input, Textarea } from '@/components/ui/field';
 import { api, ClientApiError } from '@/lib/client-api';
 import { cn } from '@/lib/cn';
 import { uploadFile } from '@/lib/upload';
@@ -141,8 +141,14 @@ export function DisciplineEditor({
     }
   }
 
-  async function remove(id: string) {
-    setBusy('Removendo…');
+  const [editing, setEditing] = useState<string | null>(null);
+
+  async function remove(d: DisciplineDto) {
+    // Arquivar tira a disciplina do semestre; o histórico e os documentos ficam.
+    if (!confirm(`Arquivar ${d.name}? Ela sai do semestre; o histórico e os documentos ficam.`))
+      return;
+    const id = d.id;
+    setBusy('Arquivando…');
     try {
       await api(`/disciplines/${id}`, { method: 'DELETE' });
       setItems((cur) => cur.filter((x) => x.id !== id));
@@ -305,15 +311,36 @@ export function DisciplineEditor({
                       <p className="text-sm">{d.teachers.map((t) => t.name).join(', ')}</p>
                     ) : null}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => remove(d.id)}
-                    aria-label={`Remover ${d.name}`}
-                    className="grid size-11 place-items-center rounded-[var(--radius)] hover:bg-surface/40"
-                  >
-                    <Trash2 className="size-5" aria-hidden />
-                  </button>
+                  <div className="flex">
+                    <button
+                      type="button"
+                      onClick={() => setEditing(editing === d.id ? null : d.id)}
+                      aria-label={`Editar ${d.name}`}
+                      aria-expanded={editing === d.id}
+                      className="grid size-11 place-items-center rounded-[var(--radius)] hover:bg-surface/40"
+                    >
+                      <Pencil className="size-5" aria-hidden />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => remove(d)}
+                      aria-label={`Arquivar ${d.name}`}
+                      className="grid size-11 place-items-center rounded-[var(--radius)] hover:bg-surface/40"
+                    >
+                      <Archive className="size-5" aria-hidden />
+                    </button>
+                  </div>
                 </div>
+                {editing === d.id ? (
+                  <EditDiscipline
+                    discipline={d}
+                    onSaved={(nd) => {
+                      replace(nd);
+                      setEditing(null);
+                    }}
+                    onCancel={() => setEditing(null)}
+                  />
+                ) : null}
                 {d.documents.length ? (
                   <ul className="grid gap-1 text-sm">
                     {d.documents.map((doc) => (
@@ -363,5 +390,105 @@ export function DisciplineEditor({
         )}
       </section>
     </div>
+  );
+}
+
+/** Edição de uma disciplina já cadastrada: nome, sigla, cor e docentes (um por linha). */
+function EditDiscipline({
+  discipline: d,
+  onSaved,
+  onCancel,
+}: {
+  discipline: DisciplineDto;
+  onSaved: (d: DisciplineDto) => void;
+  onCancel: () => void;
+}) {
+  const [color, setColor] = useState<CategoryColor>(d.color as CategoryColor);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  async function save(ev: React.FormEvent<HTMLFormElement>) {
+    ev.preventDefault();
+    const form = new FormData(ev.currentTarget);
+    const name = String(form.get('name') ?? '').trim();
+    if (name.length < 2) return setError('Informe o nome da disciplina.');
+    const teachers = String(form.get('teachers') ?? '')
+      .split('\n')
+      .map((t) => t.trim())
+      .filter((t) => t.length >= 2);
+    setSaving(true);
+    setError(null);
+    try {
+      const { discipline } = await api<{ discipline: DisciplineDto }>(`/disciplines/${d.id}`, {
+        method: 'PATCH',
+        body: { name, shortName: String(form.get('shortName') ?? ''), color, teachers },
+      });
+      onSaved(discipline);
+    } catch (err) {
+      setError(err instanceof ClientApiError ? err.message : 'Não deu para salvar. Tente de novo.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <form
+      onSubmit={save}
+      className="grid gap-3 rounded-[var(--radius)] border border-line bg-surface p-3 text-fg"
+      noValidate
+    >
+      {error ? <Alert tone="danger">{error}</Alert> : null}
+      <div className="grid gap-3 sm:grid-cols-[2fr_1fr]">
+        <Field label="Nome da disciplina">
+          {(p) => <Input {...p} name="name" defaultValue={d.name} required />}
+        </Field>
+        <Field label="Sigla" optional>
+          {(p) => <Input {...p} name="shortName" defaultValue={d.shortName ?? ''} maxLength={30} />}
+        </Field>
+      </div>
+      <fieldset className="grid gap-2">
+        <legend className="mb-1 text-sm font-medium">Cor</legend>
+        <div className="flex flex-wrap gap-2">
+          {CATEGORY_COLORS.map((c) => (
+            <label
+              key={c.id}
+              className={cn(
+                'flex min-h-11 cursor-pointer items-center gap-2 rounded-[var(--radius)] border-l-4 px-3 text-sm',
+                categoryClasses(c.id),
+                color === c.id && 'ring-2 ring-accent ring-offset-2 ring-offset-surface',
+              )}
+            >
+              <input
+                type="radio"
+                name={`color-${d.id}`}
+                value={c.id}
+                checked={color === c.id}
+                onChange={() => setColor(c.id)}
+                className="sr-only"
+              />
+              {c.name}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <Field label="Docentes" optional hint="Um por linha.">
+        {(p) => (
+          <Textarea
+            {...p}
+            name="teachers"
+            rows={3}
+            defaultValue={d.teachers.map((t) => t.name).join('\n')}
+          />
+        )}
+      </Field>
+      <div className="flex flex-wrap gap-2">
+        <Button type="submit" loading={saving}>
+          Salvar alterações
+        </Button>
+        <Button type="button" variant="ghost" onClick={onCancel}>
+          Cancelar
+        </Button>
+      </div>
+    </form>
   );
 }

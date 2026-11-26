@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { AdminHeader, Checkbox, Flash, StatusBadge, tableClass } from '@/components/admin/ui';
 import { Button } from '@/components/ui/button';
 import { Card, DemoBadge } from '@/components/ui/card';
+import { ConfirmButton } from '@/components/ui/confirm-button';
 import { Field, Input, Select, Textarea } from '@/components/ui/field';
 import {
   deleteDisciplineAction,
@@ -149,9 +150,13 @@ export default async function DisciplineAdminPage({
                   <form action={deleteTopicAction}>
                     <input type="hidden" name="id" value={t.id} />
                     <input type="hidden" name="disciplineId" value={d.id} />
-                    <Button type="submit" variant="ghost" aria-label={`Excluir ${t.name}`}>
+                    <ConfirmButton
+                      submit
+                      aria-label={`Excluir ${t.name}`}
+                      question={`Excluir ${t.name}?`}
+                    >
                       Excluir
-                    </Button>
+                    </ConfirmButton>
                   </form>
                 ) : null}
               </li>

@@ -68,7 +68,7 @@ Detalhes de cada campo em [Como cadastrar uma disciplina](cadastrar-disciplina.m
 | "Digite o nome do seu curso." ou "Digite o nome da instituição."                                             | Escreva pelo menos 3 letras.                                                                                               |
 | "Adicione pelo menos uma disciplina para continuar."                                                         | Cadastre uma disciplina antes de clicar em **Continuar**.                                                                  |
 | "Não deu para salvar agora. Tente de novo."                                                                  | Tente de novo. O que você digitou continua no formulário.                                                                  |
-| `/comecar` mostra página não encontrada                                                                      | A chave **Cadastro inicial (CAD)** está desligada. Use `/onboarding`.                                                      |
+| `/comecar` mostra "Esta página não está disponível"                                                          | A chave **Cadastro inicial (CAD)** está desligada. Use `/onboarding`.                                                      |
 
 ## Veja também
 

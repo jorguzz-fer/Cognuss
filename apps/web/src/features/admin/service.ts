@@ -114,6 +114,23 @@ export const institutionInput = z.object({
     .default(null),
 });
 
+const STATUS_PT: Record<string, string> = {
+  draft: 'rascunho',
+  in_review: 'em revisão',
+  approved: 'aprovado',
+  published: 'publicado',
+  archived: 'arquivado',
+};
+
+/** O banco fala dos status em inglês ("draft → approved"); a tela, em português. */
+function statusInPortuguese(message: string) {
+  const text = message.replace(
+    /\b(draft|in_review|approved|published|archived)\b/g,
+    (k) => STATUS_PT[k]!,
+  );
+  return text.charAt(0).toUpperCase() + text.slice(1) + (text.endsWith('.') ? '' : '.');
+}
+
 function dbError(err: unknown): never {
   const cause = (err as { cause?: { code?: string; message?: string; constraint?: string } }).cause;
   if (cause?.code === '23505')
@@ -129,7 +146,11 @@ function dbError(err: unknown): never {
         : 'Sua conta não tem permissão para essa ação.',
     );
   if (cause?.code === '23514')
-    throw new ApiError(409, 'invalid_transition', cause.message ?? 'Mudança de status inválida.');
+    throw new ApiError(
+      409,
+      'invalid_transition',
+      cause.message ? statusInPortuguese(cause.message) : 'Mudança de status inválida.',
+    );
   if (cause?.code === '23503')
     throw new ApiError(
       409,
@@ -429,6 +450,32 @@ const MODULE_STATUSES = ['draft', 'in_review', 'approved', 'published', 'archive
 export const moduleTransitionInput = z.object({ to: z.enum(MODULE_STATUSES) });
 
 /** O trigger enforce_editorial_transition decide se a mudança vale (autor não aprova o próprio). */
+/**
+ * Módulos do catálogo esperando revisão, para a fila do revisor. Os que vieram da produção de
+ * aulas ficam de fora: eles têm a própria revisão, peça a peça.
+ */
+export async function catalogModulesInReview(user: CurrentUser) {
+  return withUser(db(), user.id, (tx) =>
+    tx
+      .select({
+        id: s.modules.id,
+        title: s.modules.title,
+        disciplineName: s.disciplines.name,
+        authorId: s.modules.authorId,
+        updatedAt: s.modules.updatedAt,
+      })
+      .from(s.modules)
+      .innerJoin(s.disciplines, eq(s.disciplines.id, s.modules.disciplineId))
+      .where(
+        and(
+          eq(s.modules.status, 'in_review'),
+          sql`not exists (select 1 from production_tasks t where t.module_id = ${s.modules.id})`,
+        ),
+      )
+      .orderBy(asc(s.modules.updatedAt)),
+  );
+}
+
 export async function transitionModule(admin: CurrentUser, id: string, raw: unknown) {
   const { to } = moduleTransitionInput.parse(raw);
   return run(admin, async (tx) => {

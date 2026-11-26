@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ScheduleReview } from '@/components/schedule/schedule-review';
 import { getImport } from '@/features/schedule/service';
+import { requireFeature } from '@/features/flags/service';
 import { requireStudent } from '@/lib/auth/session';
 import { ApiError } from '@/lib/api';
 
@@ -11,6 +12,7 @@ export const metadata: Metadata = { title: 'Conferir cronograma' };
 export default async function ScheduleReviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await requireStudent(`/app/minhas-disciplinas/cronograma/${id}`);
+  await requireFeature('disciplinas');
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
   const data = await getImport(user.id, id).catch((err) => {
     if (err instanceof ApiError && err.status === 404) notFound();

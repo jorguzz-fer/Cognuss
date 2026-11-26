@@ -8,6 +8,7 @@ import { Alert } from '@/components/ui/card';
 import { RequestReview } from '@/components/planning/request-review';
 import { Field, Input, Select, Textarea } from '@/components/ui/field';
 import { api, ClientApiError } from '@/lib/client-api';
+import { ConfirmButton } from '@/components/ui/confirm-button';
 
 type Item = agenda.AgendaItemDto;
 type Discipline = { id: string; name: string };
@@ -576,15 +577,16 @@ export function EventEditor({
               Cancelar
             </Button>
             {draft.id ? (
-              <Button
-                type="button"
-                variant="danger"
-                disabled={busy}
-                onClick={remove}
-                className="ml-auto"
-              >
-                Excluir
-              </Button>
+              <span className="ml-auto">
+                <ConfirmButton
+                  variant="danger"
+                  disabled={busy}
+                  question="Excluir da agenda?"
+                  onConfirm={() => void remove()}
+                >
+                  Excluir
+                </ConfirmButton>
+              </span>
             ) : null}
           </div>
         </form>

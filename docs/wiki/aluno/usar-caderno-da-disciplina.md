@@ -31,7 +31,7 @@ O caderno da disciplina junta as notas que você escreveu em todas as aulas, agr
 | ----------------------------------------------------- | ------------------------------------------------------------------------------- |
 | "As notas que você escrever nas aulas aparecem aqui." | Ainda não há notas. Escreva nas aulas.                                          |
 | "Nenhuma nota com esse filtro."                       | Mude a busca ou escolha **Todas as notas**.                                     |
-| Página não encontrada                                 | A chave **Acompanhar aula (AUL)** está desligada ou a disciplina foi arquivada. |
+| "Esta página não está disponível"                     | A chave **Acompanhar aula (AUL)** está desligada ou a disciplina foi arquivada. |
 
 ## Veja também
 

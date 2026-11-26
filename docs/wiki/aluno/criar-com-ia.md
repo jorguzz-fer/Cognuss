@@ -2,7 +2,7 @@
 
 Criar com IA transforma os materiais que você enviou em resumo, flashcards, questões, mapa mental, roteiro de estudo ou análise de provas, com a página de origem de cada trecho.
 
-**Quem pode:** aluno com o primeiro acesso concluído. **Onde:** **Ajuda Cognuss**, **Criar com IA** (`/app/ajuda/criar`). Também pelo botão **Criar com IA a partir deste material**, na página de um material.
+**Quem pode:** aluno com o primeiro acesso concluído. **Onde:** **Ajuda Cognuss**, **Criar com IA** (`/app/ajuda/criar`). Também pelo botão **Criar com IA a partir deste material**, na página de um material. Sem o Meu Espaço, pelo atalho **Ajuda Cognuss** no alto da tela **Hoje** (`/app`).
 
 ## Antes de começar
 

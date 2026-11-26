@@ -4,7 +4,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { loadDashboard } from '@/features/dashboard/data';
 import { nextQuestion, recentSessions } from '@/features/questions/service';
 import { getRoles } from '@/lib/auth/session';
-import { currentConsents, exportData } from './service';
+import { currentConsents, exportData, redactTutorHistory } from './service';
 
 /*
   Regressão: admin e revisor leem dados de todos pelo RLS (métricas, estatística de questão).
@@ -115,6 +115,31 @@ describe('telas pessoais de admin e revisor só mostram os próprios dados', () 
     const other = await exportData(admin);
     expect(other.terms).toHaveLength(0);
     expect(other.files).toHaveLength(0);
+  });
+
+  it('exportação leva Meus Certificados; apagar conversas limpa os dois tutores', async () => {
+    await owner
+      .insert(s.portfolioItems)
+      .values({ ownerId: student, status: 'confirmed', kind: 'curso', title: 'Curso de ECG' });
+    const [thread] = await owner
+      .insert(s.tutorThreads)
+      .values({ ownerId: student, scope: 'materiais', title: 'Dúvida', materialIds: [] })
+      .returning();
+    await owner.insert(s.tutorThreadMessages).values({
+      ownerId: student,
+      threadId: thread!.id,
+      role: 'user',
+      content: 'O que é pré-carga?',
+    });
+    const mine = await exportData(student);
+    expect(mine.portfolioItems.map((i) => i.title)).toEqual(['Curso de ECG']);
+    expect(mine.tutorThreadMessages).toHaveLength(1);
+    expect((await currentConsents(student)).tutorMessages).toBeGreaterThanOrEqual(1);
+    expect(await redactTutorHistory(student)).toBeGreaterThanOrEqual(1);
+    const after = await exportData(student);
+    expect(after.tutorThreads).toHaveLength(0);
+    expect(after.tutorThreadMessages).toHaveLength(0);
+    expect((await exportData(admin)).portfolioItems).toHaveLength(0);
   });
 
   it('consentimentos, histórico e sessões são do próprio usuário', async () => {

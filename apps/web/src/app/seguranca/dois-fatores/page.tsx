@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AuthShell } from '@/components/auth/auth-shell';
+import { TwoFactorManage } from '@/components/auth/two-factor-manage';
 import { TwoFactorSetup } from '@/components/auth/two-factor-setup';
-import { Alert } from '@/components/ui/card';
 import { requireUser } from '@/lib/auth/session';
 
 export const metadata: Metadata = { title: 'Verificação em duas etapas' };
@@ -19,7 +19,9 @@ export default async function TwoFactorSettingsPage() {
       }
     >
       {user.twoFactorEnabled ? (
-        <Alert tone="success">Já está ativa nesta conta.</Alert>
+        <TwoFactorManage canDisable={!user.roles.includes('admin')} />
+      ) : user.roles.includes('admin') ? (
+        <TwoFactorSetup next="/admin" nextLabel="Ir para o editorial" />
       ) : (
         <TwoFactorSetup />
       )}

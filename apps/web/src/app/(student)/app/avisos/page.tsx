@@ -8,19 +8,15 @@ import {
   readNotificationAction,
   savePreferencesAction,
 } from '@/features/notifications/actions';
-import { getPreferences, listNotifications } from '@/features/notifications/service';
+import {
+  getPreferences,
+  listNotifications,
+  noticeTimezone,
+} from '@/features/notifications/service';
 import { requireStudent } from '@/lib/auth/session';
 import { cn } from '@/lib/cn';
 
 export const metadata: Metadata = { title: 'Avisos' };
-
-const WHEN = new Intl.DateTimeFormat('pt-BR', {
-  day: '2-digit',
-  month: 'short',
-  hour: '2-digit',
-  minute: '2-digit',
-  timeZone: 'America/Sao_Paulo',
-});
 
 /*
   Avisos e preferências (SPEC v2, LEM-11, 12, 14, 15, 18). Um aviso por compromisso, mesmo que
@@ -34,10 +30,18 @@ export default async function NoticesPage({
   await requireFeature('lembretes');
   const user = await requireStudent('/app/avisos');
   const sp = await searchParams;
-  const [{ items, unread }, { preferences: p }] = await Promise.all([
+  const [{ items, unread }, { preferences: p }, timeZone] = await Promise.all([
     listNotifications(user.id),
     getPreferences(user.id),
+    noticeTimezone(user.id),
   ]);
+  const WHEN = new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone,
+  });
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_22rem]">
       <div className="grid gap-1 lg:col-span-2">

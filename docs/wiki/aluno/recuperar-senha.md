@@ -17,7 +17,7 @@ Quando você esquece a senha, o Cognuss envia um link para criar uma nova.
 
 ## O que acontece depois
 
-- A plataforma volta para **Entrar**. Entre com a senha nova.
+- A plataforma volta para **Entrar**, com o aviso "Senha redefinida. Entre com a senha nova." Entre com a senha nova.
 - Ao salvar, você sai de todos os aparelhos em que estava conectado. É o aviso do campo: "Ao salvar, você sai de todos os aparelhos."
 - A tela de recuperação sempre mostra "Se houver uma conta com esse e-mail, você vai receber um link para criar uma nova senha. Ele vale por 1 hora.", exista a conta ou não. É proteção contra quem tenta descobrir e-mails cadastrados.
 

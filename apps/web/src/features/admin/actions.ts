@@ -120,7 +120,8 @@ export async function saveModuleAction(form: FormData) {
 }
 
 export async function transitionModuleAction(form: FormData) {
-  const user = await admin('/admin/cursos');
+  // O revisor também decide (aprovar, devolver, publicar); editar o conteúdo continua só admin.
+  const user = await requireRole(['admin', 'reviewer'], '/admin/revisao');
   const moduleId = id(form);
   const path = `/admin/modulos/${moduleId}`;
   try {

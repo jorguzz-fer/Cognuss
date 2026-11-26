@@ -2,7 +2,7 @@
 
 A rotina é a grade da semana com as aulas, os horários de estudo e as atividades pessoais que se repetem. Só os blocos de estudo entram no planejamento. Aulas e horários pessoais ficam protegidos: o Cognuss nunca usa esses horários para estudo.
 
-**Quem pode:** aluno com cadastro concluído (ou na etapa **Minha rotina** do primeiro acesso). **Onde:** **Rotina semanal** (`/app/rotina`). No Meu Espaço, pelo menu **Rotina semanal**.
+**Quem pode:** aluno com cadastro concluído (ou na etapa **Minha rotina** do primeiro acesso). **Onde:** **Rotina semanal** (`/app/rotina`). No Meu Espaço, pelo menu **Rotina semanal**. Sem o Meu Espaço, pelo atalho **Rotina semanal** no alto da tela **Hoje** (`/app`).
 
 **Chave de módulo:** **Rotina semanal (ROT)** (`rotina`) para a tela do app. Dentro do primeiro acesso, a etapa funciona com **Cadastro inicial (CAD)**.
 
@@ -57,7 +57,7 @@ A rotina é a grade da semana com as aulas, os horários de estudo e as atividad
 | O botão **Salvar** está desligado                                                | Marque pelo menos um dia em **Repete em**.       |
 | "Hora inválida."                                                                 | Confira **Início** e **Fim**.                    |
 | "Não deu para salvar agora." ou "Não deu para tirar agora."                      | Tente de novo.                                   |
-| Página não encontrada                                                            | A chave **Rotina semanal (ROT)** está desligada. |
+| "Esta página não está disponível"                                                | A chave **Rotina semanal (ROT)** está desligada. |
 
 ## Veja também
 

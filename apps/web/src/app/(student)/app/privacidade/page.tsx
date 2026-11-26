@@ -161,8 +161,8 @@ export default async function PrivacyPage({
         </h2>
         <p className="text-muted">
           Um arquivo JSON com conta, perfil, respostas, revisões, cartões, conversas com o tutor,
-          turmas, consentimentos, pedidos e eventos de uso. Serve para conferir e para levar a outro
-          serviço.
+          turmas, semestre, materiais, criações, certificados, consentimentos, pedidos e eventos de
+          uso. Serve para conferir e para levar a outro serviço.
         </p>
         <div>
           <a href="/api/v1/me/export" className={buttonClass('secondary')} download>

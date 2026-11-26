@@ -6,9 +6,9 @@ Gerar de novo cria uma nova versão da peça, com ou sem um pedido de ajuste, qu
 
 ## Antes de começar
 
-- O quadro só aparece quando a tarefa está em **Peça pronta** ou **Falhou**.
+- O quadro aparece quando a tarefa está em **Peça pronta** ou **Falhou**, e também quando o vídeo está **Pausado**.
 - Com pedido de ajuste, a IA parte da versão atual e corrige o que você pediu. Sem pedido, ela escreve uma versão nova a partir do plano.
-- No vídeo, gerar de novo recomeça pelo roteiro. A mídia anterior fica no histórico e imagens e clipes novos gastam créditos de novo. Veja [Como produzir um vídeo](produzir-video.md).
+- No vídeo, gerar de novo recomeça pelo roteiro, inclusive com o vídeo pausado. Use quando **Retomar** não resolve, por exemplo numa cena sem imagem aprovada ou numa recusa do provedor que se repete. Veja [Como retomar um vídeo pausado](retomar-video.md). A mídia anterior fica no histórico e imagens e clipes novos gastam créditos de novo. Veja [Como produzir um vídeo](produzir-video.md).
 
 ## Passo a passo
 
@@ -29,7 +29,7 @@ Se a peça já estava na revisão, ela continua lá. Durante a geração, a fila
 
 | Mensagem                                                       | O que fazer                                                                                          |
 | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| "Só dá para gerar de novo uma peça que já terminou de gerar."  | Espere a geração atual terminar.                                                                     |
+| "Só dá para gerar de novo uma peça que já terminou de gerar."  | Espere a geração atual terminar. Um vídeo que está gerando mídia sem pausa também não recomeça.      |
 | "Ainda não há versão para ajustar. Gere sem pedido de ajuste." | A peça falhou antes de ter qualquer versão. Apague o pedido de ajuste e clique em **Gerar de novo**. |
 | "O pedido de ajuste passa de 2.000 caracteres."                | Resuma o pedido.                                                                                     |
 | "Não deu para gerar agora."                                    | Tente de novo em instantes.                                                                          |
@@ -39,3 +39,4 @@ Se a peça já estava na revisão, ela continua lá. Durante a geração, a fila
 - [Como gerar as peças e ver a prévia](gerar-pecas.md)
 - [Como pedir ajuste numa peça (revisor)](pedir-ajuste.md)
 - [Como produzir um vídeo](produzir-video.md)
+- [Como retomar um vídeo pausado](retomar-video.md)

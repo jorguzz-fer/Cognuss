@@ -28,7 +28,7 @@ Define por quanto tempo a plataforma guarda cada tipo de dado e roda a limpeza n
 ## O que acontece depois
 
 - Ao salvar: aviso "Prazos salvos.". Os prazos novos aparecem na política de privacidade pública.
-- Ao rodar a limpeza, o aviso resume o que foi feito, por exemplo: "Limpeza feita: 12 mensagens do tutor apagadas, 300 eventos, 0 registros de auditoria, 45 sessões e códigos vencidos, 1 contas excluídas.".
+- Ao rodar a limpeza, o aviso resume o que foi feito, por exemplo: "Limpeza feita: 12 mensagens do tutor apagadas, 300 eventos, 0 registros de auditoria, 45 sessões e códigos vencidos, 1 conta excluída.". Cada número usa singular ou plural conforme o caso, como "1 mensagem do tutor apagada" ou "1 sessão ou código vencido". Se alguma conta de admin ficou de fora, o aviso termina com "(1 conta de admin ficou para revisão)" ou "(N contas de admin ficaram para revisão)".
 - A limpeza:
   - apaga o texto das conversas do tutor mais antigas que o prazo (o registro da mensagem fica, sem o texto);
   - apaga eventos de uso e registros de auditoria fora do prazo;

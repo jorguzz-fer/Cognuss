@@ -54,6 +54,7 @@ test.describe('calendário', () => {
       .click();
     await edit.getByRole('radio', { name: 'Esta e as próximas' }).check();
     await edit.getByRole('button', { name: 'Excluir' }).click();
+    await edit.getByRole('button', { name: 'Confirmar exclusão' }).click();
     await expect(page.getByRole('button', { name: /^Monitoria/ })).toHaveCount(2);
 
     // Prova da disciplina: aparece no mês e no calendário da disciplina, uma vez só.

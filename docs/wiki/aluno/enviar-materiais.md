@@ -2,7 +2,7 @@
 
 O Material de estudo guarda seus slides, apostilas, atividades e provas num lugar só, ligados à disciplina e à aula. Só você vê.
 
-**Quem pode:** aluno com o primeiro acesso concluído. **Onde:** **Material de estudo** (`/app/materiais`), no menu do **Meu Espaço**. Para anexar a uma aula: **Conteúdo de aula** da disciplina (`/app/materiais/disciplina/<id>`).
+**Quem pode:** aluno com o primeiro acesso concluído. **Onde:** **Material de estudo** (`/app/materiais`), no menu do **Meu Espaço**. Sem o Meu Espaço, pelo atalho **Material de estudo** no alto da tela **Hoje** (`/app`). Para anexar a uma aula: **Conteúdo de aula** da disciplina (`/app/materiais/disciplina/<id>`).
 
 ## Antes de começar
 

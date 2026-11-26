@@ -17,8 +17,37 @@ export class ApiError extends Error {
   }
 }
 
+// Concordância da mensagem: "Turma não encontrada", "Lote não encontrado".
+const FEMININE = new Set([
+  'Atividade',
+  'Aula',
+  'Avaliação',
+  'Cena',
+  'Conversa',
+  'Criação',
+  'Disciplina',
+  'Falta',
+  'Geração',
+  'Instituição',
+  'Leitura',
+  'Miniatura',
+  'Nota',
+  'Pasta',
+  'Peça',
+  'Proposta',
+  'Questão',
+  'Sessão',
+  'Tarefa',
+  'Turma',
+  'Versão',
+]);
+
 export const notFound = (what = 'Recurso') =>
-  new ApiError(404, 'not_found', `${what} não encontrado.`);
+  new ApiError(
+    404,
+    'not_found',
+    `${what} não ${FEMININE.has(what.split(' ')[0]!) ? 'encontrada' : 'encontrado'}.`,
+  );
 export const conflict = (message: string) => new ApiError(409, 'conflict', message);
 export const badRequest = (message: string, details?: unknown) =>
   new ApiError(400, 'invalid_request', message, details);

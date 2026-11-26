@@ -6,18 +6,20 @@ Libera ou remove acessos de uma pessoa: professor, editor, revisão, admin ou su
 
 ## Os papéis
 
-| Papel na tela | O que a tela diz                                                | Onde a pessoa trabalha                                                                                                     |
-| ------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Aluno         | Padrão de toda conta, sem papel atribuído.                      | `/app`                                                                                                                     |
-| Professor     | "Cria turmas e acompanha o desempenho de quem entrar nelas."    | `/professor`. Não entra no `/admin`.                                                                                       |
-| Editor        | "Escreve questões, flashcards e módulos."                       | Admin → Questões. Escreve e envia para revisão. Não aprova, não publica, não arquiva. As telas de módulos são só do admin. |
-| Revisão       | "Revisa e publica conteúdo de outras pessoas."                  | Admin → Questões e Admin → Revisão de aulas. Aprova, devolve, publica e arquiva.                                           |
-| Admin         | "Tudo, inclusive catálogo, usuários e instituições. Exige 2FA." | `/admin` inteiro e também `/professor`.                                                                                    |
-| Suporte       | "Atende alunos (sem acesso ao conteúdo editorial)."             | Nenhuma tela aceita esse papel ainda.                                                                                      |
+| Papel na tela | O que a tela diz                                                | Onde a pessoa trabalha                                                                                                                      |
+| ------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Aluno         | Padrão de toda conta, sem papel atribuído.                      | `/app`                                                                                                                                      |
+| Professor     | "Cria turmas e acompanha o desempenho de quem entrar nelas."    | `/professor`. Não entra no `/admin`.                                                                                                        |
+| Editor        | "Escreve questões, flashcards e módulos."                       | Admin → Questões. Escreve e envia para revisão. Não aprova, não publica, não arquiva. As telas de módulos são do admin e da revisão.        |
+| Revisão       | "Revisa e publica conteúdo de outras pessoas."                  | Admin → Questões e Admin → Revisão de aulas, inclusive os módulos do catálogo (só leitura do conteúdo). Aprova, devolve, publica e arquiva. |
+| Admin         | "Tudo, inclusive catálogo, usuários e instituições. Exige 2FA." | `/admin` inteiro e também `/professor`.                                                                                                     |
+| Suporte       | "Atende alunos (sem acesso ao conteúdo editorial)."             | Nenhuma tela aceita esse papel ainda.                                                                                                       |
 
 O papel Moderação existe no banco, mas não pode ser atribuído pela tela.
 
 Uma pessoa pode ter vários papéis. Só o Admin exige a verificação em duas etapas.
+
+Na área do aluno, quem tem esses papéis vê atalhos no topo da tela (só em telas largas): **Professor** e **Admin** (ou **Editorial**, para Editor e Revisão). No celular, os mesmos atalhos ficam em **Perfil**, cartão **Conta e segurança**: **Área do professor** e **Admin** ou **Editorial**.
 
 ## Passo a passo
 

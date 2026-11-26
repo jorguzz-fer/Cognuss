@@ -125,6 +125,16 @@ export const getBatch = defineRoute({
   errors: ['forbidden', 'not_found'],
 });
 
+export const deleteBatch = defineRoute({
+  method: 'delete',
+  path: '/api/v1/production/batches/{id}',
+  summary: 'Apaga um lote que falhou (slides e tarefas vão junto). Envie a aula de novo depois.',
+  tags: ['producao'],
+  params,
+  response: z.object({ ok: z.literal(true) }),
+  errors: ['forbidden', 'not_found', 'conflict'],
+});
+
 export const updateTaskBody = z
   .object({
     status: TaskDecision.optional(),
