@@ -73,6 +73,14 @@ describe('resposta do escritor', () => {
     expect(r.blocks).toMatchObject({ title: 'T', style: '.a{}', body: '<p>x</p>', script: 'f();' });
   });
 
+  it('ignora a cerca de código em volta da peça', () => {
+    const r = readPieceAnswer(
+      '```\n@@TITLE\nT\n@@STYLE\n\n@@BODY\n<p>x</p>\n@@SCRIPT\nf();\n```',
+      null,
+    );
+    expect(r.blocks.script.trim()).toBe('f();');
+  });
+
   it('na correção, aplica as trocas sobre a versão anterior', () => {
     const r = readPieceAnswer(
       '@@EDIT script\n@@FIND\nconst x=1;\n@@REPLACE\nconst x=2;\n@@END',

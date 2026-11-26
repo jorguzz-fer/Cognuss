@@ -221,6 +221,22 @@ const x=10;
     expect(r.failed[1]).toMatch(/mais de uma vez/);
   });
 
+  it('tolera espaço depois dos marcadores, linha em branco e bloco em maiúscula', () => {
+    const edits = parsePieceEdits(
+      '@@EDIT Script  \n\n@@FIND  \nconst x=1;\n@@REPLACE \nconst x=3;\n@@END',
+    );
+    expect(edits).toEqual([{ block: 'script', find: 'const x=1;', replace: 'const x=3;' }]);
+  });
+
+  it('o script da IA não pode trocar o endereço do módulo 3D', () => {
+    const b = {
+      ...prev,
+      body: '<section><div class="eyebrow">e</div><h1>t</h1><p class="lead">l</p></section><svg aria-label="c"></svg>Para fixar Na prova',
+      script: "window.__PIECE_3D__='https://x.y/m.js'",
+    };
+    expect(lintErrors(lintPiece(b)).map((i) => i.rule)).toContain('unsafe-code');
+  });
+
   it('reconhece a peça inteira em vez de trocas', () => {
     expect(isFullPieceSource('@@TITLE\nT\n@@STYLE\n\n@@BODY\n<p></p>\n@@SCRIPT\n')).toBe(true);
     expect(isFullPieceSource('@@EDIT body\n@@FIND\na\n@@REPLACE\nb\n@@END')).toBe(false);

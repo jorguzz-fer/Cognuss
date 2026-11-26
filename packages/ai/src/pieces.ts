@@ -157,6 +157,8 @@ export function readPieceAnswer(
   text: string,
   previous: PieceBlocks | null,
 ): { blocks: PieceBlocks; mode: 'full' | 'edits'; editFailures: string[] } {
+  // Cercas de código (```) em volta da resposta não são parte da peça.
+  text = text.replace(/^[ \t]*```[a-z]*[ \t]*$/gim, '');
   if (!previous || isFullPieceSource(text)) {
     const b = parsePieceSource(text.slice(Math.max(0, text.indexOf('@@TITLE'))));
     return { blocks: { ...b, foot: null }, mode: 'full', editFailures: [] };

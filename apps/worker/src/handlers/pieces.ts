@@ -43,8 +43,17 @@ const SHOT_NAMES: Record<string, string> = {
   'light-mobile': 'celular',
 };
 
-/** Quando não sobra tarefa gerando, o lote termina a geração. */
+/**
+ * Quando não sobra tarefa gerando, o lote termina a geração. A linha do lote é travada antes da
+ * contagem: com peças em paralelo (ADR 0022), duas tarefas que terminam juntas não podem ver
+ * uma à outra ainda gerando e deixar o lote preso.
+ */
 export async function settleBatch(tx: Tx, batchId: string) {
+  await tx
+    .select({ id: s.productionBatches.id })
+    .from(s.productionBatches)
+    .where(eq(s.productionBatches.id, batchId))
+    .for('update');
   const still = await tx
     .select({ id: s.productionTasks.id })
     .from(s.productionTasks)
@@ -125,6 +134,9 @@ export function productionGeneratePiece(deps: PieceDeps): Handler<'production.ge
       let previous: PieceBlocks | null = null;
       let problems: string[] = [];
       let shotsForFix: PieceShot[] = [];
+      // Última versão que passou no linter e no teste de render: se o crítico mandar corrigir e
+      // a correção piorar, a tarefa termina com ela em vez de falhar.
+      let bestPassing: { version: number; critique: string[] } | null = null;
       // Pedido de ajuste (admin, ou o revisor na Fase 4): a IA parte da versão atual.
       if (task.pendingNote && version > 0) {
         previous = JSON.parse(
@@ -167,23 +179,41 @@ export function productionGeneratePiece(deps: PieceDeps): Handler<'production.ge
           ? null
           : await deps.renderer.test(assemblePiece(res.blocks, pieceCtx));
         problems = [...lintProblems, ...(report?.problems ?? [])];
+        // Para a IA vai a captura com altura limitada: a de página inteira, reduzida pela API,
+        // ficaria ilegível numa peça longa.
         const shots: PieceShot[] = (report?.checks ?? [])
-          .filter((c) => c.screenshot.length)
+          .filter((c) => (c.review ?? c.screenshot).length)
           .map((c) => ({
             name: SHOT_NAMES[`${c.theme}-${c.viewport}`] ?? c.theme,
-            image: c.screenshot,
+            image: c.review ?? c.screenshot,
           }));
+        // Troca que não achou o trecho (ou resposta cortada) é sempre problema: sem isso, um
+        // pedido de ajuste do revisor que não foi aplicado passaria como peça pronta.
+        if (res.editFailures?.length) problems = [...problems, ...res.editFailures];
+        const mechanicalOk = problems.length === 0;
         // O crítico visual só olha a peça que passou no teste mecânico. Na última tentativa,
         // o que ele aponta vira aviso para o revisor, não reprovação.
         let critique: string[] = [];
         let visualWarnings: string[] = [];
-        if (!problems.length && deps.critic && shots.length) {
-          const c = await deps.critic.review({
-            title: res.blocks.title,
-            pieceType,
-            plan: (task.plan as PiecePlan | null) ?? null,
-            shots,
-          });
+        const c =
+          mechanicalOk && deps.critic && shots.length
+            ? await deps.critic
+                .review({
+                  title: res.blocks.title,
+                  pieceType,
+                  plan: (task.plan as PiecePlan | null) ?? null,
+                  shots,
+                })
+                .catch((err: unknown) => {
+                  // O crítico é opcional: erro dele não derruba a peça já escrita e paga.
+                  ctx.log.warn('production.critic_failed', {
+                    taskId,
+                    error: err instanceof Error ? err.message : String(err),
+                  });
+                  return null;
+                })
+            : null;
+        if (c) {
           await inTx((tx) =>
             tx.insert(s.aiUsage).values({
               ownerId: userId,
@@ -201,10 +231,8 @@ export function productionGeneratePiece(deps: PieceDeps): Handler<'production.ge
           if (attempt < maxAttempts) problems = critique;
           else visualWarnings = critique;
         }
-        // Troca que não achou o trecho: só importa se ainda há problema a corrigir.
-        if (problems.length && res.editFailures?.length)
-          problems = [...problems, ...res.editFailures];
         const ok = problems.length === 0;
+        if (mechanicalOk) bestPassing = { version, critique };
 
         const pieceKey = keys.productionPiece(batch.id, taskId, version);
         await storage.put(pieceKey, Buffer.from(JSON.stringify(res.blocks)), 'application/json');
@@ -274,6 +302,51 @@ export function productionGeneratePiece(deps: PieceDeps): Handler<'production.ge
         }
         previous = res.blocks;
         shotsForFix = shots;
+      }
+      const best = bestPassing;
+      if (best) {
+        // Uma versão anterior passou no teste e só o crítico pediu ajuste: ela fica como a peça,
+        // com o que o crítico apontou como aviso para o revisor.
+        await inTx(async (tx) => {
+          const [asset] = await tx
+            .select()
+            .from(s.productionAssets)
+            .where(
+              and(
+                eq(s.productionAssets.taskId, taskId),
+                eq(s.productionAssets.kind, 'html'),
+                eq(s.productionAssets.version, best.version),
+              ),
+            );
+          if (asset) {
+            const meta = (asset.meta ?? {}) as { warnings?: string[] };
+            await tx
+              .update(s.productionAssets)
+              .set({
+                meta: {
+                  ...meta,
+                  ok: true,
+                  problems: [],
+                  warnings: [...(meta.warnings ?? []), ...best.critique],
+                },
+              })
+              .where(eq(s.productionAssets.id, asset.id));
+          }
+          await tx
+            .update(s.productionTasks)
+            .set({
+              status: 'generated',
+              currentVersion: best.version,
+              lastError: null,
+              pendingNote: null,
+            })
+            .where(
+              and(eq(s.productionTasks.id, taskId), eq(s.productionTasks.status, 'generating')),
+            );
+          await settleBatch(tx, batch.id);
+        });
+        ctx.log.info('production.piece_fallback', { taskId, version: best.version });
+        return;
       }
       await inTx((tx) => failTask(tx, taskId, batch.id, problems.join('\n')));
     },

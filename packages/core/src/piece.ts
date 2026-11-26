@@ -160,8 +160,9 @@ const FORBIDDEN: { rule: string; re: RegExp; message: string; in: 'all' | 'scrip
   },
   {
     rule: 'unsafe-code',
-    re: /\beval\s*\(|\bnew\s+Function\b|document\.write|\b(?:window\.)?(?:parent|top|opener)\s*\./,
-    message: 'Código proibido (eval, Function, document.write ou acesso à página do app).',
+    re: /\beval\s*\(|\bnew\s+Function\b|document\.write|\b(?:window\.)?(?:parent|top|opener)\s*\.|__PIECE_3D__/,
+    message:
+      'Código proibido (eval, Function, document.write, acesso à página do app ou ao endereço do módulo 3D).',
     in: 'script',
   },
 ];
@@ -232,13 +233,13 @@ export type PieceEditBlock = 'title' | 'style' | 'body' | 'script';
 export type PieceEdit = { block: PieceEditBlock; find: string; replace: string };
 
 const EDIT_RE =
-  /@@EDIT[ \t]+(title|style|body|script)[ \t]*\n@@FIND\n([\s\S]*?)\n@@REPLACE\n([\s\S]*?)\n?@@END/g;
+  /@@EDIT[ \t]+(title|style|body|script)[ \t]*\n(?:[ \t]*\n)*@@FIND[ \t]*\n([\s\S]*?)\n@@REPLACE[ \t]*\n([\s\S]*?)\n?@@END/gi;
 
 /** Lê as trocas pontuais de uma resposta de correção. */
 export function parsePieceEdits(text: string): PieceEdit[] {
   const out: PieceEdit[] = [];
   for (const m of text.replace(/\r\n/g, '\n').matchAll(EDIT_RE))
-    out.push({ block: m[1] as PieceEditBlock, find: m[2]!, replace: m[3] ?? '' });
+    out.push({ block: m[1]!.toLowerCase() as PieceEditBlock, find: m[2]!, replace: m[3] ?? '' });
   return out;
 }
 

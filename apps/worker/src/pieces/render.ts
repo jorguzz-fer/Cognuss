@@ -23,7 +23,15 @@ export type RenderCheck = {
   emptyStage: boolean;
   overlaps: Overlap[];
   screenshot: Buffer;
+  /**
+   * Captura com altura limitada, para a IA (crítico e correção, ADR 0022): a de página inteira,
+   * reduzida pela API, ficaria ilegível numa peça longa.
+   */
+  review?: Buffer;
 };
+
+/** Altura máxima da captura que vai para a IA. */
+const REVIEW_HEIGHT: Record<Viewport, number> = { desktop: 2200, mobile: 1400 };
 
 export type RenderReport = {
   ok: boolean;
@@ -228,7 +236,19 @@ export class PlaywrightRenderer implements PieceRenderer {
         // Falha aqui é do teste, não da peça: sobe e o trabalho tenta de novo.
         const r = (await page.evaluate(INSPECT_SOURCE)) as Inspection;
         const screenshot = await page.screenshot({ fullPage: true, type: 'jpeg', quality: 70 });
-        checks.push({ ...run, errors, ...r, screenshot });
+        const height = Number(await page.evaluate('document.documentElement.scrollHeight'));
+        const review = await page.screenshot({
+          fullPage: true,
+          clip: {
+            x: 0,
+            y: 0,
+            width: VIEWPORTS[run.viewport].width,
+            height: Math.max(1, Math.min(height, REVIEW_HEIGHT[run.viewport])),
+          },
+          type: 'jpeg',
+          quality: 75,
+        });
+        checks.push({ ...run, errors, ...r, screenshot, review });
       } finally {
         await ctx.close();
       }

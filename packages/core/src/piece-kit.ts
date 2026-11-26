@@ -6,7 +6,7 @@
 //
 // O JavaScript fica numa string sem crases nem interpolação, para caber no template da peça.
 
-/** Endereço do módulo 3D (three.js + OrbitControls + GLTFLoader + RoomEnvironment), servido
+/** Endereço do módulo 3D (three.js + OrbitControls + RoomEnvironment), servido
  * pelo próprio app em apps/web/public. A peça o carrega só quando chama kit.view3d. */
 export const PIECE_3D_PATH = '/piece-assets/three-r169.mjs';
 
@@ -87,7 +87,7 @@ kit.path=function(pts,hw){
     var t=(d-cum[i-1])/((cum[i]-cum[i-1])||1),a=pts[i-1],b=pts[i],dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1;
     return{x:a[0]+dx*t,y:a[1]+dy*t,tx:dx/l,ty:dy/l,nx:-dy/l,ny:dx/l,h:hw[i-1]+(hw[i]-hw[i-1])*t}}}};
 kit.range=function(input,o){input=kit.el(input);o=o||{};var out=o.out?kit.el(o.out):null;
-  var show=function(){var v=Number(input.value);input.style.setProperty('--p',((v-input.min)/(input.max-input.min)*100)+'%');if(out)out.textContent=o.fmt?o.fmt(v):kit.fmt(v);return v};
+  var show=function(){var v=Number(input.value);var lo=Number(input.min||0),hi=Number(input.max||100);input.style.setProperty('--p',(hi>lo?(v-lo)/(hi-lo)*100:0)+'%');if(out)out.textContent=o.fmt?o.fmt(v):kit.fmt(v);return v};
   var f=function(){var v=show();if(o.onInput)o.onInput(v)};
   // A primeira chamada fica para depois do script da peça: assim o retorno pode usar
   // variáveis declaradas depois do kit.range sem cair na zona morta do let/const.
@@ -100,7 +100,7 @@ kit.chips=function(box,o){box=kit.el(box);o=o||{};var btns=[].slice.call(box.que
   var first=btns.filter(function(b){return b.dataset.value===o.value})[0]||btns[0];
   if(first&&o.value!==null){mark(first);queueMicrotask(function(){pick(first)})}
   return{pick:function(v){var b=btns.filter(function(x){return x.dataset.value===v})[0];if(b)pick(b)}}};
-kit.scenarios=function(box,apply){var h=decodeURIComponent((location.hash||'').slice(1));
+kit.scenarios=function(box,apply){var h='';try{h=decodeURIComponent((location.hash||'').slice(1))}catch(e){h=''}
   return kit.chips(box,{value:h||undefined,onPick:function(v,b){apply(v,b)}})};
 kit.status=function(el,kind,text){el=kit.el(el);el.className='status '+kind;el.textContent=text};
 kit.reveal=function(sel){[].slice.call(document.querySelectorAll(sel||'.reveal')).forEach(function(r){r.addEventListener('click',function(){r.classList.toggle('open')})})};
@@ -112,7 +112,7 @@ kit.view3d=function(el,o){el=kit.el(el);o=o||{};el.classList.add('stage3d');
     var scene=new T.Scene(),pm=new T.PMREMGenerator(r);scene.environment=pm.fromScene(new M.RoomEnvironment(),.04).texture;scene.environmentIntensity=o.env!=null?o.env:.6;
     var key=new T.DirectionalLight(0xffffff,2);key.position.set(3,4,5);scene.add(key);
     var cam=new T.PerspectiveCamera(o.fov||35,1,o.near||.1,o.far||1000);cam.position.set(0,0,o.distance||10);
-    var ctl=new M.OrbitControls(cam,r.domElement);ctl.enableDamping=true;ctl.autoRotate=!!o.autoRotate;ctl.autoRotateSpeed=o.autoRotateSpeed||1;
+    var ctl=new M.OrbitControls(cam,r.domElement);ctl.enableDamping=true;ctl.autoRotate=!!o.autoRotate&&!matchMedia('(prefers-reduced-motion: reduce)').matches;ctl.autoRotateSpeed=o.autoRotateSpeed||1;
     var v={THREE:T,M:M,scene:scene,camera:cam,renderer:r,controls:ctl,el:el,frames:[],tags:[]};
     var size=function(){var w=el.clientWidth||1,h=el.clientHeight||1;r.setPixelRatio(Math.min(2,window.devicePixelRatio||1));r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};
     size();new ResizeObserver(size).observe(el);

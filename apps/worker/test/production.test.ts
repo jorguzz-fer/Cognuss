@@ -382,6 +382,97 @@ describe('geração das peças (Fase 2)', () => {
     );
   }, 120_000);
 
+  it('troca que não achou o trecho reprova a versão, mesmo com o teste passando', async () => {
+    const { admin, batchId, tasks } = await released();
+    const base = new FakePieceWriter();
+    let calls = 0;
+    const writer = {
+      write: async (i: Parameters<FakePieceWriter['write']>[0]) => {
+        calls++;
+        const r = await base.write(i);
+        // A primeira resposta finge uma troca perdida (pedido de ajuste não aplicado).
+        return calls === 1
+          ? { ...r, mode: 'edits' as const, editFailures: ['Troca não aplicada no bloco body.'] }
+          : r;
+      },
+    };
+    await productionGeneratePiece({ storage: store, writer, renderer }).run(
+      { taskId: tasks[0]!.id, userId: admin },
+      ctx(),
+    );
+    const t = (await taskRows(batchId))[0]!;
+    expect(t.status).toBe('generated');
+    expect(t.currentVersion).toBe(2);
+    const html = (await assetsOf(t.id)).filter((a) => a.kind === 'html');
+    expect(html[0]!.meta).toMatchObject({
+      ok: false,
+      problems: ['Troca não aplicada no bloco body.'],
+    });
+  }, 120_000);
+
+  it('erro do crítico não derruba a peça já escrita', async () => {
+    const { admin, batchId, tasks } = await released();
+    const critic = {
+      review: async () => {
+        throw new Error('429 muitas requisições');
+      },
+    };
+    await productionGeneratePiece({
+      storage: store,
+      writer: new FakePieceWriter(),
+      renderer,
+      critic,
+    }).run({ taskId: tasks[0]!.id, userId: admin }, ctx());
+    const t = (await taskRows(batchId))[0]!;
+    expect(t.status).toBe('generated');
+    expect(t.currentVersion).toBe(1);
+  }, 120_000);
+
+  it('se a correção pedida pelo crítico piorar, fica a última versão que passou no teste', async () => {
+    const { admin, batchId, tasks } = await released();
+    const base = new FakePieceWriter();
+    let calls = 0;
+    const writer = {
+      write: async (i: Parameters<FakePieceWriter['write']>[0]) => {
+        calls++;
+        const r = await base.write({ ...i, fix: null });
+        return calls === 1
+          ? r
+          : { ...r, blocks: { ...r.blocks, script: `naoExiste();\n${r.blocks.script}` } };
+      },
+    };
+    const critic = new FakePieceCritic([['Rótulo cortado.']]);
+    await productionGeneratePiece({ storage: store, writer, renderer, critic, maxAttempts: 2 }).run(
+      { taskId: tasks[0]!.id, userId: admin },
+      ctx(),
+    );
+    const t = (await taskRows(batchId))[0]!;
+    expect(t.status).toBe('generated');
+    expect(t.currentVersion).toBe(1);
+    const v1 = (await assetsOf(t.id)).find((a) => a.kind === 'html' && a.version === 1)!;
+    expect(v1.meta).toMatchObject({ ok: true, problems: [] });
+    expect((v1.meta as { warnings: string[] }).warnings).toContain(
+      'Revisão visual: Rótulo cortado.',
+    );
+  }, 120_000);
+
+  it('duas peças do mesmo lote terminando juntas fecham o lote (ADR 0022)', async () => {
+    const { admin, batchId, tasks } = await released();
+    const gen = productionGeneratePiece({
+      storage: store,
+      writer: new FakePieceWriter(),
+      renderer,
+    });
+    await Promise.all(
+      tasks.slice(0, 2).map((t) => gen.run({ taskId: t.id, userId: admin }, ctx())),
+    );
+    expect((await taskRows(batchId)).slice(0, 2).map((t) => t.status)).toEqual([
+      'generated',
+      'generated',
+    ]);
+    expect((await batchRow(batchId)).status).toBe('generated');
+  }, 120_000);
+
   it('sem corrigir depois das tentativas, a tarefa falha com os problemas', async () => {
     const { admin, batchId, tasks } = await released();
     await productionGeneratePiece({
