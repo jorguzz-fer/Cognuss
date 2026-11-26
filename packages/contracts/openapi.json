@@ -6057,7 +6057,8 @@
                                             "pdf",
                                             "office",
                                             "sheet",
-                                            "image"
+                                            "image",
+                                            "html"
                                           ]
                                         },
                                         {
@@ -6347,7 +6348,8 @@
                                           "pdf",
                                           "office",
                                           "sheet",
-                                          "image"
+                                          "image",
+                                          "html"
                                         ]
                                       },
                                       {
@@ -6790,7 +6792,8 @@
                                           "pdf",
                                           "office",
                                           "sheet",
-                                          "image"
+                                          "image",
+                                          "html"
                                         ]
                                       },
                                       {
@@ -8583,7 +8586,8 @@
                                           "pdf",
                                           "office",
                                           "sheet",
-                                          "image"
+                                          "image",
+                                          "html"
                                         ]
                                       },
                                       {
@@ -8923,7 +8927,8 @@
                                           "pdf",
                                           "office",
                                           "sheet",
-                                          "image"
+                                          "image",
+                                          "html"
                                         ]
                                       },
                                       {
@@ -9825,7 +9830,8 @@
                                             "pdf",
                                             "office",
                                             "sheet",
-                                            "image"
+                                            "image",
+                                            "html"
                                           ]
                                         },
                                         {
@@ -10000,7 +10006,8 @@
                                       "pdf",
                                       "office",
                                       "sheet",
-                                      "image"
+                                      "image",
+                                      "html"
                                     ]
                                   },
                                   {
@@ -10101,7 +10108,8 @@
                                             "pdf",
                                             "office",
                                             "sheet",
-                                            "image"
+                                            "image",
+                                            "html"
                                           ]
                                         },
                                         {
@@ -10396,7 +10404,8 @@
                                 "pdf",
                                 "office",
                                 "sheet",
-                                "image"
+                                "image",
+                                "html"
                               ]
                             },
                             {
@@ -10591,7 +10600,8 @@
                       "application/vnd.oasis.opendocument.spreadsheet",
                       "image/png",
                       "image/jpeg",
-                      "image/webp"
+                      "image/webp",
+                      "text/html"
                     ]
                   },
                   "sizeBytes": {
@@ -10681,7 +10691,8 @@
                                 "pdf",
                                 "office",
                                 "sheet",
-                                "image"
+                                "image",
+                                "html"
                               ]
                             },
                             {
@@ -10871,7 +10882,8 @@
                                 "pdf",
                                 "office",
                                 "sheet",
-                                "image"
+                                "image",
+                                "html"
                               ]
                             },
                             {
@@ -12361,7 +12373,8 @@
                                       "pdf",
                                       "office",
                                       "sheet",
-                                      "image"
+                                      "image",
+                                      "html"
                                     ]
                                   },
                                   {
@@ -13912,7 +13925,8 @@
                                       "pdf",
                                       "office",
                                       "sheet",
-                                      "image"
+                                      "image",
+                                      "html"
                                     ]
                                   },
                                   {
@@ -14013,7 +14027,8 @@
                                             "pdf",
                                             "office",
                                             "sheet",
-                                            "image"
+                                            "image",
+                                            "html"
                                           ]
                                         },
                                         {
@@ -14351,7 +14366,8 @@
                                     "pdf",
                                     "office",
                                     "sheet",
-                                    "image"
+                                    "image",
+                                    "html"
                                   ]
                                 },
                                 {
@@ -14452,7 +14468,8 @@
                                           "pdf",
                                           "office",
                                           "sheet",
-                                          "image"
+                                          "image",
+                                          "html"
                                         ]
                                       },
                                       {
@@ -14993,7 +15010,8 @@
                                     "pdf",
                                     "office",
                                     "sheet",
-                                    "image"
+                                    "image",
+                                    "html"
                                   ]
                                 },
                                 {
@@ -15094,7 +15112,8 @@
                                           "pdf",
                                           "office",
                                           "sheet",
-                                          "image"
+                                          "image",
+                                          "html"
                                         ]
                                       },
                                       {
@@ -16757,7 +16776,8 @@
                                     "pdf",
                                     "office",
                                     "sheet",
-                                    "image"
+                                    "image",
+                                    "html"
                                   ]
                                 },
                                 {
@@ -16858,7 +16878,8 @@
                                           "pdf",
                                           "office",
                                           "sheet",
-                                          "image"
+                                          "image",
+                                          "html"
                                         ]
                                       },
                                       {
@@ -17578,7 +17599,8 @@
                                     "pdf",
                                     "office",
                                     "sheet",
-                                    "image"
+                                    "image",
+                                    "html"
                                   ]
                                 },
                                 {
@@ -17679,7 +17701,8 @@
                                           "pdf",
                                           "office",
                                           "sheet",
-                                          "image"
+                                          "image",
+                                          "html"
                                         ]
                                       },
                                       {
@@ -18029,7 +18052,8 @@
                                     "pdf",
                                     "office",
                                     "sheet",
-                                    "image"
+                                    "image",
+                                    "html"
                                   ]
                                 },
                                 {
@@ -18130,7 +18154,8 @@
                                           "pdf",
                                           "office",
                                           "sheet",
-                                          "image"
+                                          "image",
+                                          "html"
                                         ]
                                       },
                                       {

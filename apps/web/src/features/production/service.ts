@@ -137,7 +137,13 @@ export async function createBatch(
     if (!file) throw notFound('Arquivo');
     if (file.status === 'failed' || file.status === 'quarantined')
       throw conflict(file.error ?? 'O arquivo não pôde ser processado. Envie de novo.');
-    if (file.kind === 'sheet' || file.kind === 'image' || file.mime.startsWith('image/'))
+    if (
+      file.kind === 'sheet' ||
+      file.kind === 'image' ||
+      file.kind === 'html' ||
+      file.mime.startsWith('image/') ||
+      file.mime === 'text/html'
+    )
       throw conflict('Envie a aula em PPT, PPTX, ODP, PDF, DOC ou DOCX.');
     const ready = file.status === 'ready';
     const [batch] = await tx

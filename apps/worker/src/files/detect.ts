@@ -1,7 +1,9 @@
 // Tipo do arquivo pelo conteúdo, não pela extensão nem pelo que o navegador disse (ADR 0012).
 
-export type Kind = 'pdf' | 'office' | 'sheet' | 'image';
-export type Detected = { family: 'pdf' | 'zip' | 'ole' | 'png' | 'jpeg' | 'webp' } | null;
+export type Kind = 'pdf' | 'office' | 'sheet' | 'image' | 'html';
+export type Detected = {
+  family: 'pdf' | 'zip' | 'ole' | 'png' | 'jpeg' | 'webp' | 'html';
+} | null;
 
 export function sniff(buf: Buffer): Detected {
   const at = (sig: number[], offset = 0) => sig.every((b, i) => buf[offset + i] === b);
@@ -11,6 +13,14 @@ export function sniff(buf: Buffer): Detected {
   if (at([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) return { family: 'png' };
   if (at([0xff, 0xd8, 0xff])) return { family: 'jpeg' };
   if (at([0x52, 0x49, 0x46, 0x46]) && at([0x57, 0x45, 0x42, 0x50], 8)) return { family: 'webp' };
+  // Aula em HTML: texto que começa (depois de BOM, espaços e comentários) por doctype ou <html>.
+  const head = buf
+    .subarray(0, 2048)
+    .toString('utf8')
+    .replace(/^\uFEFF/, '')
+    .replace(/^(\s|<!--[\s\S]*?-->)+/, '')
+    .toLowerCase();
+  if (head.startsWith('<!doctype html') || head.startsWith('<html')) return { family: 'html' };
   return null;
 }
 
@@ -52,5 +62,7 @@ export function classify(declaredMime: string, buf: Buffer): Kind | null {
     case 'ole':
       if (!OLE_TYPES.has(declaredMime)) return null;
       return SHEETS.has(declaredMime) ? 'sheet' : 'office';
+    case 'html':
+      return declaredMime === 'text/html' ? 'html' : null;
   }
 }

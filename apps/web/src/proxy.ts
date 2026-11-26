@@ -2,8 +2,10 @@ import { getSessionCookie } from 'better-auth/cookies';
 import { NextResponse, type NextRequest } from 'next/server';
 import { buildCsp, buildPieceCsp } from './lib/csp';
 
-// Prévia da peça no admin e a aula publicada para o aluno: mesma política isolada.
-const PIECE_PREVIEW = /^\/api\/v1\/production\/(tasks\/[^/]+\/preview|lessons\/[^/]+)$/;
+// Prévia da peça no admin, a aula publicada da produção e a aula pronta do catálogo: mesma
+// política isolada.
+const PIECE_PREVIEW =
+  /^\/api\/v1\/(production\/(tasks\/[^/]+\/preview|lessons\/[^/]+)|catalog\/lessons\/[^/]+)$/;
 
 const PROTECTED = [
   '/app',

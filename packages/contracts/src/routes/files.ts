@@ -21,6 +21,8 @@ export const ALLOWED_MIME = [
   'image/png',
   'image/jpeg',
   'image/webp',
+  // Aula interativa pronta (só a equipe envia; o módulo do catálogo a serve isolada).
+  'text/html',
 ] as const;
 
 export const FileStatus = z.enum([
@@ -38,7 +40,7 @@ export const FileDto = z.object({
   mime: z.string(),
   sizeBytes: z.number().int(),
   status: FileStatus,
-  kind: z.enum(['pdf', 'office', 'sheet', 'image']).nullable(),
+  kind: z.enum(['pdf', 'office', 'sheet', 'image', 'html']).nullable(),
   pageCount: z.number().int().nullable(),
   hasPdf: z.boolean(),
   /** Motivo legível quando o processamento falhou. */

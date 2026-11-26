@@ -14,7 +14,11 @@ describe('tipo pelo conteúdo', () => {
     expect(sniff(ZIP)).toEqual({ family: 'zip' });
     expect(sniff(OLE)).toEqual({ family: 'ole' });
     expect(sniff(PNG)).toEqual({ family: 'png' });
-    expect(sniff(Buffer.from('<html>'))).toBeNull();
+    expect(sniff(Buffer.from('<html>'))).toEqual({ family: 'html' });
+    expect(sniff(Buffer.from('\uFEFF\n<!-- aula -->\n<!DOCTYPE html><html>'))).toEqual({
+      family: 'html',
+    });
+    expect(sniff(Buffer.from('<script>alert(1)</script>'))).toBeNull();
   });
 
   it('aceita quando o declarado bate com o conteúdo', () => {
@@ -23,6 +27,7 @@ describe('tipo pelo conteúdo', () => {
     expect(classify(XLSX, ZIP)).toBe('sheet');
     expect(classify('application/vnd.ms-powerpoint', OLE)).toBe('office');
     expect(classify('image/png', PNG)).toBe('image');
+    expect(classify('text/html', Buffer.from('<!doctype html><title>Aula</title>'))).toBe('html');
   });
 
   it('recusa quando não bate', () => {
@@ -30,5 +35,7 @@ describe('tipo pelo conteúdo', () => {
     expect(classify(DOCX, PDF)).toBeNull();
     expect(classify('image/jpeg', PNG)).toBeNull();
     expect(classify('application/pdf', Buffer.from('<script>'))).toBeNull();
+    expect(classify('application/pdf', Buffer.from('<!doctype html>'))).toBeNull();
+    expect(classify('text/html', PDF)).toBeNull();
   });
 });

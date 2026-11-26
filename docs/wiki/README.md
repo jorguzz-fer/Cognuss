@@ -46,6 +46,7 @@ Catálogo, questões, pessoas, instituições, IA, privacidade e métricas.
 - [Como criar um assunto (e um subassunto)](admin/criar-assunto.md)
 - [Como criar uma conta de teste](admin/criar-conta-de-teste.md)
 - [Como criar um módulo (aula do catálogo)](admin/criar-modulo.md)
+- [Como enviar uma aula pronta (.html) para um módulo](admin/enviar-aula-pronta.md)
 - [Como criar uma nova versão de uma questão](admin/criar-nova-versao-de-questao.md)
 - [Como criar o primeiro admin (BOOTSTRAP_ADMIN_EMAILS)](admin/criar-primeiro-admin.md)
 - [Como criar um usuário](admin/criar-usuario.md)
