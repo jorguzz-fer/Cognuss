@@ -30,8 +30,10 @@ Liberar a geração manda as tarefas aprovadas para a IA, que escreve cada peça
 
 ## O que acontece depois
 
-- Se a versão passa no teste, a tarefa vira **Peça pronta**.
-- Se não passa, a IA recebe os problemas e corrige, até 3 tentativas. Cada tentativa vira uma versão.
+- Se a versão passa no teste, uma revisão visual por IA olha as capturas. Sem problema grave, a tarefa vira **Peça pronta**.
+- Se não passa no teste ou na revisão visual, a IA recebe os problemas e as capturas e corrige só os trechos com defeito, até 3 tentativas. Cada tentativa vira uma versão.
+- Na última tentativa, o que a revisão visual apontar aparece em amarelo, como aviso para o revisor, e não reprova a peça.
+- Até 3 peças do lote são geradas ao mesmo tempo.
 - Quando nenhuma tarefa está gerando, o lote vira **Peças geradas** e aparece o quadro **Revisão médica**. Veja [Como enviar as peças para a revisão](enviar-para-revisao.md).
 - Na prévia, a peça mostra o selo "Demonstração · sem revisão" até o revisor aprovar.
 - Tarefas de vídeo não geram direto: elas param em **Roteiro para aprovar**. Veja [Como produzir um vídeo](produzir-video.md).
