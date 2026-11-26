@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { LessonUpload } from '@/components/admin/lesson-upload';
 import { AdminHeader, Flash, StatusBadge } from '@/components/admin/ui';
 import { Button } from '@/components/ui/button';
 import { Alert, Card, DemoBadge } from '@/components/ui/card';
@@ -41,6 +42,8 @@ export default async function ModuleAdminPage({
   const { module: m, discipline, topics, history } = await getModuleAdmin(user, id);
   const fmt = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
   const isAuthor = m.authorId === user.id;
+  // Aula servida pelo próprio app (produção ou aula pronta): dá para mostrar a prévia aqui.
+  const appLesson = Boolean(m.lessonUrl?.startsWith('/api/v1/'));
 
   return (
     <div className="grid gap-6">
@@ -90,6 +93,42 @@ export default async function ModuleAdminPage({
               </form>
             ))}
         </div>
+      </Card>
+
+      <Card as="section" aria-labelledby="aula-pronta" className="grid gap-3">
+        <h2 id="aula-pronta" className="text-lg">
+          Aula interativa
+        </h2>
+        {appLesson ? (
+          <iframe
+            src={m.lessonUrl!}
+            title={`Prévia da aula: ${m.title}`}
+            className="aspect-[4/5] w-full rounded-[var(--radius)] border border-line sm:aspect-video"
+            sandbox="allow-scripts"
+            loading="lazy"
+            referrerPolicy="no-referrer"
+          />
+        ) : (
+          <p className="text-sm text-muted">
+            {m.lessonUrl
+              ? 'A aula está num endereço externo (campo "Aula interativa" do conteúdo).'
+              : 'Este módulo ainda não tem aula interativa.'}
+          </p>
+        )}
+        {isAdmin ? (
+          <>
+            <p className="text-sm text-muted">
+              Tem a aula pronta num arquivo .html? Envie aqui. Ela passa pelo antivírus, as fontes
+              do Google entram no próprio arquivo e a aula abre isolada, sem acesso à internet nem à
+              conta do aluno.
+            </p>
+            <LessonUpload
+              moduleId={m.id}
+              canUpload={m.status === 'draft'}
+              hasLesson={Boolean(m.lessonUrl)}
+            />
+          </>
+        ) : null}
       </Card>
 
       {!isAdmin ? (

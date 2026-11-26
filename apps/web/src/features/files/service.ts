@@ -4,10 +4,11 @@ import type { files as contract } from '@gutta/contracts';
 import { emit } from '@gutta/jobs';
 import { keys } from '@gutta/storage';
 import type { z } from 'zod';
-import { conflict, notFound } from '@/lib/api';
+import { ApiError, conflict, notFound } from '@/lib/api';
 import { db } from '@/lib/db';
 import { requireStorage } from '@/lib/storage';
 import { assertFeature, flags } from '@/features/flags/service';
+import { getRoles } from '@/lib/auth/session';
 import type { FeatureKey } from '@/features/flags/catalog';
 
 type FileRow = typeof s.files.$inferSelect;
@@ -25,9 +26,15 @@ const FILE_FEATURES: FeatureKey[] = [
   'competencias',
 ];
 
-export async function assertFilesEnabled() {
+/**
+ * Envio de arquivos ligado: algum módulo da v2 que usa arquivo, ou alguém da equipe (admin),
+ * que envia aulas da produção e aulas prontas do catálogo mesmo com os módulos desligados.
+ */
+export async function assertFilesEnabled(userId?: string) {
   const on = await flags();
-  if (!FILE_FEATURES.some((k) => on[k])) await assertFeature(FILE_FEATURES[0]!);
+  if (FILE_FEATURES.some((k) => on[k])) return;
+  if (userId && (await getRoles(userId)).includes('admin')) return;
+  await assertFeature(FILE_FEATURES[0]!);
 }
 
 export function toDto(f: FileRow): FileDto {
@@ -77,7 +84,10 @@ export async function requestUpload(
   userId: string,
   input: z.output<typeof contract.createUploadBody>,
 ) {
-  await assertFilesEnabled();
+  await assertFilesEnabled(userId);
+  // Aula em HTML roda código: só a equipe envia (e o catálogo a serve isolada).
+  if (input.mime === 'text/html' && !(await getRoles(userId)).includes('admin'))
+    throw new ApiError(403, 'forbidden', 'Só a equipe envia aula em HTML.');
   requireStorage();
   const file = await withUser(db(), userId, async (tx) => {
     const existing = await tx.query.files.findFirst({
@@ -112,7 +122,7 @@ export async function requestUpload(
  * e põe o arquivo na fila. Repetir a chamada não repete o efeito.
  */
 export async function completeUpload(userId: string, fileId: string, requestId?: string) {
-  await assertFilesEnabled();
+  await assertFilesEnabled(userId);
   const store = requireStorage();
   const f = await withUser(db(), userId, (tx) => findOwn(tx, userId, fileId));
   if (f.status !== 'uploading') return { file: toDto(f) };
@@ -155,7 +165,7 @@ export async function completeUpload(userId: string, fileId: string, requestId?:
 }
 
 export async function getFile(userId: string, fileId: string) {
-  await assertFilesEnabled();
+  await assertFilesEnabled(userId);
   const f = await withUser(db(), userId, (tx) => findOwn(tx, userId, fileId));
   return { file: toDto(f) };
 }
@@ -166,7 +176,7 @@ export async function fileUrl(
   fileId: string,
   q: z.output<typeof contract.fileUrlQuery>,
 ) {
-  await assertFilesEnabled();
+  await assertFilesEnabled(userId);
   const store = requireStorage();
   const f = await withUser(db(), userId, (tx) => findOwn(tx, userId, fileId));
   if (f.status === 'quarantined') throw conflict('Este arquivo foi bloqueado pelo antivírus.');

@@ -131,6 +131,8 @@ async function ownFile(tx: Tx, userId: string, fileId: string) {
   });
   if (!f) throw notFound('Arquivo');
   if (f.status === 'quarantined') throw badRequest('Este arquivo foi bloqueado pelo antivírus.');
+  // Aula em HTML vai para o módulo do catálogo, não para a biblioteca.
+  if (f.mime === 'text/html') throw badRequest('Aula em HTML não entra em Material de estudo.');
   return f;
 }
 
