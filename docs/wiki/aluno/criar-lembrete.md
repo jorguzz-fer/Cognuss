@@ -2,7 +2,7 @@
 
 Lembretes guardam tarefas, leituras, trabalhos e prazos seus, com aviso na antecedência que você escolher. Um lembrete pode só avisar ou também reservar o horário na agenda.
 
-**Quem pode:** aluno com cadastro concluído. **Onde:** **Meus lembretes** (`/app/lembretes`). No Meu Espaço, pelo menu **Lembretes** ou pelo link **Criar um lembrete**.
+**Quem pode:** aluno com cadastro concluído. **Onde:** **Meus lembretes** (`/app/lembretes`). No Meu Espaço, pelo menu **Lembretes** ou pelo link **Criar um lembrete**. Sem o Meu Espaço, pelo atalho **Lembretes** no alto da tela **Hoje** (`/app`).
 
 **Chave de módulo:** **Alertas e lembretes (LEM)** (`lembretes`).
 
@@ -23,7 +23,7 @@ Lembretes guardam tarefas, leituras, trabalhos e prazos seus, com aviso na antec
 ### Marcar como feito, editar ou excluir
 
 - Marque a caixa ao lado do lembrete para movê-lo para **Realizados**. Desmarque para voltar a **Pendentes**.
-- Clique no título para abrir **Editar lembrete**. Mude e clique em **Salvar**, ou clique em **Excluir**. A exclusão acontece na hora.
+- Clique no título para abrir **Editar lembrete**. Mude e clique em **Salvar**, ou clique em **Excluir**. A tela pergunta "Excluir este lembrete?". Clique em **Confirmar exclusão** para excluir ou em **Cancelar** para desistir.
 
 ## O que acontece depois
 
@@ -40,7 +40,7 @@ Lembretes guardam tarefas, leituras, trabalhos e prazos seus, com aviso na antec
 | "Não deu para salvar agora."             | Tente de novo.                                                     |
 | "Não deu para excluir agora."            | Tente de novo.                                                     |
 | A caixa de feito não mudou               | Recarregue a página. A lista se atualiza na próxima ação.          |
-| Página não encontrada                    | A chave **Alertas e lembretes (LEM)** está desligada.              |
+| "Esta página não está disponível"        | A chave **Alertas e lembretes (LEM)** está desligada.              |
 
 ## Veja também
 

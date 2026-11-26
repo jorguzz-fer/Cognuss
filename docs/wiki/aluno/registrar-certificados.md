@@ -2,7 +2,7 @@
 
 Meus Certificados guarda seus comprovantes de horas complementares, congressos, cursos e publicações, e soma as horas que você conferiu. Só você vê.
 
-**Quem pode:** aluno com o primeiro acesso concluído. **Onde:** **Meus Certificados** (`/app/competencias`), no menu do **Meu Espaço**. Cada certificado abre em `/app/competencias/<id>`.
+**Quem pode:** aluno com o primeiro acesso concluído. **Onde:** **Meus Certificados** (`/app/competencias`), no menu do **Meu Espaço**. Sem o Meu Espaço, pelo atalho **Meus Certificados** no alto da tela **Hoje** (`/app`). Cada certificado abre em `/app/competencias/<id>`.
 
 ## Antes de começar
 

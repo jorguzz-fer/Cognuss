@@ -17,13 +17,14 @@ Liga o segundo fator da conta: além da senha, um código de 6 dígitos do app a
 3. **Passo 2 de 3**: escaneie o QR code com o app autenticador. Sem câmera, digite no app a chave que aparece em "Sem câmera? Digite a chave:".
 4. Digite em **Código de 6 dígitos do app** o código que o app mostra e clique em **Ativar**.
 5. **Passo 3 de 3**: a tela mostra "Verificação em duas etapas ativa." e a lista em **Guarde estes códigos de recuperação**. Guarde esses códigos fora do celular. Cada um funciona uma vez.
-6. Clique em **Ir para o editorial**.
+6. Clique em **Ir para o editorial**. Em contas sem o papel Admin, o botão é **Voltar ao Cognuss** e leva ao painel do aluno (`/app`).
 
 ## O que acontece depois
 
 - Nas próximas entradas, depois da senha, a plataforma pede o **Código de 6 dígitos**. A opção **Não pedir de novo neste aparelho por 12 horas** vem marcada. Clique em **Confirmar**.
 - Sem o celular, clique em **Usar um código de recuperação** e digite um dos códigos guardados.
-- Se a verificação já está ligada, a tela mostra "Já está ativa nesta conta.".
+- Se a verificação já está ligada, a tela mostra "Já está ativa nesta conta." e o quadro **Novos códigos de recuperação**, com o botão **Gerar novos códigos**. Ao gerar, os códigos antigos deixam de valer. Veja [Como gerar novos códigos ou desligar a verificação em duas etapas](../aluno/gerenciar-verificacao-em-duas-etapas.md).
+- Conta Admin não desliga a própria verificação. A tela diz: "Contas de administração não podem desligar a verificação. Para trocar de celular, peça a outra pessoa da administração." Contas sem o papel Admin veem o botão **Desligar**.
 - Na tela da pessoa em Admin → Usuários, a linha **2FA** mostra "ativo" ou "desligado".
 
 ## Se der errado
@@ -37,3 +38,4 @@ Liga o segundo fator da conta: além da senha, um código de 6 dígitos do app a
 - [De onde vem o primeiro admin](criar-primeiro-admin.md)
 - [Dar e tirar papéis](dar-e-tirar-papeis.md)
 - [Encerrar as sessões de alguém](encerrar-sessoes.md)
+- [Gerar novos códigos ou desligar a verificação](../aluno/gerenciar-verificacao-em-duas-etapas.md)

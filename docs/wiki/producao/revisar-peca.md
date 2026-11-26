@@ -11,7 +11,7 @@ A revisão médica confere a peça, o vídeo e as questões antes de chegarem ao
 
 ## Passo a passo
 
-1. Abra **Revisão de aulas** no menu lateral. As peças aparecem agrupadas por aula, com a disciplina embaixo do nome.
+1. Abra **Revisão de aulas** no menu lateral. As peças aparecem agrupadas por aula, com a disciplina embaixo do nome. Se houver módulos do catálogo esperando revisão, eles aparecem antes, na seção **Módulos do catálogo**. Esses seguem outro caminho: veja [Como levar um módulo de rascunho a publicado](../admin/publicar-modulo.md).
 2. Veja o selo de cada peça:
    - **Para revisar**: pronta para a sua decisão;
    - **Nova versão para revisar**: voltou de um ajuste;

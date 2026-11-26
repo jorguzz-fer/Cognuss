@@ -35,7 +35,8 @@ export default async function ModuleAdminPage({
   searchParams: Promise<{ ok?: string; erro?: string }>;
 }) {
   const { id } = await params;
-  const user = await requireRole(['admin'], `/admin/modulos/${id}`);
+  const user = await requireRole(['admin', 'reviewer'], `/admin/modulos/${id}`);
+  const isAdmin = user.roles.includes('admin');
   const sp = await searchParams;
   const { module: m, discipline, topics, history } = await getModuleAdmin(user, id);
   const fmt = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
@@ -45,10 +46,14 @@ export default async function ModuleAdminPage({
     <div className="grid gap-6">
       <AdminHeader
         title={m.title}
-        crumbs={[
-          { href: '/admin/cursos', label: 'Cursos' },
-          { href: `/admin/disciplinas/${discipline.id}`, label: discipline.name },
-        ]}
+        crumbs={
+          isAdmin
+            ? [
+                { href: '/admin/cursos', label: 'Cursos' },
+                { href: `/admin/disciplinas/${discipline.id}`, label: discipline.name },
+              ]
+            : [{ href: '/admin/revisao', label: 'Revisão' }]
+        }
         action={
           <span className="flex items-center gap-2">
             <StatusBadge status={m.status} />
@@ -72,98 +77,128 @@ export default async function ModuleAdminPage({
           </Alert>
         ) : null}
         <div className="flex flex-wrap gap-2">
-          {(NEXT[m.status] ?? []).map((n) => (
-            <form key={n.to} action={transitionModuleAction}>
-              <input type="hidden" name="id" value={m.id} />
-              <input type="hidden" name="to" value={n.to} />
-              <Button type="submit" variant={n.variant}>
-                {n.label}
-              </Button>
-            </form>
-          ))}
+          {(NEXT[m.status] ?? [])
+            // O autor não aprova o próprio conteúdo: o botão nem aparece.
+            .filter((n) => !(isAuthor && n.to === 'approved'))
+            .map((n) => (
+              <form key={n.to} action={transitionModuleAction}>
+                <input type="hidden" name="id" value={m.id} />
+                <input type="hidden" name="to" value={n.to} />
+                <Button type="submit" variant={n.variant}>
+                  {n.label}
+                </Button>
+              </form>
+            ))}
         </div>
       </Card>
 
-      <Card as="section" aria-labelledby="conteudo-mod" className="grid gap-4">
-        <h2 id="conteudo-mod" className="text-lg">
-          Conteúdo
-        </h2>
-        {m.status === 'published' || m.status === 'approved' ? (
-          <Alert tone="warn">Editar um módulo publicado muda o que os alunos veem na hora.</Alert>
-        ) : null}
-        <form action={saveModuleAction} className="grid gap-4 sm:grid-cols-2">
-          <input type="hidden" name="id" value={m.id} />
-          <input type="hidden" name="disciplineId" value={discipline.id} />
-          <Field label="Título">
-            {(p) => <Input {...p} name="title" required defaultValue={m.title} />}
-          </Field>
-          <Field label="Endereço">
-            {(p) => <Input {...p} name="slug" defaultValue={m.slug} />}
-          </Field>
-          <Field label="Assunto">
-            {(p) => (
-              <Select {...p} name="topicId" defaultValue={m.topicId}>
-                {topics.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.parentId ? '— ' : ''}
-                    {t.name}
-                  </option>
-                ))}
-              </Select>
-            )}
-          </Field>
-          <Field label="Ordem na disciplina">
-            {(p) => (
-              <Input {...p} name="orderIndex" type="number" min={0} defaultValue={m.orderIndex} />
-            )}
-          </Field>
-          <Field
-            label="Aula interativa (endereço https)"
-            optional
-            hint="A origem precisa estar em LESSON_ORIGINS para abrir dentro do app."
-          >
-            {(p) => (
-              <Input {...p} name="lessonUrl" inputMode="url" defaultValue={m.lessonUrl ?? ''} />
-            )}
-          </Field>
-          <Field label="Tempo estimado (min)" optional>
-            {(p) => (
-              <Input
-                {...p}
-                name="estMinutes"
-                type="number"
-                min={1}
-                max={240}
-                defaultValue={m.estMinutes ?? ''}
-              />
-            )}
-          </Field>
-          <div className="sm:col-span-2">
-            <Field label="Chamada" optional hint="Uma frase que aparece na capa do módulo.">
-              {(p) => <Input {...p} name="lead" maxLength={300} defaultValue={m.lead ?? ''} />}
+      {!isAdmin ? (
+        <Card as="section" aria-labelledby="conteudo-mod" className="grid gap-3">
+          <h2 id="conteudo-mod" className="text-lg">
+            Conteúdo
+          </h2>
+          <p className="text-sm text-muted">
+            {discipline.name}
+            {m.estMinutes ? ` · ${m.estMinutes} min` : ''}
+          </p>
+          {m.lead ? <p className="font-semibold">{m.lead}</p> : null}
+          {m.lessonUrl ? (
+            <p>
+              <a href={m.lessonUrl} target="_blank" rel="noreferrer">
+                Abrir a aula interativa
+              </a>
+            </p>
+          ) : null}
+          {m.summaryMd ? (
+            <pre className="text-sm whitespace-pre-wrap">{m.summaryMd}</pre>
+          ) : (
+            <p className="text-sm text-muted">Sem resumo.</p>
+          )}
+        </Card>
+      ) : null}
+
+      {isAdmin ? (
+        <Card as="section" aria-labelledby="conteudo-mod" className="grid gap-4">
+          <h2 id="conteudo-mod" className="text-lg">
+            Conteúdo
+          </h2>
+          {m.status === 'published' || m.status === 'approved' ? (
+            <Alert tone="warn">Editar um módulo publicado muda o que os alunos veem na hora.</Alert>
+          ) : null}
+          <form action={saveModuleAction} className="grid gap-4 sm:grid-cols-2">
+            <input type="hidden" name="id" value={m.id} />
+            <input type="hidden" name="disciplineId" value={discipline.id} />
+            <Field label="Título">
+              {(p) => <Input {...p} name="title" required defaultValue={m.title} />}
             </Field>
-          </div>
-          <div className="sm:col-span-2">
+            <Field label="Endereço">
+              {(p) => <Input {...p} name="slug" defaultValue={m.slug} />}
+            </Field>
+            <Field label="Assunto">
+              {(p) => (
+                <Select {...p} name="topicId" defaultValue={m.topicId}>
+                  {topics.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.parentId ? '— ' : ''}
+                      {t.name}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </Field>
+            <Field label="Ordem na disciplina">
+              {(p) => (
+                <Input {...p} name="orderIndex" type="number" min={0} defaultValue={m.orderIndex} />
+              )}
+            </Field>
             <Field
-              label="Resumo"
+              label="Aula interativa (endereço https)"
               optional
-              hint="Markdown simples: ## título, - lista, > citação, **negrito**. Conteúdo de saúde passa pela revisão antes de publicar."
+              hint="A origem precisa estar em LESSON_ORIGINS para abrir dentro do app."
             >
               {(p) => (
-                <Textarea
+                <Input {...p} name="lessonUrl" inputMode="url" defaultValue={m.lessonUrl ?? ''} />
+              )}
+            </Field>
+            <Field label="Tempo estimado (min)" optional>
+              {(p) => (
+                <Input
                   {...p}
-                  name="summaryMd"
-                  className="min-h-72 font-[ui-monospace,monospace] text-sm"
-                  defaultValue={m.summaryMd ?? ''}
+                  name="estMinutes"
+                  type="number"
+                  min={1}
+                  max={240}
+                  defaultValue={m.estMinutes ?? ''}
                 />
               )}
             </Field>
-          </div>
-          <div>
-            <Button type="submit">Salvar módulo</Button>
-          </div>
-        </form>
-      </Card>
+            <div className="sm:col-span-2">
+              <Field label="Chamada" optional hint="Uma frase que aparece na capa do módulo.">
+                {(p) => <Input {...p} name="lead" maxLength={300} defaultValue={m.lead ?? ''} />}
+              </Field>
+            </div>
+            <div className="sm:col-span-2">
+              <Field
+                label="Resumo"
+                optional
+                hint="Markdown simples: ## título, - lista, > citação, **negrito**. Conteúdo de saúde passa pela revisão antes de publicar."
+              >
+                {(p) => (
+                  <Textarea
+                    {...p}
+                    name="summaryMd"
+                    className="min-h-72 font-[ui-monospace,monospace] text-sm"
+                    defaultValue={m.summaryMd ?? ''}
+                  />
+                )}
+              </Field>
+            </div>
+            <div>
+              <Button type="submit">Salvar módulo</Button>
+            </div>
+          </form>
+        </Card>
+      ) : null}
 
       <Card as="section" aria-labelledby="hist" className="grid gap-2">
         <h2 id="hist" className="text-lg">

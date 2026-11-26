@@ -26,7 +26,7 @@ As autorizações dizem o que a IA pode ler. Você liga e desliga cada uma quand
   - Criar com IA e o tutor dos materiais pedem a autorização de novo antes de continuar;
   - a busca volta a ser só por palavra;
   - certificados novos ficam para você preencher à mão.
-- Retirar a autorização não apaga o que já foi criado nem as conversas guardadas. Para apagar as conversas do tutor dos módulos, veja [Como apagar as conversas com o tutor](apagar-conversas-do-tutor.md).
+- Retirar a autorização não apaga o que já foi criado nem as conversas guardadas. Para apagar as conversas do tutor dos módulos e do tutor sobre os materiais, veja [Como apagar as conversas com o tutor](apagar-conversas-do-tutor.md).
 
 ## Se der errado
 

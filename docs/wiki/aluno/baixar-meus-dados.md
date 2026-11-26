@@ -17,10 +17,10 @@ O Cognuss gera um arquivo com os seus dados para você conferir ou levar a outro
 
 ## O que acontece depois
 
-- O arquivo traz conta, perfil, respostas, revisões, cartões, conversas com o tutor, turmas, consentimentos, pedidos e eventos de uso. Traz também o que você guardou nos módulos da v2, como disciplinas, cronogramas, agenda, lembretes, faltas, notas, materiais, caderno e criações da Ajuda Cognuss.
+- O arquivo traz conta, perfil, respostas, revisões, cartões, conversas com o tutor, turmas, semestre, materiais, criações, certificados, consentimentos, pedidos e eventos de uso. Do semestre e dos módulos da v2 vêm, por exemplo, disciplinas, cronogramas, agenda, lembretes, faltas, notas, materiais, caderno e criações da Ajuda Cognuss.
+- Os certificados de **Meus Certificados** vão no arquivo, com as pastas em que você os organizou. O JSON leva os dados de cada certificado, não o arquivo do comprovante. Para o comprovante, baixe pela tela do certificado.
 - Senhas não vão no arquivo. O Cognuss guarda só uma versão cifrada.
 - O pedido fica registrado em **Corrigir dados ou fazer outro pedido**, como pedido de **Baixar dados** já atendido.
-- Os certificados de **Meus Certificados** não aparecem na lista do arquivo (a confirmar). Se precisar deles, baixe cada comprovante pela tela do certificado ou faça um pedido.
 
 ## Se der errado
 

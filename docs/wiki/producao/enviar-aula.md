@@ -27,18 +27,18 @@ A tela abre o lote novo. Ele passa por **Verificando o arquivo**, **Separando os
 
 ## Se der errado
 
-| Mensagem                                                                               | O que fazer                                                                             |
-| -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| "Escolha o arquivo da aula."                                                           | Selecione um arquivo em **Arquivo da aula**.                                            |
-| "O arquivo passa de 50 MB."                                                            | Reduza o arquivo (por exemplo, comprima as imagens no PowerPoint) ou divida a aula.     |
-| "Envie a aula em PPT, PPTX, ODP, PDF, DOC ou DOCX."                                    | Salve o arquivo num desses formatos.                                                    |
-| "O envio falhou. Tente de novo." ou "Sem conexão. Confira a internet e tente de novo." | Confira a conexão e clique de novo em **Enviar e criar o lote**.                        |
-| "Dê um nome à aula."                                                                   | Preencha **Nome da aula** com ao menos 3 caracteres.                                    |
-| "Envie a aula em PPT, PPTX, PDF ou DOCX."                                              | O arquivo foi reconhecido como planilha ou imagem. Envie a apresentação ou o documento. |
-| "Não deu para enviar agora."                                                           | Tente de novo em alguns minutos. Se repetir, avise a equipe técnica.                    |
+| Mensagem                                                                               | O que fazer                                                                                                                                                        |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| "Escolha o arquivo da aula."                                                           | Selecione um arquivo em **Arquivo da aula**.                                                                                                                       |
+| "O arquivo passa de 50 MB."                                                            | Reduza o arquivo (por exemplo, comprima as imagens no PowerPoint) ou divida a aula.                                                                                |
+| "Envie a aula em PPT, PPTX, ODP, PDF, DOC ou DOCX."                                    | Salve o arquivo num desses formatos. A mensagem aparece também quando o servidor reconhece o arquivo como planilha ou imagem: envie a apresentação ou o documento. |
+| "O envio falhou. Tente de novo." ou "Sem conexão. Confira a internet e tente de novo." | Confira a conexão e clique de novo em **Enviar e criar o lote**.                                                                                                   |
+| "Dê um nome à aula."                                                                   | Preencha **Nome da aula** com ao menos 3 caracteres.                                                                                                               |
+| "Não deu para enviar agora."                                                           | Tente de novo em alguns minutos. Se repetir, avise a equipe técnica.                                                                                               |
 
 ## Veja também
 
 - [Como acompanhar o lote](acompanhar-lote.md)
+- [Como apagar um lote que falhou](apagar-lote.md)
 - [Como escrever os pedidos do professor nos slides](escrever-pedidos-nos-slides.md)
 - [Cursos, disciplinas e assuntos no admin](../README.md#admin)

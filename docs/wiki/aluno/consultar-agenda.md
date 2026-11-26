@@ -2,7 +2,7 @@
 
 A agenda mostra num lugar só as aulas, as avaliações, o estudo e a rotina, em quatro visões. Com uma disciplina escolhida, vira o calendário daquela disciplina.
 
-**Quem pode:** aluno com cadastro concluído. **Onde:** `/app/agenda`. No Meu Espaço, pelo menu **Agenda**; na visão da disciplina, por **Calendário da disciplina**.
+**Quem pode:** aluno com cadastro concluído. **Onde:** `/app/agenda`. No Meu Espaço, pelo menu **Agenda**; na visão da disciplina, por **Calendário da disciplina**. Sem o Meu Espaço, pelo atalho **Agenda** no alto da tela **Hoje** (`/app`).
 
 **Chave de módulo:** **Agenda e calendário (CAL)** (`agenda`). O atalho **Acompanhar esta aula** depende de **Acompanhar aula (AUL)** e o botão **Pedir plano de revisão** depende de **Equilíbrio (EQU)**.
 
@@ -34,7 +34,7 @@ A agenda mostra num lugar só as aulas, as avaliações, o estudo e a rotina, em
 | "Nada marcado."                      | O dia está livre. Clique no **+** do dia para criar um evento.          |
 | "Nada marcado nos próximos 30 dias." | Não há eventos no período. Avance ou confira os filtros.                |
 | "Escolha um período de até 62 dias." | O período pedido é grande demais. Use as visões da tela.                |
-| Página não encontrada                | A chave **Agenda e calendário (CAL)** está desligada. Fale com o admin. |
+| "Esta página não está disponível"    | A chave **Agenda e calendário (CAL)** está desligada. Fale com o admin. |
 
 ## Veja também
 

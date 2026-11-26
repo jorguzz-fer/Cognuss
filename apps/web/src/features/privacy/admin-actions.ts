@@ -6,6 +6,8 @@ import { ApiError } from '@/lib/api';
 import { requireRole } from '@/lib/auth/session';
 import { executeDeletion, resolveRequest, runRetention, saveRetention } from './admin';
 
+const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+
 const PATH = '/admin/privacidade';
 
 function back(result: { ok?: string; erro?: string }): never {
@@ -59,6 +61,6 @@ export async function runRetentionAction() {
     back({ erro: message(err) });
   }
   back({
-    ok: `Limpeza feita: ${r.tutorMessagesRedacted} mensagens do tutor apagadas, ${r.eventsDeleted} eventos, ${r.auditDeleted} registros de auditoria, ${r.sessionsDeleted + r.tokensDeleted} sessões e códigos vencidos, ${r.accountsErased} contas excluídas${r.accountsSkipped ? ` (${r.accountsSkipped} de admin ficaram para revisão)` : ''}.`,
+    ok: `Limpeza feita: ${count(r.tutorMessagesRedacted, 'mensagem do tutor apagada', 'mensagens do tutor apagadas')}, ${count(r.eventsDeleted, 'evento', 'eventos')}, ${count(r.auditDeleted, 'registro de auditoria', 'registros de auditoria')}, ${count(r.sessionsDeleted + r.tokensDeleted, 'sessão ou código vencido', 'sessões e códigos vencidos')}, ${count(r.accountsErased, 'conta excluída', 'contas excluídas')}${r.accountsSkipped ? ` (${count(r.accountsSkipped, 'conta de admin ficou', 'contas de admin ficaram')} para revisão)` : ''}.`,
   });
 }

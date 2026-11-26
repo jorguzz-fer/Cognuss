@@ -19,10 +19,10 @@ O objetivo principal orienta o que o Cognuss sugere primeiro. Você escolhe no p
 
 ## Se der errado
 
-| Mensagem                  | O que fazer                                  |
-| ------------------------- | -------------------------------------------- |
-| "Escolha uma das opções." | Marque um objetivo antes de salvar.          |
-| Página não encontrada     | A chave **Meu Espaço (ESP)** está desligada. |
+| Mensagem                          | O que fazer                                  |
+| --------------------------------- | -------------------------------------------- |
+| "Escolha uma das opções."         | Marque um objetivo antes de salvar.          |
+| "Esta página não está disponível" | A chave **Meu Espaço (ESP)** está desligada. |
 
 ## Veja também
 

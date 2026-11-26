@@ -138,7 +138,7 @@ export async function createBatch(
     if (file.status === 'failed' || file.status === 'quarantined')
       throw conflict(file.error ?? 'O arquivo não pôde ser processado. Envie de novo.');
     if (file.kind === 'sheet' || file.kind === 'image' || file.mime.startsWith('image/'))
-      throw conflict('Envie a aula em PPT, PPTX, PDF ou DOCX.');
+      throw conflict('Envie a aula em PPT, PPTX, ODP, PDF, DOC ou DOCX.');
     const ready = file.status === 'ready';
     const [batch] = await tx
       .insert(s.productionBatches)
@@ -158,6 +158,28 @@ export async function createBatch(
       id: batch!.id,
     });
     return { batch: await batchDto(tx, batch!) };
+  });
+}
+
+/** Apaga um lote que falhou. Lote em andamento ou com peças geradas não sai por aqui. */
+export async function deleteBatch(userId: string, id: string) {
+  return withUser(db(), userId, async (tx) => {
+    const b = await tx.query.productionBatches.findFirst({
+      where: eq(s.productionBatches.id, id),
+    });
+    if (!b) throw notFound('Lote');
+    if (b.status !== 'failed') throw conflict('Só dá para apagar um lote que falhou.');
+    await tx.delete(s.productionBatches).where(eq(s.productionBatches.id, id));
+    await audit(
+      tx,
+      userId,
+      'production.batch_deleted',
+      { type: 'production_batch', id },
+      {
+        title: b.title,
+      },
+    );
+    return { ok: true as const };
   });
 }
 
@@ -338,7 +360,9 @@ export async function regenerateTask(
       .where(eq(s.productionTasks.id, id))
       .for('update');
     if (!t) throw notFound('Tarefa');
-    if (t.status !== 'generated' && t.status !== 'failed')
+    // Vídeo pausado (cena sem imagem, recusa do provedor) também recomeça: senão não tem saída.
+    const pausedVideo = t.status === 'generating' && t.mediaStage === 'paused';
+    if (t.status !== 'generated' && t.status !== 'failed' && !pausedVideo)
       throw conflict('Só dá para gerar de novo uma peça que já terminou de gerar.');
     // No vídeo, o ajuste vai para o novo roteiro; na peça HTML, sobre a versão atual.
     if (body.note && !t.currentVersion && t.pieceType !== 'video')

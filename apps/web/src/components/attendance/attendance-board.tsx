@@ -9,6 +9,7 @@ import { Alert, Badge, Card } from '@/components/ui/card';
 import { Field, Input, Select } from '@/components/ui/field';
 import { api, ClientApiError } from '@/lib/client-api';
 import { cn } from '@/lib/cn';
+import { ConfirmButton } from '@/components/ui/confirm-button';
 
 type Dto = attendance.AttendanceDto;
 
@@ -300,14 +301,14 @@ export function AttendanceBoard({
                   {day.absenceId ? 'Atualizar registro' : 'Registrar falta'}
                 </Button>
                 {day.absenceId ? (
-                  <Button
-                    type="button"
+                  <ConfirmButton
                     variant="secondary"
                     disabled={busy}
-                    onClick={() => remove(day.absenceId!)}
+                    question="Remover esta falta?"
+                    onConfirm={() => remove(day.absenceId!)}
                   >
                     Remover registro
-                  </Button>
+                  </ConfirmButton>
                 ) : null}
               </div>
               {!s ? (
@@ -358,14 +359,13 @@ export function AttendanceBoard({
                       <td className="p-2">{String(a.classHours).replace('.', ',')}</td>
                       <td className="p-2">{a.note ?? ''}</td>
                       <td className="p-2">
-                        <Button
-                          type="button"
-                          variant="ghost"
+                        <ConfirmButton
                           disabled={busy}
-                          onClick={() => remove(a.id)}
+                          question="Remover esta falta?"
+                          onConfirm={() => remove(a.id)}
                         >
                           Remover
-                        </Button>
+                        </ConfirmButton>
                         {planning ? (
                           <RequestReview
                             kind="falta"

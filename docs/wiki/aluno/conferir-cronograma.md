@@ -32,19 +32,20 @@ A conferência mostra cada item que a IA leu no cronograma. Você corrige, tira 
 
 ## Se der errado
 
-| Mensagem                                                                                                 | O que fazer                                                                     |
-| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| "Informe uma data válida."                                                                               | Corrija a data do item.                                                         |
-| "Hora de início no formato HH:MM." ou "Hora de fim no formato HH:MM."                                    | Corrija o horário.                                                              |
-| "O fim precisa ser depois do início."                                                                    | Ajuste os horários.                                                             |
-| "Informe o início antes do fim."                                                                         | Preencha o início ou apague o fim.                                              |
-| "Informe o título."                                                                                      | Dê um título ao item.                                                           |
-| "Corrija os itens destacados para confirmar."                                                            | O botão de confirmar fica desligado até todos os itens marcados estarem certos. |
-| "Não encontramos datas neste arquivo. Você pode adicionar os itens à mão abaixo ou descartar a leitura." | Adicione os itens com **Adicionar item** ou descarte.                           |
-| "A leitura precisa da sua autorização. Autorize no cartão da disciplina."                                | Volte ao cartão e clique em **Autorizar a leitura**.                            |
-| "Esta leitura foi descartada. Nada mudou na agenda."                                                     | Envie o cronograma de novo para uma nova leitura.                               |
-| "Este cronograma já foi confirmado." ou "Este cronograma já foi conferido e está na agenda."             | Não há o que fazer. Para mudar, envie um cronograma novo.                       |
-| "Esta leitura não está pronta para confirmar."                                                           | Espere a leitura terminar e recarregue.                                         |
+| Mensagem                                                                                                 | O que fazer                                                                                  |
+| -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| "Informe uma data válida."                                                                               | Corrija a data do item.                                                                      |
+| "Hora de início no formato HH:MM." ou "Hora de fim no formato HH:MM."                                    | Corrija o horário.                                                                           |
+| "O fim precisa ser depois do início."                                                                    | Ajuste os horários.                                                                          |
+| "Informe o início antes do fim."                                                                         | Preencha o início ou apague o fim.                                                           |
+| "Informe o título."                                                                                      | Dê um título ao item.                                                                        |
+| "Corrija os itens destacados para confirmar."                                                            | O botão de confirmar fica desligado até todos os itens marcados estarem certos.              |
+| "Não encontramos datas neste arquivo. Você pode adicionar os itens à mão abaixo ou descartar a leitura." | Adicione os itens com **Adicionar item** ou descarte.                                        |
+| "A leitura precisa da sua autorização. Autorize no cartão da disciplina."                                | Volte ao cartão e clique em **Autorizar a leitura**.                                         |
+| "Esta leitura foi descartada. Nada mudou na agenda."                                                     | Envie o cronograma de novo para uma nova leitura.                                            |
+| "Este cronograma já foi confirmado." ou "Este cronograma já foi conferido e está na agenda."             | Não há o que fazer. Para mudar, envie um cronograma novo.                                    |
+| "Esta leitura não está pronta para confirmar."                                                           | Espere a leitura terminar e recarregue.                                                      |
+| "Esta página não está disponível"                                                                        | A chave **Minhas disciplinas e cronogramas (DIS)** está desligada ou o endereço está errado. |
 
 ## Veja também
 

@@ -2,7 +2,7 @@
 
 O controle de faltas mostra, em horas-aula, quanto você já faltou e quanto ainda pode faltar em cada disciplina. É um controle pessoal: a frequência oficial é a da instituição.
 
-**Quem pode:** aluno dono da disciplina. **Onde:** **Faltas** (`/app/faltas`) e a página de cada disciplina (`/app/faltas/(id)`). No Meu Espaço, pelo menu **Faltas**; na visão da disciplina, pelo cartão **Faltas na disciplina** ou pelo menu **Faltas**.
+**Quem pode:** aluno dono da disciplina. **Onde:** **Faltas** (`/app/faltas`) e a página de cada disciplina (`/app/faltas/(id)`). No Meu Espaço, pelo menu **Faltas**; na visão da disciplina, pelo cartão **Faltas na disciplina** ou pelo menu **Faltas**. Sem o Meu Espaço, pelo atalho **Faltas** no alto da tela **Hoje** (`/app`).
 
 **Chave de módulo:** **Faltas (FAL)** (`faltas`). O botão **Pedir revisão da aula perdida** depende também de **Equilíbrio (EQU)**.
 
@@ -33,7 +33,8 @@ O controle de faltas mostra, em horas-aula, quanto você já faltou e quanto ain
 ### Corrigir ou remover
 
 - Clique num dia marcado como **falta**, ajuste e clique em **Atualizar registro**, ou clique em **Remover registro**.
-- Na tabela **Minhas faltas**, clique em **Remover** na linha da falta. A remoção acontece na hora.
+- Na tabela **Minhas faltas**, clique em **Remover** na linha da falta.
+- Nos dois casos, a tela pergunta "Remover esta falta?". Clique em **Confirmar exclusão** para remover ou em **Cancelar** para desistir.
 
 ## O que acontece depois
 
@@ -54,7 +55,7 @@ O controle de faltas mostra, em horas-aula, quanto você já faltou e quanto ain
 | "Cadastre suas disciplinas para controlar as faltas."                                          | Cadastre uma disciplina antes.                                               |
 | "Ainda sem configuração."                                                                      | A disciplina ainda não foi configurada. Abra e configure.                    |
 | "Não deu para salvar agora."                                                                   | Tente de novo. A mensagem aparece no quadro lateral, abaixo da configuração. |
-| Página não encontrada                                                                          | A chave **Faltas (FAL)** está desligada ou a disciplina foi arquivada.       |
+| "Esta página não está disponível"                                                              | A chave **Faltas (FAL)** está desligada ou a disciplina foi arquivada.       |
 
 ## Veja também
 

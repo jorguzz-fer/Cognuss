@@ -2,7 +2,7 @@
 
 O Equilíbrio sugere sessões de estudo da semana dentro dos horários de estudo da sua rotina, com tempo livre de propósito. Nada entra na agenda antes de você aceitar.
 
-**Quem pode:** aluno com cadastro concluído. **Onde:** **Equilíbrio** (`/app/equilibrio`). No Meu Espaço, pelo menu **Equilíbrio** ou pelo link **Abrir o Equilíbrio**.
+**Quem pode:** aluno com cadastro concluído. **Onde:** **Equilíbrio** (`/app/equilibrio`). No Meu Espaço, pelo menu **Equilíbrio** ou pelo link **Abrir o Equilíbrio**. Sem o Meu Espaço, pelo atalho **Equilíbrio** no alto da tela **Hoje** (`/app`).
 
 **Chave de módulo:** **Equilíbrio (EQU)** (`equilibrio`). O link para marcar horários de estudo depende de **Rotina semanal (ROT)**.
 
@@ -44,7 +44,7 @@ O Equilíbrio sugere sessões de estudo da semana dentro dos horários de estudo
 | "Esta semana já terminou."                                                                                  | Escolha a semana atual ou uma futura.                                                               |
 | "Esse horário cruza com (evento)." ou "Esse horário cruza com a sessão (sessão)."                           | Escolha outro horário ao mudar a sessão.                                                            |
 | "Não deu para fazer isso agora."                                                                            | Tente de novo.                                                                                      |
-| Página não encontrada                                                                                       | A chave **Equilíbrio (EQU)** está desligada.                                                        |
+| "Esta página não está disponível"                                                                           | A chave **Equilíbrio (EQU)** está desligada.                                                        |
 
 ## Veja também
 

@@ -36,7 +36,8 @@ Funcionam sempre, sem chave: catálogo, questões, flashcards, revisões, perfil
 
 - Aparece o aviso "Chaves salvas.".
 - A mudança vale para todos em até 30 segundos.
-- Com um módulo desligado, as telas dele respondem "não encontrado", como se não existissem. Pedidos ao servidor recebem "Este recurso ainda não está disponível.".
+- Com um módulo desligado, as telas dele mostram a página "Esta página não está disponível", com o texto "Ela pode ter mudado de endereço ou ainda não estar liberada para a sua conta." e os botões **Ir para o início** e **Ver meu perfil**. É a mesma página de um endereço que não existe. Pedidos ao servidor recebem "Este recurso ainda não está disponível.".
+- Com a chave **Meu Espaço (ESP)** desligada, o aluno vê o painel **Hoje** do MVP. No alto dele aparece uma fileira de botões de atalho (o leitor de tela a anuncia como "Organização do semestre") só com os módulos ligados: **Minhas disciplinas**, **Agenda**, **Rotina semanal**, **Equilíbrio**, **Lembretes**, **Faltas**, **Notas**, **Material de estudo**, **Ajuda Cognuss** e **Meus Certificados**. Sem nenhum desses ligado, a fileira não aparece.
 - A chave **Cadastro inicial (CAD)** decide o primeiro acesso: ligada, o aluno novo vai para o cadastro da v2 (`/comecar`); desligada, vai para o primeiro acesso antigo do MVP.
 - Desligar não apaga nada. Os dados do aluno voltam a aparecer quando o módulo é ligado de novo.
 - A mudança fica na auditoria.
@@ -45,6 +46,7 @@ Funcionam sempre, sem chave: catálogo, questões, flashcards, revisões, perfil
 
 - Aviso "FEATURES_ON está definida no servidor (...)": a engenharia ligou alguns módulos por variável do servidor. Eles ficam ligados mesmo desmarcados aqui. Atenção: esses módulos aparecem marcados, e salvar grava esse estado. Se a variável for tirada depois, eles continuam ligados até alguém desmarcar.
 - O aluno ainda vê o módulo desligado: espere 30 segundos e recarregue a página.
+- O aluno vê "Esta página não está disponível" numa tela que deveria abrir: confira se o módulo dela está marcado e salvo.
 
 ## Veja também
 

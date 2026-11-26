@@ -34,7 +34,7 @@ Você controla quem ainda pode entrar na turma: troca o código ou fecha a turma
 
 ## Se der errado
 
-- **"Turma não encontrado."**: a turma é de outro professor ou o endereço está errado. Volte a **Suas turmas**. (O texto da tela tem esse erro de concordância.)
+- **"Turma não encontrada."**: a turma é de outro professor ou o endereço está errado. Volte a **Suas turmas**.
 - O aluno não consegue entrar: confira se a turma está aberta e se ele usa o código atual.
 
 ## Veja também

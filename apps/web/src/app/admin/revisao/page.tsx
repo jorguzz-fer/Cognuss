@@ -4,6 +4,7 @@ import { PIECE_TYPE_LABEL } from '@gutta/core';
 import { AdminHeader } from '@/components/admin/ui';
 import { PublishButton } from '@/components/production/review-actions';
 import { Badge, Card } from '@/components/ui/card';
+import { catalogModulesInReview } from '@/features/admin/service';
 import { reviewQueue } from '@/features/production/review';
 import { requireRole } from '@/lib/auth/session';
 
@@ -14,6 +15,7 @@ export const metadata: Metadata = { title: 'Revisão de aulas' };
 export default async function ReviewQueuePage() {
   const user = await requireRole(['reviewer', 'admin'], '/admin/revisao');
   const { items } = await reviewQueue(user.id);
+  const catalog = await catalogModulesInReview(user);
   const batches = [...new Map(items.map((i) => [i.batchId, i])).values()];
   return (
     <div className="grid gap-6">
@@ -21,6 +23,34 @@ export default async function ReviewQueuePage() {
         title="Revisão de aulas"
         lead="Peças geradas pela produção de aulas esperando revisão médica. Aprove a peça e as questões, ou peça ajuste num trecho: a IA gera uma nova versão a partir do seu comentário. Nada chega ao aluno sem aprovação."
       />
+      {catalog.length ? (
+        <Card as="section" aria-labelledby="catalogo" className="grid gap-3">
+          <div className="grid gap-1">
+            <h2 id="catalogo" className="text-xl">
+              Módulos do catálogo
+            </h2>
+            <p className="text-sm text-muted">
+              Escritos à mão no catálogo. Quem escreveu não aprova o próprio módulo.
+            </p>
+          </div>
+          <ul className="grid gap-2">
+            {catalog.map((m) => (
+              <li
+                key={m.id}
+                className="flex flex-wrap items-center justify-between gap-2 border-t border-line pt-2 first:border-0 first:pt-0"
+              >
+                <Link href={`/admin/modulos/${m.id}`} className="font-semibold">
+                  {m.title}
+                </Link>
+                <span className="text-sm text-muted">
+                  {m.disciplineName}
+                  {m.authorId === user.id ? ' · você escreveu' : ''}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      ) : null}
       {batches.length === 0 ? (
         <Card>
           <p className="text-sm text-muted">Nenhuma peça esperando revisão.</p>

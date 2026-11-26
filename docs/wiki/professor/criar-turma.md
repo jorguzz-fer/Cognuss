@@ -2,7 +2,7 @@
 
 A turma junta os alunos que entram com o seu código, para você acompanhar o desempenho deles nas questões a partir do dia em que entraram.
 
-**Quem pode:** Professor e Admin. O Admin precisa ter a verificação em duas etapas ativa. **Onde:** **Suas turmas** (`/professor`), quadro **Nova turma**. Na área do aluno, o link **Professor** fica no topo da tela (só em telas largas).
+**Quem pode:** Professor e Admin. O Admin precisa ter a verificação em duas etapas ativa. **Onde:** **Suas turmas** (`/professor`), quadro **Nova turma**. Na área do aluno, o link **Professor** fica no topo da tela (só em telas largas). No celular, abra **Perfil** e, no cartão **Conta e segurança**, clique em **Área do professor**.
 
 ## Antes de começar
 

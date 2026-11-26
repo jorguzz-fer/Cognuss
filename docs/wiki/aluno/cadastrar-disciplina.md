@@ -2,7 +2,7 @@
 
 Cada disciplina do semestre ganha nome, sigla, cor, docentes e, se você quiser, o cronograma e o plano de ensino. Ela passa a aparecer na agenda, na rotina, nas faltas e nas notas.
 
-**Quem pode:** aluno com cadastro concluído (ou na etapa **Disciplinas** do primeiro acesso). **Onde:** **Minhas disciplinas** (`/app/minhas-disciplinas`). No Meu Espaço, pelo menu **Minhas disciplinas** ou pelo link **Gerenciar ou adicionar disciplinas**.
+**Quem pode:** aluno com cadastro concluído (ou na etapa **Disciplinas** do primeiro acesso). **Onde:** **Minhas disciplinas** (`/app/minhas-disciplinas`). No Meu Espaço, pelo menu **Minhas disciplinas** ou pelo link **Gerenciar ou adicionar disciplinas**. Sem o Meu Espaço, pelo atalho **Minhas disciplinas** no alto da tela **Hoje** (`/app`).
 
 **Chave de módulo:** **Minhas disciplinas e cronogramas (DIS)** (`disciplinas`) para a tela `/app/minhas-disciplinas`. Dentro do primeiro acesso, a etapa funciona com a chave **Cadastro inicial (CAD)**. O menu do Meu Espaço depende também da chave **Meu Espaço (ESP)**.
 
@@ -27,7 +27,7 @@ Cada disciplina do semestre ganha nome, sigla, cor, docentes e, se você quiser,
 - Com cronograma anexado, a leitura começa sozinha. Veja [Como importar o cronograma](importar-cronograma.md).
 - Para anexar depois, use **Anexar cronograma** e **Anexar plano de ensino** no cartão da disciplina. Para trocar o cronograma, use **Enviar outro cronograma**.
 - O nome da disciplina leva à visão da disciplina. Veja [Como usar a visão da disciplina](usar-visao-da-disciplina.md).
-- A tela não tem edição de nome, sigla, cor ou docentes depois de salvar (a confirmar se há previsão). Para corrigir, arquive e cadastre de novo. Veja [Como arquivar uma disciplina](arquivar-disciplina.md).
+- Para corrigir nome, sigla, cor ou docentes depois de salvar, use o lápis no cartão da disciplina. Veja [Como editar uma disciplina](editar-disciplina.md).
 
 ## Se der errado
 
@@ -45,6 +45,7 @@ Cada disciplina do semestre ganha nome, sigla, cor, docentes e, se você quiser,
 ## Veja também
 
 - [Como importar o cronograma](importar-cronograma.md)
+- [Como editar uma disciplina](editar-disciplina.md)
 - [Como arquivar uma disciplina](arquivar-disciplina.md)
 - [Como usar a visão da disciplina](usar-visao-da-disciplina.md)
 - [Como ligar e desligar módulos da v2](../admin/ligar-e-desligar-funcionalidades.md), no guia do admin

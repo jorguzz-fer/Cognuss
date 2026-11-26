@@ -1,7 +1,7 @@
 import { production } from '@gutta/contracts';
 import { requireApiRole } from '@/lib/api';
 import { contractRoute } from '@/lib/contract';
-import { getBatch } from '@/features/production/service';
+import { deleteBatch, getBatch } from '@/features/production/service';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,4 +9,10 @@ export const dynamic = 'force-dynamic';
 export const GET = contractRoute(production.getBatch, async ({ userId, params }) => {
   await requireApiRole(userId, ['admin']);
   return getBatch(userId, params.id);
+});
+
+// DELETE /api/v1/production/batches/{id}: apaga um lote que falhou.
+export const DELETE = contractRoute(production.deleteBatch, async ({ userId, params }) => {
+  await requireApiRole(userId, ['admin']);
+  return deleteBatch(userId, params.id);
 });

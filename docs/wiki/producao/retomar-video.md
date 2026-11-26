@@ -1,6 +1,6 @@
 # Como retomar um vídeo pausado
 
-Quando a mídia de um vídeo para por saldo, chave, voz ou pedido recusado, a tarefa fica **Pausado** até você resolver o motivo e clicar em **Retomar**.
+Quando a mídia de um vídeo para por saldo, chave, voz ou pedido recusado, a tarefa fica **Pausado** até você resolver o motivo e clicar em **Retomar**. Quando retomar não resolve, o quadro **Gerar de novo** recomeça o vídeo pelo roteiro.
 
 **Quem pode:** Admin, com a verificação em duas etapas ativa. **Onde:** tela da peça de vídeo (`/admin/producao/<lote>/tarefas/<tarefa>`), seção **Mídia do vídeo**.
 
@@ -37,11 +37,12 @@ Ao retomar, o que falhou é pedido de novo. O que já estava pronto ou a caminho
 
 - **"A mídia deste vídeo não está pausada."**: a tarefa já saiu da pausa. Recarregue a página.
 - **A pausa volta logo depois de Retomar:** o motivo não foi resolvido, ou a chave nova ainda não chegou ao worker. Confirme com a equipe técnica que o worker foi reiniciado depois da troca.
-- **"A cena "…" está sem imagem aprovada. Refaça a imagem."**: retomar não leva de volta à aprovação de imagens, e o quadro **Gerar de novo** não aparece enquanto a tarefa está pausada. A tela não tem saída para este caso. Avise a equipe técnica.
-- **Recusa do provedor que se repete:** retomar envia o mesmo pedido de novo. Se a recusa for pelo conteúdo do pedido, a tela não tem como trocar o texto durante a pausa. Avise a equipe técnica (a confirmar o procedimento).
+- **"A cena "…" está sem imagem aprovada. Refaça a imagem."**: retomar não leva de volta à aprovação de imagens. Use o quadro **Gerar de novo**, que aparece também com o vídeo pausado. O vídeo recomeça pelo roteiro, e imagens e clipes novos gastam créditos de novo. Veja [Como gerar uma peça de novo](gerar-de-novo.md).
+- **Recusa do provedor que se repete:** retomar envia o mesmo pedido de novo. Se a recusa for pelo conteúdo do pedido, use **Gerar de novo**. O vídeo recomeça pelo roteiro. Se o quadro mostrar o campo **Pedido de ajuste** (só aparece quando a peça já tem versão), escreva ali o que mudar: o ajuste vai para o novo roteiro. Veja [Como gerar uma peça de novo](gerar-de-novo.md).
 
 ## Veja também
 
 - [Como produzir um vídeo](produzir-video.md)
+- [Como gerar uma peça de novo](gerar-de-novo.md)
 - [Como escolher a voz e a cota diária](configurar-vozes-e-cota.md)
 - [Como configurar o servidor para a produção](configurar-servidor.md)

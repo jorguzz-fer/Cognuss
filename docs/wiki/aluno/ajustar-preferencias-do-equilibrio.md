@@ -33,7 +33,7 @@ As preferências dizem ao Equilíbrio como montar as propostas: período, duraç
 | --------------------------------------------- | ------------------------------------------------ |
 | "O limite diário não pode passar do semanal." | Diminua o limite por dia ou aumente o da semana. |
 | "Não deu para salvar agora."                  | Tente de novo.                                   |
-| Página não encontrada                         | A chave **Equilíbrio (EQU)** está desligada.     |
+| "Esta página não está disponível"             | A chave **Equilíbrio (EQU)** está desligada.     |
 
 ## Veja também
 

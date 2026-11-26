@@ -197,6 +197,14 @@ export async function syncReminderNotification(
 
 // ---------- Leitura e preferências ----------
 
+/** Fuso do aluno, para mostrar a hora dos avisos como ele vê no relógio. */
+export async function noticeTimezone(userId: string) {
+  return withUser(db(), userId, async (tx) => {
+    const p = await tx.query.profiles.findFirst({ where: eq(s.profiles.userId, userId) });
+    return p?.timezone ?? 'America/Sao_Paulo';
+  });
+}
+
 export async function listNotifications(userId: string) {
   await assertRemindersEnabled();
   return withUser(db(), userId, async (tx) => {

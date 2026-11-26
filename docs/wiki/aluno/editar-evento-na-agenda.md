@@ -23,11 +23,12 @@ Você muda ou exclui um evento da agenda. Numa série que se repete, escolhe se 
    - **Só esta**: muda só a ocorrência clicada.
    - **Esta e as próximas**: muda a partir desta data.
    - **Toda a série**: muda todas as ocorrências.
-4. Clique em **Salvar**, ou em **Excluir** para tirar as ocorrências escolhidas em **Aplicar a**.
+4. Clique em **Salvar**, ou em **Excluir** para tirar as ocorrências escolhidas em **Aplicar a**. Para excluir, confirme como em **Excluir**, abaixo.
 
 ### Excluir
 
-1. Abra o evento e clique em **Excluir**. A exclusão acontece na hora, sem pedido de confirmação.
+1. Abra o evento e clique em **Excluir**.
+2. A janela pergunta "Excluir da agenda?". Clique em **Confirmar exclusão** para excluir ou em **Cancelar** para desistir.
 
 ### Atalhos dentro da janela
 

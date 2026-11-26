@@ -9,7 +9,13 @@ import { Field, Input } from '@/components/ui/field';
 import { PasswordInput } from '@/components/ui/password-input';
 
 // Ativação do segundo fator em 3 passos, com progresso visível (Gradiente de Meta).
-export function TwoFactorSetup() {
+export function TwoFactorSetup({
+  next = '/app',
+  nextLabel = 'Voltar ao Cognuss',
+}: {
+  next?: string;
+  nextLabel?: string;
+}) {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [pending, setPending] = useState(false);
@@ -112,11 +118,11 @@ export function TwoFactorSetup() {
           </Card>
           <Button
             onClick={() => {
-              router.replace('/admin');
+              router.replace(next);
               router.refresh();
             }}
           >
-            Ir para o editorial
+            {nextLabel}
           </Button>
         </div>
       ) : null}

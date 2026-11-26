@@ -2,7 +2,7 @@
 
 O tutor da Ajuda Cognuss responde dúvidas a partir dos materiais que você enviou e mostra a página de onde saiu cada resposta.
 
-**Quem pode:** aluno com o primeiro acesso concluído. **Onde:** **Ajuda Cognuss**, **Tutor** (`/app/ajuda/tutor`).
+**Quem pode:** aluno com o primeiro acesso concluído. **Onde:** **Ajuda Cognuss**, **Tutor** (`/app/ajuda/tutor`). Sem o Meu Espaço, pelo atalho **Ajuda Cognuss** no alto da tela **Hoje** (`/app`).
 
 ## Antes de começar
 
@@ -27,6 +27,7 @@ O tutor da Ajuda Cognuss responde dúvidas a partir dos materiais que você envi
 - A conversa fica em **Conversas recentes**, na página do Tutor, com o tipo de fonte (**Materiais**, **Aula** ou **Slide**).
 - Ao lado do botão aparece "N de M perguntas nas próximas 24 horas". Esta conta soma as perguntas feitas aqui e as feitas ao tutor dos módulos do catálogo.
 - Quando os materiais não cobrem o assunto, o tutor diz isso.
+- Para apagar todas as conversas, use **Apagar conversas com o tutor** em Privacidade. O botão apaga as conversas deste tutor e as do tutor dos módulos. Veja [Como apagar as conversas com o tutor](apagar-conversas-do-tutor.md).
 
 ## Se der errado
 
@@ -43,6 +44,7 @@ O tutor da Ajuda Cognuss responde dúvidas a partir dos materiais que você envi
 - [Como usar o tutor de IA do módulo](usar-tutor-do-modulo.md)
 - [Como criar com IA](criar-com-ia.md)
 - [Como ligar e desligar as autorizações de IA](gerenciar-autorizacoes-de-ia.md)
+- [Como apagar as conversas com o tutor](apagar-conversas-do-tutor.md)
 - [Como ligar e desligar funcionalidades (admin)](../admin/ligar-e-desligar-funcionalidades.md)
 - [Como configurar os recursos de IA (admin)](../admin/configurar-recursos-de-ia.md)
 - [Como acompanhar uma aula](acompanhar-aula.md)

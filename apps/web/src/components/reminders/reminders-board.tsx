@@ -8,6 +8,7 @@ import { Alert, Badge, Card } from '@/components/ui/card';
 import { Field, Input, Select, Textarea } from '@/components/ui/field';
 import { api, ClientApiError } from '@/lib/client-api';
 import { cn } from '@/lib/cn';
+import { ConfirmButton } from '@/components/ui/confirm-button';
 
 type Reminder = reminders.ReminderDto;
 type Discipline = { id: string; name: string };
@@ -378,15 +379,16 @@ export function RemindersBoard({
                 Cancelar
               </Button>
               {draft.id ? (
-                <Button
-                  type="button"
-                  variant="danger"
-                  className="ml-auto"
-                  disabled={busy}
-                  onClick={remove}
-                >
-                  Excluir
-                </Button>
+                <span className="ml-auto">
+                  <ConfirmButton
+                    variant="danger"
+                    disabled={busy}
+                    question="Excluir este lembrete?"
+                    onConfirm={() => void remove()}
+                  >
+                    Excluir
+                  </ConfirmButton>
+                </span>
               ) : null}
             </div>
           </form>

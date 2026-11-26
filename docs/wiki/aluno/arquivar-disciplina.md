@@ -10,9 +10,10 @@ Arquivar tira a disciplina da lista do semestre. O histórico e os arquivos dela
 
 1. Abra **Minhas disciplinas**.
 2. Em **Disciplinas do semestre**, encontre o cartão da disciplina.
-3. Clique no ícone de lixeira, no canto do cartão. O nome acessível do botão é **Remover (nome da disciplina)**.
+3. Clique no ícone de caixa de arquivo, no canto do cartão, ao lado do lápis. O nome acessível do botão é **Arquivar (nome da disciplina)**.
+4. O navegador pergunta "Arquivar (nome da disciplina)? Ela sai do semestre; o histórico e os documentos ficam." Clique em **OK** para arquivar ou em **Cancelar** para desistir.
 
-A ação acontece na hora, sem pedido de confirmação.
+Para só corrigir o nome, a sigla, a cor ou os docentes, não arquive: use o lápis. Veja [Como editar uma disciplina](editar-disciplina.md).
 
 ## O que acontece depois
 
@@ -31,4 +32,5 @@ A ação acontece na hora, sem pedido de confirmação.
 ## Veja também
 
 - [Como cadastrar uma disciplina](cadastrar-disciplina.md)
+- [Como editar uma disciplina](editar-disciplina.md)
 - [Como ligar e desligar módulos da v2](../admin/ligar-e-desligar-funcionalidades.md), no guia do admin

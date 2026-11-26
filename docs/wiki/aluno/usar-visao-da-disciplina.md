@@ -34,7 +34,7 @@ A visão da disciplina reúne num lugar só a próxima aula, o calendário, as f
 | "Nada nas próximas semanas."                   | Não há eventos próximos. Confira o cronograma ou crie eventos na agenda.                                                 |
 | "Configure a carga horária para ver o limite." | Configure a disciplina em **Faltas**.                                                                                    |
 | "Nenhuma nota lançada."                        | Lance notas em **Notas**.                                                                                                |
-| Página não encontrada                          | A disciplina foi arquivada, o endereço está errado ou a chave **Minhas disciplinas e cronogramas (DIS)** está desligada. |
+| "Esta página não está disponível"              | A disciplina foi arquivada, o endereço está errado ou a chave **Minhas disciplinas e cronogramas (DIS)** está desligada. |
 
 ## Veja também
 

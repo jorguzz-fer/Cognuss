@@ -33,7 +33,7 @@ O canto da barra mostra **Salvando…** e **Salvo**. Tudo é salvo sozinho.
 
 1. Na aba **Caderno**, clique em **Nova nota** e escreva. Listas com "- ", tabelas com "|", negrito com "**" e fórmulas com "$" funcionam.
 2. Para ligar a nota a uma parte do slide, escolha a ferramenta **Trecho: ligar uma nota a uma parte do slide** e marque a área. A nota nasce ligada ao trecho; **Ver o trecho no slide** mostra onde.
-3. Clique em **Pronto** para fechar a edição. **Editar** reabre; **Apagar nota** apaga na hora.
+3. Clique em **Pronto** para fechar a edição. **Editar** reabre. Para apagar, clique em **Apagar nota**: a tela pergunta "Apagar esta nota?". Clique em **Confirmar exclusão** para apagar ou em **Cancelar** para desistir.
 4. **Outras notas desta aula** lista as notas dos outros slides, com **Ir ao slide N**.
 
 ### Dar selos e guardar dúvidas
@@ -71,7 +71,7 @@ O canto da barra mostra **Salvando…** e **Salvo**. Tudo é salvo sozinho.
 | "Não deu para salvar agora."                                | Tente de novo.                                                         |
 | "Cada página nova recebe uma página antiga só."             | Na reassociação, escolha páginas diferentes para cada página antiga.   |
 | "Este recurso ainda não está disponível." ao anexar slides  | A chave **Material de estudo (MAT)** está desligada. Fale com o admin. |
-| Página não encontrada                                       | A chave **Acompanhar aula (AUL)** está desligada ou a aula não é sua.  |
+| "Esta página não está disponível"                           | A chave **Acompanhar aula (AUL)** está desligada ou a aula não é sua.  |
 
 ## Veja também
 

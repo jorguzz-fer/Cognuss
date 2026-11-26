@@ -2,7 +2,7 @@
 
 Você cadastra as avaliações da disciplina, lança as notas e acompanha a média. É o seu acompanhamento: o registro oficial é o da instituição.
 
-**Quem pode:** aluno dono da disciplina. **Onde:** **Notas** (`/app/notas`) e a página de cada disciplina (`/app/notas/(id)`). No Meu Espaço, pelo menu **Notas**; na visão da disciplina, pelo cartão **Notas** ou pelo menu **Notas e calculadora**.
+**Quem pode:** aluno dono da disciplina. **Onde:** **Notas** (`/app/notas`) e a página de cada disciplina (`/app/notas/(id)`). No Meu Espaço, pelo menu **Notas**; na visão da disciplina, pelo cartão **Notas** ou pelo menu **Notas e calculadora**. Sem o Meu Espaço, pelo atalho **Notas** no alto da tela **Hoje** (`/app`).
 
 **Chave de módulo:** **Notas e calculadora (NOT)** (`notas`). O botão de pedido de revisão depende também de **Equilíbrio (EQU)**.
 
@@ -56,7 +56,7 @@ Você cadastra as avaliações da disciplina, lança as notas e acompanha a méd
 | "Nenhuma avaliação cadastrada."                                                                                                 | Cadastre a primeira em **Cadastrar avaliação**.                                                  |
 | "Cadastre suas disciplinas para acompanhar as notas."                                                                           | Cadastre uma disciplina antes.                                                                   |
 | "Não deu para salvar agora."                                                                                                    | Confira os números (use vírgula ou ponto) e tente de novo. A mensagem aparece no quadro lateral. |
-| Página não encontrada                                                                                                           | A chave **Notas e calculadora (NOT)** está desligada ou a disciplina foi arquivada.              |
+| "Esta página não está disponível"                                                                                               | A chave **Notas e calculadora (NOT)** está desligada ou a disciplina foi arquivada.              |
 
 ## Veja também
 

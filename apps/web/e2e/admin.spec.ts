@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
-import { becomeAdmin, signIn, signUp, uniqueEmail } from './helpers';
+import { becomeAdmin, promote, signIn, signUp, uniqueEmail } from './helpers';
 
 async function scan(page: Page, name: string) {
   const res = await new AxeBuilder({ page })
@@ -16,8 +16,10 @@ async function scan(page: Page, name: string) {
   expect(issues, `${name}\n${issues.join('\n')}`).toEqual([]);
 }
 
-test('admin cria curso, disciplina, assunto e módulo, e o módulo nasce rascunho', async ({
+test('admin cria curso, disciplina, assunto e módulo; o revisor aprova pela fila', async ({
   page,
+  browser,
+  baseURL,
 }) => {
   await becomeAdmin(page);
   const tag = Date.now().toString(36);
@@ -38,7 +40,7 @@ test('admin cria curso, disciplina, assunto e módulo, e o módulo nasce rascunh
   await expect(page.getByText('Assunto criado.')).toBeVisible();
   await scan(page, 'disciplina');
 
-  await page.getByLabel('Título').fill('Erupção dos dentes de leite');
+  await page.getByLabel('Título').fill(`Erupção dos dentes de leite ${tag}`);
   await page.getByLabel('Assunto', { exact: true }).selectOption({ label: 'Dentição decídua' });
   await page.getByRole('button', { name: 'Criar como rascunho' }).click();
   await expect(page.getByText('Módulo criado como rascunho.')).toBeVisible();
@@ -46,9 +48,21 @@ test('admin cria curso, disciplina, assunto e módulo, e o módulo nasce rascunh
   await page.getByRole('button', { name: 'Enviar para revisão' }).click();
   await expect(page.getByText('Em revisão', { exact: true })).toBeVisible();
   await expect(page.getByText(/a aprovação precisa ser de outra pessoa/)).toBeVisible();
-  await page.getByRole('button', { name: 'Aprovar' }).click();
-  await expect(page.getByText(/autor não aprova o próprio conteúdo/i)).toBeVisible();
+  // O autor não vê o Aprovar; outra pessoa, com o papel de revisor, aprova pela fila.
+  await expect(page.getByRole('button', { name: 'Aprovar' })).toHaveCount(0);
   await scan(page, 'módulo');
+
+  const reviewerEmail = uniqueEmail('rev-mod');
+  const reviewer = await (await browser.newContext({ baseURL })).newPage();
+  await signUp(reviewer, 'Rafa Revisor', reviewerEmail);
+  await promote(reviewerEmail, 'reviewer');
+  await reviewer.goto('/admin/revisao');
+  await reviewer.getByRole('link', { name: `Erupção dos dentes de leite ${tag}` }).click();
+  await expect(reviewer.getByRole('button', { name: 'Salvar módulo' })).toHaveCount(0);
+  await reviewer.getByRole('button', { name: 'Aprovar' }).click();
+  await expect(reviewer.getByText('Status do módulo atualizado.')).toBeVisible();
+  await expect(reviewer.getByText('Aprovado', { exact: true })).toBeVisible();
+  await scan(reviewer, 'módulo para o revisor');
 });
 
 test('admin dá o papel de professor e cria uma instituição', async ({ page, browser }) => {

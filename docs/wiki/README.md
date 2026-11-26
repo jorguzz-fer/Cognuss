@@ -12,6 +12,7 @@ Quem produz as aulas interativas (admin) e quem as revisa (revisor).
 
 - [Como produzir uma aula interativa do início ao fim](producao/visao-geral.md)
 - [Como acompanhar o lote](producao/acompanhar-lote.md)
+- [Como apagar um lote que falhou](producao/apagar-lote.md)
 - [Como conferir o plano da aula](producao/conferir-plano.md)
 - [Como configurar o servidor para a produção de aulas](producao/configurar-servidor.md)
 - [Como escolher a voz da disciplina e a cota diária de mídia](producao/configurar-vozes-e-cota.md)
@@ -96,6 +97,7 @@ Conta, organização do semestre, estudo, IA, certificados e privacidade.
 - [Como criar um evento na agenda](aluno/criar-evento-na-agenda.md)
 - [Como criar flashcards](aluno/criar-flashcards.md)
 - [Como criar um lembrete](aluno/criar-lembrete.md)
+- [Como editar uma disciplina](aluno/editar-disciplina.md)
 - [Como editar um evento ou uma série na agenda](aluno/editar-evento-na-agenda.md)
 - [Como entrar e sair de uma turma](aluno/entrar-e-sair-de-turma.md)
 - [Como entrar](aluno/entrar.md)
@@ -105,6 +107,7 @@ Conta, organização do semestre, estudo, IA, certificados e privacidade.
 - [Como fazer um pedido sobre os seus dados](aluno/fazer-pedido-sobre-dados.md)
 - [Como fazer o primeiro acesso](aluno/fazer-primeiro-acesso.md)
 - [Como gerar e confirmar a proposta de estudos](aluno/gerar-proposta-de-estudos.md)
+- [Como gerar novos códigos ou desligar a verificação em duas etapas](aluno/gerenciar-verificacao-em-duas-etapas.md)
 - [Como ligar e desligar as autorizações de IA](aluno/gerenciar-autorizacoes-de-ia.md)
 - [Como importar o cronograma da disciplina](aluno/importar-cronograma.md)
 - [Como lançar notas](aluno/lancar-notas.md)

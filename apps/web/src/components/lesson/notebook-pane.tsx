@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ClientApiError, api } from '@/lib/client-api';
 import { NoteView } from './note-view';
 import type { Region } from './slide-canvas';
+import { ConfirmButton } from '@/components/ui/confirm-button';
 
 type Note = lessonStudy.NoteDto;
 export type Slide = { materialId: string; versionId: string; page: number } | null;
@@ -144,9 +145,9 @@ function NoteEditor({
             Editar
           </Button>
         )}
-        <Button type="button" variant="ghost" onClick={() => void remove()}>
+        <ConfirmButton question="Apagar esta nota?" onConfirm={() => void remove()}>
           Apagar nota
-        </Button>
+        </ConfirmButton>
         <span aria-live="polite" className="text-sm text-muted">
           {status}
         </span>

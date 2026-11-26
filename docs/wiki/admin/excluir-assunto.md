@@ -14,9 +14,8 @@ Apaga um assunto que foi criado por engano ou que ficou sem uso.
 
 1. Abra a disciplina: **Cursos** → curso → nome da disciplina.
 2. Na seção **Assuntos**, ache a linha do assunto.
-3. Clique em **Excluir**.
-
-A exclusão acontece na hora, sem pedido de confirmação. Confira a linha antes de clicar.
+3. Clique em **Excluir**. A linha pergunta "Excluir (nome do assunto)?".
+4. Clique em **Confirmar exclusão**. Para desistir, clique em **Cancelar**.
 
 ## O que acontece depois
 

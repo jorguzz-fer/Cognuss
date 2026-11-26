@@ -14,9 +14,9 @@ export default async function TwoFactorPage({
   return (
     <AuthShell
       title="Verificação em duas etapas"
-      lead="Sua conta tem acesso administrativo, então pedimos um segundo fator."
+      lead="Sua conta usa a verificação em duas etapas. Digite o código do app autenticador."
     >
-      <TwoFactorForm next={safeNext(next, '/admin')} />
+      <TwoFactorForm next={safeNext(next, '/app')} />
     </AuthShell>
   );
 }
