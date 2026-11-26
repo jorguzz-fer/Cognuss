@@ -24,7 +24,11 @@ A produção de aulas (ADR 0021) gerava peças piores e cerca de três vezes mai
 
 **Crítico visual.** Depois que a peça passa no linter e no teste de render, um modelo mais barato (`AI_PIECE_CRITIC_MODEL`, padrão Sonnet, esforço baixo, saída estruturada curta) olha as capturas e aponta só problemas graves e visíveis: texto cortado ou ilegível, cena quebrada, algo que entrega a resposta, erro evidente na tela. O que ele aponta volta para a correção; na última tentativa vira aviso para o revisor, sem reprovar. Custo em `ai_usage` com o recurso `producao_critica`. Desliga com `AI_PIECE_CRITIC=off`.
 
-**Paralelismo.** `WORKER_CONCURRENCY_PRODUCTION` passa a 3 por padrão.
+Troca que não acha o trecho, ou resposta cortada no limite, sempre reprova a versão: sem isso, um pedido de ajuste do revisor que não foi aplicado passaria como peça pronta.
+
+**Crítico falha aberto e não joga fora peça boa.** Erro do crítico (limite de uso, falha do serviço) só é registrado; a peça segue com o resultado do teste mecânico. Se o crítico pede ajuste e a correção piora, a tarefa termina com a última versão que passou no teste, com o que o crítico apontou como aviso. O crítico e a correção recebem uma captura com altura limitada (2.200 px no computador, 1.400 px no celular), para continuar legível depois que a API reduz a imagem.
+
+**Paralelismo.** `WORKER_CONCURRENCY_PRODUCTION` passa a 3 por padrão. A concorrência vale para a fila `production` inteira, então dois cuidados acompanham: o fechamento do lote trava a linha do lote antes de contar as tarefas que ainda geram, e a conferência da cota diária de créditos de mídia roda sob uma trava (`pg_advisory_xact_lock`), para dois vídeos não passarem juntos da cota.
 
 **3D servido pelo app.** O three.js r169, com OrbitControls e RoomEnvironment, vira um único ESM (`apps/web/public/piece-assets/three-r169.mjs`, gerado por `pnpm --filter @gutta/web piece-3d` e versionado no repositório). A peça só o carrega quando chama `kit.view3d`. A política da peça (`buildPieceCsp`) libera esse único arquivo em `script-src`, pela origem do app; o resto continua proibido, e o linter segue recusando `import()` no script da IA. Como a peça roda num sandbox sem origem, o arquivo é servido com `Access-Control-Allow-Origin: *` e cache longo (nome versionado). No teste de render, o worker serve o mesmo arquivo do disco (`/app/piece-assets` na imagem), sem sair para a rede, e o Chromium usa WebGL por software. Canvas WebGL com tamanho de cena conta como cena desenhada. Modelos externos (GLB) continuam fora: a cena é montada com primitivas do three.js.
 
@@ -35,3 +39,5 @@ A produção de aulas (ADR 0021) gerava peças piores e cerca de três vezes mai
 - O crítico pode errar para os dois lados; por isso só reprova antes da última tentativa, e o revisor médico continua obrigatório.
 - A imagem do worker leva o módulo 3D (cerca de 700 kB). Atualizar o three.js exige gerar o arquivo de novo, com outro nome, e atualizar `PIECE_3D_PATH`.
 - Três peças em paralelo triplicam o pico de uso da API; ajuste a concorrência ao limite da conta.
+- O teste de render roda sem o sandbox e a CSP da prévia e serve o módulo 3D para qualquer origem; se o `APP_URL` do app não for a origem que o navegador usa, a cena 3D passa no teste e é bloqueada na prévia.
+- Canvas WebGL do tamanho de uma cena conta como cena desenhada, mesmo vazio; e rótulos 3D que giram podem se cruzar numa captura. A revisão visual e a revisão médica cobrem esses casos.
