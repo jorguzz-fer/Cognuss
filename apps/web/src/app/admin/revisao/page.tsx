@@ -30,7 +30,7 @@ export default async function ReviewQueuePage() {
               Módulos do catálogo
             </h2>
             <p className="text-sm text-muted">
-              Escritos à mão no catálogo. Quem escreveu não aprova o próprio módulo.
+              Escritos à mão no catálogo. Quem escreveu não aprova o próprio módulo, exceto o admin.
             </p>
           </div>
           <ul className="grid gap-2">

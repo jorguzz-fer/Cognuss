@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  BookOpen,
   FlaskConical,
   BadgeDollarSign,
   Building2,
@@ -77,6 +78,7 @@ const reviewItems: NavItem[] = [
   },
 ];
 const tailItems: NavItem[] = [
+  { href: '/wiki', label: 'Wiki', icon: <BookOpen className={icon} aria-hidden /> },
   { href: '/mapa', label: 'Mapa de atores', icon: <MapIcon className={icon} aria-hidden /> },
   {
     href: '/seguranca/dois-fatores',

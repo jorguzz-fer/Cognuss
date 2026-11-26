@@ -15,6 +15,7 @@ const PROTECTED = [
   '/comecar',
   '/seguranca',
   '/mapa',
+  '/wiki',
 ];
 
 /*

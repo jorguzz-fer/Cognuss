@@ -49,7 +49,7 @@ async function editorial<T>(fn: () => Promise<T>): Promise<T> {
       throw new ApiError(
         403,
         'forbidden',
-        'Quem enviou a peça para revisão não pode aprová-la. Peça a outro revisor.',
+        'Quem enviou a peça para revisão não pode aprová-la (só o admin pode). Peça a outro revisor.',
       );
     throw err;
   }

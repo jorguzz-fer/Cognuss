@@ -41,7 +41,9 @@ export default async function ModuleAdminPage({
   const sp = await searchParams;
   const { module: m, discipline, topics, history } = await getModuleAdmin(user, id);
   const fmt = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
-  const isAuthor = m.authorId === user.id;
+  // O admin (Super Admin) pode aprovar o que escreveu (ADR 0024); o revisor autor, não.
+  const isAuthor = m.authorId === user.id && !isAdmin;
+  const isAdminAuthor = m.authorId === user.id && isAdmin;
   // Aula servida pelo próprio app (produção ou aula pronta): dá para mostrar a prévia aqui.
   const appLesson = Boolean(m.lessonUrl?.startsWith('/api/v1/'));
 
@@ -72,11 +74,17 @@ export default async function ModuleAdminPage({
         </h2>
         <p className="text-sm text-muted">
           Rascunho → em revisão → aprovado → publicado. Quem escreveu o módulo não aprova o próprio
-          conteúdo; o aluno só vê módulo publicado.
+          conteúdo, exceto o admin; o aluno só vê módulo publicado.
         </p>
         {isAuthor && m.status === 'in_review' ? (
           <Alert tone="warn">
             Você é o autor deste módulo: a aprovação precisa ser de outra pessoa.
+          </Alert>
+        ) : null}
+        {isAdminAuthor && m.status === 'in_review' ? (
+          <Alert tone="warn">
+            Você escreveu este módulo. Como admin, pode aprovar mesmo assim: confira o conteúdo
+            antes, porque não haverá uma segunda revisão.
           </Alert>
         ) : null}
         <div className="flex flex-wrap gap-2">

@@ -47,9 +47,9 @@ test('admin cria curso, disciplina, assunto e módulo; o revisor aprova pela fil
   await expect(page.getByText('Rascunho', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Enviar para revisão' }).click();
   await expect(page.getByText('Em revisão', { exact: true })).toBeVisible();
-  await expect(page.getByText(/a aprovação precisa ser de outra pessoa/)).toBeVisible();
-  // O autor não vê o Aprovar; outra pessoa, com o papel de revisor, aprova pela fila.
-  await expect(page.getByRole('button', { name: 'Aprovar' })).toHaveCount(0);
+  // O admin autor pode aprovar (ADR 0024), com o aviso de que não haverá segunda revisão.
+  await expect(page.getByText(/Como admin, pode aprovar mesmo assim/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Aprovar' })).toBeVisible();
   await scan(page, 'módulo');
 
   const reviewerEmail = uniqueEmail('rev-mod');

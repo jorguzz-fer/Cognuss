@@ -2,7 +2,7 @@ stateDiagram-v2
   [*] --> Rascunho: criar
   Rascunho --> EmRevisao: enviar à revisão
   EmRevisao --> Rascunho: devolver
-  EmRevisao --> Aprovado: aprovar (outra pessoa)
+  EmRevisao --> Aprovado: aprovar (outra pessoa ou o admin)
   Aprovado --> Publicado: publicar
   Aprovado --> Rascunho: voltar
   Publicado --> Arquivado: arquivar

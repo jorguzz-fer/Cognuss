@@ -179,11 +179,8 @@ describe('revisão das peças (Fase 4)', () => {
     expect(r.reviewNotes).toEqual(['Conferir a seta do feedback.']);
     expect(r.questions[0]!.options.find((o) => o.correct)!.explanation).toContain('suprime o eixo');
 
-    // Quem enviou não aprova o próprio conteúdo (o banco recusa).
-    await expect(
-      review.approveReview(admin, taskId, { discardQuestions: [], comment: null }),
-    ).rejects.toMatchObject({ status: 403 });
-
+    // Quem envia à revisão é sempre admin, e o admin pode aprovar o que enviou (ADR 0024):
+    // a trava de autor continua para o revisor (packages/db/test/isolation.test.ts).
     await review.approveReview(reviewer, taskId, { discardQuestions: [], comment: 'Ok.' });
     t = await task(taskId);
     m = await mod(t.moduleId!);

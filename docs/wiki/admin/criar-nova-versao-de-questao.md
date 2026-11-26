@@ -14,7 +14,7 @@ Corrige uma questão que já foi aprovada, publicada ou arquivada. A plataforma 
 
 ## O que acontece depois
 
-- Quem clicou em **Editar como nova versão** vira o autor da nova versão. Essa pessoa não aprova essa versão.
+- Quem clicou em **Editar como nova versão** vira o autor da nova versão. Essa pessoa não aprova essa versão, exceto se for Admin.
 - Se já existe uma versão em rascunho ou em revisão, o botão abre essa versão em vez de criar outra.
 - O quadro **Versões** da questão lista todas as versões e o status de cada uma.
 - Enquanto a nova versão não é publicada, os alunos continuam vendo a versão publicada.

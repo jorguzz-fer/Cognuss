@@ -329,7 +329,8 @@ export const transitionInput = z.object({
 });
 
 /**
- * Muda o status editorial. Regras da SPEC (ADM-01): o autor não aprova o próprio conteúdo,
+ * Muda o status editorial. Regras da SPEC (ADM-01): o autor não aprova o próprio conteúdo
+ * (salvo o admin, ADR 0024),
  * só revisor aprova, publica e arquiva, e publicar uma versão arquiva a anterior.
  * O banco impõe as mesmas regras (trigger), então esta camada só dá mensagens melhores.
  */
@@ -369,7 +370,8 @@ export async function transition(
           'Só quem revisa pode aprovar, devolver, publicar ou arquivar.',
         );
     }
-    if (to === 'approved' && q.authorId === user.id) {
+    // O admin (Super Admin) pode aprovar o que escreveu (ADR 0024); os demais, não.
+    if (to === 'approved' && q.authorId === user.id && !user.roles.includes('admin')) {
       throw new ApiError(
         403,
         'forbidden',

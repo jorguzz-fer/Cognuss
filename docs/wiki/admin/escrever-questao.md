@@ -31,7 +31,7 @@ Ao lado do botão, a tela mostra o que falta para enviar à revisão, por exempl
 
 - A tela da questão abre com o aviso "Rascunho salvo." e o título "Questão v1".
 - A questão fica na aba **Rascunho** da lista de questões. O aluno ainda não vê.
-- Você fica como autor. Por isso, outra pessoa da revisão precisa aprovar.
+- Você fica como autor. Por isso, outra pessoa da revisão precisa aprovar, a menos que você seja Admin.
 - Para continuar editando, abra a questão pela lista. Só rascunhos são editáveis, e qualquer pessoa do editorial pode editar um rascunho. O autor continua sendo quem criou.
 - O próximo passo é enviar para revisão. Veja [O fluxo editorial de uma questão](publicar-questao.md).
 

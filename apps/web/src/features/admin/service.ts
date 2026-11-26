@@ -567,7 +567,9 @@ export async function transitionModule(admin: CurrentUser, id: string, raw: unkn
       .where(eq(s.modules.id, id))
       .returning();
     if (!row) throw notFound('Módulo');
-    await audit(tx, admin.id, `module.${to}`, { type: 'module', id }, { to });
+    // Aprovação pelo próprio autor (só o admin pode, ADR 0024) fica marcada na auditoria.
+    const selfApproved = to === 'approved' && row.authorId === admin.id;
+    await audit(tx, admin.id, `module.${to}`, { type: 'module', id }, { to, selfApproved });
     return row;
   });
 }
