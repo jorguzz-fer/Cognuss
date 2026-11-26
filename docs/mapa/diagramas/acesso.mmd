@@ -1,0 +1,11 @@
+flowchart TD
+  CA["/cadastro<br/>nome, e-mail, senha e aceite dos termos"] --> VE["/verificar-email<br/>link válido por 1 hora"]
+  VE --> IN["/entrar<br/>e-mail e senha"]
+  IN --> F{"A conta tem 2FA?"}
+  F -- "sim" --> DF["/entrar/dois-fatores<br/>código do app ou de reserva"]
+  F -- "não" --> P{"Primeiro acesso<br/>concluído?"}
+  DF --> P
+  P -- "não" --> CO["/comecar"]
+  P -- "sim" --> APP["/app (Hoje)"]
+  APP -. "admin sem 2FA<br/>ao abrir /admin" .-> MF["/seguranca/dois-fatores<br/>ativação obrigatória"]
+  IN -. "esqueci a senha" .-> RS["/recuperar-senha, e-mail,<br/>/redefinir-senha"]

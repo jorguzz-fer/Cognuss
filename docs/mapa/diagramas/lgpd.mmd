@@ -1,0 +1,11 @@
+flowchart TD
+  P["/app/privacidade"] --> EX["Baixar meus dados<br/>arquivo JSON na hora"]
+  P --> PE["Fazer um pedido<br/>corrigir, compartilhamento, oposição, outro"]
+  P --> AU["Ligar ou desligar<br/>as autorizações de IA"]
+  P --> DEL["Excluir a conta<br/>digitando EXCLUIR"]
+  PE --> AD["Admin responde em<br/>/admin/privacidade, até 15 dias"]
+  AD --> RES["A resposta aparece<br/>na página do aluno"]
+  DEL --> CAR["Carência de 15 dias<br/>o aluno pode desistir"]
+  CAR --> APA["Rotina de retenção apaga a conta"]
+  AD -- "excluir na hora" --> APA
+  APA --> ARQ[["Worker apaga os arquivos<br/>do armazenamento"]]

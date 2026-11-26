@@ -5,7 +5,15 @@ import { buildCsp, buildPieceCsp } from './lib/csp';
 // Prévia da peça no admin e a aula publicada para o aluno: mesma política isolada.
 const PIECE_PREVIEW = /^\/api\/v1\/production\/(tasks\/[^/]+\/preview|lessons\/[^/]+)$/;
 
-const PROTECTED = ['/app', '/admin', '/professor', '/onboarding', '/comecar', '/seguranca'];
+const PROTECTED = [
+  '/app',
+  '/admin',
+  '/professor',
+  '/onboarding',
+  '/comecar',
+  '/seguranca',
+  '/mapa',
+];
 
 /*
   Roda em toda requisição de página e API:

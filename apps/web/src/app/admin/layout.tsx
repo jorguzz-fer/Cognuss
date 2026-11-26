@@ -8,6 +8,7 @@ import {
   GraduationCap,
   LayoutGrid,
   LockKeyhole,
+  Map as MapIcon,
   ShieldCheck,
   Stethoscope,
   Sparkles,
@@ -76,6 +77,7 @@ const reviewItems: NavItem[] = [
   },
 ];
 const tailItems: NavItem[] = [
+  { href: '/mapa', label: 'Mapa de atores', icon: <MapIcon className={icon} aria-hidden /> },
   {
     href: '/seguranca/dois-fatores',
     label: 'Segurança',

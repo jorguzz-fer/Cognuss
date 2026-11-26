@@ -1,0 +1,9 @@
+stateDiagram-v2
+  [*] --> Lendo: enviar PDF ou foto
+  [*] --> AConferir: registrar sem arquivo
+  Lendo --> AConferir: IA propõe os campos
+  Lendo --> AConferir: sem autorização ou IA pausada, o aluno preenche
+  AConferir --> Conferido: o aluno confirma
+  Conferido --> AConferir: o aluno corrige
+  Conferido --> [*]: entra na soma de horas
+  AConferir: A conferir

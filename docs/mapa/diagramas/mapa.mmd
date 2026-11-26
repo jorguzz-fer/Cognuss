@@ -1,0 +1,27 @@
+flowchart LR
+  AD["Admin<br/>/admin"]:::admin
+  ED["Editor<br/>/admin/questoes"]:::editor
+  RV["Revisor<br/>/admin/revisao"]:::revisor
+  PF["Professor<br/>/professor"]:::prof
+  AL["Aluno<br/>/app"]:::aluno
+  WK[["Worker<br/>antivírus, IA, avisos"]]:::sistema
+  CAT{{"Catálogo publicado<br/>aulas e questões"}}
+
+  AD -- "liga módulos, dá papéis,<br/>aprova instituições" --> AL
+  AD -- "envia slides para<br/>a produção de aulas" --> WK
+  WK -- "peças geradas,<br/>enviadas à revisão" --> RV
+  ED -- "escreve questões<br/>e envia à revisão" --> RV
+  RV -- "aprova e publica" --> CAT
+  CAT --> AL
+  PF -- "cria a turma e<br/>passa o código" --> AL
+  AL -- "números agregados<br/>das questões" --> PF
+  AL -- "envia cronograma, material,<br/>certificado" --> WK
+  WK -- "propõe; o aluno<br/>confere e confirma" --> AL
+  AL -- "pedidos LGPD" --> AD
+
+  classDef aluno __ALUNO__
+  classDef prof __PROF__
+  classDef editor __EDITOR__
+  classDef revisor __REVISOR__
+  classDef admin __ADMIN__
+  classDef sistema __SISTEMA__

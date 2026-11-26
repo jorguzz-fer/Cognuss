@@ -1,0 +1,19 @@
+flowchart TD
+  A["1. Admin envia os slides<br/>e escolhe disciplina e aula"]:::admin --> B[["Worker: antivírus,<br/>extração dos slides"]]:::sistema
+  B --> C[["Worker: plano das peças por IA"]]:::sistema
+  C --> D["2. Admin aprova, edita ou<br/>descarta cada peça e clica em Gerar"]:::admin
+  D --> E[["Worker: escreve a peça e testa<br/>nos temas claro e escuro"]]:::sistema
+  D --> V["Vídeo: admin aprova o roteiro,<br/>depois as imagens"]:::admin
+  V --> M[["Worker: clipes, narração<br/>e montagem"]]:::sistema
+  E --> F["3. Admin envia à revisão<br/>com selo de demonstração"]:::admin
+  M --> F
+  F --> G{"4. Revisor confere<br/>a peça e as questões"}:::revisor
+  G -- "pedir ajuste" --> E
+  G -- "aprovar" --> H["Aprovada, o selo sai"]
+  H --> I["5. Revisor publica a aula"]:::revisor
+  I --> J["O aluno vê no catálogo"]:::aluno
+
+  classDef aluno __ALUNO__
+  classDef revisor __REVISOR__
+  classDef admin __ADMIN__
+  classDef sistema __SISTEMA__
