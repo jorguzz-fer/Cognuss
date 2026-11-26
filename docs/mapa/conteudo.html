@@ -1,0 +1,324 @@
+<div class="wrap">
+<nav class="toc" aria-label="Índice">
+  <p>Mapa</p>
+  <ol>
+    <li><a href="#mapa">Mapa geral</a></li>
+    <li><a href="#papeis">Os papéis</a></li>
+    <li><a href="#acesso">Criar conta e entrar</a></li>
+    <li><a href="#comecar">Primeiro acesso</a></li>
+    <li><a href="#cronograma">Disciplinas e cronograma</a></li>
+    <li><a href="#agenda">Agenda, rotina e Equilíbrio</a></li>
+    <li><a href="#estudar">Questões e revisões</a></li>
+    <li><a href="#materiais">Materiais e Ajuda com IA</a></li>
+    <li><a href="#certificados">Meus Certificados</a></li>
+    <li><a href="#turmas">Turmas</a></li>
+    <li><a href="#editorial">Questões e módulos editoriais</a></li>
+    <li><a href="#producao">Produção de aulas</a></li>
+    <li><a href="#admin">Demais telas do admin</a></li>
+    <li><a href="#lgpd">Privacidade e LGPD</a></li>
+    <li><a href="#worker">O que roda sozinho</a></li>
+    <li><a href="#chaves">Módulos ligáveis</a></li>
+    <li><a href="#aberto">Pontos em aberto</a></li>
+  </ol>
+</nav>
+
+<main id="conteudo">
+<header class="top">
+  <h1>Mapa de Atores do <span>Cognuss</span></h1>
+  <p>Quem faz cada ação na plataforma, em que tela e o que acontece depois. Cada seção traz um mapa e uma tabela de ações. Serve para explicar o Cognuss ao Dr. Hugo, ao Dr. Rafael, a um professor ou a um aluno, e para conferir se o produto faz o que a SPEC v2 pede.</p>
+  <ul class="roles" aria-label="Perfis">
+    <li class="pill aluno">Aluno</li>
+    <li class="pill prof">Professor</li>
+    <li class="pill editor">Editor</li>
+    <li class="pill revisor">Revisor</li>
+    <li class="pill admin">Admin</li>
+    <li class="pill sistema">Worker (automático)</li>
+  </ul>
+</header>
+
+<section id="mapa">
+  <h2><small>Visão de cima</small>Mapa geral: quem faz o quê</h2>
+  <p class="lead">Cada perfil tem a sua área. As setas mostram o que uma ação libera para a próxima pessoa. O worker é o processo que trabalha em segundo plano: antivírus, leituras com IA, geração de aulas e avisos.</p>
+  <div class="diagram"><!-- diagrama:mapa --></div>
+  <div class="rule"><strong>Duas regras de ouro.</strong>
+    <ul>
+      <li>O que a IA lê ou cria a partir do material do aluno vira proposta, nunca dado pronto. Cronograma, sessões de estudo e certificados só valem depois que o aluno confere e confirma.</li>
+      <li>Uma aula ou questão só chega ao aluno depois de passar pela revisão de outra pessoa e ser publicada. Quem escreveu não aprova o próprio conteúdo, e o banco garante isso.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="papeis">
+  <h2><small>Quem é quem</small>Os papéis</h2>
+  <p class="lead">Toda conta nova é de aluno. Os outros papéis são dados por um admin em <span class="path">/admin/usuarios/&lt;pessoa&gt;</span>, e uma pessoa pode ter vários. O banco confere o papel de novo em cada consulta (RLS).</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Papel</th><th>Área</th><th>O que pode fazer</th></tr></thead>
+    <tbody>
+      <tr><td><span class="pill aluno">Aluno</span></td><td><span class="path">/app</span></td><td>Estuda e organiza o semestre. Vê só os próprios dados. Não precisa de papel atribuído: é o padrão de toda conta.</td></tr>
+      <tr><td><span class="pill prof">Professor</span></td><td><span class="path">/professor</span></td><td>Cria turmas e vê números agregados das questões dos alunos que entraram. Não entra no <span class="path">/admin</span>.</td></tr>
+      <tr><td><span class="pill editor">Editor</span></td><td><span class="path">/admin/questoes</span></td><td>Cria e edita questões em rascunho e envia à revisão. Não aprova, não publica, não arquiva.</td></tr>
+      <tr><td><span class="pill revisor">Revisor</span></td><td><span class="path">/admin/questoes</span> <span class="path">/admin/revisao</span></td><td>Tudo o que o editor faz, mais aprovar, devolver, publicar e arquivar. Revisa as aulas da produção e publica a aula.</td></tr>
+      <tr><td><span class="pill admin">Admin</span></td><td><span class="path">/admin</span> inteiro</td><td>Catálogo, produção de aulas, usuários, instituições, IA, módulos, privacidade e métricas. Também entra em <span class="path">/professor</span>. É o único papel com 2FA obrigatório.</td></tr>
+      <tr><td>Suporte</td><td>nenhuma tela</td><td>Pode ser atribuído e dá leitura dos perfis no banco, mas nenhuma tela aceita esse papel ainda.</td></tr>
+      <tr><td>Moderador</td><td>nenhuma</td><td>Existe no banco e não pode ser atribuído. Fica para as salas do Cognuss Conecta, que estão em espera.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="rule"><strong>De onde vem o primeiro admin.</strong> A variável <code>BOOTSTRAP_ADMIN_EMAILS</code> do deploy. A cada início, quem está nessa lista <em>e já tem conta</em> recebe o papel de admin e o e-mail confirmado. A conta precisa ser criada antes, pelo cadastro normal.</div>
+</section>
+
+<section id="acesso">
+  <h2><small><span class="pill aluno">Aluno</span> <span class="pill admin">Admin</span></small>Criar conta e entrar</h2>
+  <p class="lead">O cadastro é aberto: qualquer pessoa cria a conta. O e-mail precisa ser confirmado antes de entrar no app.</p>
+  <div class="diagram"><!-- diagrama:acesso --></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Ação</th><th>Onde</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Criar conta</td><td><span class="path">/cadastro</span></td><td>Registra o aceite dos termos e da política com a versão vigente. O aceite de comunicação é opcional. Se o e-mail já existe, a tela responde igual, para não revelar quem tem conta.</td></tr>
+      <tr><td>Confirmar e-mail</td><td>link do e-mail</td><td>O link vale 1 hora e é reenviado a cada tentativa de entrar sem confirmação. Depois de confirmar, a pessoa entra direto.</td></tr>
+      <tr><td>Entrar</td><td><span class="path">/entrar</span></td><td>No máximo 10 tentativas por minuto. Com 2FA, dá para não pedir o código de novo no mesmo aparelho por 12 horas.</td></tr>
+      <tr><td>Ativar 2FA</td><td><span class="path">/seguranca/dois-fatores</span></td><td>Opcional para todos. Obrigatório para o admin: sem 2FA, ele não abre o <span class="path">/admin</span>.</td></tr>
+      <tr><td>Trocar ou redefinir a senha</td><td><span class="path">/seguranca/senha</span> <span class="path">/redefinir-senha</span></td><td>O link de redefinição vale 1 hora. Trocar a senha encerra as sessões abertas nos outros aparelhos.</td></tr>
+      <tr><td>Aceitar termos novos</td><td>faixa no app</td><td>Quando a política muda de versão, aparece a faixa "Li e aceito", que registra o novo aceite.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="comecar">
+  <h2><small><span class="pill aluno">Aluno</span></small>Primeiro acesso</h2>
+  <p class="lead">Até concluir o primeiro acesso, todo o <span class="path">/app</span> leva para <span class="path">/comecar</span>. A ordem é fixa e o aluno retoma de onde parou.</p>
+  <div class="diagram"><!-- diagrama:comecar --></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Passo</th><th>Onde</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Dados</td><td><span class="path">/comecar/dados</span></td><td>O CPF é obrigatório, fica cifrado no banco e é único por conta. A tela mostra só os 2 últimos dígitos, e ele nunca vai para os logs.</td></tr>
+      <tr><td>Perfil</td><td><span class="path">/comecar/perfil</span></td><td>A lista de instituições mostra só as ativas. Escolhendo "outra", o aluno sugere uma nova, que fica pendente até o admin aprovar em <span class="path">/admin/instituicoes</span>. O perfil já fica ligado a ela.</td></tr>
+      <tr><td>Disciplinas</td><td><span class="path">/comecar/disciplinas</span></td><td>Cria as disciplinas do semestre. O cronograma de cada uma pode ser anexado aqui ou depois.</td></tr>
+      <tr><td>Rotina</td><td><span class="path">/comecar/rotina</span></td><td>Monta os blocos de aula, estudo e horário pessoal. A meta de estudo não precisa estar fechada para seguir.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Com o módulo <code>cadastro</code> desligado, vale o fluxo antigo do MVP em <span class="path">/onboarding</span>: curso, disciplinas do catálogo e meta diária.</p>
+</section>
+
+<section id="cronograma">
+  <h2><small><span class="pill aluno">Aluno</span> <span class="pill sistema">Worker</span></small>Disciplinas e cronograma</h2>
+  <p class="lead">O aluno anexa o cronograma que o professor entregou. A IA lê e propõe as aulas e provas. Nada entra na agenda antes de o aluno conferir.</p>
+  <div class="diagram"><!-- diagrama:cronograma --></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Ação</th><th>Onde</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Cadastrar disciplina</td><td><span class="path">/app/minhas-disciplinas</span></td><td>Nome, sigla, cor e professores. Arquivar tira da lista e guarda o histórico.</td></tr>
+      <tr><td>Anexar cronograma ou plano de ensino</td><td>na disciplina</td><td>Até 10 MB. Arquivo infectado é apagado e fica em quarentena. Uma leitura antiga ainda aberta da mesma disciplina é descartada.</td></tr>
+      <tr><td>Conferir a leitura</td><td><span class="path">/app/minhas-disciplinas/cronograma/…</span></td><td>Numa nova importação, a tela mostra o que é novo, o que mudou e o que saiu. O que o aluno editou à mão é preservado. Os avisos de aula e prova são recalculados.</td></tr>
+      <tr><td>Visão da disciplina</td><td><span class="path">/app/minhas-disciplinas/…</span></td><td>Próxima aula, lembretes, faltas, notas, calendário e cronograma num lugar só. O caderno reúne as anotações de todas as aulas.</td></tr>
+      <tr><td>Acompanhar a aula</td><td><span class="path">/app/aulas/…</span></td><td>Marcar os slides, anotar no caderno, dar selos de importância e dificuldade, registrar dúvidas e concluir. Concluir pedindo revisão cria uma tarefa no Equilíbrio.</td></tr>
+      <tr><td>Estudar no catálogo</td><td><span class="path">/app/disciplinas</span></td><td>Disciplinas e módulos editoriais publicados, com aula interativa, resumo, questões, flashcards e o tutor do módulo. Conteúdo sem revisão aparece com o selo "Demonstração · sem revisão".</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="agenda">
+  <h2><small><span class="pill aluno">Aluno</span></small>Agenda, rotina e Equilíbrio</h2>
+  <p class="lead">A rotina diz quando o aluno pode estudar. O Equilíbrio propõe sessões só nessas janelas, e o aluno escolhe quais entram na agenda. O motor é determinístico, sem IA.</p>
+  <div class="diagram"><!-- diagrama:agenda --></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Ação</th><th>Onde</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Agenda</td><td><span class="path">/app/agenda</span></td><td>Mês, semana, dia e lista. Aula, prova ou entrega e compromisso, com repetição. Ao mudar uma série: só esta, esta e as próximas, ou toda a série.</td></tr>
+      <tr><td>Rotina</td><td><span class="path">/app/rotina</span></td><td>Blocos de aula e pessoais ficam protegidos: nenhuma sessão é marcada em cima deles.</td></tr>
+      <tr><td>Equilíbrio</td><td><span class="path">/app/equilibrio</span></td><td>As sessões nascem como proposta. Ao confirmar, o sistema confere de novo se há conflito. Preferências: duração de 20 a 60 minutos, pausas e limites.</td></tr>
+      <tr><td>Lembretes</td><td><span class="path">/app/lembretes</span></td><td>"Reservar horário" ocupa a agenda e bloqueia o planejamento. "Apenas lembrar" só avisa.</td></tr>
+      <tr><td>Avisos</td><td><span class="path">/app/avisos</span></td><td>Lembrete, aula, prova, cronograma lido e faltas, com contador no sino. O e-mail é opcional, desligado por padrão, e respeita o horário silencioso.</td></tr>
+      <tr><td>Faltas</td><td><span class="path">/app/faltas</span></td><td>Controle pessoal em horas-aula. Cada limiar de alerta alcançado gera um aviso. A frequência oficial continua sendo a da instituição.</td></tr>
+      <tr><td>Notas</td><td><span class="path">/app/notas</span></td><td>Notas, pesos e a calculadora "quanto preciso tirar". Nota pendente não conta como zero.</td></tr>
+      <tr><td>Objetivo</td><td><span class="path">/app/objetivo</span></td><td>Troca o objetivo principal escolhido no primeiro acesso.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="estudar">
+  <h2><small><span class="pill aluno">Aluno</span></small>Questões, flashcards e revisões</h2>
+  <p class="lead">O gabarito fica no servidor até o aluno responder. O erro vira cartão de revisão, se o aluno quiser.</p>
+  <div class="diagram"><!-- diagrama:estudar --></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Ação</th><th>Onde</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Começar sessão</td><td><span class="path">/app/questoes/nova</span></td><td>Treino (5 questões), diagnóstico (8) ou questão do dia (1), de um módulo, de uma disciplina ou das disciplinas ativas. Entram só questões publicadas.</td></tr>
+      <tr><td>Revisar</td><td><span class="path">/app/revisoes</span></td><td>Esqueci, Difícil, Bom ou Fácil. "Esqueci" traz o cartão de volta em 10 minutos. Os vencimentos viram às 4h da manhã.</td></tr>
+      <tr><td>Meus flashcards</td><td><span class="path">/app/flashcards</span></td><td>Cartões pessoais e privados, que o aluno cria e exclui.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="materiais">
+  <h2><small><span class="pill aluno">Aluno</span> <span class="pill sistema">Worker</span></small>Materiais e Ajuda com IA</h2>
+  <p class="lead">Todo arquivo passa pelo antivírus antes de qualquer uso. A IA só trabalha sobre o material do aluno quando ele autoriza, e o que ela cria leva o selo de gerado por IA.</p>
+  <div class="diagram"><!-- diagrama:materiais --></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Ação</th><th>Onde</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Enviar material</td><td><span class="path">/app/materiais</span></td><td>PDF, Office, ODF e imagens. O mesmo arquivo não duplica. Pode ganhar versões e ser ligado a disciplinas e aulas. A lixeira se esvazia sozinha em 30 dias.</td></tr>
+      <tr><td>Autorizar a IA</td><td><span class="path">/app/privacidade</span> ou no próprio formulário</td><td>Libera leitura de cronograma, criações, tutor dos materiais, busca por assunto e leitura de certificados. Retirar a autorização apaga os vetores da busca.</td></tr>
+      <tr><td>Criar com IA</td><td><span class="path">/app/ajuda/criar</span></td><td>O worker gera. Os flashcards criados entram na revisão no dia seguinte. Nas questões criadas, o gabarito também só aparece depois da resposta. Dá para editar, gerar de novo, excluir e exportar (texto ou Anki).</td></tr>
+      <tr><td>Perguntar ao tutor</td><td><span class="path">/app/ajuda/tutor</span></td><td>Sobre os materiais, uma aula ou um slide. A cota padrão é de 20 perguntas a cada 24 horas, somando o tutor do módulo e o dos materiais. O admin ajusta.</td></tr>
+      <tr><td>Buscar</td><td><span class="path">/app/busca</span></td><td>Por palavra em materiais, páginas, caderno e lembretes. Por assunto, só com a autorização de IA.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="certificados">
+  <h2><small><span class="pill aluno">Aluno</span> <span class="pill sistema">Worker</span></small>Cognuss Competências: Meus Certificados</h2>
+  <p class="lead">Primeira parte do módulo Competências (K1). O aluno envia o certificado, a IA propõe os campos e o aluno confere. Só o que ele confirma entra na soma de horas e, depois, no currículo.</p>
+  <div class="diagram"><!-- diagrama:certificados --></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Ação</th><th>Onde</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Enviar certificado</td><td><span class="path">/app/competencias</span></td><td>O arquivo passa pelo antivírus e o worker lê. Quando a leitura termina, chega um aviso com o link do certificado.</td></tr>
+      <tr><td>Conferir e confirmar</td><td><span class="path">/app/competencias/…</span></td><td>Tipo, título, instituição, papel, datas, carga horária ("20", "4h30", "90 min"), nome no certificado e link. Até confirmar, os campos ficam com o selo de gerado por IA. O sistema avisa quando o nome do certificado não bate com o do cadastro.</td></tr>
+      <tr><td>Organizar em pastas</td><td><span class="path">/app/competencias</span></td><td>Criar, renomear e excluir pastas. Excluir a pasta deixa os certificados sem pasta, sem apagá-los.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Próximas fases: currículo em PDF (K2), selos de conferência (K3), LinkedIn e Coursera (K4) e referencial de competências da DCN 2014 (K5).</p>
+</section>
+
+<section id="turmas">
+  <h2><small><span class="pill prof">Professor</span> <span class="pill aluno">Aluno</span></small>Turmas</h2>
+  <p class="lead">O professor vê como a turma vai nas questões, mas nunca os dados pessoais do aluno: agenda, notas, faltas e materiais não aparecem para ele.</p>
+  <div class="diagram"><!-- diagrama:turmas --></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Ação</th><th>Quem</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Criar turma</td><td><span class="pill prof">Professor</span></td><td>Nome e disciplina (opcional). O sistema gera o código de entrada.</td></tr>
+      <tr><td>Gerar código novo, encerrar ou reabrir</td><td><span class="pill prof">Professor</span></td><td>O código antigo para de funcionar. Turma encerrada não aceita entrada.</td></tr>
+      <tr><td>Ver a turma</td><td><span class="pill prof">Professor</span></td><td>Por aluno: tentativas, acertos, atividade em 7 dias e última atividade. Por assunto: taxa de acerto e as questões mais erradas, com a alternativa errada mais escolhida. Bloco "Precisam de atenção".</td></tr>
+      <tr><td>Remover aluno</td><td><span class="pill prof">Professor</span></td><td>Tira o aluno da turma.</td></tr>
+      <tr><td>Entrar ou sair</td><td><span class="pill aluno">Aluno</span></td><td>Pelo código, em <span class="path">/app/perfil</span>. Não existe convite por e-mail.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="editorial">
+  <h2><small><span class="pill editor">Editor</span> <span class="pill revisor">Revisor</span> <span class="pill admin">Admin</span></small>Questões e módulos editoriais</h2>
+  <p class="lead">Questões e módulos do catálogo seguem o mesmo caminho. O banco só aceita as passagens do mapa abaixo.</p>
+  <div class="diagram"><!-- diagrama:editorial --></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Ação</th><th>Quem</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Criar e editar questão</td><td><span class="pill editor">Editor</span> <span class="pill revisor">Revisor</span> <span class="pill admin">Admin</span></td><td>Em <span class="path">/admin/questoes</span>. Para enviar à revisão, a questão precisa ter de 2 a 6 alternativas e uma só correta.</td></tr>
+      <tr><td>Aprovar, devolver, publicar, arquivar</td><td><span class="pill revisor">Revisor</span> <span class="pill admin">Admin</span></td><td>O autor não aprova o próprio conteúdo. Ao aprovar, fica registrado quem revisou.</td></tr>
+      <tr><td>Nova versão</td><td>quem edita</td><td>Questão aprovada ou publicada não é editada no lugar: cria-se um rascunho novo. Publicar a versão nova arquiva sozinho a anterior.</td></tr>
+      <tr><td>Montar o catálogo</td><td><span class="pill admin">Admin</span></td><td>Curso, disciplina, assunto e módulo, em <span class="path">/admin/cursos</span>. Uma aula é um módulo com a aula interativa ligada. O módulo nasce rascunho e precisa da aprovação de outra pessoa. Item em uso não é excluído, só desativado.</td></tr>
+      <tr><td>Marcar demonstração</td><td>automático</td><td>Conteúdo sem revisão editorial leva o selo "Demonstração · sem revisão". O catálogo de demonstração é carregado só quando o deploy pede.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="producao">
+  <h2><small><span class="pill admin">Admin</span> <span class="pill revisor">Revisor</span> <span class="pill sistema">Worker</span></small>Produção de aulas interativas</h2>
+  <p class="lead">O admin envia os slides do professor e o Cognuss gera as peças da aula (simuladores, questões, vídeos). Tudo passa pelo revisor antes de chegar ao aluno.</p>
+  <div class="diagram"><!-- diagrama:producao --></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Ação</th><th>Onde</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Enviar slides</td><td><span class="path">/admin/producao</span></td><td>Cria um lote. O worker separa conteúdo, instruções e referências e propõe as peças.</td></tr>
+      <tr><td>Aprovar o plano e gerar</td><td><span class="path">/admin/producao/…</span></td><td>Cada peça é escrita, passa no verificador e é testada no navegador nos dois temas. Cada geração vira uma versão.</td></tr>
+      <tr><td>Vídeo</td><td>na tarefa da peça</td><td>Duas decisões do admin: aprovar o roteiro e aprovar as imagens. O resto anda sozinho. A cota diária de créditos pausa e retoma no dia seguinte. Falta de saldo ou chave pausa até o admin clicar em "Retomar".</td></tr>
+      <tr><td>Voz por disciplina</td><td><span class="path">/admin/producao/vozes</span></td><td>A voz da narração de cada disciplina e o limite diário de créditos.</td></tr>
+      <tr><td>Enviar à revisão</td><td>no lote</td><td>Cada peça vira um módulo em revisão, e as questões do plano viram questões em revisão, todas com selo de demonstração.</td></tr>
+      <tr><td>Revisar</td><td><span class="path">/admin/revisao</span></td><td>"Aprovar peça e questões" tira o selo. "Pedir ajuste", com comentário que pode apontar um trecho, gera uma peça nova que volta sozinha para a fila. Quem enviou não aprova. Toda decisão fica registrada e não pode ser alterada.</td></tr>
+      <tr><td>Publicar a aula</td><td><span class="path">/admin/revisao</span></td><td>Módulos e questões aprovados são publicados, e o aluno passa a ver a versão aprovada.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="admin">
+  <h2><small><span class="pill admin">Admin</span></small>Demais telas do admin</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Tela</th><th>Onde</th><th>O que faz</th></tr></thead>
+    <tbody>
+      <tr><td>Usuários</td><td><span class="path">/admin/usuarios</span></td><td>Busca, cria conta com senha temporária mostrada uma vez, dá e tira papéis, confirma e-mail e encerra sessões. Tudo vai para a auditoria. Ninguém tira o próprio papel de admin. Não há bloqueio de conta nem troca de senha pelo admin.</td></tr>
+      <tr><td>Instituições</td><td><span class="path">/admin/instituicoes</span></td><td>Aprova ou recusa as sugeridas pelos alunos e cria instituições já ativas.</td></tr>
+      <tr><td>Módulos ligáveis</td><td><span class="path">/admin/funcionalidades</span></td><td>Liga e desliga os módulos da v2. Tudo nasce desligado (lista abaixo).</td></tr>
+      <tr><td>Custos de IA</td><td><span class="path">/admin/ia</span></td><td>Gasto do mês por recurso, chamadas, recusas e o valor de alerta em US$, que avisa sem bloquear ninguém. Um interruptor por recurso: cronograma, criações, tutor dos materiais, busca por assunto e certificados.</td></tr>
+      <tr><td>Tutor IA</td><td><span class="path">/admin/tutor</span></td><td>Liga o tutor do módulo, define a cota de perguntas por aluno e lê as conversas. Abrir uma conversa fica registrado.</td></tr>
+      <tr><td>Conta de teste</td><td><span class="path">/admin/demo</span></td><td>Cria um aluno fictício com o semestre preenchido (aulas, provas, notas, faltas, rotina, lembretes e PDFs). A senha aparece uma vez.</td></tr>
+      <tr><td>Privacidade</td><td><span class="path">/admin/privacidade</span></td><td>Fila dos pedidos LGPD, exclusão imediata, prazos de retenção e limpeza manual.</td></tr>
+      <tr><td>Métricas</td><td><span class="path">/admin/metricas</span></td><td>Alunos ativos na semana, ativação, retenção em 1 e 7 dias, questões por aluno, taxa de acerto e as questões com menor acerto.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="lgpd">
+  <h2><small><span class="pill aluno">Aluno</span> <span class="pill admin">Admin</span></small>Privacidade e LGPD</h2>
+  <p class="lead">O aluno baixa os próprios dados na hora. Os outros pedidos vão para o admin, que tem 15 dias para responder.</p>
+  <div class="diagram"><!-- diagrama:lgpd --></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Ação</th><th>Quem</th><th>O que acontece</th></tr></thead>
+    <tbody>
+      <tr><td>Baixar meus dados</td><td><span class="pill aluno">Aluno</span></td><td>Um arquivo com tudo o que é dele, inclusive o portfólio, sem fila.</td></tr>
+      <tr><td>Apagar o histórico do tutor</td><td><span class="pill aluno">Aluno</span></td><td>Apaga o texto das conversas e mantém só a contagem de uso e o custo.</td></tr>
+      <tr><td>Excluir a conta</td><td><span class="pill aluno">Aluno</span></td><td>O pedido fica aberto durante a carência e pode ser desfeito. Depois, a conta e tudo o que depende dela são apagados.</td></tr>
+      <tr><td>Rotina de retenção</td><td>automático</td><td>Roda a cada início do container, na tarefa diária do deploy e pelo botão do admin. Aplica as exclusões vencidas e os prazos: tutor 365 dias, eventos 730, auditoria 1825.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="worker">
+  <h2><small><span class="pill sistema">Worker</span></small>O que roda sozinho</h2>
+  <p class="lead">Toda ação que dispara trabalho grava um evento junto com a mudança, no mesmo instante. O worker pega o evento e faz o trabalho, mesmo que demore.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Trabalho</th><th>Quando dispara</th><th>O que produz</th></tr></thead>
+    <tbody>
+      <tr><td>Processar arquivo</td><td>qualquer envio</td><td>Antivírus, tipo, conversão para PDF, texto e miniaturas. No fim, libera o cronograma, o lote de produção ou o certificado que esperava o arquivo.</td></tr>
+      <tr><td>Ler cronograma</td><td>cronograma anexado</td><td>Aulas e provas propostas para o aluno conferir, e um aviso.</td></tr>
+      <tr><td>Criar com IA</td><td>pedido em Ajuda</td><td>Resumo, flashcards, questões, mapa, roteiro ou análise de provas.</td></tr>
+      <tr><td>Indexar para a busca</td><td>material novo ou autorização dada</td><td>Os vetores da busca por assunto. Retirar a autorização apaga.</td></tr>
+      <tr><td>Ler certificado</td><td>certificado enviado</td><td>Campos propostos para o aluno conferir, e um aviso.</td></tr>
+      <tr><td>Produção de aulas</td><td>slides enviados, Gerar, ajuste</td><td>Extração, plano, peças testadas, roteiro, imagens, clipes, narração e montagem do vídeo.</td></tr>
+      <tr><td>Apagar arquivos da conta</td><td>conta excluída</td><td>Remove do armazenamento tudo o que era do aluno.</td></tr>
+      <tr><td>E-mails de aviso</td><td>contínuo</td><td>Lembretes e alertas de quem ligou o e-mail, fora do horário silencioso. Aviso com mais de 24 horas de atraso não é enviado.</td></tr>
+      <tr><td>Alerta de gasto</td><td>a cada hora</td><td>E-mail ao admin quando o gasto do mês com IA passa do limite.</td></tr>
+      <tr><td>Limpeza</td><td>a cada hora</td><td>Eventos já processados e a lixeira de materiais com mais de 30 dias.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="chaves">
+  <h2><small><span class="pill admin">Admin</span></small>Módulos ligáveis</h2>
+  <p class="lead">Os módulos da v2 nascem desligados e o admin liga em <span class="path">/admin/funcionalidades</span>. Com o módulo desligado, as telas dele respondem "não encontrado". Hoje, catálogo, questões, flashcards, revisões, perfil e privacidade funcionam sem chave.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Módulo</th><th>Chave</th><th>Telas</th></tr></thead>
+    <tbody>
+      <tr><td>Cadastro inicial</td><td><code>cadastro</code></td><td><span class="path">/comecar</span> (sem ele, vale o <span class="path">/onboarding</span> do MVP)</td></tr>
+      <tr><td>Minhas disciplinas e cronogramas</td><td><code>disciplinas</code></td><td><span class="path">/app/minhas-disciplinas</span></td></tr>
+      <tr><td>Rotina semanal</td><td><code>rotina</code></td><td><span class="path">/app/rotina</span></td></tr>
+      <tr><td>Equilíbrio</td><td><code>equilibrio</code></td><td><span class="path">/app/equilibrio</span></td></tr>
+      <tr><td>Meu Espaço</td><td><code>meu_espaco</code></td><td><span class="path">/app/objetivo</span> e o menu Meu Espaço</td></tr>
+      <tr><td>Agenda e calendário</td><td><code>agenda</code></td><td><span class="path">/app/agenda</span></td></tr>
+      <tr><td>Material de estudo</td><td><code>materiais</code></td><td><span class="path">/app/materiais</span> e <span class="path">/app/busca</span></td></tr>
+      <tr><td>Acompanhar aula</td><td><code>aula</code></td><td><span class="path">/app/aulas</span> e o caderno</td></tr>
+      <tr><td>Alertas e lembretes</td><td><code>lembretes</code></td><td><span class="path">/app/lembretes</span> e <span class="path">/app/avisos</span></td></tr>
+      <tr><td>Faltas</td><td><code>faltas</code></td><td><span class="path">/app/faltas</span></td></tr>
+      <tr><td>Notas e calculadora</td><td><code>notas</code></td><td><span class="path">/app/notas</span></td></tr>
+      <tr><td>Ajuda Cognuss</td><td><code>ajuda</code></td><td><span class="path">/app/ajuda</span></td></tr>
+      <tr><td>Competências</td><td><code>competencias</code></td><td><span class="path">/app/competencias</span></td></tr>
+      <tr><td>Áudio inteligente</td><td><code>audio</code></td><td>sem tela ainda, espera o parecer jurídico</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="aberto">
+  <h2><small>Para decidir</small>Pontos em aberto</h2>
+  <p class="lead">Coisas que o levantamento do código mostrou e que pedem uma decisão ou uma conferência.</p>
+  <ul class="open">
+    <li><strong>O Dr. Rafael precisa do papel de revisor.</strong> A especificação da produção fala em "revisor com papel de professor", mas o código usa o papel Revisor. É ele que dá acesso a <span class="path">/admin/revisao</span>.</li>
+    <li><strong>2FA só é obrigatório para o admin.</strong> Revisor e editor, que publicam conteúdo de saúde, entram só com senha. No Kids, a equipe toda usa 2FA.</li>
+    <li><strong>Suporte e moderador não têm tela.</strong> O suporte só lê perfis no banco. O moderador fica para as salas do Conecta.</li>
+    <li><strong>Instituição recusada.</strong> Quando o admin recusa uma instituição sugerida, o aluno continua ligado a ela, e não há tela que explique a recusa ao aluno.</li>
+    <li><strong>Tarefa diária de retenção.</strong> Vale conferir se ela está agendada no Coolify. Sem ela, as exclusões vencidas só rodam quando o container reinicia ou quando o admin clica no botão.</li>
+    <li><strong>Termos novos não bloqueiam o uso.</strong> A faixa de aceite aparece, mas o aluno segue usando o app sem aceitar.</li>
+  </ul>
+</section>
+
+<footer>O mapa reflete o código da main em 26/11/2026, com Meus Certificados (K1). Para atualizar, edite <code>docs/mapa/</code> no repositório e rode <code>docs/mapa/render.mjs</code>.</footer>
+</main>
+</div>

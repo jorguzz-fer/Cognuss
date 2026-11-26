@@ -1,0 +1,11 @@
+sequenceDiagram
+  participant P as Professor
+  participant S as Cognuss
+  participant A as Aluno
+  P->>S: Cria a turma em /professor
+  S-->>P: Código de 6 caracteres
+  P->>A: Passa o código em sala
+  A->>S: Digita o código em /app/perfil
+  A->>S: Responde questões
+  S-->>P: Números agregados, só do que veio depois da entrada
+  Note over A,S: O aluno sai quando quiser. Quem sai deixa de contar.

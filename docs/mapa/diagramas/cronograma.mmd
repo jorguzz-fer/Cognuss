@@ -1,0 +1,15 @@
+sequenceDiagram
+  participant A as Aluno
+  participant S as Cognuss
+  participant W as Worker
+  participant IA as Claude
+  A->>S: Anexa o cronograma (PDF, DOC, DOCX ou XLSX)
+  S->>W: Processar o arquivo
+  W->>W: Antivírus, tipo, conversão para PDF e texto
+  W->>IA: Ler aulas e provas (com autorização de IA)
+  IA-->>W: Itens propostos
+  W-->>A: Aviso: cronograma lido
+  A->>S: Confere, corrige, inclui ou exclui itens
+  A->>S: Confirmar e levar para a agenda
+  S-->>A: Aulas e provas entram na agenda
+  Note over A,S: Sem a autorização de IA, a leitura espera. Descartar a leitura não muda nada.

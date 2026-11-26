@@ -1,0 +1,7 @@
+flowchart LR
+  A["1. Dados<br/>nome, CPF, telefone"] --> B["2. Perfil<br/>curso, semestre,<br/>instituição, objetivo"]
+  B --> C["3. Disciplinas<br/>pelo menos uma"]
+  C -. "opcional" .-> CR["Anexar cronograma<br/>e conferir a leitura"]
+  C --> D["4. Rotina<br/>blocos da semana"]
+  CR --> D
+  D --> E["/app<br/>boas-vindas"]

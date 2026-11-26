@@ -1,0 +1,10 @@
+flowchart TD
+  UP["Enviar material<br/>até 50 MB"] --> WK[["Worker: antivírus, conversão,<br/>texto e miniaturas"]]
+  WK --> OK["Material pronto"]
+  WK -. "infectado" .-> QU["Quarentena:<br/>não pode ser baixado"]
+  OK --> AU{"Autorizou a IA<br/>nos materiais?"}
+  AU -- "não" --> BP["Busca por palavra"]
+  AU -- "sim" --> BS["Busca por assunto"]
+  AU -- "sim" --> CR["Criar com IA<br/>resumo, flashcards, questões,<br/>mapa, roteiro, análise de provas"]
+  AU -- "sim" --> TU["Tutor dos materiais<br/>cota de perguntas por dia"]
+  CR --> SE["Selo: gerado por IA,<br/>sem revisão editorial"]

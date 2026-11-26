@@ -4,3 +4,4 @@ docs/spec/
 packages/db/migrations/meta/
 docs/producao/referencias/
 packages/core/src/piece-fonts.ts
+apps/web/src/features/actor-map/content.generated.ts

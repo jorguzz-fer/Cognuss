@@ -1,0 +1,11 @@
+flowchart TD
+  RO["Rotina<br/>blocos de aula, estudo e pessoal"] --> JA["Só os blocos de estudo<br/>viram janelas"]
+  AG["Agenda<br/>aulas, provas, compromissos"] --> EQ
+  LE["Lembrete que<br/>reserva horário"] --> EQ
+  JA --> EQ["Equilíbrio propõe sessões"]
+  OR["Aula concluída, falta,<br/>prova ou nota"] -- "pedir revisão" --> TA["Tarefa no Equilíbrio"]
+  TA --> EQ
+  EQ --> DE{"O aluno decide"}
+  DE -- "confirma as que quer" --> SE["Sessões na agenda"]
+  DE -- "pede outro plano" --> EQ
+  DE -. "o resto é apagado" .-> X["Nada muda sem confirmar"]

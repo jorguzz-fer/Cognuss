@@ -1,0 +1,7 @@
+flowchart LR
+  NV["/app/questoes/nova<br/>treino, diagnóstico ou do dia"] --> Q["Uma questão por vez<br/>só enunciado e alternativas"]
+  Q --> R["Responde"]
+  R --> G["Gabarito, explicação,<br/>fontes e domínio do tema"]
+  G -- "errou" --> FC["Criar flashcard"]
+  FC --> RV["/app/revisoes<br/>repetição espaçada"]
+  CAT["Cartões do catálogo"] --> RV
