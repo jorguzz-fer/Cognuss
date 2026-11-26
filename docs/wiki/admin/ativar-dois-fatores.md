@@ -30,7 +30,7 @@ Liga o segundo fator da conta: além da senha, um código de 6 dígitos do app a
 
 - Código recusado: confira se o relógio do celular está no horário automático e use o código atual, antes de ele trocar.
 - Perdeu o celular e os códigos de recuperação: não existe botão no admin para desligar o 2FA de outra pessoa (a confirmar com a engenharia como recuperar).
-- Senha errada no passo 1: a tela mostra o erro. Se esqueceu a senha, veja [Trocar a senha](../aluno/).
+- Senha errada no passo 1: a tela mostra o erro. Se esqueceu a senha, veja [Trocar a senha](../README.md#aluno).
 
 ## Veja também
 

@@ -40,4 +40,4 @@ Inclui uma faculdade na lista que o aluno vê no cadastro, ou corrige nome, cida
 ## Veja também
 
 - [Aprovar as instituições sugeridas pelos alunos](aprovar-instituicao.md)
-- [Área do aluno](../aluno/)
+- [Área do aluno](../README.md#aluno)

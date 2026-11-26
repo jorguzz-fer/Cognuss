@@ -41,4 +41,4 @@ A tela abre o lote novo. Ele passa por **Verificando o arquivo**, **Separando os
 
 - [Como acompanhar o lote](acompanhar-lote.md)
 - [Como escrever os pedidos do professor nos slides](escrever-pedidos-nos-slides.md)
-- [Cursos, disciplinas e assuntos no admin](../admin/)
+- [Cursos, disciplinas e assuntos no admin](../README.md#admin)

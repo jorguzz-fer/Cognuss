@@ -51,4 +51,4 @@ Funcionam sempre, sem chave: catálogo, questões, flashcards, revisões, perfil
 - [Ligar e desligar os recursos de IA](configurar-recursos-de-ia.md)
 - [Criar uma conta de teste](criar-conta-de-teste.md)
 - [Abrir o mapa de atores](abrir-mapa-de-atores.md)
-- [Área do aluno](../aluno/)
+- [Área do aluno](../README.md#aluno)

@@ -36,6 +36,6 @@ A disciplina passa a aparecer no formulário de novo lote e na tela **Vozes e co
 
 ## Veja também
 
-- [Cursos, disciplinas e assuntos no admin](../admin/)
+- [Cursos, disciplinas e assuntos no admin](../README.md#admin)
 - [Como enviar a aula e criar o lote](enviar-aula.md)
 - [Visão geral da produção](visao-geral.md)

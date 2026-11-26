@@ -39,4 +39,4 @@ Executa a exclusão de conta que o próprio aluno pediu, sem esperar o fim do pr
 - [Atender um pedido LGPD](responder-pedido-lgpd.md)
 - [Ajustar os prazos de retenção](ajustar-prazos-de-retencao.md)
 - [Dar e tirar papéis](dar-e-tirar-papeis.md)
-- [Área do aluno](../aluno/)
+- [Área do aluno](../README.md#aluno)

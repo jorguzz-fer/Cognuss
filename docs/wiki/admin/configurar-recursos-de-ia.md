@@ -44,4 +44,4 @@ O tutor do módulo (MVP) não está nesta lista. Ele tem a configuração própr
 - [Acompanhar os custos de IA](acompanhar-custos-de-ia.md)
 - [Configurar o tutor IA](configurar-tutor.md)
 - [Ligar e desligar módulos da v2](ligar-e-desligar-funcionalidades.md)
-- [Área do aluno](../aluno/)
+- [Área do aluno](../README.md#aluno)

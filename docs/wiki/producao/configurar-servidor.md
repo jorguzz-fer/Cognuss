@@ -58,5 +58,5 @@ O worker também precisa, na imagem dele, do LibreOffice, do Poppler, do unzip, 
 
 - [Como retomar um vídeo pausado](retomar-video.md)
 - [Como escolher a voz e a cota diária](configurar-vozes-e-cota.md)
-- [Configurações do admin](../admin/)
+- [Configurações do admin](../README.md#admin)
 - Implantação: `docs/deploy.md`

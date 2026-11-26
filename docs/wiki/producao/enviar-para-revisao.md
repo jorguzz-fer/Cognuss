@@ -39,4 +39,4 @@ Enviar para a revisão transforma cada peça pronta em um módulo da disciplina 
 
 - [Como revisar uma peça](revisar-peca.md)
 - [Como publicar a aula](publicar-aula.md)
-- [Usuários e papéis no admin](../admin/)
+- [Usuários e papéis no admin](../README.md#admin)

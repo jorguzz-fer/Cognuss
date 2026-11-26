@@ -41,4 +41,4 @@ Cria uma conta com senha temporária, já com um papel se precisar. É o caminho
 - [Confirmar o e-mail de alguém](confirmar-email.md)
 - [Ativar a verificação em duas etapas](ativar-dois-fatores.md)
 - [Criar uma conta de teste](criar-conta-de-teste.md)
-- [Área do professor](../professor/)
+- [Área do professor](../README.md#professor)

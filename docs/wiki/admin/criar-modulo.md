@@ -7,7 +7,7 @@ Cria um módulo dentro de uma disciplina. O módulo é a aula do catálogo que o
 ## Antes de começar
 
 - A disciplina precisa ter pelo menos um assunto. Sem assunto, a tela mostra "Crie um assunto antes do primeiro módulo." Veja [Criar um assunto](criar-assunto.md).
-- Se a aula interativa vem da produção de aulas, veja a área de [Produção de aulas](../producao/).
+- Se a aula interativa vem da produção de aulas, veja a área de [Produção de aulas](../README.md#produção-de-aulas-e-revisão).
 
 ## Passo a passo
 
@@ -52,5 +52,5 @@ Cria um módulo dentro de uma disciplina. O módulo é a aula do catálogo que o
 - [Publicar um módulo](publicar-modulo.md)
 - [Criar um assunto](criar-assunto.md)
 - [Configurar o tutor IA](configurar-tutor.md)
-- [Produção de aulas](../producao/)
-- [Área do aluno](../aluno/)
+- [Produção de aulas](../README.md#produção-de-aulas-e-revisão)
+- [Área do aluno](../README.md#aluno)

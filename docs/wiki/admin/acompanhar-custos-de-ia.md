@@ -32,4 +32,4 @@ Mostra quanto a plataforma gastou com IA, no total e por recurso, para decidir s
 
 - [Ligar e desligar os recursos de IA e o alerta de gasto](configurar-recursos-de-ia.md)
 - [Configurar o tutor IA](configurar-tutor.md)
-- [Produção de aulas](../producao/)
+- [Produção de aulas](../README.md#produção-de-aulas-e-revisão)

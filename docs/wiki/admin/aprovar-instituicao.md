@@ -35,4 +35,4 @@ Revisa as faculdades que os alunos sugeriram no cadastro e decide se elas entram
 ## Veja também
 
 - [Cadastrar ou editar uma instituição](cadastrar-instituicao.md)
-- [Área do aluno](../aluno/)
+- [Área do aluno](../README.md#aluno)

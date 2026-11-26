@@ -37,4 +37,4 @@ Cria uma disciplina dentro de um curso, por exemplo Fisiologia no curso de Medic
 - [Editar os dados de uma disciplina](editar-disciplina.md)
 - [Criar um assunto](criar-assunto.md)
 - [Criar um módulo](criar-modulo.md)
-- [Área do aluno](../aluno/)
+- [Área do aluno](../README.md#aluno)

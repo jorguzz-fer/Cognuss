@@ -37,4 +37,4 @@ Cria um curso novo no catálogo, por exemplo Medicina. O curso agrupa disciplina
 - [Editar ou desativar um curso](editar-curso.md)
 - [Adicionar uma disciplina a um curso](adicionar-disciplina.md)
 - [Criar uma conta de teste](criar-conta-de-teste.md)
-- [Área do aluno](../aluno/)
+- [Área do aluno](../README.md#aluno)

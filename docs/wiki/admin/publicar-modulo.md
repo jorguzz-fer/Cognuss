@@ -39,5 +39,5 @@ Passa um módulo pelo fluxo editorial até ele aparecer para os alunos: rascunho
 
 - [Criar um módulo](criar-modulo.md)
 - [Escrever uma questão e o fluxo editorial](publicar-questao.md)
-- [Revisão de aulas da produção](../producao/)
-- [Área do aluno](../aluno/)
+- [Revisão de aulas da produção](../README.md#produção-de-aulas-e-revisão)
+- [Área do aluno](../README.md#aluno)

@@ -21,7 +21,7 @@ Publicar a aula leva as peças e as questões aprovadas para os alunos, sem o se
 
 - Cada peça aprovada vira um módulo **publicado** da disciplina, com a versão que o revisor aprovou. Mudanças feitas depois na produção não entram sem nova revisão e publicação.
 - As questões aprovadas da peça ficam publicadas e entram na prática do aluno, ligadas ao assunto da aula.
-- O aluno abre **Estudar**, entra na disciplina e vê o módulo com a marca "aula interativa". Na tela do módulo, a peça aparece em **Aula interativa**, sem o selo "Demonstração · sem revisão", com o link **Abrir a aula em tela cheia**. O botão **Praticar com questões** leva às questões. Veja [Como o aluno estuda um módulo](../aluno/).
+- O aluno abre **Estudar**, entra na disciplina e vê o módulo com a marca "aula interativa". Na tela do módulo, a peça aparece em **Aula interativa**, sem o selo "Demonstração · sem revisão", com o link **Abrir a aula em tela cheia**. O botão **Praticar com questões** leva às questões. Veja [Como o aluno estuda um módulo](../README.md#aluno).
 - A peça publicada continua na fila com o selo **Publicada** por 7 dias e depois some da fila.
 - Se mais peças da mesma aula forem aprovadas depois, o botão volta a aparecer para publicá-las.
 
@@ -38,5 +38,5 @@ Publicar a aula leva as peças e as questões aprovadas para os alunos, sem o se
 ## Veja também
 
 - [Como revisar uma peça](revisar-peca.md)
-- [Como o aluno estuda um módulo](../aluno/)
-- [Cursos, disciplinas e assuntos no admin](../admin/)
+- [Como o aluno estuda um módulo](../README.md#aluno)
+- [Cursos, disciplinas e assuntos no admin](../README.md#admin)

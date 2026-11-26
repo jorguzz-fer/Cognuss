@@ -48,5 +48,5 @@ Abre a página que mostra quem faz cada ação na plataforma, em que tela e o qu
 
 - [Dar e tirar papéis](dar-e-tirar-papeis.md)
 - [Ligar e desligar módulos da v2](ligar-e-desligar-funcionalidades.md)
-- [Área do professor](../professor/)
-- [Produção de aulas](../producao/)
+- [Área do professor](../README.md#professor)
+- [Produção de aulas](../README.md#produção-de-aulas-e-revisão)

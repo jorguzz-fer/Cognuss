@@ -49,4 +49,4 @@ Cria uma conta de aluno pronta para testar a v2: cadastro feito e um semestre em
 - [Ligar e desligar módulos](ligar-e-desligar-funcionalidades.md)
 - [Criar um usuário](criar-usuario.md)
 - [Excluir uma conta](excluir-conta.md)
-- [Área do aluno](../aluno/)
+- [Área do aluno](../README.md#aluno)

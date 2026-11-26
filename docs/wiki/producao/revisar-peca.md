@@ -6,7 +6,7 @@ A revisão médica confere a peça, o vídeo e as questões antes de chegarem ao
 
 ## Antes de começar
 
-- O revisor precisa do papel **Revisão**, dado em **Usuários** pelo Admin. Veja [Usuários e papéis no admin](../admin/).
+- O revisor precisa do papel **Revisão**, dado em **Usuários** pelo Admin. Veja [Usuários e papéis no admin](../README.md#admin).
 - A peça precisa ter sido enviada para a revisão pelo Admin. Veja [Como enviar as peças para a revisão](enviar-para-revisao.md).
 
 ## Passo a passo
@@ -51,4 +51,4 @@ A revisão médica confere a peça, o vídeo e as questões antes de chegarem ao
 
 - [Como pedir ajuste numa peça](pedir-ajuste.md)
 - [Como publicar a aula](publicar-aula.md)
-- [Usuários e papéis no admin](../admin/)
+- [Usuários e papéis no admin](../README.md#admin)

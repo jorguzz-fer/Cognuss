@@ -42,4 +42,4 @@ Responde os pedidos que os alunos fazem sobre os próprios dados, dentro do praz
 
 - [Excluir uma conta](excluir-conta.md)
 - [Ajustar os prazos de retenção](ajustar-prazos-de-retencao.md)
-- [Área do aluno](../aluno/)
+- [Área do aluno](../README.md#aluno)

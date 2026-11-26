@@ -64,5 +64,5 @@ Leva uma questão do rascunho até o banco de questões dos alunos. O editor esc
 - [Criar uma nova versão de uma questão](criar-nova-versao-de-questao.md)
 - [Dar e tirar papéis](dar-e-tirar-papeis.md)
 - [Levar um módulo de rascunho a publicado](publicar-modulo.md)
-- [Revisão de aulas da produção](../producao/)
-- [Área do aluno](../aluno/)
+- [Revisão de aulas da produção](../README.md#produção-de-aulas-e-revisão)
+- [Área do aluno](../README.md#aluno)

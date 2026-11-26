@@ -51,4 +51,4 @@ Na tela do admin:
 - [Acompanhar os custos de IA](acompanhar-custos-de-ia.md)
 - [Ligar e desligar os recursos de IA](configurar-recursos-de-ia.md)
 - [Ajustar os prazos de retenção](ajustar-prazos-de-retencao.md)
-- [Área do aluno](../aluno/)
+- [Área do aluno](../README.md#aluno)

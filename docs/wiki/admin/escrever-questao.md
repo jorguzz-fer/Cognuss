@@ -49,4 +49,4 @@ Ao lado do botão, a tela mostra o que falta para enviar à revisão, por exempl
 - [O fluxo editorial de uma questão](publicar-questao.md)
 - [Criar uma nova versão de uma questão](criar-nova-versao-de-questao.md)
 - [Ler as métricas](ler-metricas.md)
-- [Área do aluno](../aluno/)
+- [Área do aluno](../README.md#aluno)

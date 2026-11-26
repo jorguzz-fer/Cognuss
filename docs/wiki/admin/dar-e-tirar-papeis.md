@@ -48,5 +48,5 @@ Uma pessoa pode ter vários papéis. Só o Admin exige a verificação em duas e
 - [De onde vem o primeiro admin](criar-primeiro-admin.md)
 - [O fluxo editorial de uma questão](publicar-questao.md)
 - [Abrir o mapa de atores](abrir-mapa-de-atores.md)
-- [Área do professor](../professor/)
-- [Revisão de aulas da produção](../producao/)
+- [Área do professor](../README.md#professor)
+- [Revisão de aulas da produção](../README.md#produção-de-aulas-e-revisão)

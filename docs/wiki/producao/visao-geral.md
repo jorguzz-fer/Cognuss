@@ -36,8 +36,8 @@ A peça publicada vira um módulo da disciplina, sem o selo "Demonstração · s
 
 ## Veja também
 
-- [Cursos, disciplinas, assuntos e usuários](../admin/)
-- [Como o aluno estuda um módulo](../aluno/)
+- [Cursos, disciplinas, assuntos e usuários](../README.md#admin)
+- [Como o aluno estuda um módulo](../README.md#aluno)
 - Especificação do módulo: `docs/producao/ESPECIFICACAO.md`
 - Roteiro das provas reais: `docs/producao/roteiro-de-prova.md`
 - Decisão de arquitetura: `docs/decisions/0021-producao-de-aulas.md`
