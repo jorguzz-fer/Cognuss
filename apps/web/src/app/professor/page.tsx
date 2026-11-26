@@ -28,6 +28,7 @@ export default async function TeacherHome({
           Você vê só o que cada aluno fez depois de entrar, e ele pode sair quando quiser.
         </p>
         <p className="text-sm">
+          <Link href="/wiki">Wiki</Link>: como fazer cada ação.{' '}
           <Link href="/mapa">Mapa de atores</Link>: quem faz o quê na plataforma.
         </p>
       </div>

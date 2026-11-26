@@ -9,13 +9,25 @@ const EDITORIAL = [
     text: 'Criar, revisar e publicar questões comentadas.',
     cta: 'Abrir fila editorial',
   },
+  {
+    href: '/wiki',
+    title: 'Wiki',
+    text: 'Como fazer cada ação na plataforma, passo a passo.',
+    cta: 'Abrir a wiki',
+  },
 ];
 const ADMIN = [
   {
     href: '/admin/cursos',
     title: 'Cursos',
-    text: 'Cursos, disciplinas, assuntos e módulos, com o fluxo de publicação.',
+    text: 'Cursos, disciplinas, assuntos e módulos. A aula pronta (.html) é enviada na tela de cada módulo.',
     cta: 'Gerenciar catálogo',
+  },
+  {
+    href: '/admin/producao',
+    title: 'Produção de aulas',
+    text: 'A aula do professor (PPT ou PDF) vira peças interativas e questões, com revisão.',
+    cta: 'Abrir produção',
   },
   {
     href: '/admin/usuarios',

@@ -99,6 +99,10 @@ export default async function DisciplineAdminPage({
               Novo módulo
             </h3>
             <Flash {...sp} here="novomod" />
+            <p className="text-sm text-muted">
+              Depois de criar, a tela do módulo tem o envio da aula pronta (.html), no quadro
+              &ldquo;Aula interativa&rdquo;.
+            </p>
             <form action={saveModuleAction} className="grid gap-4 sm:grid-cols-2">
               <input type="hidden" name="disciplineId" value={d.id} />
               <Field label="Título">{(p) => <Input {...p} name="title" required />}</Field>
