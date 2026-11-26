@@ -28,7 +28,7 @@ Muda nome, endereço, semestre sugerido ou descrição de uma disciplina, ou des
 
 - "Dê um nome à disciplina.": o nome precisa de pelo menos 2 caracteres.
 - "Use só letras minúsculas, números e hífens no endereço.": corrija o **Endereço** ou deixe vazio.
-- "Já existe um item com esse nome ou endereço.": outra disciplina do mesmo curso já usa esse endereço.
+- "Já existe um item com esse nome ou endereço.": outra disciplina do mesmo curso já usa esse endereço. O aviso aparece no próprio quadro **Dados da disciplina**. Para juntar duas disciplinas, mova os assuntos de uma para a outra ([Mover um assunto](mover-assunto.md)) e exclua a que ficou vazia.
 
 ## Veja também
 

@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: 'Cursos' };
 export default async function CoursesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ ok?: string; erro?: string }>;
+  searchParams: Promise<{ ok?: string; erro?: string; onde?: string }>;
 }) {
   const user = await requireRole(['admin'], '/admin/cursos');
   const sp = await searchParams;
@@ -65,6 +65,7 @@ export default async function CoursesPage({
         <h2 id="novo" className="text-xl">
           Novo curso
         </h2>
+        <Flash {...sp} here="novo" />
         <form action={saveCourseAction} className="grid gap-4 sm:grid-cols-2">
           <Field label="Nome">
             {(p) => <Input {...p} name="name" required placeholder="Medicina" />}
