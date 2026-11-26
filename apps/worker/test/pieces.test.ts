@@ -3,6 +3,7 @@ import { afterAll, describe, expect, it } from 'vitest';
 import { assemblePiece, parsePieceSource, type PieceBlocks } from '@gutta/core';
 import { PIECE_FONT_CSS } from '@gutta/core/piece-fonts';
 import { PlaywrightRenderer } from '../src/pieces/render';
+import { KIT_PIECE, KIT_PIECE_3D } from './fixtures/kit-piece';
 
 // Teste de render das peças (ADR 0021). Critério da Fase 2: as peças da Aula 2 passam nos dois
 // temas sem ajuste manual. Aqui, as peças aprovadas do piloto mostram que o teste não reprova
@@ -87,5 +88,33 @@ describe('peças com defeito', () => {
     );
     // O pedido é bloqueado; a peça segue de pé (o linter é quem recusa o recurso de fora).
     expect(r.problems.filter((p) => p.startsWith('Erro de script'))).toEqual([]);
+  });
+});
+
+describe('peças com o kit (ADR 0022)', () => {
+  const withKit = (b: PieceBlocks) =>
+    assemblePiece(b, { ...ctx, fontCss: PIECE_FONT_CSS, assetBase: 'http://localhost:3000' });
+
+  it('gráfico, canvas, slider, chips e status do kit passam nos dois temas', async () => {
+    const r = await renderer.test(withKit(KIT_PIECE));
+    expect(r.problems).toEqual([]);
+    expect(r.warnings).toEqual([]);
+  });
+
+  it('a cena 3D carrega o módulo do app (servido do disco) e conta como cena', async () => {
+    const r = await renderer.test(withKit(KIT_PIECE_3D));
+    expect(r.problems).toEqual([]);
+  });
+
+  it('sem o módulo 3D, a cena avisa e o teste acusa o erro', async () => {
+    // Endereço que o teste não serve: o import falha como falharia sem o arquivo no app.
+    const r = await renderer.test(
+      assemblePiece(KIT_PIECE_3D, {
+        ...ctx,
+        fontCss: PIECE_FONT_CSS,
+        assetBase: 'http://localhost:3000',
+      }).replace('/piece-assets/three-r169.mjs', '/piece-assets/nao-existe.mjs'),
+    );
+    expect(r.problems.some((p) => p.includes('kit.view3d'))).toBe(true);
   });
 });

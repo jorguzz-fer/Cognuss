@@ -1,4 +1,4 @@
-import type { PiecePlan, PieceWriter } from '@gutta/ai';
+import type { PieceCritic, PiecePlan, PieceShot, PieceWriter } from '@gutta/ai';
 import {
   assemblePiece,
   isPieceType,
@@ -13,14 +13,19 @@ import { keys, type ObjectStorage } from '@gutta/storage';
 import type { PieceRenderer } from '../pieces/render';
 import type { Handler } from './types';
 
-// Geração das peças HTML (docs/producao/ESPECIFICACAO.md, etapa 5; ADR 0021). Para cada tarefa
-// aprovada: a IA escreve, o linter confere, o teste de render roda nos dois temas e, se algo
-// falhar, a IA recebe os problemas e corrige. Cada tentativa vira uma versão, com as capturas.
+// Geração das peças HTML (docs/producao/ESPECIFICACAO.md, etapa 5; ADRs 0021 e 0022). Para cada
+// tarefa aprovada: a IA escreve, o linter confere, o teste de render roda nos dois temas e o
+// crítico visual olha as capturas. Se algo falhar, a IA recebe os problemas e as capturas e
+// corrige por trechos. Cada tentativa vira uma versão, com as capturas.
 
 export type PieceDeps = {
   storage: ObjectStorage | null;
   writer: PieceWriter | null;
   renderer: PieceRenderer | null;
+  /** Crítico visual das capturas (ADR 0022); sem ele, vale só o teste de render. */
+  critic?: PieceCritic | null;
+  /** Origem do app (APP_URL), para o módulo 3D do kit. */
+  assetBase?: string;
   /** Tentativas por geração (a primeira e as correções). */
   maxAttempts?: number;
 };
@@ -106,6 +111,7 @@ export function productionGeneratePiece(deps: PieceDeps): Handler<'production.ge
         foot: pieceFoot(batch.bibliography),
         demo: true,
         fontCss: PIECE_FONT_CSS,
+        assetBase: deps.assetBase,
       };
       const slideInputs = await Promise.all(
         slides.map(async (x) => ({
@@ -118,6 +124,7 @@ export function productionGeneratePiece(deps: PieceDeps): Handler<'production.ge
       let version = task.currentVersion ?? 0;
       let previous: PieceBlocks | null = null;
       let problems: string[] = [];
+      let shotsForFix: PieceShot[] = [];
       // Pedido de ajuste (admin, ou o revisor na Fase 4): a IA parte da versão atual.
       if (task.pendingNote && version > 0) {
         previous = JSON.parse(
@@ -135,7 +142,7 @@ export function productionGeneratePiece(deps: PieceDeps): Handler<'production.ge
           instruction: task.instruction,
           plan: (task.plan as PiecePlan | null) ?? null,
           slides: slideInputs,
-          fix: previous ? { previous, problems } : null,
+          fix: previous ? { previous, problems, shots: shotsForFix } : null,
         });
         await inTx((tx) =>
           tx.insert(s.aiUsage).values({
@@ -160,17 +167,54 @@ export function productionGeneratePiece(deps: PieceDeps): Handler<'production.ge
           ? null
           : await deps.renderer.test(assemblePiece(res.blocks, pieceCtx));
         problems = [...lintProblems, ...(report?.problems ?? [])];
+        const shots: PieceShot[] = (report?.checks ?? [])
+          .filter((c) => c.screenshot.length)
+          .map((c) => ({
+            name: SHOT_NAMES[`${c.theme}-${c.viewport}`] ?? c.theme,
+            image: c.screenshot,
+          }));
+        // O crítico visual só olha a peça que passou no teste mecânico. Na última tentativa,
+        // o que ele aponta vira aviso para o revisor, não reprovação.
+        let critique: string[] = [];
+        let visualWarnings: string[] = [];
+        if (!problems.length && deps.critic && shots.length) {
+          const c = await deps.critic.review({
+            title: res.blocks.title,
+            pieceType,
+            plan: (task.plan as PiecePlan | null) ?? null,
+            shots,
+          });
+          await inTx((tx) =>
+            tx.insert(s.aiUsage).values({
+              ownerId: userId,
+              feature: 'producao_critica',
+              model: c.model,
+              inputTokens: c.usage.input,
+              outputTokens: c.usage.output,
+              cacheReadTokens: c.usage.cacheRead,
+              cacheWriteTokens: c.usage.cacheWrite,
+              costMicros: c.costMicros,
+              refused: false,
+            }),
+          );
+          critique = c.problems.map((p) => `Revisão visual: ${p}`);
+          if (attempt < maxAttempts) problems = critique;
+          else visualWarnings = critique;
+        }
+        // Troca que não achou o trecho: só importa se ainda há problema a corrigir.
+        if (problems.length && res.editFailures?.length)
+          problems = [...problems, ...res.editFailures];
         const ok = problems.length === 0;
 
         const pieceKey = keys.productionPiece(batch.id, taskId, version);
         await storage.put(pieceKey, Buffer.from(JSON.stringify(res.blocks)), 'application/json');
-        const shots: { key: string; name: string }[] = [];
+        const saved: { key: string; name: string }[] = [];
         for (const c of report?.checks ?? []) {
           const name = SHOT_NAMES[`${c.theme}-${c.viewport}`];
           if (!name || !c.screenshot.length) continue;
           const key = keys.productionShot(batch.id, taskId, version, name);
           await storage.put(key, c.screenshot, 'image/jpeg');
-          shots.push({ key, name });
+          saved.push({ key, name });
         }
         await inTx(async (tx) => {
           await tx.insert(s.productionAssets).values({
@@ -186,13 +230,15 @@ export function productionGeneratePiece(deps: PieceDeps): Handler<'production.ge
               ok,
               lint,
               problems,
-              warnings: report?.warnings ?? [],
+              warnings: [...(report?.warnings ?? []), ...visualWarnings],
               tested: Boolean(report),
+              mode: res.mode ?? 'full',
+              critique,
             },
           });
-          if (shots.length)
+          if (saved.length)
             await tx.insert(s.productionAssets).values(
-              shots.map((x) => ({
+              saved.map((x) => ({
                 batchId: batch.id,
                 taskId,
                 kind: 'screenshot' as const,
@@ -227,6 +273,7 @@ export function productionGeneratePiece(deps: PieceDeps): Handler<'production.ge
           return;
         }
         previous = res.blocks;
+        shotsForFix = shots;
       }
       await inTx((tx) => failTask(tx, taskId, batch.id, problems.join('\n')));
     },
