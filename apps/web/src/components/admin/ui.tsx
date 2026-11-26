@@ -3,7 +3,22 @@ import { Alert, Badge } from '@/components/ui/card';
 
 // Peças comuns das telas do admin.
 
-export function Flash({ ok, erro }: { ok?: string; erro?: string }) {
+/**
+ * Aviso de resultado (?ok= / ?erro=). Com `onde` na URL, ele aparece só na seção de mesmo nome
+ * (`here`), ao lado do formulário enviado; sem `onde`, aparece onde não há `here` (topo).
+ */
+export function Flash({
+  ok,
+  erro,
+  onde,
+  here,
+}: {
+  ok?: string;
+  erro?: string;
+  onde?: string;
+  here?: string;
+}) {
+  if ((here ?? '') !== (onde ?? '')) return null;
   if (erro) return <Alert tone="danger">{erro}</Alert>;
   if (ok) return <Alert tone="success">{ok}</Alert>;
   return null;

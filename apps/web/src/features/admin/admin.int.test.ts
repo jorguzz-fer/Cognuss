@@ -91,6 +91,51 @@ describe('admin: catálogo', () => {
     });
   });
 
+  it('move o assunto com subassuntos, módulos e questões para outra disciplina', async () => {
+    const tag = randomUUID().slice(0, 6);
+    const course = await svc.saveCourse(admin, null, { name: `Farmácia ${tag}` });
+    const from = await svc.saveDiscipline(admin, { courseId: course.id }, { name: 'Conceitos' });
+    const to = await svc.saveDiscipline(admin, { courseId: course.id }, { name: 'Farmacologia' });
+    const topic = await svc.saveTopic(
+      admin,
+      { disciplineId: from.id },
+      { name: 'Farmacocinética' },
+    );
+    const child = await svc.saveTopic(
+      admin,
+      { disciplineId: from.id },
+      { name: 'Absorção', parentId: topic.id },
+    );
+    const mod = await svc.saveModule(
+      admin,
+      { disciplineId: from.id },
+      { title: 'Vias de administração', topicId: child.id },
+    );
+    const [q] = await owner
+      .insert(s.questions)
+      .values({ topicId: topic.id, disciplineId: from.id, stem: 'O que é biodisponibilidade?' })
+      .returning();
+
+    expect((await svc.moveTopic(admin, topic.id, to.id)).targetName).toBe('Farmacologia');
+    const moved = await owner.select().from(s.topics).where(eq(s.topics.disciplineId, to.id));
+    expect(moved.map((t) => t.name).sort()).toEqual(['Absorção', 'Farmacocinética']);
+    expect(moved.find((t) => t.id === child.id)?.parentId).toBe(topic.id);
+    const [m] = await owner.select().from(s.modules).where(eq(s.modules.id, mod.id));
+    expect(m!.disciplineId).toBe(to.id);
+    const [qq] = await owner.select().from(s.questions).where(eq(s.questions.id, q!.id));
+    expect(qq!.disciplineId).toBe(to.id);
+
+    // Nome repetido no destino: recusa com o motivo, sem mexer em nada.
+    const other = await svc.saveTopic(
+      admin,
+      { disciplineId: from.id },
+      { name: 'Farmacocinética' },
+    );
+    await expect(svc.moveTopic(admin, other.id, to.id)).rejects.toThrow(/já tem um assunto/);
+    // Quem não é admin não move (RLS).
+    await expect(svc.moveTopic(student, other.id, to.id)).rejects.toThrow();
+  });
+
   it('assunto em uso por questões não é excluído', async () => {
     const q = await owner.query.questions.findFirst();
     await expect(svc.deleteTopic(admin, q!.topicId)).rejects.toMatchObject({ status: 409 });

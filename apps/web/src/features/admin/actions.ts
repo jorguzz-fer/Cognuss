@@ -21,10 +21,14 @@ function message(err: unknown) {
   throw err;
 }
 
-function back(path: string, result: { ok?: string; erro?: string }): never {
-  const q = new URLSearchParams(result as Record<string, string>).toString();
+/**
+ * Volta para a página com o resultado. Com `onde`, o aviso aparece ao lado do formulário que
+ * foi enviado (e a página rola até ele), em vez de só no topo.
+ */
+function back(path: string, result: { ok?: string; erro?: string }, onde?: string): never {
+  const q = new URLSearchParams({ ...result, ...(onde ? { onde } : {}) } as Record<string, string>);
   revalidatePath(path);
-  redirect(`${path}${path.includes('?') ? '&' : '?'}${q}`);
+  redirect(`${path}${path.includes('?') ? '&' : '?'}${q.toString()}${onde ? `#${onde}` : ''}`);
 }
 
 async function admin(next: string) {
@@ -41,9 +45,17 @@ export async function saveCourseAction(form: FormData) {
     const row = await svc.saveCourse(user, courseId, obj(form));
     target = `/admin/cursos/${row.id}`;
   } catch (err) {
-    back(courseId ? `/admin/cursos/${courseId}` : '/admin/cursos', { erro: message(err) });
+    back(
+      courseId ? `/admin/cursos/${courseId}` : '/admin/cursos',
+      { erro: message(err) },
+      courseId ? 'editar' : 'novo',
+    );
   }
-  back(target, { ok: courseId ? 'Curso salvo.' : 'Curso criado.' });
+  back(
+    target,
+    { ok: courseId ? 'Curso salvo.' : 'Curso criado.' },
+    courseId ? 'editar' : undefined,
+  );
 }
 
 export async function saveDisciplineAction(form: FormData) {
@@ -59,9 +71,17 @@ export async function saveDisciplineAction(form: FormData) {
     );
     target = `/admin/disciplinas/${row.id}`;
   } catch (err) {
-    back(disciplineId ? `/admin/disciplinas/${disciplineId}` : target, { erro: message(err) });
+    back(
+      disciplineId ? `/admin/disciplinas/${disciplineId}` : target,
+      { erro: message(err) },
+      disciplineId ? 'dados' : 'nova',
+    );
   }
-  back(target, { ok: disciplineId ? 'Disciplina salva.' : 'Disciplina criada.' });
+  back(
+    target,
+    { ok: disciplineId ? 'Disciplina salva.' : 'Disciplina criada.' },
+    disciplineId ? 'dados' : undefined,
+  );
 }
 
 export async function deleteDisciplineAction(form: FormData) {
@@ -71,9 +91,9 @@ export async function deleteDisciplineAction(form: FormData) {
   try {
     courseId = (await svc.deleteDiscipline(user, disciplineId)).courseId;
   } catch (err) {
-    back(`/admin/disciplinas/${disciplineId}`, { erro: message(err) });
+    back(`/admin/disciplinas/${disciplineId}`, { erro: message(err) }, 'excluir');
   }
-  back(`/admin/cursos/${courseId}`, { ok: 'Disciplina excluída.' });
+  back(`/admin/cursos/${courseId}`, { ok: 'Disciplina excluída.' }, 'disc');
 }
 
 export async function saveTopicAction(form: FormData) {
@@ -84,9 +104,9 @@ export async function saveTopicAction(form: FormData) {
   try {
     await svc.saveTopic(user, topicId ? { id: topicId } : { disciplineId }, obj(form));
   } catch (err) {
-    back(path, { erro: message(err) });
+    back(path, { erro: message(err) }, 'assuntos');
   }
-  back(path, { ok: topicId ? 'Assunto salvo.' : 'Assunto criado.' });
+  back(path, { ok: topicId ? 'Assunto salvo.' : 'Assunto criado.' }, 'assuntos');
 }
 
 export async function deleteTopicAction(form: FormData) {
@@ -96,9 +116,22 @@ export async function deleteTopicAction(form: FormData) {
   try {
     await svc.deleteTopic(user, id(form));
   } catch (err) {
-    back(path, { erro: message(err) });
+    back(path, { erro: message(err) }, 'assuntos');
   }
-  back(path, { ok: 'Assunto excluído.' });
+  back(path, { ok: 'Assunto excluído.' }, 'assuntos');
+}
+
+export async function moveTopicAction(form: FormData) {
+  const user = await admin('/admin/cursos');
+  const disciplineId = id(form, 'disciplineId');
+  const path = `/admin/disciplinas/${disciplineId}`;
+  let target = '';
+  try {
+    target = (await svc.moveTopic(user, id(form), id(form, 'targetId'))).targetName;
+  } catch (err) {
+    back(path, { erro: message(err) }, 'assuntos');
+  }
+  back(path, { ok: `Assunto movido para ${target}.` }, 'assuntos');
 }
 
 export async function saveModuleAction(form: FormData) {
@@ -114,7 +147,11 @@ export async function saveModuleAction(form: FormData) {
     );
     target = `/admin/modulos/${row.id}`;
   } catch (err) {
-    back(moduleId ? `/admin/modulos/${moduleId}` : target, { erro: message(err) });
+    back(
+      moduleId ? `/admin/modulos/${moduleId}` : target,
+      { erro: message(err) },
+      moduleId ? undefined : 'novomod',
+    );
   }
   back(target, { ok: moduleId ? 'Módulo salvo.' : 'Módulo criado como rascunho.' });
 }

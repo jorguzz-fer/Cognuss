@@ -8,6 +8,7 @@ import { Field, Input, Select, Textarea } from '@/components/ui/field';
 import {
   deleteDisciplineAction,
   deleteTopicAction,
+  moveTopicAction,
   saveDisciplineAction,
   saveModuleAction,
   saveTopicAction,
@@ -22,12 +23,18 @@ export default async function DisciplineAdminPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ ok?: string; erro?: string }>;
+  searchParams: Promise<{ ok?: string; erro?: string; onde?: string }>;
 }) {
   const { id } = await params;
   const user = await requireRole(['admin'], `/admin/disciplinas/${id}`);
   const sp = await searchParams;
-  const { discipline: d, course, topics, modules } = await getDisciplineAdmin(user, id);
+  const {
+    discipline: d,
+    course,
+    topics,
+    modules,
+    destinations,
+  } = await getDisciplineAdmin(user, id);
   const roots = topics.filter((t) => !t.parentId);
   const childrenOf = (pid: string) => topics.filter((t) => t.parentId === pid);
   const ordered = roots.flatMap((r) => [r, ...childrenOf(r.id)]);
@@ -91,6 +98,7 @@ export default async function DisciplineAdminPage({
             <h3 id="novomod" className="text-lg">
               Novo módulo
             </h3>
+            <Flash {...sp} here="novomod" />
             <form action={saveModuleAction} className="grid gap-4 sm:grid-cols-2">
               <input type="hidden" name="disciplineId" value={d.id} />
               <Field label="Título">{(p) => <Input {...p} name="title" required />}</Field>
@@ -121,6 +129,7 @@ export default async function DisciplineAdminPage({
         <h2 id="assuntos" className="text-xl">
           Assuntos
         </h2>
+        <Flash {...sp} here="assuntos" />
         <Card className="grid gap-3">
           {ordered.length === 0 ? <p className="text-muted">Nenhum assunto ainda.</p> : null}
           <ul className="grid gap-2">
@@ -159,6 +168,38 @@ export default async function DisciplineAdminPage({
                     </ConfirmButton>
                   </form>
                 ) : null}
+                {destinations.length ? (
+                  <details className="w-full text-sm">
+                    <summary className="cursor-pointer text-muted">
+                      Mover {t.name} para outra disciplina
+                    </summary>
+                    <form action={moveTopicAction} className="mt-2 flex flex-wrap items-end gap-2">
+                      <input type="hidden" name="id" value={t.id} />
+                      <input type="hidden" name="disciplineId" value={d.id} />
+                      <label className="grid min-w-64 gap-1 text-xs text-muted">
+                        Disciplina de destino
+                        <Select name="targetId" required defaultValue="">
+                          <option value="" disabled>
+                            Escolha…
+                          </option>
+                          {destinations.map((x) => (
+                            <option key={x.id} value={x.id}>
+                              {x.courseName} · {x.name}
+                            </option>
+                          ))}
+                        </Select>
+                      </label>
+                      <Button type="submit" variant="secondary">
+                        Mover
+                      </Button>
+                      <span className="pb-3 text-xs text-muted">
+                        {childrenOf(t.id).length
+                          ? 'Os subassuntos, módulos e questões vão junto.'
+                          : 'Os módulos e as questões do assunto vão junto.'}
+                      </span>
+                    </form>
+                  </details>
+                ) : null}
               </li>
             ))}
           </ul>
@@ -189,6 +230,7 @@ export default async function DisciplineAdminPage({
         <h2 id="dados" className="text-xl">
           Dados da disciplina
         </h2>
+        <Flash {...sp} here="dados" />
         <form action={saveDisciplineAction} className="grid gap-4 sm:grid-cols-2">
           <input type="hidden" name="id" value={d.id} />
           <input type="hidden" name="courseId" value={course.id} />
@@ -235,6 +277,7 @@ export default async function DisciplineAdminPage({
         <h2 id="excluir" className="text-xl">
           Excluir disciplina
         </h2>
+        <Flash {...sp} here="excluir" />
         <p className="max-w-[65ch] text-sm text-muted">
           Apaga a disciplina e os assuntos dela. Só dá certo enquanto nada depende dela: com
           módulos, questões, alunos ou aulas em produção ligados, desmarque “Ativa” em vez de

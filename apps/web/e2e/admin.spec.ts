@@ -187,3 +187,47 @@ test('disciplina com módulo não é excluída', async ({ page }) => {
   await expect(page.getByText(/Esse item está em uso/)).toBeVisible();
   await expect(page.getByRole('heading', { level: 1, name: 'Semiologia' })).toBeVisible();
 });
+
+test('erro aparece ao lado do formulário; assunto muda de disciplina', async ({ page }) => {
+  await becomeAdmin(page);
+  const tag = Date.now().toString(36);
+  await page.goto('/admin/cursos');
+  await page.getByLabel('Nome').fill(`Farmácia ${tag}`);
+  await page.getByRole('button', { name: 'Criar curso' }).click();
+  await expect(page.getByText('Curso criado.')).toBeVisible();
+  const courseUrl = page.url().split('?')[0]!;
+  for (const name of ['Farmacologia', 'Conceitos gerais']) {
+    await page.goto(courseUrl);
+    await page.getByLabel('Nome', { exact: true }).first().fill(name);
+    await page.getByRole('button', { name: 'Criar disciplina' }).click();
+    await expect(page.getByText('Disciplina criada.')).toBeVisible();
+  }
+  await page.getByLabel('Novo assunto').fill('Farmacocinética');
+  await page.getByRole('button', { name: 'Adicionar' }).click();
+  await expect(
+    page.getByRole('region', { name: 'Assuntos' }).getByText('Assunto criado.'),
+  ).toBeVisible();
+
+  // Renomear para um nome que já existe no curso: o erro fica no quadro "Dados da disciplina".
+  const dados = page.getByRole('region', { name: 'Dados da disciplina' });
+  await dados.getByLabel('Nome', { exact: true }).fill('Farmacologia');
+  await page.getByRole('button', { name: 'Salvar disciplina' }).click();
+  await expect(page).toHaveURL(/onde=dados#dados$/);
+  await expect(dados.getByText('Já existe um item com esse nome ou endereço.')).toBeVisible();
+  await expect(page.getByText('Já existe um item com esse nome ou endereço.')).toHaveCount(1);
+
+  // Mover o assunto para a outra disciplina do curso.
+  await page.getByText('Mover Farmacocinética para outra disciplina').click();
+  await page
+    .getByLabel('Disciplina de destino')
+    .selectOption({ label: `Farmácia ${tag} · Farmacologia` });
+  await page.getByRole('button', { name: 'Mover', exact: true }).click();
+  await expect(page.getByText('Assunto movido para Farmacologia.')).toBeVisible();
+  await expect(page.getByText('Nenhum assunto ainda.')).toBeVisible();
+
+  await page.goto(courseUrl);
+  await page.getByRole('link', { name: 'Farmacologia', exact: true }).click();
+  await expect(
+    page.getByRole('region', { name: 'Assuntos' }).getByRole('textbox', { name: 'Nome' }),
+  ).toHaveValue('Farmacocinética');
+});

@@ -15,7 +15,7 @@ export default async function CoursePage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ ok?: string; erro?: string }>;
+  searchParams: Promise<{ ok?: string; erro?: string; onde?: string }>;
 }) {
   const { id } = await params;
   const user = await requireRole(['admin'], `/admin/cursos/${id}`);
@@ -30,6 +30,7 @@ export default async function CoursePage({
         <h2 id="disc" className="text-xl">
           Disciplinas
         </h2>
+        <Flash {...sp} here="disc" />
         <Card className="overflow-x-auto p-0 pt-4">
           <table className={tableClass}>
             <thead>
@@ -73,6 +74,7 @@ export default async function CoursePage({
           <h2 id="nova" className="text-xl">
             Nova disciplina
           </h2>
+          <Flash {...sp} here="nova" />
           <form action={saveDisciplineAction} className="grid gap-4">
             <input type="hidden" name="courseId" value={course.id} />
             <Field label="Nome">{(p) => <Input {...p} name="name" required />}</Field>
@@ -93,6 +95,7 @@ export default async function CoursePage({
           <h2 id="editar" className="text-xl">
             Dados do curso
           </h2>
+          <Flash {...sp} here="editar" />
           <form action={saveCourseAction} className="grid gap-4">
             <input type="hidden" name="id" value={course.id} />
             <Field label="Nome">

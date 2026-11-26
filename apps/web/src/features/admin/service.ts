@@ -1,5 +1,17 @@
 import 'server-only';
-import { and, asc, desc, eq, ilike, or, schema as s, sql, withUser, type Tx } from '@gutta/db';
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  or,
+  schema as s,
+  sql,
+  withUser,
+  type Tx,
+} from '@gutta/db';
 import { z } from 'zod';
 import { ApiError, notFound } from '@/lib/api';
 import type { CurrentUser, Role } from '@/lib/auth/session';
@@ -262,7 +274,14 @@ export async function getDisciplineAdmin(admin: CurrentUser, id: string) {
       .from(s.modules)
       .where(eq(s.modules.disciplineId, id))
       .orderBy(asc(s.modules.orderIndex), asc(s.modules.title));
-    return { discipline, course: course!, topics, modules };
+    // Destinos para "Mover para outra disciplina": todas as outras, com o curso de cada uma.
+    const destinations = await tx
+      .select({ id: s.disciplines.id, name: s.disciplines.name, courseName: s.courses.name })
+      .from(s.disciplines)
+      .innerJoin(s.courses, eq(s.courses.id, s.disciplines.courseId))
+      .where(sql`${s.disciplines.id} <> ${id}`)
+      .orderBy(asc(s.courses.name), asc(s.disciplines.name));
+    return { discipline, course: course!, topics, modules, destinations };
   });
 }
 
@@ -328,6 +347,69 @@ export async function deleteDiscipline(admin: CurrentUser, id: string) {
       { name: current.name },
     );
     return current;
+  });
+}
+
+/**
+ * Move um assunto (com os subassuntos) para outra disciplina. Leva junto o que depende dele:
+ * módulos, questões e lotes da produção passam a apontar para a disciplina nova. Um subassunto
+ * movido sozinho vira assunto principal lá.
+ */
+export async function moveTopic(admin: CurrentUser, id: string, targetId: string) {
+  return run(admin, async (tx) => {
+    const topic = await tx.query.topics.findFirst({ where: eq(s.topics.id, id) });
+    if (!topic) throw notFound('Assunto');
+    if (topic.disciplineId === targetId)
+      throw new ApiError(400, 'bad_request', 'O assunto já está nessa disciplina.');
+    const target = await tx.query.disciplines.findFirst({
+      where: eq(s.disciplines.id, targetId),
+    });
+    if (!target) throw notFound('Disciplina');
+    const children = await tx
+      .select({ id: s.topics.id, slug: s.topics.slug })
+      .from(s.topics)
+      .where(eq(s.topics.parentId, id));
+    const ids = [id, ...children.map((c) => c.id)];
+    const slugs = [topic.slug, ...children.map((c) => c.slug)];
+    const [clash] = await tx
+      .select({ name: s.topics.name })
+      .from(s.topics)
+      .where(and(eq(s.topics.disciplineId, targetId), inArray(s.topics.slug, slugs)))
+      .limit(1);
+    if (clash)
+      throw new ApiError(
+        409,
+        'conflict',
+        `${target.name} já tem um assunto chamado ${clash.name}. Renomeie um dos dois antes de mover.`,
+      );
+    await tx
+      .update(s.topics)
+      .set({ disciplineId: targetId, parentId: null })
+      .where(eq(s.topics.id, id));
+    await tx.update(s.topics).set({ disciplineId: targetId }).where(eq(s.topics.parentId, id));
+    await tx
+      .update(s.modules)
+      .set({ disciplineId: targetId })
+      .where(inArray(s.modules.topicId, ids));
+    await tx
+      .update(s.questions)
+      .set({ disciplineId: targetId })
+      .where(inArray(s.questions.topicId, ids));
+    await tx
+      .update(s.productionBatches)
+      .set({ disciplineId: targetId })
+      .where(inArray(s.productionBatches.topicId, ids));
+    await audit(
+      tx,
+      admin.id,
+      'topic.moved',
+      { type: 'topic', id },
+      {
+        from: topic.disciplineId,
+        to: targetId,
+      },
+    );
+    return { targetName: target.name };
   });
 }
 

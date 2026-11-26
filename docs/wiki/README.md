@@ -56,6 +56,7 @@ Catálogo, questões, pessoas, instituições, IA, privacidade e métricas.
 - [Como encerrar as sessões de alguém](admin/encerrar-sessoes.md)
 - [Como escrever uma questão](admin/escrever-questao.md)
 - [Como excluir um assunto](admin/excluir-assunto.md)
+- [Como mover um assunto para outra disciplina](admin/mover-assunto.md)
 - [Como excluir uma conta](admin/excluir-conta.md)
 - [Como excluir uma disciplina](admin/excluir-disciplina.md)
 - [Como ler as métricas](admin/ler-metricas.md)
