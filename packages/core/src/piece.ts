@@ -51,8 +51,15 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{window
 
 /** Endereço do módulo 3D do kit: absoluto com a origem do app, ou relativo. */
 export function pieceAssetUrl(base?: string | null): string {
-  const origin = (base ?? '').trim().replace(/\/+$/, '');
-  return /^https?:\/\/[^/\s]+$/i.test(origin) ? origin + PIECE_3D_PATH : PIECE_3D_PATH;
+  // Só a origem (protocolo, host e porta) de um endereço http(s), sem expressão regular sobre
+  // texto de fora.
+  try {
+    const u = new URL((base ?? '').trim());
+    if (u.protocol === 'https:' || u.protocol === 'http:') return u.origin + PIECE_3D_PATH;
+  } catch {
+    // endereço inválido: caminho relativo
+  }
+  return PIECE_3D_PATH;
 }
 
 /** Monta o HTML final da peça, autocontido (o módulo 3D, quando usado, vem do app). */
