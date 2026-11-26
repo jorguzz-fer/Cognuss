@@ -103,7 +103,7 @@ test.describe('fase 2', () => {
     // De volta à visão geral: os cartões refletem falta e nota.
     await page.goto('/app/minhas-disciplinas');
     await page.getByRole('link', { name: 'Patologia', exact: true }).click();
-    await expect(page.getByText('2/20')).toBeVisible();
+    await expect(page.getByText('2/20', { exact: true })).toBeVisible();
     await expect(page.getByText('8,5', { exact: true })).toBeVisible();
     await expect(page.getByText('Acima da mínima de 7,0')).toBeVisible();
   });
