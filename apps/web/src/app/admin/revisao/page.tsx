@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { PIECE_TYPE_LABEL } from '@gutta/core';
 import { AdminHeader } from '@/components/admin/ui';
 import { PublishButton } from '@/components/production/review-actions';
-import { Badge, Card } from '@/components/ui/card';
+import { Badge, Card } from '@gutta/ui/card';
 import { reviewQueue } from '@/features/production/review';
 import { requireRole } from '@/lib/auth/session';
 

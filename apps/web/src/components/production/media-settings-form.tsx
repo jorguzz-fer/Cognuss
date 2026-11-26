@@ -3,9 +3,9 @@ import type { production } from '@gutta/contracts';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Alert, Card } from '@/components/ui/card';
-import { Field, Input } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert, Card } from '@gutta/ui/card';
+import { Field, Input } from '@gutta/ui/field';
 import { ClientApiError, api } from '@/lib/client-api';
 
 type Settings = z.infer<typeof production.MediaSettingsDto>;

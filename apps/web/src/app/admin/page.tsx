@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Card } from '@/components/ui/card';
+import { Card } from '@gutta/ui/card';
 import { requireRole, EDITORIAL_ROLES } from '@/lib/auth/session';
 
 const EDITORIAL = [

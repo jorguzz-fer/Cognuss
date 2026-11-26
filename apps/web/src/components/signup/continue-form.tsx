@@ -5,8 +5,8 @@ import {
   continueFromRoutineAction,
   type SignupFormState,
 } from '@/features/signup/actions';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
 
 const ACTIONS = {
   disciplinas: continueFromDisciplinesAction,

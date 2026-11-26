@@ -13,37 +13,38 @@ São dois recursos no mesmo projeto do Coolify. O site estático continua como e
    Com a base em `/infra`, os caminhos relativos do compose (`..` do `web` e `./postgres` do `db`) valem igual no Coolify e na sua máquina.
 2. Defina as variáveis (aba Environment Variables). Gere as senhas com `openssl rand -base64 32`:
 
-   | Variável                                                                                   | Exemplo / observação                                                                                                                                                                                                                              |
-   | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-   | `APP_URL`                                                                                  | `https://app-gutta.tudomudou.com.br` (sem barra no fim)                                                                                                                                                                                           |
-   | `BETTER_AUTH_SECRET`                                                                       | 32+ caracteres aleatórios                                                                                                                                                                                                                         |
-   | `POSTGRES_PASSWORD`                                                                        | superusuário do Postgres (só para administração)                                                                                                                                                                                                  |
-   | `GUTTA_OWNER_PASSWORD`                                                                     | dono do schema; usado só pelas migrations                                                                                                                                                                                                         |
-   | `GUTTA_APP_PASSWORD`                                                                       | papel da aplicação (sem BYPASSRLS)                                                                                                                                                                                                                |
-   | `RESEND_API_KEY`                                                                           | sem ela, nenhum e-mail sai (confirmação de conta fica travada)                                                                                                                                                                                    |
-   | `MAIL_FROM`                                                                                | remetente verificado no Resend                                                                                                                                                                                                                    |
-   | `LESSON_ORIGINS`                                                                           | origens das aulas interativas, ex. `https://aula.alumine.com.br`                                                                                                                                                                                  |
-   | `ANTHROPIC_API_KEY`                                                                        | chave da API da Anthropic para o tutor IA (web) e a leitura de cronograma (worker); sem ela os dois ficam indisponíveis para o aluno (ADR 0008; SPEC v2, DIS-05)                                                                                  |
-   | `TUTOR_MODEL`                                                                              | opcional; padrão `claude-opus-5-5`                                                                                                                                                                                                                |
-   | `AI_SCHEDULE_MODEL`, `AI_SCHEDULE_EFFORT`                                                  | opcionais; modelo e esforço da leitura de cronograma (padrão `claude-opus-5-5` e `medium`). O custo de cada leitura fica em `ai_usage`                                                                                                            |
+   | Variável                                  | Exemplo / observação                                                                                                                                             |
+   | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | `APP_URL`                                 | `https://app-gutta.tudomudou.com.br` (sem barra no fim)                                                                                                          |
+   | `BETTER_AUTH_SECRET`                      | 32+ caracteres aleatórios                                                                                                                                        |
+   | `POSTGRES_PASSWORD`                       | superusuário do Postgres (só para administração)                                                                                                                 |
+   | `GUTTA_OWNER_PASSWORD`                    | dono do schema; usado só pelas migrations                                                                                                                        |
+   | `GUTTA_APP_PASSWORD`                      | papel da aplicação (sem BYPASSRLS)                                                                                                                               |
+   | `RESEND_API_KEY`                          | sem ela, nenhum e-mail sai (confirmação de conta fica travada)                                                                                                   |
+   | `MAIL_FROM`                               | remetente verificado no Resend                                                                                                                                   |
+   | `LESSON_ORIGINS`                          | origens das aulas interativas, ex. `https://aula.alumine.com.br`                                                                                                 |
+   | `ANTHROPIC_API_KEY`                       | chave da API da Anthropic para o tutor IA (web) e a leitura de cronograma (worker); sem ela os dois ficam indisponíveis para o aluno (ADR 0008; SPEC v2, DIS-05) |
+   | `TUTOR_MODEL`                             | opcional; padrão `claude-opus-5-5`                                                                                                                               |
+   | `AI_SCHEDULE_MODEL`, `AI_SCHEDULE_EFFORT` | opcionais; modelo e esforço da leitura de cronograma (padrão `claude-opus-5-5` e `medium`). O custo de cada leitura fica em `ai_usage`                           |
+
 | `AI_CREATION_MODEL`, `AI_CREATION_EFFORT` | opcionais; modelo e esforço das criações da Ajuda Cognuss (padrão `claude-opus-5-5` e `medium`). Custo por criação em `ai_usage` |
 | `AI_PRODUCTION_MODEL`, `AI_PRODUCTION_EFFORT` | opcionais; modelo e esforço do plano das peças na produção de aulas (padrão `claude-opus-5-5` e `high`), só no worker. Custo em `ai_usage` (`producao_plano`) e no lote |
 | `AI_PIECE_MODEL`, `AI_PIECE_EFFORT`, `PIECE_CHROMIUM_PATH` | opcionais; escritor das peças HTML (padrão `claude-opus-5-5` e `high`) e o Chromium do teste de render. Na imagem do worker o Chromium do Alpine é achado sozinho. Custo em `ai_usage` (`producao_peca`) |
 | `HIGGSFIELD_API_KEY_ID`, `HIGGSFIELD_API_KEY_SECRET` | só no worker; imagens e clipes dos vídeos (Fase 3). A credencial do console tem key ID e secret (o secret aparece só ao criar a chave); se o console mostrar as duas juntas (`ID:SECRET`), cole tudo em `HIGGSFIELD_API_KEY_ID` e deixe o secret vazio. Sem elas, o vídeo pausa no admin com o aviso. `HIGGSFIELD_IMAGE_ENDPOINT` e `HIGGSFIELD_VIDEO_ENDPOINT` trocam o modelo (padrão `marketing-studio/image` e `kling-video/v3.0/pro/image-to-video`) |
 | `ELEVENLABS_API_KEY`, `ELEVENLABS_MODEL`, `ELEVENLABS_VOICE_ID` | só no worker; narração dos vídeos (padrão `eleven_multilingual_v2`). A voz de cada disciplina é escolhida em `/admin/producao/vozes`; `ELEVENLABS_VOICE_ID` é a reserva. Use plano pago (o gratuito recusou por fila cheia no piloto) |
 | `PRODUCTION_DAILY_CREDITS`, `PRODUCTION_MEDIA_POLL_MS` | opcionais; cota diária de créditos de mídia (padrão 300, o admin muda sem deploy) e intervalo de consulta ao provedor (padrão 20 s). `MEDIA_PROVIDER=fake` só em teste |
-   | `WORKER_NOTIFY_INTERVAL_MS`                                                                | opcional, no worker; intervalo entre as voltas do envio de avisos por e-mail (padrão 60000). O worker usa `RESEND_API_KEY`, `MAIL_FROM` e `APP_URL` como o app (SPEC v2, LEM-11)                                                                  |
-   | `TUTOR_DAILY_LIMIT`                                                                        | opcional; perguntas por aluno em 24 h (padrão 20; o admin muda em `/admin/tutor`)                                                                                                                                                                 |
-   | `SEED_CATALOG`                                                                             | opcional; `demo` carrega curso, disciplinas, módulos, questões e flashcards de demonstração (com selo), sem usuários. Ver ADR 0005                                                                                                                |
-   | `BOOTSTRAP_ADMIN_EMAILS`                                                                   | opcional; e-mails que viram admin no start (ver "Primeiro administrador")                                                                                                                                                                         |
-   | `LEGAL_CONTROLLER_NAME`, `LEGAL_CONTROLLER_DOCUMENT`                                       | LGPD: razão social e CNPJ do controlador, mostrados na política (ADR 0009). Sem valor, aparece "a definir"                                                                                                                                        |
-   | `DPO_NAME`, `DPO_EMAIL`                                                                    | LGPD: encarregado de dados (art. 41). Preencha antes do piloto                                                                                                                                                                                    |
-   | `REDIS_PASSWORD`                                                                           | senha do Redis da fila (ADR 0013). Gere com `openssl rand -hex 32`: só letras e números, porque ela vai dentro da URL de conexão                                                                                                                  |
-   | `QUEUE_PREFIX`                                                                             | opcional; prefixo das chaves da fila (padrão `cognuss`)                                                                                                                                                                                           |
-   | `STORAGE_ENDPOINT`, `STORAGE_BUCKET`, `STORAGE_ACCESS_KEY_ID`, `STORAGE_SECRET_ACCESS_KEY` | Cloudflare R2 (ADR 0012). Endpoint `https://<conta>.r2.cloudflarestorage.com`, bucket privado e uma chave restrita a ele. Sem elas, o envio de arquivos fica indisponível. **Arquivo real de aluno só depois do parecer jurídico** (SPEC v2, D06) |
-   | `STORAGE_REGION`                                                                           | opcional; `auto` para o R2                                                                                                                                                                                                                        |
-   | `PII_ENCRYPTION_KEY`, `PII_HASH_KEY`                                                       | cadastro da v2 (CPF cifrado; SPEC v2, CAD-10). Gere cada uma com `openssl rand -base64 32` e guarde no cofre: sem a de cifra o CPF salvo não volta a ser lido, e trocar a de resumo quebra a regra de um CPF por conta                            |
-   | `FEATURES_ON`                                                                              | opcional e só fora de produção; liga módulos da v2 sem passar por `/admin/funcionalidades`                                                                                                                                                        |
+| `WORKER_NOTIFY_INTERVAL_MS` | opcional, no worker; intervalo entre as voltas do envio de avisos por e-mail (padrão 60000). O worker usa `RESEND_API_KEY`, `MAIL_FROM` e `APP_URL` como o app (SPEC v2, LEM-11) |
+| `TUTOR_DAILY_LIMIT` | opcional; perguntas por aluno em 24 h (padrão 20; o admin muda em `/admin/tutor`) |
+| `SEED_CATALOG` | opcional; `demo` carrega curso, disciplinas, módulos, questões e flashcards de demonstração (com selo), sem usuários. Ver ADR 0005 |
+| `BOOTSTRAP_ADMIN_EMAILS` | opcional; e-mails que viram admin no start (ver "Primeiro administrador") |
+| `LEGAL_CONTROLLER_NAME`, `LEGAL_CONTROLLER_DOCUMENT` | LGPD: razão social e CNPJ do controlador, mostrados na política (ADR 0009). Sem valor, aparece "a definir" |
+| `DPO_NAME`, `DPO_EMAIL` | LGPD: encarregado de dados (art. 41). Preencha antes do piloto |
+| `REDIS_PASSWORD` | senha do Redis da fila (ADR 0013). Gere com `openssl rand -hex 32`: só letras e números, porque ela vai dentro da URL de conexão |
+| `QUEUE_PREFIX` | opcional; prefixo das chaves da fila (padrão `cognuss`) |
+| `STORAGE_ENDPOINT`, `STORAGE_BUCKET`, `STORAGE_ACCESS_KEY_ID`, `STORAGE_SECRET_ACCESS_KEY` | Cloudflare R2 (ADR 0012). Endpoint `https://<conta>.r2.cloudflarestorage.com`, bucket privado e uma chave restrita a ele. Sem elas, o envio de arquivos fica indisponível. **Arquivo real de aluno só depois do parecer jurídico** (SPEC v2, D06) |
+| `STORAGE_REGION` | opcional; `auto` para o R2 |
+| `PII_ENCRYPTION_KEY`, `PII_HASH_KEY` | cadastro da v2 (CPF cifrado; SPEC v2, CAD-10). Gere cada uma com `openssl rand -base64 32` e guarde no cofre: sem a de cifra o CPF salvo não volta a ser lido, e trocar a de resumo quebra a regra de um CPF por conta |
+| `FEATURES_ON` | opcional e só fora de produção; liga módulos da v2 sem passar por `/admin/funcionalidades` |
 
 3. Domínio no serviço `web`, porta `3000`. DNS: registro `A` de `app-gutta` apontando para o VPS.
 4. Deploy. No primeiro start:
@@ -96,6 +97,107 @@ A migration 0051 precisa da extensão `vector`, que só um superusuário cria. O
 
 Os vetores vêm da Voyage AI (decisão do Fernando, 14/11/2026). Cadastre `VOYAGE_API_KEY` no `web` e no `worker`. No painel da Voyage, em Organization → Terms of Service, mude para **Opted Out** (retenção zero, sem uso para treino; pede cartão cadastrado e conta de admin). Sem a chave, a busca por conceito fica desligada e a busca por palavra continua.
 
+## Cognuss Kids (ADR 0022)
+
+O Kids é **outro recurso no Coolify**, com deploy, banco e backup próprios. Um deploy do Kids não reinicia o Cognuss, e o contrário também vale. Os dados das crianças ficam num **Postgres separado**: nenhum papel do Cognuss alcança esse servidor.
+
+| Recurso      | O que sobe                                                                    | Build                                                                | Domínio           |
+| ------------ | ----------------------------------------------------------------------------- | -------------------------------------------------------------------- | ----------------- |
+| Cognuss Kids | `kids` (Next.js), `db` (Postgres 16 só do Kids), `db-roles` (passo de papéis) | Docker Compose, Base Directory `/infra/kids`, arquivo `/compose.yml` | o do Kids (D-K08) |
+
+### Primeira vez
+
+1. No Coolify: **New Resource → Docker Compose**, mesmo repositório, branch `main` (ou `cognuss-kids` para testar antes do merge), **Base Directory `/infra/kids`** e arquivo **`/compose.yml`**. O build usa a raiz do repositório como contexto (`../..`), porque o Kids usa os pacotes do monorepo.
+2. Variáveis (aba Environment Variables). Gere as senhas com `openssl rand -hex 32`: elas vão dentro da URL de conexão.
+
+   | Variável                      | Observação                                                                                                                                                               |
+   | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+   | `KIDS_APP_URL`                | endereço do Kids, sem barra no fim                                                                                                                                       |
+   | `KIDS_BETTER_AUTH_SECRET`     | 32+ caracteres; **diferente** do `BETTER_AUTH_SECRET` do Cognuss                                                                                                         |
+   | `KIDS_POSTGRES_PASSWORD`      | superusuário do Postgres do Kids (só administração e o passo `db-roles`)                                                                                                 |
+   | `KIDS_OWNER_PASSWORD`         | dono do banco `cognuss_kids`; usado só pelas migrations                                                                                                                  |
+   | `KIDS_APP_PASSWORD`           | papel da aplicação (sem BYPASSRLS)                                                                                                                                       |
+   | `KIDS_BOOTSTRAP_ADMIN_EMAILS` | e-mails que viram Super Admin no start; se o e-mail ainda não tem conta, ela é criada sem senha                                                                          |
+   | `MAIL_OUTBOX_FILE`            | opcional, sem Resend: grava os e-mails num arquivo do container (ex.: `/tmp/kids-outbox.jsonl`) para ler o link pelo terminal do Coolify; tire depois do primeiro acesso |
+   | `RESEND_API_KEY`              | a mesma chave do Cognuss; sem ela, convites e links do responsável só vão para o log                                                                                     |
+   | `KIDS_MAIL_FROM`              | opcional; remetente do Kids no Resend                                                                                                                                    |
+
+3. Domínio no serviço `kids`, porta `3100`. DNS: registro `A` do subdomínio apontando para o mesmo servidor. O Coolify emite o HTTPS, que a resposta por voz exige.
+4. **Watch Paths** do recurso (para só o que é do Kids disparar deploy automático):
+
+   ```
+   apps/kids/**
+   packages/db-kids/**
+   packages/ui/**
+   packages/core/**
+   infra/kids/**
+   pnpm-lock.yaml
+   ```
+
+5. Deploy. A cada deploy:
+   - o `db-roles` roda `kids-roles.sh` (dentro da imagem `cognuss-kids-db`), cria ou atualiza `kids_owner`, `kids_app` e o banco `cognuss_kids`, e termina. É idempotente: vale no volume novo e no que já existe, e é por ele que uma senha trocada no Coolify chega ao banco;
+   - o `kids` aplica as migrations como `kids_owner` e só então sobe.
+6. Confira `KIDS_APP_URL/api/health`, que deve responder `{"status":"ok","db":"ok"}`.
+7. Primeiro acesso (o Kids não tem cadastro aberto; as contas entram por convite):
+   - no start, o bootstrap cria a conta de cada e-mail de `KIDS_BOOTSTRAP_ADMIN_EMAILS`, sem senha, já como Super Admin;
+   - abra `/recuperar-senha`, informe esse e-mail e use o link que chega para criar a senha (precisa do `RESEND_API_KEY`; o link vale 1 hora);
+   - entre com e-mail e senha e ative o 2FA;
+   - em `/plataforma`, cadastre a primeira escola.
+
+### Instituição de exemplo (opcional)
+
+Para conhecer o Kids com todos os papéis, rode uma vez no terminal do container `kids` (Coolify, aba Terminal):
+
+```bash
+SEED_SENHA='escolha-uma-senha-forte' node seed/seed-escola.mjs
+```
+
+Cria o "Colégio Modelo Cognuss Kids" (slug `colegio-modelo`) com:
+
+- Fundamental (3º ao 9º ano ativos) e Médio (1ª a 3ª série), uma turma por ano e as matérias sugeridas;
+- uma gestora e quatro professores (Ciências/Biologia, Matemática, Português, História/Geografia);
+- três alunos por turma, que entram pelo código da turma;
+- um responsável por aluno: dois autorizados por turma e um pendente, com o link de autorização;
+- os planos de Ciências do 3º ano (publicado, com simulado e prova), Matemática do 4º (em revisão) e Português do 6º (rascunho).
+
+Todas as contas da escola de exemplo (equipe e alunos) usam a senha que você passar em `SEED_SENHA` (mínimo 12 caracteres); ela não aparece na saída nem fica salva em texto. A saída lista os e-mails, os códigos das turmas, os apelidos e os links dos responsáveis pendentes. Os e-mails são `@colegio-modelo.kids.test` e não recebem nada; a equipe ativa o 2FA no primeiro acesso. Rodar de novo não altera nada. Para outro nome ou domínio, use as envs `SEED_NOME`, `SEED_SLUG` e `SEED_DOMINIO` no próprio comando (ex.: `SEED_SLUG=escola-teste SEED_SENHA=... node seed/seed-escola.mjs`). Localmente: `pnpm --filter @gutta/db-kids seed:escola`, com `KIDS_DATABASE_OWNER_URL` e `SEED_SENHA` definidas.
+
+Para remover a instituição de exemplo depois, suspenda-a em `/plataforma`.
+
+### Backup
+
+No Coolify, em **Scheduled Backups** do serviço `db` **deste recurso**, configure o dump diário do banco `cognuss_kids`, com retenção de 14 dias e destino S3/R2, separado do backup do Cognuss. Teste a restauração uma vez por mês, como no Cognuss.
+
+### Recurso do Cognuss
+
+Para um commit só do Kids não redeployar o Cognuss, ponha nos Watch Paths do recurso do Cognuss (Base Directory `/infra`) só os caminhos dele:
+
+```
+apps/web/**
+apps/worker/**
+packages/ai/**
+packages/contracts/**
+packages/core/**
+packages/db/**
+packages/jobs/**
+packages/storage/**
+packages/ui/**
+infra/compose.yml
+infra/postgres/**
+pnpm-lock.yaml
+```
+
+Os pacotes compartilhados (`packages/ui`, `packages/core`) e o `pnpm-lock.yaml` disparam os dois recursos, como deve ser.
+
+### Localmente
+
+`pnpm kids:db:setup` cria papéis, banco, migrations e a escola de demonstração:
+
+- usuários `superadmin@kids.test`, `gestor@kids.test`, `professor@kids.test` e `aluno@kids.test`, todos com a senha `gutta-demo-2026`;
+- a aluna sem e-mail da turma 3º A, que entra em "Sou aluno" com o código `demo3a`, o usuário `luna` e a senha `gato-azul-42`.
+
+`pnpm kids:dev` sobe em `http://localhost:3100`. Para subir como no Coolify: `docker compose -f infra/kids/compose.yml --env-file <arquivo> up -d --build`.
+
 ## Atualizações
 
 Cada deploy reconstrói a imagem e aplica as migrations novas no start. Migrations são só para a frente; para desfazer, crie uma migration nova.
@@ -113,6 +215,10 @@ Cada deploy reconstrói a imagem e aplica as migrations novas no start. Migratio
 
 ```bash
 docker build -f apps/web/Dockerfile -t gutta-web .
+```
+
+```bash
+docker build -f apps/kids/Dockerfile -t gutta-kids .
 ```
 
 Atrás de proxy com certificado próprio, acrescente `--secret id=ca,src=/caminho/ca.crt`.

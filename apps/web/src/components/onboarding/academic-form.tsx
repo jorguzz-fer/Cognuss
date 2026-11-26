@@ -2,10 +2,10 @@
 import { useActionState, useMemo, useState } from 'react';
 import { saveAcademicProfile, type ProfileFormState } from '@/features/onboarding/actions';
 import type { OnboardingData } from '@/features/onboarding/data';
-import { Button } from '@/components/ui/button';
-import { Alert, DemoBadge } from '@/components/ui/card';
-import { Field, Input, Select } from '@/components/ui/field';
-import { cn } from '@/lib/cn';
+import { Button } from '@gutta/ui/button';
+import { Alert, DemoBadge } from '@gutta/ui/card';
+import { Field, Input, Select } from '@gutta/ui/field';
+import { cn } from '@gutta/ui/cn';
 
 const DAYS = [
   ['D', 'Domingo'],

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { Wordmark } from '@/components/shared/logo';
+import { Wordmark } from '@gutta/ui/logo';
 import { AcademicForm } from '@/components/onboarding/academic-form';
 import { loadOnboardingData } from '@/features/onboarding/data';
 import { requireUser } from '@/lib/auth/session';

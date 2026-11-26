@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Alert, Badge, Card } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert, Badge, Card } from '@gutta/ui/card';
 import { requireFeature } from '@/features/flags/service';
 import { search } from '@/features/materials/service';
 import { grantConceptSearchAction } from '@/features/search/actions';

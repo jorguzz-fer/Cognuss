@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 export type NavItem = { href: string; label: string; icon: React.ReactNode; exact?: boolean };
 

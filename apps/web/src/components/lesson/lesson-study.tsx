@@ -25,8 +25,8 @@ import {
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { lessonStudy } from '@gutta/contracts';
-import { Button } from '@/components/ui/button';
-import { Alert, Badge } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert, Badge } from '@gutta/ui/card';
 import {
   AttachDialog,
   ORIGIN_LABEL,
@@ -34,7 +34,7 @@ import {
 } from '@/components/materials/attach-dialog';
 import { api } from '@/lib/client-api';
 import { uploadFile } from '@/lib/upload';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 import { shapeId } from './geometry';
 import { HistoryDialog } from './history-dialog';
 import { LearningPanel } from './learning-panel';

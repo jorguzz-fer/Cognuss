@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
     '@gutta/contracts',
     '@gutta/jobs',
     '@gutta/storage',
+    '@gutta/ui',
   ],
   serverExternalPackages: ['@node-rs/argon2', 'pg', 'ioredis'],
   poweredByHeader: false,

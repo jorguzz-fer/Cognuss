@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { EmptyState } from '@/components/shared/states';
-import { Cover } from '@/components/shared/cover';
-import { DemoBadge } from '@/components/ui/card';
-import { buttonClass } from '@/components/ui/button';
+import { EmptyState } from '@gutta/ui/states';
+import { Cover } from '@gutta/ui/cover';
+import { DemoBadge } from '@gutta/ui/card';
+import { buttonClass } from '@gutta/ui/button';
 import { listDisciplines } from '@/features/catalog/data';
 import { requireStudent } from '@/lib/auth/session';
 

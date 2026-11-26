@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Card } from '@/components/ui/card';
+import { Card } from '@gutta/ui/card';
 import { loadMetrics } from '@/features/metrics/service';
 import { requireRole } from '@/lib/auth/session';
 

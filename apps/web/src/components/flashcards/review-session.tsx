@@ -1,11 +1,11 @@
 'use client';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { EmptyState, ErrorState, LoadingBlock } from '@/components/shared/states';
-import { Button, buttonClass } from '@/components/ui/button';
-import { Alert, Badge, Card, DemoBadge } from '@/components/ui/card';
+import { EmptyState, ErrorState, LoadingBlock } from '@gutta/ui/states';
+import { Button, buttonClass } from '@gutta/ui/button';
+import { Alert, Badge, Card, DemoBadge } from '@gutta/ui/card';
 import { api, ClientApiError } from '@/lib/client-api';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 type Rating = 0 | 1 | 2 | 3;
 type Card = {

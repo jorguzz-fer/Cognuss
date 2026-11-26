@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import type { disciplines } from '@gutta/contracts';
-import { Button, buttonClass } from '@/components/ui/button';
+import { Button, buttonClass } from '@gutta/ui/button';
 import { api, ClientApiError } from '@/lib/client-api';
 
 type Import = NonNullable<disciplines.DisciplineDto['scheduleImport']>;

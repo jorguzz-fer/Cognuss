@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { materials } from '@gutta/contracts';
-import { Badge, Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Badge, Card } from '@gutta/ui/card';
+import { Button } from '@gutta/ui/button';
 import { api } from '@/lib/client-api';
 import { AttachDialog, ORIGIN_LABEL, TYPE_LABEL, type AttachTarget } from './attach-dialog';
 

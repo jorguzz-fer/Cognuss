@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AdminHeader, Flash, tableClass } from '@/components/admin/ui';
-import { Button } from '@/components/ui/button';
-import { Alert, Badge, Card } from '@/components/ui/card';
-import { Field, Input, Textarea } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert, Badge, Card } from '@gutta/ui/card';
+import { Field, Input, Textarea } from '@gutta/ui/field';
 import { privacyOverview } from '@/features/privacy/admin';
 import {
   executeDeletionAction,

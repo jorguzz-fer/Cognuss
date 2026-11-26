@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { EmptyState } from '@/components/shared/states';
-import { buttonClass } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { EmptyState } from '@gutta/ui/states';
+import { buttonClass } from '@gutta/ui/button';
+import { Card } from '@gutta/ui/card';
 import { listDisciplines } from '@/features/catalog/data';
 import { recentSessions } from '@/features/questions/service';
 import { requireStudent } from '@/lib/auth/session';

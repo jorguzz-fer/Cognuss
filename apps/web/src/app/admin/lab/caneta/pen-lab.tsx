@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@gutta/ui/button';
 
 /*
   Experimento da caneta (plano, item 36; SPEC v2, AUL-04 e AUL-05). Mede o que importa para

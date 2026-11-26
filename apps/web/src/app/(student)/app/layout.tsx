@@ -1,9 +1,9 @@
 import { Bell, BookOpen, Home, Layers, ListChecks, User } from 'lucide-react';
 import Link from 'next/link';
-import { Wordmark } from '@/components/shared/logo';
-import { ThemeToggle } from '@/components/shared/theme-toggle';
+import { Wordmark } from '@gutta/ui/logo';
+import { ThemeToggle } from '@gutta/ui/theme-toggle';
 import { BottomNav, TopNav, type NavItem } from '@/components/layout/nav-links';
-import { Button } from '@/components/ui/button';
+import { Button } from '@gutta/ui/button';
 import { acceptPolicyAction } from '@/features/privacy/actions';
 import { POLICY_VERSION } from '@/features/privacy/consent';
 import { featureEnabled } from '@/features/flags/service';

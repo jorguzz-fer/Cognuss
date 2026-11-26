@@ -34,6 +34,7 @@ Documentação:
 - [Teste de carga](loadtest/README.md)
 - [Plano de execução](docs/plano-de-execucao.md)
 - [SPEC](docs/spec/SPEC_Plataforma_Integrada_Estudantes_Saude_v1.md)
+- [SPEC Cognuss Kids](docs/spec/SPEC_Cognuss_Kids_v1.md) (proposta; ADR 0022)
 
 ## Rodar localmente
 

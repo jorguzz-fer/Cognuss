@@ -2,8 +2,8 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { ErrorState, LoadingBlock } from '@/components/shared/states';
-import { Button, buttonClass } from '@/components/ui/button';
+import { ErrorState, LoadingBlock } from '@gutta/ui/states';
+import { Button, buttonClass } from '@gutta/ui/button';
 import { api, ClientApiError } from '@/lib/client-api';
 
 type Params = {

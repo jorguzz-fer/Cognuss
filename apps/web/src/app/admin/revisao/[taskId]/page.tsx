@@ -5,7 +5,7 @@ import { AdminHeader } from '@/components/admin/ui';
 import { AutoRefresh } from '@/components/production/auto-refresh';
 import { ReviewDecision } from '@/components/production/review-actions';
 import { PlanSummary, type Plan } from '@/components/production/task-board';
-import { Alert, Badge, Card } from '@/components/ui/card';
+import { Alert, Badge, Card } from '@gutta/ui/card';
 import { getReview } from '@/features/production/review';
 import { ApiError } from '@/lib/api';
 import { requireRole } from '@/lib/auth/session';

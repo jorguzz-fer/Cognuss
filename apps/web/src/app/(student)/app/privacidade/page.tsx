@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Flash } from '@/components/admin/ui';
-import { Button, buttonClass } from '@/components/ui/button';
-import { Alert, Badge, Card } from '@/components/ui/card';
-import { Field, Input, Select, Textarea } from '@/components/ui/field';
+import { Button, buttonClass } from '@gutta/ui/button';
+import { Alert, Badge, Card } from '@gutta/ui/card';
+import { Field, Input, Select, Textarea } from '@gutta/ui/field';
 import {
   cancelRequestAction,
   consentAction,

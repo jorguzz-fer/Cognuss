@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react';
 import type { materials } from '@gutta/contracts';
 import { DownloadButton } from '@/components/files/download-button';
-import { Button } from '@/components/ui/button';
-import { Badge, Card } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Badge, Card } from '@gutta/ui/card';
 import { api } from '@/lib/client-api';
 import { AttachDialog, ORIGIN_LABEL, TYPE_LABEL, type AttachTarget } from './attach-dialog';
 

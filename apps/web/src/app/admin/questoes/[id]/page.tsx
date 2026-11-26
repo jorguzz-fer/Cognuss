@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { QuestionForm } from '@/components/editorial/question-form';
 import { TransitionButtons } from '@/components/editorial/transition-buttons';
-import { Alert, Badge, Card, DemoBadge } from '@/components/ui/card';
+import { Alert, Badge, Card, DemoBadge } from '@gutta/ui/card';
 import { editorialTopics, getQuestion, STATUS_LABEL } from '@/features/editorial/service';
 import { ApiError } from '@/lib/api';
 import { EDITORIAL_ROLES, requireRole } from '@/lib/auth/session';

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Alert, Card } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert, Card } from '@gutta/ui/card';
 import { requireFeature } from '@/features/flags/service';
 import {
   readAllAction,
@@ -10,7 +10,7 @@ import {
 } from '@/features/notifications/actions';
 import { getPreferences, listNotifications } from '@/features/notifications/service';
 import { requireStudent } from '@/lib/auth/session';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 export const metadata: Metadata = { title: 'Avisos' };
 

@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { authClient } from '@/lib/auth/client';
-import { Button } from '@/components/ui/button';
+import { Button } from '@gutta/ui/button';
 
 export function SignOutButton({ everywhere = false }: { everywhere?: boolean }) {
   const router = useRouter();

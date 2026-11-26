@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AuthShell } from '@/components/auth/auth-shell';
 import { ResetPasswordForm } from '@/components/auth/password-forms';
-import { Alert } from '@/components/ui/card';
+import { Alert } from '@gutta/ui/card';
 
 export const metadata: Metadata = { title: 'Nova senha' };
 

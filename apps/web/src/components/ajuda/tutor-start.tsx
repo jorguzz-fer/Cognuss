@@ -2,8 +2,8 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { ajuda } from '@gutta/contracts';
-import { Button } from '@/components/ui/button';
-import { Alert, Card } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert, Card } from '@gutta/ui/card';
 import { ClientApiError, api } from '@/lib/client-api';
 
 type Material = { id: string; title: string; disciplineName: string | null; pages: number };

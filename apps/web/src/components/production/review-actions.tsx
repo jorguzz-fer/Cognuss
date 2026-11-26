@@ -1,9 +1,9 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
-import { Field, Input, Select, Textarea } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
+import { Field, Input, Select, Textarea } from '@gutta/ui/field';
 import { ClientApiError, api } from '@/lib/client-api';
 
 // Ações da revisão das peças (Fase 4): enviar o lote à revisão (admin), aprovar ou pedir

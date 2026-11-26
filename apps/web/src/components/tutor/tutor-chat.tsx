@@ -1,10 +1,10 @@
 'use client';
 import { Sparkles } from 'lucide-react';
 import { useActionState, useEffect, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
 import { askTutorAction, tutorConsentAction, type TutorState } from '@/features/tutor/actions';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 type Msg = { id: string; role: 'user' | 'assistant'; content: string };
 

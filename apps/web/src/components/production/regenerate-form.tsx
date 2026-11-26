@@ -1,9 +1,9 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Alert } from '@/components/ui/card';
-import { Field, Textarea } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert } from '@gutta/ui/card';
+import { Field, Textarea } from '@gutta/ui/field';
 import { ClientApiError, api } from '@/lib/client-api';
 
 /**

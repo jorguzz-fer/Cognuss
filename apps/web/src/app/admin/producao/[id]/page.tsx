@@ -6,7 +6,7 @@ import { AutoRefresh } from '@/components/production/auto-refresh';
 import { SendToReviewButton } from '@/components/production/review-actions';
 import { TaskBoard } from '@/components/production/task-board';
 import Link from 'next/link';
-import { Alert, Badge, Card } from '@/components/ui/card';
+import { Alert, Badge, Card } from '@gutta/ui/card';
 import { BATCH_STATUS, SLIDE_KIND, usd } from '@/features/production/labels';
 import { getBatch } from '@/features/production/service';
 import { ApiError } from '@/lib/api';

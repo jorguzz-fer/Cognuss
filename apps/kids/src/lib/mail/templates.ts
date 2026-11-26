@@ -1,0 +1,65 @@
+// E-mails transacionais do Kids. Curtos, com uma ação só e o link também em texto puro.
+const esc = (s: string) =>
+  s.replace(
+    /[&<>"']/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!,
+  );
+
+function layout(title: string, body: string, cta: { label: string; url: string }) {
+  return `<!doctype html><html lang="pt-BR"><body style="margin:0;background:#f4f1f0;font-family:Arial,sans-serif;color:#1a1414">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
+<table role="presentation" width="100%" style="max-width:520px;background:#fff;border:1px solid #e2d9d7;border-radius:6px">
+<tr><td style="padding:28px">
+<p style="margin:0 0 4px;font-size:13px;color:#6b5f5c">Cognuss Kids</p>
+<h1 style="margin:0 0 16px;font-size:22px">${esc(title)}</h1>
+<p style="margin:0 0 24px;font-size:16px;line-height:1.5">${body}</p>
+<a href="${esc(cta.url)}" style="display:inline-block;background:#c2181d;color:#fff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:6px">${esc(cta.label)}</a>
+<p style="margin:24px 0 0;font-size:13px;color:#6b5f5c">Se o botão não funcionar, copie este endereço no navegador:<br>${esc(cta.url)}</p>
+</td></tr></table></td></tr></table></body></html>`;
+}
+
+export function verificationEmail(name: string, url: string) {
+  const subject = 'Confirme seu e-mail no Cognuss Kids';
+  const body = `Oi, ${esc(name)}. Falta só confirmar que este e-mail é seu. O link vale por 1 hora.`;
+  return {
+    subject,
+    html: layout(subject, body, { label: 'Confirmar e-mail', url }),
+    text: `Oi, ${name}. Confirme seu e-mail no Cognuss Kids (o link vale por 1 hora):\n${url}`,
+    tag: 'verify_email',
+  };
+}
+
+export function resetPasswordEmail(name: string, url: string) {
+  const subject = 'Redefina sua senha do Cognuss Kids';
+  const body = `Oi, ${esc(name)}. Recebemos um pedido para redefinir sua senha. Se não foi você, ignore este e-mail: nada muda. O link vale por 1 hora.`;
+  return {
+    subject,
+    html: layout(subject, body, { label: 'Criar nova senha', url }),
+    text: `Oi, ${name}. Para criar uma nova senha no Cognuss Kids (link válido por 1 hora):\n${url}\n\nSe não foi você, ignore este e-mail.`,
+    tag: 'reset_password',
+  };
+}
+
+const ROLE_LABEL = { manager: 'gestão', teacher: 'professor' } as const;
+
+export function inviteEmail(tenantName: string, role: 'manager' | 'teacher', url: string) {
+  const subject = `Convite para ${tenantName} no Cognuss Kids`;
+  const body = `Você foi convidado para a equipe de ${esc(tenantName)}, com acesso de ${ROLE_LABEL[role]}. O convite vale por 7 dias.`;
+  return {
+    subject,
+    html: layout(subject, body, { label: 'Aceitar convite', url }),
+    text: `Você foi convidado para ${tenantName} no Cognuss Kids, com acesso de ${ROLE_LABEL[role]}. O convite vale por 7 dias:\n${url}`,
+    tag: 'invite',
+  };
+}
+
+export function guardianEmail(tenantName: string, studentName: string, url: string) {
+  const subject = `Autorização para ${studentName} usar o Cognuss Kids`;
+  const body = `${esc(tenantName)} vai usar o Cognuss Kids nos estudos de ${esc(studentName)}. Para isso, precisamos da sua autorização como responsável. No link você lê o que é guardado, autoriza ou não, e pode pedir acesso, correção ou exclusão dos dados. O link vale por 30 dias.`;
+  return {
+    subject,
+    html: layout(subject, body, { label: 'Ver e autorizar', url }),
+    text: `${tenantName} vai usar o Cognuss Kids nos estudos de ${studentName} e precisa da sua autorização como responsável. O link vale por 30 dias:\n${url}`,
+    tag: 'guardian_consent',
+  };
+}

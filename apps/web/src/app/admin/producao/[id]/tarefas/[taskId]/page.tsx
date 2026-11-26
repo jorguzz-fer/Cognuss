@@ -13,7 +13,7 @@ import { AutoRefresh } from '@/components/production/auto-refresh';
 import { MediaPanel } from '@/components/production/media-panel';
 import { RegenerateForm } from '@/components/production/regenerate-form';
 import { PlanSummary, type Plan } from '@/components/production/task-board';
-import { Alert, Badge, Card } from '@/components/ui/card';
+import { Alert, Badge, Card } from '@gutta/ui/card';
 import { usd } from '@/features/production/labels';
 import { getTask } from '@/features/production/service';
 import { ApiError } from '@/lib/api';

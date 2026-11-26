@@ -11,9 +11,9 @@ import {
   slidesLabel,
   type PieceType,
 } from '@gutta/core';
-import { Button } from '@/components/ui/button';
-import { Alert, Badge, Card } from '@/components/ui/card';
-import { Field, Input, Select } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert, Badge, Card } from '@gutta/ui/card';
+import { Field, Input, Select } from '@gutta/ui/field';
 import { ClientApiError, api } from '@/lib/client-api';
 
 type Task = production.TaskDto;

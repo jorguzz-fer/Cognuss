@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { AdminHeader, Flash, StatusBadge } from '@/components/admin/ui';
-import { Button } from '@/components/ui/button';
-import { Alert, Card, DemoBadge } from '@/components/ui/card';
-import { Field, Input, Select, Textarea } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert, Card, DemoBadge } from '@gutta/ui/card';
+import { Field, Input, Select, Textarea } from '@gutta/ui/field';
 import { saveModuleAction, transitionModuleAction } from '@/features/admin/actions';
 import { getModuleAdmin } from '@/features/admin/service';
 import { requireRole } from '@/lib/auth/session';

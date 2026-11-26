@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { AdminHeader } from '@/components/admin/ui';
-import { Badge, Card } from '@/components/ui/card';
+import { Badge, Card } from '@gutta/ui/card';
 import { tutorConversation } from '@/features/tutor/service';
 import { requireRole } from '@/lib/auth/session';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 export const metadata: Metadata = { title: 'Conversa do tutor' };
 

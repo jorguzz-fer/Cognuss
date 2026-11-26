@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@gutta/ui/button';
 import { ClientApiError, api } from '@/lib/client-api';
 
 /*

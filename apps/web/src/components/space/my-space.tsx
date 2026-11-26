@@ -16,12 +16,12 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { AgendaRow, KIND_LABEL, timeLabel } from '@/components/agenda/item';
-import { buttonClass } from '@/components/ui/button';
-import { Alert, Card } from '@/components/ui/card';
+import { buttonClass } from '@gutta/ui/button';
+import { Alert, Card } from '@gutta/ui/card';
 import type { Space } from '@/features/space/service';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 import { TodayTasks } from './today-tasks';
-import { categoryClasses, type CategoryColor } from '@/styles/categories';
+import { categoryClasses, type CategoryColor } from '@gutta/ui/categories';
 
 const hours = (m: number) => {
   const h = Math.floor(m / 60);

@@ -2,9 +2,9 @@
 import type { production } from '@gutta/contracts';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Alert, Badge, Card } from '@/components/ui/card';
-import { Field, Input, Textarea } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert, Badge, Card } from '@gutta/ui/card';
+import { Field, Input, Textarea } from '@gutta/ui/field';
 import { ClientApiError, api } from '@/lib/client-api';
 import type { z } from 'zod';
 

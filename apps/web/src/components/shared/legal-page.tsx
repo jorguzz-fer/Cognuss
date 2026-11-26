@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Wordmark } from './logo';
-import { Alert } from '@/components/ui/card';
+import { Wordmark } from '@gutta/ui/logo';
+import { Alert } from '@gutta/ui/card';
 import { POLICY_VERSION } from '@/features/privacy/consent';
 
 export function LegalPage({ title, children }: { title: string; children: React.ReactNode }) {

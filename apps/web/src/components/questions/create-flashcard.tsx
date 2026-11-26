@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@gutta/ui/button';
 import { api, ClientApiError } from '@/lib/client-api';
 
 // Transforma o erro em flashcard pessoal: frente = enunciado, verso = resposta e explicação.

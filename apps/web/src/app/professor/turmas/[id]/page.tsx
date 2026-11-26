@@ -2,12 +2,12 @@ import { AlertTriangle } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Flash, tableClass } from '@/components/admin/ui';
-import { Button } from '@/components/ui/button';
-import { Badge, Card } from '@/components/ui/card';
+import { Button } from '@gutta/ui/button';
+import { Badge, Card } from '@gutta/ui/card';
 import { updateClassAction } from '@/features/classes/actions';
 import { getClassDashboard } from '@/features/classes/service';
 import { requireRole } from '@/lib/auth/session';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 export const metadata: Metadata = { title: 'Turma' };
 

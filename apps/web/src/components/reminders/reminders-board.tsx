@@ -3,11 +3,11 @@ import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import type { reminders } from '@gutta/contracts';
-import { Button } from '@/components/ui/button';
-import { Alert, Badge, Card } from '@/components/ui/card';
-import { Field, Input, Select, Textarea } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Alert, Badge, Card } from '@gutta/ui/card';
+import { Field, Input, Select, Textarea } from '@gutta/ui/field';
 import { api, ClientApiError } from '@/lib/client-api';
-import { cn } from '@/lib/cn';
+import { cn } from '@gutta/ui/cn';
 
 type Reminder = reminders.ReminderDto;
 type Discipline = { id: string; name: string };

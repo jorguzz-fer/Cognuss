@@ -7,6 +7,7 @@
 #   VOYAGE_API_KEY e EMBEDDING_MODEL (opcionais; busca por conceito, ADR 0014)
 #   LEGAL_CONTROLLER_NAME, LEGAL_CONTROLLER_DOCUMENT, DPO_NAME, DPO_EMAIL (LGPD; preencher antes do piloto)
 #   REDIS_PASSWORD (fila e limite de taxa; ADR 0013)
+# O Cognuss Kids é outro recurso do Coolify, com Postgres próprio: infra/kids/compose.yml.
 name: gutta
 
 services:

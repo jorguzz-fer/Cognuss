@@ -15,10 +15,10 @@ import {
   Users,
 } from 'lucide-react';
 import Link from 'next/link';
-import { Wordmark } from '@/components/shared/logo';
+import { Wordmark } from '@gutta/ui/logo';
 import { SideNav, type NavItem } from '@/components/layout/nav-links';
 import { SignOutButton } from '@/components/auth/sign-out-button';
-import { Badge } from '@/components/ui/card';
+import { Badge } from '@gutta/ui/card';
 import { ROLE_LABEL } from '@/features/admin/service';
 import { EDITORIAL_ROLES, requireRole } from '@/lib/auth/session';
 

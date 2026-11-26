@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AdminHeader, Checkbox, Flash, StatusBadge, tableClass } from '@/components/admin/ui';
-import { Button } from '@/components/ui/button';
-import { Card, DemoBadge } from '@/components/ui/card';
-import { Field, Input, Select, Textarea } from '@/components/ui/field';
+import { Button } from '@gutta/ui/button';
+import { Card, DemoBadge } from '@gutta/ui/card';
+import { Field, Input, Select, Textarea } from '@gutta/ui/field';
 import {
   deleteTopicAction,
   saveDisciplineAction,

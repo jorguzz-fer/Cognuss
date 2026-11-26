@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Flash } from '@/components/admin/ui';
-import { Cover } from '@/components/shared/cover';
-import { Button } from '@/components/ui/button';
-import { Badge, Card } from '@/components/ui/card';
-import { Field, Input, Select } from '@/components/ui/field';
+import { Cover } from '@gutta/ui/cover';
+import { Button } from '@gutta/ui/button';
+import { Badge, Card } from '@gutta/ui/card';
+import { Field, Input, Select } from '@gutta/ui/field';
 import { createClassAction } from '@/features/classes/actions';
 import { listTeacherClasses, teacherDisciplines } from '@/features/classes/service';
 import { requireRole } from '@/lib/auth/session';
