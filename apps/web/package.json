@@ -12,7 +12,8 @@
     "e2e": "playwright test --pass-with-no-tests",
     "test:int": "vitest run -c vitest.int.config.ts",
     "tutor:eval": "tsx scripts/tutor-eval.ts",
-    "search:eval": "tsx scripts/search-eval.ts"
+    "search:eval": "tsx scripts/search-eval.ts",
+    "piece-3d": "node scripts/build-piece-3d.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.4.0",
@@ -41,8 +42,10 @@
     "@types/node": "^22.18.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "esbuild": "0.25.12",
     "eslint-config-next": "^16.4.6",
     "tailwindcss": "^4.3.3",
+    "three": "0.169.0",
     "typescript": "5.9.3",
     "vitest": "^4.1.12"
   }

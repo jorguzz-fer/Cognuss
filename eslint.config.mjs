@@ -9,6 +9,7 @@ export default tseslint.config(
       '**/.next/**',
       '**/dist/**',
       'public/**',
+      'apps/web/public/piece-assets/**',
       'apps/web/next-env.d.ts',
       'packages/db/migrations/**',
       'loadtest/**',
