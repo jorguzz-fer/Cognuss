@@ -30,7 +30,7 @@ Cria um módulo dentro de uma disciplina. O módulo é a aula do catálogo que o
 ## O que acontece depois
 
 - Ao criar: aviso "Módulo criado como rascunho.". Ao salvar: "Módulo salvo.".
-- Você fica como autor do módulo. Por isso, outra pessoa precisa aprovar.
+- Você fica como autor do módulo. Como Admin, você pode aprovar o próprio módulo; o ideal é que alguém com o papel Revisão aprove.
 - Enquanto está em rascunho, em revisão ou aprovado, o aluno não vê o módulo.
 - Depois de publicado, para o aluno:
   - com aula de origem permitida, a aula abre dentro da página, com o link "Abrir a aula em tela cheia";

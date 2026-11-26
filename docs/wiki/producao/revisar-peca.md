@@ -39,7 +39,7 @@ A revisão médica confere a peça, o vídeo e as questões antes de chegarem ao
 
 | Mensagem                                                                      | O que fazer                                                                                       |
 | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| "Quem enviou a peça para revisão não pode aprová-la. Peça a outro revisor."   | Outro revisor, ou outro Admin, aprova.                                                            |
+| "Quem enviou a peça para revisão não pode aprová-la (só o admin pode). Peça a outro revisor."   | Outro revisor aprova. Quem envia é sempre Admin, e o Admin pode aprovar o que enviou.                                                            |
 | "Esta peça não está em revisão."                                              | A peça já foi aprovada ou publicada. Recarregue a fila.                                           |
 | "A peça ainda está sendo gerada de novo. Revise quando a nova versão chegar." | Espere o selo voltar a **Nova versão para revisar**.                                              |
 | "O ajuste não passou no teste depois das tentativas."                         | A peça está em **Ajuste falhou**. Avise o Admin, que pode usar [Gerar de novo](gerar-de-novo.md). |

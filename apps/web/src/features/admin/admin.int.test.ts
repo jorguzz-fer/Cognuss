@@ -66,7 +66,7 @@ describe('admin: catálogo', () => {
     expect(logs.map((l) => l.action)).toContain('module.created');
   });
 
-  it('o autor não aprova o próprio módulo (trigger editorial)', async () => {
+  it('o admin aprova o próprio módulo; o revisor autor, não (ADR 0024)', async () => {
     const course = await svc.saveCourse(admin, null, { name: `Curso ${randomUUID().slice(0, 6)}` });
     const disc = await svc.saveDiscipline(admin, { courseId: course.id }, { name: 'Disciplina X' });
     const topic = await svc.saveTopic(admin, { disciplineId: disc.id }, { name: 'Assunto X' });
@@ -76,10 +76,27 @@ describe('admin: catálogo', () => {
       { title: 'Módulo X', topicId: topic.id },
     );
     await svc.transitionModule(admin, mod.id, { to: 'in_review' });
-    await expect(svc.transitionModule(admin, mod.id, { to: 'approved' })).rejects.toThrow(
+    // Pular etapa continua proibido; aprovar o próprio, para o admin, vale.
+    await expect(svc.transitionModule(admin, mod.id, { to: 'published' })).rejects.toThrow();
+    const approved = await svc.transitionModule(admin, mod.id, { to: 'approved' });
+    expect(approved.status).toBe('approved');
+    expect(approved.reviewerId).toBe(admin.id);
+
+    const reviewer = await user(['reviewer']);
+    const own = await owner
+      .insert(s.modules)
+      .values({
+        disciplineId: disc.id,
+        topicId: topic.id,
+        slug: `rev-${randomUUID().slice(0, 6)}`,
+        title: 'Do revisor',
+        status: 'in_review',
+        authorId: reviewer.id,
+      })
+      .returning();
+    await expect(svc.transitionModule(reviewer, own[0]!.id, { to: 'approved' })).rejects.toThrow(
       /autor não aprova/,
     );
-    await expect(svc.transitionModule(admin, mod.id, { to: 'published' })).rejects.toThrow();
   });
 
   it('quem não é admin não cria curso, mesmo chamando o serviço direto (RLS)', async () => {

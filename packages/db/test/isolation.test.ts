@@ -233,6 +233,21 @@ describe('catálogo e workflow editorial', () => {
     ).catch((e) => e);
     expect(pgCode(selfApprove)).toBe('42501');
 
+    // O admin (Super Admin) aprova o que escreveu (ADR 0024).
+    const admin = await makeUser(owner, ['admin']);
+    const adminOwn = await draftModule(admin, `admin-${Date.now()}`);
+    await withUser(app, admin, (tx) =>
+      tx.update(s.modules).set({ status: 'in_review' }).where(eq(s.modules.id, adminOwn)),
+    );
+    const [byAdmin] = await withUser(app, admin, (tx) =>
+      tx
+        .update(s.modules)
+        .set({ status: 'approved' })
+        .where(eq(s.modules.id, adminOwn))
+        .returning(),
+    );
+    expect(byAdmin!.reviewerId).toBe(admin);
+
     const [approved] = await setStatus(reviewer, 'approved');
     expect(approved!.reviewerId).toBe(reviewer);
     const [published] = await setStatus(reviewer, 'published');

@@ -2,12 +2,12 @@
 
 Passa um módulo pelo fluxo editorial até ele aparecer para os alunos: rascunho, em revisão, aprovado e publicado.
 
-**Quem pode:** Admin e Revisão. Quem criou o módulo envia para revisão e publica, mas não aprova. A aprovação precisa ser de outra pessoa, com papel Admin ou Revisão. Editar o conteúdo continua só com o Admin. **Onde:** tela do módulo, quadro **Fluxo editorial**, `/admin/modulos/<módulo>`. O revisor chega pela fila **Revisão de aulas** (`/admin/revisao`), seção **Módulos do catálogo**.
+**Quem pode:** Admin e Revisão. Quem criou o módulo envia para revisão e publica. Se o autor tem o papel Revisão, a aprovação precisa ser de outra pessoa. O Admin pode aprovar o que escreveu, mas aí não há segunda revisão. Editar o conteúdo continua só com o Admin. **Onde:** tela do módulo, quadro **Fluxo editorial**, `/admin/modulos/<módulo>`. O revisor chega pela fila **Revisão de aulas** (`/admin/revisao`), seção **Módulos do catálogo**.
 
 ## Antes de começar
 
 - O módulo precisa existir. Veja [Criar um módulo](criar-modulo.md).
-- Combine quem vai aprovar: outra pessoa admin ou alguém com o papel Revisão.
+- Combine quem vai aprovar. O ideal é alguém com o papel Revisão (por exemplo, o Dr. Rafael), para o conteúdo de saúde passar por uma segunda pessoa. O Admin também pode aprovar o próprio módulo.
 
 ## Passo a passo
 
@@ -31,13 +31,14 @@ Passa um módulo pelo fluxo editorial até ele aparecer para os alunos: rascunho
 - **Publicado**: o módulo aparece para os alunos do curso na disciplina, com a aula, o resumo, as questões e o tutor IA.
 - **Arquivado**: o módulo some para os alunos. Nada é apagado.
 - Módulos não têm versões. Editar um módulo aprovado ou publicado muda o que os alunos veem na hora. A tela avisa: "Editar um módulo publicado muda o que os alunos veem na hora."
-- Se você é o autor e o módulo está em revisão, a tela avisa: "Você é o autor deste módulo: a aprovação precisa ser de outra pessoa." O botão **Aprovar** não aparece para o autor.
+- Se você é Admin e escreveu o módulo, a tela avisa: "Você escreveu este módulo. Como admin, pode aprovar mesmo assim: confira o conteúdo antes, porque não haverá uma segunda revisão." A aprovação fica marcada na auditoria.
+- Se você tem o papel Revisão (sem Admin) e escreveu o módulo, a tela avisa: "Você é o autor deste módulo: a aprovação precisa ser de outra pessoa." O botão **Aprovar** não aparece.
 - A seção **Módulos do catálogo** da fila mostra só módulos em revisão escritos à mão no catálogo. Os módulos que vieram da produção de aulas são revisados peça a peça. Veja [Como revisar uma peça](../producao/revisar-peca.md).
 - Para o revisor, a trilha do topo da tela do módulo leva de volta a **Revisão**.
 
 ## Se der errado
 
-- O botão **Aprovar** não aparece: você é o autor do módulo. Peça a outra pessoa admin ou a alguém com o papel Revisão.
+- O botão **Aprovar** não aparece: você é o autor do módulo e não é Admin. Peça a um Admin ou a outra pessoa com o papel Revisão.
 - O revisor quer mudar o texto do módulo: editar o conteúdo é só do Admin. Use **Devolver ao rascunho** e avise o autor.
 - "Só revisor aprova, devolve, publica ou arquiva.": sua conta perdeu o papel no meio do caminho. Confira em [Dar e tirar papéis](dar-e-tirar-papeis.md).
 - Mensagem como "Transição editorial inválida: rascunho → publicado.": alguém mudou o status ao mesmo tempo. Recarregue a página e use os botões que aparecerem.

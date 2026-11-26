@@ -43,7 +43,7 @@
   <div class="rule"><strong>Duas regras de ouro.</strong>
     <ul>
       <li>O que a IA lê ou cria a partir do material do aluno vira proposta, nunca dado pronto. Cronograma, sessões de estudo e certificados só valem depois que o aluno confere e confirma.</li>
-      <li>Uma aula ou questão só chega ao aluno depois de passar pela revisão de outra pessoa e ser publicada. Quem escreveu não aprova o próprio conteúdo, e o banco garante isso.</li>
+      <li>Uma aula ou questão só chega ao aluno depois de ser aprovada e publicada. Quem escreveu não aprova o próprio conteúdo, e o banco garante isso; a exceção é o admin, que pode aprovar o que escreveu (ADR 0024).</li>
     </ul>
   </div>
 </section>
@@ -204,7 +204,7 @@
     <thead><tr><th>Ação</th><th>Quem</th><th>O que acontece</th></tr></thead>
     <tbody>
       <tr><td>Criar e editar questão</td><td><span class="pill editor">Editor</span> <span class="pill revisor">Revisor</span> <span class="pill admin">Admin</span></td><td>Em <span class="path">/admin/questoes</span>. Para enviar à revisão, a questão precisa ter de 2 a 6 alternativas e uma só correta.</td></tr>
-      <tr><td>Aprovar, devolver, publicar, arquivar</td><td><span class="pill revisor">Revisor</span> <span class="pill admin">Admin</span></td><td>O autor não aprova o próprio conteúdo. Ao aprovar, fica registrado quem revisou.</td></tr>
+      <tr><td>Aprovar, devolver, publicar, arquivar</td><td><span class="pill revisor">Revisor</span> <span class="pill admin">Admin</span></td><td>O autor não aprova o próprio conteúdo, exceto o admin. Ao aprovar, fica registrado quem revisou.</td></tr>
       <tr><td>Nova versão</td><td>quem edita</td><td>Questão aprovada ou publicada não é editada no lugar: cria-se um rascunho novo. Publicar a versão nova arquiva sozinho a anterior.</td></tr>
       <tr><td>Montar o catálogo</td><td><span class="pill admin">Admin</span></td><td>Curso, disciplina, assunto e módulo, em <span class="path">/admin/cursos</span>. Uma aula é um módulo com a aula interativa ligada. O módulo nasce rascunho e precisa da aprovação de outra pessoa. Item em uso não é excluído, só desativado.</td></tr>
       <tr><td>Marcar demonstração</td><td>automático</td><td>Conteúdo sem revisão editorial leva o selo "Demonstração · sem revisão". O catálogo de demonstração é carregado só quando o deploy pede.</td></tr>

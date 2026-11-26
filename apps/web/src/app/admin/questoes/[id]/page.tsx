@@ -66,7 +66,8 @@ export default async function QuestionDetailPage({
         <TransitionButtons
           id={q.id}
           status={q.status}
-          isAuthor={q.authorId === user.id}
+          // O admin pode aprovar o que escreveu (ADR 0024): para ele, a trava de autor não vale.
+          isAuthor={q.authorId === user.id && !user.roles.includes('admin')}
           isReviewer={isReviewer}
         />
       </Card>

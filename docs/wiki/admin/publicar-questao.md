@@ -53,7 +53,7 @@ Leva uma questão do rascunho até o banco de questões dos alunos. O editor esc
   - "Há alternativas repetidas."
   - "Use de 2 a 6 alternativas."
     Corrija no formulário, clique em **Salvar rascunho** e envie de novo.
-- "Quem escreveu a questão não pode aprová-la. Peça a outra pessoa da revisão.": o autor não aprova. Se você é o autor e tem papel de revisão, a tela já avisa: "Você é autor desta questão: outra pessoa da revisão precisa aprovar."
+- "Quem escreveu a questão não pode aprová-la. Peça a outra pessoa da revisão.": o autor não aprova, exceto o Admin, que pode aprovar o que escreveu. Se você é o autor e tem papel de revisão, a tela já avisa: "Você é autor desta questão: outra pessoa da revisão precisa aprovar."
 - "Só quem revisa pode aprovar, devolver, publicar ou arquivar.": sua conta não tem papel Revisão nem Admin.
 - "Só rascunhos podem ser editados. Crie uma nova versão.": a questão já saiu do rascunho.
 - O editor enviou para revisão e quer mudar algo: ele não consegue puxar de volta. Peça a alguém da revisão para usar **Devolver com observações**.
