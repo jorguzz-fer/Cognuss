@@ -115,3 +115,61 @@ test('admin cria conta com senha temporária e a pessoa troca a senha', async ({
   await other.goto('/professor');
   await expect(other.getByRole('heading', { name: /turmas/i }).first()).toBeVisible();
 });
+
+test('admin renomeia a disciplina (o endereço acompanha) e exclui a que ficou sem uso', async ({
+  page,
+}) => {
+  await becomeAdmin(page);
+  const tag = Date.now().toString(36);
+  await page.goto('/admin/cursos');
+  await page.getByLabel('Nome').fill(`Farmácia ${tag}`);
+  await page.getByRole('button', { name: 'Criar curso' }).click();
+  await expect(page.getByText('Curso criado.')).toBeVisible();
+
+  await page
+    .getByLabel('Nome', { exact: true })
+    .first()
+    .fill('Conceitos gerais e formas farmacêuticas');
+  await page.getByRole('button', { name: 'Criar disciplina' }).click();
+  await expect(page.getByText('Disciplina criada.')).toBeVisible();
+  await page.getByLabel('Novo assunto').fill('Farmacocinética');
+  await page.getByRole('button', { name: 'Adicionar' }).click();
+  await expect(page.getByText('Assunto criado.')).toBeVisible();
+
+  const dados = page.getByRole('region', { name: 'Dados da disciplina' });
+  await dados.getByLabel('Nome', { exact: true }).fill(`Farmacologia ${tag}`);
+  await page.getByRole('button', { name: 'Salvar disciplina' }).click();
+  await expect(page.getByText('Disciplina salva.')).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: `Farmacologia ${tag}` })).toBeVisible();
+  await expect(dados.getByLabel('Endereço')).toHaveValue(`farmacologia-${tag}`);
+
+  await page.getByText(`Quero excluir Farmacologia ${tag}`).click();
+  await page.getByRole('button', { name: 'Excluir de vez' }).click();
+  await expect(page.getByText('Disciplina excluída.')).toBeVisible();
+  await expect(page.getByText('Nenhuma disciplina ainda.')).toBeVisible();
+});
+
+test('disciplina com módulo não é excluída', async ({ page }) => {
+  await becomeAdmin(page);
+  const tag = Date.now().toString(36);
+  await page.goto('/admin/cursos');
+  await page.getByLabel('Nome').fill(`Enfermagem ${tag}`);
+  await page.getByRole('button', { name: 'Criar curso' }).click();
+  await expect(page.getByText('Curso criado.')).toBeVisible();
+  await page.getByLabel('Nome', { exact: true }).first().fill('Semiologia');
+  await page.getByRole('button', { name: 'Criar disciplina' }).click();
+  await expect(page.getByText('Disciplina criada.')).toBeVisible();
+  await page.getByLabel('Novo assunto').fill('Exame físico');
+  await page.getByRole('button', { name: 'Adicionar' }).click();
+  await expect(page.getByText('Assunto criado.')).toBeVisible();
+  await page.getByLabel('Título').fill('Inspeção');
+  await page.getByLabel('Assunto', { exact: true }).selectOption({ label: 'Exame físico' });
+  await page.getByRole('button', { name: 'Criar como rascunho' }).click();
+  await expect(page.getByText('Módulo criado como rascunho.')).toBeVisible();
+
+  await page.getByRole('link', { name: 'Semiologia' }).click();
+  await page.getByText('Quero excluir Semiologia').click();
+  await page.getByRole('button', { name: 'Excluir de vez' }).click();
+  await expect(page.getByText(/Esse item está em uso/)).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Semiologia' })).toBeVisible();
+});
