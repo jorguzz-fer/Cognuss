@@ -1,4 +1,5 @@
 import { PIECE_BASE_CSS } from './piece-base';
+import { PIECE_3D_PATH, PIECE_KIT_CSS, PIECE_KIT_JS } from './piece-kit';
 
 // Peças interativas da produção de aulas (docs/producao/ESPECIFICACAO.md, "Padrão de peça
 // aprovado"; ADR 0021). A peça é guardada em blocos (título, estilo, corpo, script e rodapé) e
@@ -25,6 +26,11 @@ export type PieceContext = {
   theme?: 'light' | 'dark' | null;
   /** @font-face das fontes (PIECE_FONT_CSS, de @gutta/core/piece-fonts). */
   fontCss?: string;
+  /**
+   * Origem do app (APP_URL) para o módulo 3D do kit (ADR 0022). Vazio: caminho relativo, que
+   * vale quando a peça é servida pelo próprio app (prévia e aula publicada).
+   */
+  assetBase?: string;
 };
 
 const esc = (s: string) =>
@@ -43,7 +49,13 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 $('#themeBtn').onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark';window.onTheme&&window.onTheme()};
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{window.onTheme&&window.onTheme()});`;
 
-/** Monta o HTML final da peça, autocontido. */
+/** Endereço do módulo 3D do kit: absoluto com a origem do app, ou relativo. */
+export function pieceAssetUrl(base?: string | null): string {
+  const origin = (base ?? '').trim().replace(/\/+$/, '');
+  return /^https?:\/\/[^/\s]+$/i.test(origin) ? origin + PIECE_3D_PATH : PIECE_3D_PATH;
+}
+
+/** Monta o HTML final da peça, autocontido (o módulo 3D, quando usado, vem do app). */
 export function assemblePiece(b: PieceBlocks, ctx: PieceContext): string {
   const theme = ctx.theme ? ` data-theme="${ctx.theme}"` : '';
   return `<!DOCTYPE html>
@@ -54,6 +66,7 @@ export function assemblePiece(b: PieceBlocks, ctx: PieceContext): string {
 <title>${esc(b.title.trim())}</title>
 <style>${ctx.fontCss ?? ''}
 ${PIECE_BASE_CSS}
+${PIECE_KIT_CSS}
 ${b.style}</style>
 </head>
 <body>
@@ -70,6 +83,8 @@ ${b.body}
 </div>
 <script>
 ${PRELUDE}
+window.__PIECE_3D__=${JSON.stringify(pieceAssetUrl(ctx.assetBase))};
+${PIECE_KIT_JS}
 ${b.script}
 </script>
 </body>
@@ -171,7 +186,10 @@ export function lintPiece(b: PieceBlocks): LintIssue[] {
   if (!/Para fixar/i.test(b.body) && !/class\s*=\s*["'][^"']*\bexplain\b/.test(b.body))
     error('closing', 'Falta o bloco "Para fixar".');
   if (!/Na prova/i.test(b.body)) error('closing', 'Falta o bloco "Na prova".');
-  if (!/<(?:canvas|svg|video)\b/i.test(b.body) && !/createElementNS|getContext\(/.test(b.script))
+  if (
+    !/<(?:canvas|svg|video)\b/i.test(b.body) &&
+    !/createElementNS|getContext\(|kit\.(?:canvas|chart|view3d)\(/.test(b.script)
+  )
     error('stage', 'Falta a cena (canvas ou SVG) da área interativa.');
   if (/<h1\b[\s\S]*<h1\b/i.test(b.body)) warn('opening', 'Mais de um h1 na peça.');
   if (/<(?:canvas|svg)\b(?![^>]*(?:aria-label|aria-hidden|role=))/i.test(b.body))
@@ -197,3 +215,62 @@ export function lintPiece(b: PieceBlocks): LintIssue[] {
 }
 
 export const lintErrors = (issues: LintIssue[]) => issues.filter((i) => i.level === 'error');
+
+// ---------------------------------------------------------------------------------------------
+// Correção por trecho (ADR 0022). Na correção, a IA devolve trocas pontuais em vez da peça
+// inteira:
+//   @@EDIT script
+//   @@FIND
+//   trecho exato da versão anterior
+//   @@REPLACE
+//   trecho novo
+//   @@END
+// O trecho procurado precisa aparecer uma única vez no bloco; senão a troca não é aplicada e
+// volta como problema na próxima tentativa.
+
+export type PieceEditBlock = 'title' | 'style' | 'body' | 'script';
+export type PieceEdit = { block: PieceEditBlock; find: string; replace: string };
+
+const EDIT_RE =
+  /@@EDIT[ \t]+(title|style|body|script)[ \t]*\n@@FIND\n([\s\S]*?)\n@@REPLACE\n([\s\S]*?)\n?@@END/g;
+
+/** Lê as trocas pontuais de uma resposta de correção. */
+export function parsePieceEdits(text: string): PieceEdit[] {
+  const out: PieceEdit[] = [];
+  for (const m of text.replace(/\r\n/g, '\n').matchAll(EDIT_RE))
+    out.push({ block: m[1] as PieceEditBlock, find: m[2]!, replace: m[3] ?? '' });
+  return out;
+}
+
+/** A resposta traz a peça inteira (blocos @@TITLE…@@SCRIPT) em vez de trocas? */
+export function isFullPieceSource(text: string): boolean {
+  return /(^|\n)@@BODY\n/.test(text) && /(^|\n)@@SCRIPT\n/.test(text);
+}
+
+/** Aplica as trocas na versão anterior; as que não acham o trecho exato voltam em `failed`. */
+export function applyPieceEdits(
+  previous: PieceBlocks,
+  edits: PieceEdit[],
+): { blocks: PieceBlocks; failed: string[] } {
+  const blocks: PieceBlocks = { ...previous };
+  const failed: string[] = [];
+  for (const e of edits) {
+    const src = blocks[e.block];
+    const first = src.indexOf(e.find);
+    const short = e.find.trim().slice(0, 60).replace(/\s+/g, ' ');
+    if (!e.find.trim() || first < 0) {
+      failed.push(
+        `Troca não aplicada no bloco ${e.block}: o trecho "${short}" não existe na versão anterior.`,
+      );
+      continue;
+    }
+    if (src.indexOf(e.find, first + 1) >= 0) {
+      failed.push(
+        `Troca não aplicada no bloco ${e.block}: o trecho "${short}" aparece mais de uma vez; inclua mais contexto.`,
+      );
+      continue;
+    }
+    blocks[e.block] = src.slice(0, first) + e.replace + src.slice(first + e.find.length);
+  }
+  return { blocks, failed };
+}

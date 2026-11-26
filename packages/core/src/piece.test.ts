@@ -1,6 +1,17 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { assemblePiece, lintErrors, lintPiece, parsePieceSource, type PieceBlocks } from './piece';
+import {
+  applyPieceEdits,
+  assemblePiece,
+  isFullPieceSource,
+  lintErrors,
+  lintPiece,
+  parsePieceEdits,
+  parsePieceSource,
+  pieceAssetUrl,
+  type PieceBlocks,
+} from './piece';
+import { PIECE_3D_PATH, PIECE_KIT_JS } from './piece-kit';
 import { PIECE_FONT_CSS } from './piece-fonts';
 
 // As peças aprovadas do piloto (docs/producao/referencias) são o padrão: o linter não pode
@@ -112,5 +123,106 @@ describe('linter', () => {
 
   it('recusa peça grande demais', () => {
     expect(rules({ ...ok, script: `const s="${'x'.repeat(160_000)}";` })).toContain('size');
+  });
+});
+
+describe('kit de peças (ADR 0022)', () => {
+  const blocks: PieceBlocks = {
+    title: 'Peça',
+    style: '',
+    body: '<section><div class="eyebrow">Peça interativa</div><h1>Peça</h1><p class="lead">Lead.</p></section><div id="cena" role="img" aria-label="cena"></div><div class="card explain">Para fixar<div class="exam">Na prova</div></div>',
+    script: "kit.view3d('#cena').then(()=>{});",
+  };
+
+  it('a montagem traz o kit, o CSS do kit e o endereço do módulo 3D', () => {
+    const html = assemblePiece(blocks, { ...ctx, assetBase: 'https://app.cognuss.com.br/' });
+    expect(html).toContain('window.kit=kit');
+    expect(html).toContain('.status.ok');
+    expect(html).toContain(
+      `window.__PIECE_3D__=${JSON.stringify('https://app.cognuss.com.br' + PIECE_3D_PATH)}`,
+    );
+    // O kit vem antes do script da peça, que já pode usá-lo.
+    expect(html.indexOf('window.kit=kit')).toBeLessThan(html.indexOf("kit.view3d('#cena')"));
+  });
+
+  it('sem origem válida, o módulo 3D usa o caminho relativo', () => {
+    expect(pieceAssetUrl(undefined)).toBe(PIECE_3D_PATH);
+    expect(pieceAssetUrl('javascript:alert(1)')).toBe(PIECE_3D_PATH);
+    expect(pieceAssetUrl('http://localhost:3000')).toBe('http://localhost:3000' + PIECE_3D_PATH);
+  });
+
+  it('o script do kit compila e não tem crase nem interpolação', () => {
+    expect(() => new Function(PIECE_KIT_JS)).not.toThrow();
+    expect(PIECE_KIT_JS).not.toMatch(/`|\$\{/);
+  });
+
+  it('a cena do kit conta como cena para o linter', () => {
+    expect(lintErrors(lintPiece(blocks)).map((i) => i.rule)).not.toContain('stage');
+    expect(
+      lintErrors(lintPiece({ ...blocks, script: 'kit.chart("#g",{x:[0,1],y:[0,1]}).draw();' })).map(
+        (i) => i.rule,
+      ),
+    ).not.toContain('stage');
+  });
+
+  it('a peça continua sem poder importar nada por conta própria', () => {
+    const issues = lintErrors(lintPiece({ ...blocks, script: "import('https://x.y/z.js')" }));
+    expect(issues.map((i) => i.rule)).toContain('network');
+  });
+});
+
+describe('correção por trecho (ADR 0022)', () => {
+  const prev: PieceBlocks = {
+    title: 'Título',
+    style: '.a{color:red}',
+    body: '<p>um</p>\n<p>dois</p>',
+    script: 'const x=1;\nconst y=2;\nconst y2=2;',
+  };
+
+  it('lê e aplica as trocas', () => {
+    const text = `Vou corrigir.
+@@EDIT script
+@@FIND
+const x=1;
+@@REPLACE
+const x=10;
+@@END
+@@EDIT body
+@@FIND
+<p>dois</p>
+@@REPLACE
+<p>dois e meio</p>
+@@END`;
+    const edits = parsePieceEdits(text);
+    expect(edits).toHaveLength(2);
+    const r = applyPieceEdits(prev, edits);
+    expect(r.failed).toEqual([]);
+    expect(r.blocks.script).toBe('const x=10;\nconst y=2;\nconst y2=2;');
+    expect(r.blocks.body).toBe('<p>um</p>\n<p>dois e meio</p>');
+    expect(prev.script).toBe('const x=1;\nconst y=2;\nconst y2=2;');
+  });
+
+  it('troca vazia apaga o trecho', () => {
+    const r = applyPieceEdits(
+      prev,
+      parsePieceEdits('@@EDIT style\n@@FIND\n.a{color:red}\n@@REPLACE\n\n@@END'),
+    );
+    expect(r.failed).toEqual([]);
+    expect(r.blocks.style).toBe('');
+  });
+
+  it('trecho inexistente ou repetido não é aplicado e vira problema', () => {
+    const r = applyPieceEdits(prev, [
+      { block: 'script', find: 'const z=3;', replace: '' },
+      { block: 'script', find: 'const y', replace: 'let y' },
+    ]);
+    expect(r.blocks).toEqual(prev);
+    expect(r.failed[0]).toMatch(/não existe na versão anterior/);
+    expect(r.failed[1]).toMatch(/mais de uma vez/);
+  });
+
+  it('reconhece a peça inteira em vez de trocas', () => {
+    expect(isFullPieceSource('@@TITLE\nT\n@@STYLE\n\n@@BODY\n<p></p>\n@@SCRIPT\n')).toBe(true);
+    expect(isFullPieceSource('@@EDIT body\n@@FIND\na\n@@REPLACE\nb\n@@END')).toBe(false);
   });
 });

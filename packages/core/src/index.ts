@@ -18,6 +18,7 @@ export * from './progress';
 export * from './planner';
 export * from './production';
 export * from './piece';
+export * from './piece-kit';
 export { PIECE_BASE_CSS } from './piece-base';
 export * from './media';
 export * from './portfolio';
