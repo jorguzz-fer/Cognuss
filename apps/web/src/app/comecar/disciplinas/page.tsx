@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { DisciplineEditor } from '@/components/disciplines/discipline-editor';
 import { ContinueForm } from '@/components/signup/continue-form';
 import { Stepper } from '@/components/signup/stepper';
-import { listDisciplines } from '@/features/academics/service';
+import { catalogOptions, listDisciplines } from '@/features/academics/service';
 import { canOpen } from '@/features/signup/steps';
 import { loadSignup } from '@/features/signup/service';
 import { requireUser } from '@/lib/auth/session';
@@ -15,7 +15,7 @@ export default async function DisciplinesStep() {
   const user = await requireUser('/comecar/disciplinas');
   const data = await loadSignup(user.id);
   if (!canOpen(data.progress, 'disciplinas')) redirect('/comecar');
-  const { items } = await listDisciplines(user.id);
+  const [{ items }, catalog] = [await listDisciplines(user.id), await catalogOptions(user.id)];
   return (
     <>
       <Stepper progress={data.progress} current="disciplinas" />
@@ -26,7 +26,7 @@ export default async function DisciplinesStep() {
           provas na sua agenda, sempre com a sua conferência antes.
         </p>
       </div>
-      <DisciplineEditor initial={items} reviewBase="/comecar/cronograma" />
+      <DisciplineEditor initial={items} reviewBase="/comecar/cronograma" catalog={catalog} />
       <ContinueForm />
       <Link href="/comecar/perfil" className="text-sm">
         Voltar para o perfil acadêmico

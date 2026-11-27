@@ -71,6 +71,11 @@ async function load(tx: Tx, userId: string, ids?: string[]): Promise<DisciplineD
     .where(inArray(s.disciplineDocuments.disciplineId, discIds))
     .orderBy(asc(s.disciplineDocuments.createdAt));
   const imports = await latestImports(tx, userId, discIds);
+  const catalog = await catalogLinks(
+    tx,
+    userId,
+    rows.map((r) => r.catalogDisciplineId).filter((id): id is string => Boolean(id)),
+  );
   return rows.map((r) => ({
     id: r.id,
     name: r.name,
@@ -82,11 +87,68 @@ async function load(tx: Tx, userId: string, ids?: string[]): Promise<DisciplineD
     documents: docs
       .filter((d) => d.doc.disciplineId === r.id)
       .map((d) => ({ id: d.doc.id, kind: d.doc.kind, file: fileDto(d.file) })),
+    catalog: (r.catalogDisciplineId && catalog.get(r.catalogDisciplineId)) || null,
     scheduleImport: (() => {
       const i = imports.get(r.id);
       return i ? { id: i.id, status: i.status, error: i.error } : null;
     })(),
   }));
+}
+
+type CatalogOption = { id: string; name: string; slug: string; modules: number };
+
+/**
+ * Disciplinas do catálogo do curso do aluno (ADR 0026), com quantos módulos publicados cada uma
+ * tem. Sem `ids`, todas as ativas do curso; com `ids`, só essas (as de outro curso ficam de fora).
+ */
+async function catalogOfCourse(tx: Tx, userId: string, ids?: string[]): Promise<CatalogOption[]> {
+  if (ids && ids.length === 0) return [];
+  const profile = await tx.query.studentProfiles.findFirst({
+    where: eq(s.studentProfiles.userId, userId),
+  });
+  if (!profile) return [];
+  return tx
+    .select({
+      id: s.disciplines.id,
+      name: s.disciplines.name,
+      slug: s.disciplines.slug,
+      modules: sql<number>`(select count(*)::int from modules m where m.discipline_id = "disciplines"."id" and m.status = 'published')`,
+    })
+    .from(s.disciplines)
+    .where(
+      and(
+        eq(s.disciplines.courseId, profile.courseId),
+        eq(s.disciplines.active, true),
+        ids ? inArray(s.disciplines.id, ids) : undefined,
+      ),
+    )
+    .orderBy(asc(s.disciplines.name));
+}
+
+async function catalogLinks(tx: Tx, userId: string, ids: string[]) {
+  return new Map((await catalogOfCourse(tx, userId, [...new Set(ids)])).map((c) => [c.id, c]));
+}
+
+/** Para o editor: as disciplinas do catálogo que o aluno pode ligar às dele. */
+export async function catalogOptions(userId: string): Promise<CatalogOption[]> {
+  return withUser(db(), userId, (tx) => catalogOfCourse(tx, userId));
+}
+
+/** Confere a ligação pedida: do curso do aluno e ainda não ligada a outra disciplina dele. */
+async function checkCatalogLink(tx: Tx, userId: string, catalogId: string, selfId?: string) {
+  const [option] = await catalogOfCourse(tx, userId, [catalogId]);
+  if (!option) throw conflict('Essa disciplina do Cognuss não é do seu curso.');
+  const term = await currentTerm(tx, userId);
+  const taken = await tx.query.enrolledDisciplines.findFirst({
+    where: and(
+      eq(s.enrolledDisciplines.ownerId, userId),
+      eq(s.enrolledDisciplines.termId, term.id),
+      eq(s.enrolledDisciplines.catalogDisciplineId, catalogId),
+      isNull(s.enrolledDisciplines.archivedAt),
+    ),
+  });
+  if (taken && taken.id !== selfId)
+    throw conflict(`O conteúdo de ${option.name} já está ligado à sua disciplina ${taken.name}.`);
 }
 
 async function findOwn(tx: Tx, userId: string, id: string) {
@@ -200,6 +262,7 @@ export async function createDiscipline(userId: string, input: Input) {
   try {
     const discipline = await withUser(db(), userId, async (tx) => {
       const term = await currentTerm(tx, userId);
+      if (input.catalogDisciplineId) await checkCatalogLink(tx, userId, input.catalogDisciplineId);
       const [row] = await tx
         .insert(s.enrolledDisciplines)
         .values({
@@ -208,6 +271,7 @@ export async function createDiscipline(userId: string, input: Input) {
           name: input.name,
           shortName: input.shortName,
           color: input.color,
+          catalogDisciplineId: input.catalogDisciplineId ?? null,
         })
         .returning();
       await setTeachers(tx, userId, row!.id, input.teachers);
@@ -225,9 +289,19 @@ export async function updateDiscipline(userId: string, id: string, input: Input)
   try {
     const discipline = await withUser(db(), userId, async (tx) => {
       await findOwn(tx, userId, id);
+      if (input.catalogDisciplineId)
+        await checkCatalogLink(tx, userId, input.catalogDisciplineId, id);
       await tx
         .update(s.enrolledDisciplines)
-        .set({ name: input.name, shortName: input.shortName, color: input.color })
+        .set({
+          name: input.name,
+          shortName: input.shortName,
+          color: input.color,
+          // Ausente: mantém a ligação; null: desliga.
+          ...(input.catalogDisciplineId !== undefined
+            ? { catalogDisciplineId: input.catalogDisciplineId }
+            : {}),
+        })
         .where(eq(s.enrolledDisciplines.id, id));
       await setTeachers(tx, userId, id, input.teachers);
       return (await load(tx, userId, [id]))[0]!;

@@ -5,7 +5,9 @@ import { AttachDocument } from '@/components/disciplines/attach-document';
 import { notFound } from 'next/navigation';
 import { DownloadButton } from '@/components/files/download-button';
 import { Badge, Card } from '@/components/ui/card';
+import { catalogOptions } from '@/features/academics/service';
 import { getAttendance } from '@/features/attendance/service';
+import { getDiscipline as getCatalogDiscipline } from '@/features/catalog/data';
 import { disciplineOverview } from '@/features/discipline-overview/service';
 import { requireFeature } from '@/features/flags/service';
 import { getGrades } from '@/features/grades/service';
@@ -59,9 +61,17 @@ export default async function DisciplineOverviewPage({
   const d = o.discipline;
   const attendance = o.flags.faltas ? (await getAttendance(user.id, id)).attendance : null;
   const grades = o.flags.notas ? (await getGrades(user.id, id)).grades : null;
+  // Aulas do Cognuss (ADR 0026): os módulos publicados da disciplina do catálogo ligada a esta.
+  const catalog = d.catalog ? await getCatalogDiscipline(user.id, d.catalog.slug) : null;
+  const canLink = !d.catalog && (await catalogOptions(user.id)).length > 0;
 
   const menu = [
     { href: `/app/minhas-disciplinas/${id}`, label: 'Visão geral', on: true, current: true },
+    {
+      href: `/app/disciplinas/${d.catalog?.slug ?? ''}`,
+      label: 'Aulas do Cognuss',
+      on: Boolean(catalog),
+    },
     {
       href: `/app/agenda?visao=mes&disciplina=${id}`,
       label: 'Calendário da disciplina',
@@ -124,6 +134,50 @@ export default async function DisciplineOverviewPage({
             </p>
           ) : null}
         </header>
+
+        {catalog ? (
+          <Card as="section" aria-labelledby="aulas" className="grid gap-3">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 id="aulas" className="text-lg">
+                Aulas do Cognuss
+              </h2>
+              <Link href={`/app/disciplinas/${catalog.discipline.slug}`} className="text-sm">
+                Ver tudo de {catalog.discipline.name}
+              </Link>
+            </div>
+            {catalog.modules.length === 0 ? (
+              <p className="text-sm text-muted">
+                As aulas de {catalog.discipline.name} estão em preparação. Quando forem publicadas,
+                aparecem aqui.
+              </p>
+            ) : (
+              <ol className="grid gap-2">
+                {catalog.modules.map((m, i) => (
+                  <li key={m.id} className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                    <span className="tabular text-sm text-muted">{i + 1}.</span>
+                    <Link href={`/app/disciplinas/${catalog.discipline.slug}/${m.slug}`}>
+                      {m.title}
+                    </Link>
+                    {m.lessonUrl ? <Badge tone="accent">aula interativa</Badge> : null}
+                    {m.isDemo ? <Badge>demonstração</Badge> : null}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </Card>
+        ) : canLink ? (
+          <Card as="section" aria-labelledby="aulas" className="grid gap-2">
+            <h2 id="aulas" className="text-lg">
+              Aulas do Cognuss
+            </h2>
+            <p className="text-sm text-muted">
+              O seu curso tem aulas no Cognuss. Ligue esta disciplina a uma delas em{' '}
+              <Link href="/app/minhas-disciplinas">Minhas disciplinas</Link>, no lápis de editar,
+              campo &quot;Conteúdo do Cognuss&quot;. Também dá para ver tudo em{' '}
+              <Link href="/app/disciplinas">Estudar</Link>.
+            </p>
+          </Card>
+        ) : null}
 
         <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {o.flags.lembretes ? (

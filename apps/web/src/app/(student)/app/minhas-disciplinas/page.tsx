@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { DisciplineEditor } from '@/components/disciplines/discipline-editor';
-import { listDisciplines } from '@/features/academics/service';
+import { catalogOptions, listDisciplines } from '@/features/academics/service';
 import { requireFeature } from '@/features/flags/service';
 import { requireStudent } from '@/lib/auth/session';
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: 'Minhas disciplinas' };
 export default async function MyDisciplinesPage() {
   await requireFeature('disciplinas');
   const user = await requireStudent('/app/minhas-disciplinas');
-  const { items } = await listDisciplines(user.id);
+  const [{ items }, catalog] = [await listDisciplines(user.id), await catalogOptions(user.id)];
   return (
     <div className="grid gap-6">
       <div className="grid gap-1">
@@ -19,7 +19,7 @@ export default async function MyDisciplinesPage() {
           Disciplinas do semestre atual, com docentes, cronograma e plano de ensino.
         </p>
       </div>
-      <DisciplineEditor initial={items} />
+      <DisciplineEditor initial={items} catalog={catalog} />
     </div>
   );
 }

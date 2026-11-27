@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import type { disciplines } from '@gutta/contracts';
 import { Button } from '@/components/ui/button';
 import { Alert } from '@/components/ui/card';
-import { Field, Input, Textarea } from '@/components/ui/field';
+import { Field, Input, Select, Textarea } from '@/components/ui/field';
 import { api, ClientApiError } from '@/lib/client-api';
 import { cn } from '@/lib/cn';
 import { uploadFile } from '@/lib/upload';
@@ -14,6 +14,11 @@ import { isPending, ScheduleStatus } from './schedule-status';
 import { CATEGORY_COLORS, categoryClasses, type CategoryColor } from '@/styles/categories';
 
 type DisciplineDto = disciplines.DisciplineDto;
+/** Disciplina do catálogo do curso do aluno, que pode ser ligada à dele (ADR 0026). */
+export type CatalogOption = { id: string; name: string; slug: string; modules: number };
+
+const modulesLabel = (n: number) =>
+  n === 0 ? 'aulas em preparação' : n === 1 ? '1 módulo' : `${n} módulos`;
 
 const ACCEPT =
   '.pdf,.doc,.docx,.xlsx,.xls,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -38,13 +43,20 @@ type Pending = { kind: 'cronograma' | 'plano_ensino'; file: File };
 export function DisciplineEditor({
   initial,
   reviewBase = '/app/minhas-disciplinas/cronograma',
+  catalog = [],
 }: {
   initial: DisciplineDto[];
   /** Onde fica a conferência do cronograma (no cadastro ou no app). */
   reviewBase?: string;
+  /** Disciplinas do catálogo do curso do aluno, para ligar às dele. */
+  catalog?: CatalogOption[];
 }) {
   const [items, setItems] = useState(initial);
   const [name, setName] = useState('');
+  const [catalogId, setCatalogId] = useState('');
+  const linked = new Set(items.map((d) => d.catalog?.id).filter(Boolean));
+  const suggestions = catalog.filter((c) => !linked.has(c.id));
+  const inApp = reviewBase.startsWith('/app');
   const [shortName, setShortName] = useState('');
   const [color, setColor] = useState<CategoryColor>(((initial.length % 8) + 1) as CategoryColor);
   const [teachers, setTeachers] = useState<string[]>([]);
@@ -101,7 +113,13 @@ export function DisciplineEditor({
     try {
       const { discipline } = await api<{ discipline: DisciplineDto }>('/disciplines', {
         method: 'POST',
-        body: { name, shortName, color, teachers: allTeachers },
+        body: {
+          name,
+          shortName,
+          color,
+          teachers: allTeachers,
+          catalogDisciplineId: catalogId || null,
+        },
       });
       setItems((cur) => [...cur, discipline]);
       let current = discipline;
@@ -124,6 +142,7 @@ export function DisciplineEditor({
         }
       }
       setName('');
+      setCatalogId('');
       setShortName('');
       setTeachers([]);
       setTeacherDraft('');
@@ -166,6 +185,41 @@ export function DisciplineEditor({
       >
         <h2 className="text-lg">Adicionar disciplina</h2>
         {errors.form ? <Alert tone="warn">{errors.form}</Alert> : null}
+        {suggestions.length ? (
+          <div className="grid gap-2">
+            <p className="text-sm font-medium" id="sugestoes">
+              Do catálogo do seu curso
+            </p>
+            <p className="text-sm text-muted">
+              Escolha uma para já ver as aulas do Cognuss dentro da disciplina. Se a sua tiver outro
+              nome na faculdade, troque o nome depois de escolher.
+            </p>
+            <ul className="flex flex-wrap gap-2" aria-labelledby="sugestoes">
+              {suggestions.map((c) => (
+                <li key={c.id}>
+                  <button
+                    type="button"
+                    aria-pressed={catalogId === c.id}
+                    onClick={() => {
+                      if (catalogId === c.id) {
+                        setCatalogId('');
+                        return;
+                      }
+                      setCatalogId(c.id);
+                      setName(c.name);
+                    }}
+                    className={cn(
+                      'min-h-11 rounded-full border border-line-strong px-4 text-sm hover:bg-surface-2',
+                      catalogId === c.id && 'border-accent bg-accent-soft font-semibold',
+                    )}
+                  >
+                    {c.name} · {modulesLabel(c.modules)}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
         <div className="grid gap-4 sm:grid-cols-[2fr_1fr]">
           <Field label="Nome da disciplina" error={errors.name}>
             {(p) => (
@@ -189,6 +243,24 @@ export function DisciplineEditor({
             )}
           </Field>
         </div>
+        {catalog.length ? (
+          <Field
+            label="Conteúdo do Cognuss"
+            optional
+            hint="Liga a sua disciplina às aulas, questões e resumos do Cognuss."
+          >
+            {(p) => (
+              <Select {...p} value={catalogId} onChange={(e) => setCatalogId(e.target.value)}>
+                <option value="">Nenhum</option>
+                {catalog.map((c) => (
+                  <option key={c.id} value={c.id} disabled={linked.has(c.id)}>
+                    {c.name} ({modulesLabel(c.modules)})
+                  </option>
+                ))}
+              </Select>
+            )}
+          </Field>
+        ) : null}
         <fieldset className="grid gap-2">
           <legend className="mb-1 text-sm font-medium">Cor na grade e no calendário</legend>
           <div className="flex flex-wrap gap-2">
@@ -310,6 +382,17 @@ export function DisciplineEditor({
                     {d.teachers.length ? (
                       <p className="text-sm">{d.teachers.map((t) => t.name).join(', ')}</p>
                     ) : null}
+                    {d.catalog ? (
+                      <p className="text-sm">
+                        Conteúdo do Cognuss:{' '}
+                        {inApp ? (
+                          <Link href={`/app/disciplinas/${d.catalog.slug}`}>{d.catalog.name}</Link>
+                        ) : (
+                          d.catalog.name
+                        )}{' '}
+                        · {modulesLabel(d.catalog.modules)}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="flex">
                     <button
@@ -334,6 +417,8 @@ export function DisciplineEditor({
                 {editing === d.id ? (
                   <EditDiscipline
                     discipline={d}
+                    catalog={catalog}
+                    taken={linked}
                     onSaved={(nd) => {
                       replace(nd);
                       setEditing(null);
@@ -396,10 +481,14 @@ export function DisciplineEditor({
 /** Edição de uma disciplina já cadastrada: nome, sigla, cor e docentes (um por linha). */
 function EditDiscipline({
   discipline: d,
+  catalog,
+  taken,
   onSaved,
   onCancel,
 }: {
   discipline: DisciplineDto;
+  catalog: CatalogOption[];
+  taken: Set<string | undefined>;
   onSaved: (d: DisciplineDto) => void;
   onCancel: () => void;
 }) {
@@ -421,7 +510,16 @@ function EditDiscipline({
     try {
       const { discipline } = await api<{ discipline: DisciplineDto }>(`/disciplines/${d.id}`, {
         method: 'PATCH',
-        body: { name, shortName: String(form.get('shortName') ?? ''), color, teachers },
+        body: {
+          name,
+          shortName: String(form.get('shortName') ?? ''),
+          color,
+          teachers,
+          // Sem catálogo no curso, a ligação fica como está.
+          ...(catalog.length
+            ? { catalogDisciplineId: String(form.get('catalogDisciplineId') ?? '') || null }
+            : {}),
+        },
       });
       onSaved(discipline);
     } catch (err) {
@@ -471,6 +569,24 @@ function EditDiscipline({
           ))}
         </div>
       </fieldset>
+      {catalog.length ? (
+        <Field label="Conteúdo do Cognuss" optional>
+          {(p) => (
+            <Select {...p} name="catalogDisciplineId" defaultValue={d.catalog?.id ?? ''}>
+              <option value="">Nenhum</option>
+              {catalog.map((c) => (
+                <option
+                  key={c.id}
+                  value={c.id}
+                  disabled={taken.has(c.id) && d.catalog?.id !== c.id}
+                >
+                  {c.name} ({modulesLabel(c.modules)})
+                </option>
+              ))}
+            </Select>
+          )}
+        </Field>
+      ) : null}
       <Field label="Docentes" optional hint="Um por linha.">
         {(p) => (
           <Textarea
