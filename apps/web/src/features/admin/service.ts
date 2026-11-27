@@ -195,7 +195,8 @@ export async function listCourses(admin: CurrentUser) {
         active: s.courses.active,
         isDemo: s.courses.isDemo,
         disciplines: sql<number>`(select count(*)::int from disciplines d where d.course_id = "courses"."id")`,
-        students: sql<number>`(select count(*)::int from student_profiles sp where sp.course_id = "courses"."id")`,
+        // O perfil do aluno é só do dono no RLS: a contagem vem da função do admin (ADR 0026).
+        students: sql<number>`coalesce((select c.students from admin_course_student_counts() c where c.course_id = "courses"."id"), 0)`,
       })
       .from(s.courses)
       .orderBy(asc(s.courses.name)),
@@ -694,18 +695,36 @@ export async function getUserAdmin(admin: CurrentUser, id: string) {
       .select({ role: s.roleAssignments.role, createdAt: s.roleAssignments.createdAt })
       .from(s.roleAssignments)
       .where(eq(s.roleAssignments.userId, id));
+    // O perfil do aluno é só do dono no RLS; o admin lê o curso pela função (ADR 0026).
     const student = await tx
-      .select({
-        courseName: s.courses.name,
-        institutionName: s.institutions.name,
-        semester: s.studentProfiles.semester,
-        onboardedAt: s.studentProfiles.onboardingCompletedAt,
-      })
-      .from(s.studentProfiles)
-      .innerJoin(s.courses, eq(s.courses.id, s.studentProfiles.courseId))
-      .leftJoin(s.institutions, eq(s.institutions.id, s.studentProfiles.institutionId))
-      .where(eq(s.studentProfiles.userId, id))
-      .then((r) => r[0] ?? null);
+      .execute<{
+        course_id: string;
+        course_name: string;
+        course_other: string | null;
+        institution_name: string | null;
+        semester: number;
+        onboarded_at: Date | string | null;
+      }>(
+        sql`select p.course_id, c.name as course_name, p.course_other, i.name as institution_name,
+              p.semester, p.onboarded_at
+            from admin_student_course(${id}) p
+            join courses c on c.id = p.course_id
+            left join institutions i on i.id = p.institution_id`,
+      )
+      .then((r) => {
+        const row = r.rows[0];
+        return row
+          ? {
+              courseId: row.course_id,
+              courseName: row.course_other
+                ? `${row.course_name}: ${row.course_other}`
+                : row.course_name,
+              institutionName: row.institution_name,
+              semester: row.semester,
+              onboardedAt: row.onboarded_at ? new Date(row.onboarded_at) : null,
+            }
+          : null;
+      });
     const sessions = await tx
       .select({ n: sql<number>`count(*)::int` })
       .from(s.authSessions)
@@ -836,6 +855,39 @@ export async function verifyEmail(admin: CurrentUser, userId: string) {
       { type: 'user', id: userId },
       { source: 'admin' },
     );
+  });
+}
+
+/**
+ * Troca o curso de um aluno (ADR 0026): corrige um cadastro feito no curso errado. O aluno passa
+ * a ver no Estudar as disciplinas do curso novo; o semestre, as notas e os arquivos dele ficam.
+ */
+export async function setStudentCourse(admin: CurrentUser, userId: string, courseId: string) {
+  if (!z.uuid().safeParse(courseId).success)
+    throw new ApiError(400, 'bad_request', 'Escolha um curso.');
+  return run(admin, async (tx) => {
+    let previous: string | null;
+    try {
+      const r = await tx.execute<{ previous: string | null }>(
+        sql`select admin_set_student_course(${userId}, ${courseId}::uuid) as previous`,
+      );
+      previous = r.rows[0]?.previous ?? null;
+    } catch (err) {
+      const code = (err as { cause?: { code?: string } }).cause?.code;
+      if (code === 'P0002')
+        throw new ApiError(409, 'conflict', 'Esta pessoa ainda não fez o cadastro de aluno.');
+      if (code === '23514') throw new ApiError(409, 'conflict', 'Curso indisponível.');
+      throw err;
+    }
+    if (previous !== courseId)
+      await audit(
+        tx,
+        admin.id,
+        'student.course_changed',
+        { type: 'user', id: userId },
+        { from: previous, to: courseId },
+      );
+    return previous !== courseId;
   });
 }
 

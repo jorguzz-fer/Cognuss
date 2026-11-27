@@ -449,6 +449,13 @@
       "when": 1795725594374,
       "tag": "0063_admin_aprova_proprio",
       "breakpoints": true
+    },
+    {
+      "idx": 64,
+      "version": "7",
+      "when": 1795811994374,
+      "tag": "0064_curso_do_aluno_pelo_admin",
+      "breakpoints": true
     }
   ]
 }

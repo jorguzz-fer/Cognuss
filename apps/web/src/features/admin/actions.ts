@@ -220,6 +220,27 @@ export async function verifyEmailAction(form: FormData) {
   back(path, { ok: 'E-mail confirmado.' });
 }
 
+export async function setStudentCourseAction(form: FormData) {
+  const user = await admin('/admin/usuarios');
+  const userId = String(form.get('id') ?? '');
+  const path = `/admin/usuarios/${userId}`;
+  let changed = false;
+  try {
+    changed = await svc.setStudentCourse(
+      user,
+      z.string().min(1).parse(userId),
+      String(form.get('courseId') ?? ''),
+    );
+  } catch (err) {
+    back(path, { erro: message(err) }, 'curso');
+  }
+  back(
+    path,
+    { ok: changed ? 'Curso do aluno atualizado.' : 'O aluno já estava nesse curso.' },
+    'curso',
+  );
+}
+
 export async function revokeSessionsAction(form: FormData) {
   const user = await admin('/admin/usuarios');
   const userId = String(form.get('id') ?? '');
