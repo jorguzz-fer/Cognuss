@@ -352,14 +352,17 @@ export default async function DisciplineOverviewPage({
                   <DownloadButton fileId={o.schedule.id} label="Baixar o cronograma" />
                 </>
               ) : (
-                <>
-                  <p className="text-sm">
-                    Nenhum cronograma anexado. A leitura acompanha em{' '}
-                    <Link href="/app/minhas-disciplinas">Minhas disciplinas</Link>.
-                  </p>
-                  <AttachDocument disciplineId={id} kind="cronograma" label="Anexar cronograma" />
-                </>
+                <p className="text-sm">
+                  Nenhum cronograma anexado. A leitura acompanha em{' '}
+                  <Link href="/app/minhas-disciplinas">Minhas disciplinas</Link>.
+                </p>
               )}
+              {/* Sempre no mesmo lugar: o aviso de envio continua na tela depois do refresh. */}
+              <AttachDocument
+                disciplineId={id}
+                kind="cronograma"
+                label={o.schedule ? 'Enviar outro cronograma' : 'Anexar cronograma'}
+              />
             </Card>
             <Card as="section" aria-labelledby="resumo" className="grid gap-2">
               <h2 id="resumo" className="text-lg font-semibold">

@@ -194,30 +194,31 @@ export function DisciplineEditor({
               Escolha uma para já ver as aulas do Cognuss dentro da disciplina. Se a sua tiver outro
               nome na faculdade, troque o nome depois de escolher.
             </p>
-            <ul className="flex flex-wrap gap-2" aria-labelledby="sugestoes">
+            {/* Grupo de botões de alternância (e não lista): o cartão da disciplina, mais abaixo,
+                continua sendo o único item de lista com o nome dela. */}
+            <div role="group" className="flex flex-wrap gap-2" aria-labelledby="sugestoes">
               {suggestions.map((c) => (
-                <li key={c.id}>
-                  <button
-                    type="button"
-                    aria-pressed={catalogId === c.id}
-                    onClick={() => {
-                      if (catalogId === c.id) {
-                        setCatalogId('');
-                        return;
-                      }
-                      setCatalogId(c.id);
-                      setName(c.name);
-                    }}
-                    className={cn(
-                      'min-h-11 rounded-full border border-line-strong px-4 text-sm hover:bg-surface-2',
-                      catalogId === c.id && 'border-accent bg-accent-soft font-semibold',
-                    )}
-                  >
-                    {c.name} · {modulesLabel(c.modules)}
-                  </button>
-                </li>
+                <button
+                  key={c.id}
+                  type="button"
+                  aria-pressed={catalogId === c.id}
+                  onClick={() => {
+                    if (catalogId === c.id) {
+                      setCatalogId('');
+                      return;
+                    }
+                    setCatalogId(c.id);
+                    setName(c.name);
+                  }}
+                  className={cn(
+                    'min-h-11 rounded-full border border-line-strong px-4 text-sm hover:bg-surface-2',
+                    catalogId === c.id && 'border-accent bg-accent-soft font-semibold',
+                  )}
+                >
+                  {c.name} · {modulesLabel(c.modules)}
+                </button>
               ))}
-            </ul>
+            </div>
           </div>
         ) : null}
         <div className="grid gap-4 sm:grid-cols-[2fr_1fr]">
