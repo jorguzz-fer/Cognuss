@@ -1,4 +1,4 @@
-// Kit das peças interativas (ADR 0022). Funções prontas e testadas que toda peça recebe na
+// Kit das peças interativas (ADR 0025). Funções prontas e testadas que toda peça recebe na
 // montagem, junto com a base CSS: gráfico em SVG com eixos e escala log, canvas com espaço
 // lógico e animação, trajetos para partículas, sliders, chips, cenários, status, cartões de
 // revelar e cena 3D. A IA passa a compor com o kit em vez de escrever tudo do zero; o prompt

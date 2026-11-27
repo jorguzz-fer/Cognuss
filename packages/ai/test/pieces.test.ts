@@ -11,7 +11,7 @@ import {
   type PieceWriteInput,
 } from '../src/pieces';
 
-// Escritor e crítico das peças (ADR 0022): blocos de texto em vez de JSON, correção por
+// Escritor e crítico das peças (ADR 0025): blocos de texto em vez de JSON, correção por
 // trechos com as capturas, e o crítico visual. Sem rede: um cliente falso grava a chamada.
 
 const input: PieceWriteInput = {

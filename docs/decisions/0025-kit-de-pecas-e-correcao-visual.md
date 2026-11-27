@@ -1,4 +1,4 @@
-# ADR 0022: Kit de peças, correção por trecho com capturas e 3D servido pelo app
+# ADR 0025: Kit de peças, correção por trecho com capturas e 3D servido pelo app
 
 - Status: proposto
 - Data: 2026-11-26

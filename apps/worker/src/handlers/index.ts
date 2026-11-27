@@ -37,7 +37,7 @@ export type HandlerDeps = {
   planner?: LessonPlanner | null;
   /** Peças HTML (Fase 2): escritor com IA e teste de render. */
   pieceWriter?: PieceWriter | null;
-  /** Crítico visual das capturas (ADR 0022). */
+  /** Crítico visual das capturas (ADR 0025). */
   pieceCritic?: PieceCritic | null;
   renderer?: PieceRenderer | null;
   /** Origem do app, para o módulo 3D das peças. */

@@ -1,6 +1,6 @@
 import type { PieceBlocks } from '@gutta/core';
 
-// Peça de teste do kit (ADR 0022): gráfico, canvas animado com trajeto, slider, chips,
+// Peça de teste do kit (ADR 0025): gráfico, canvas animado com trajeto, slider, chips,
 // cenários e status. A variante 3D acrescenta a cena do kit.view3d.
 export const KIT_PIECE: PieceBlocks = {
   title: 'A meia-vida dita quando o fármaco some',

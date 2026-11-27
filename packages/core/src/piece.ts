@@ -27,7 +27,7 @@ export type PieceContext = {
   /** @font-face das fontes (PIECE_FONT_CSS, de @gutta/core/piece-fonts). */
   fontCss?: string;
   /**
-   * Origem do app (APP_URL) para o módulo 3D do kit (ADR 0022). Vazio: caminho relativo, que
+   * Origem do app (APP_URL) para o módulo 3D do kit (ADR 0025). Vazio: caminho relativo, que
    * vale quando a peça é servida pelo próprio app (prévia e aula publicada).
    */
   assetBase?: string;
@@ -225,7 +225,7 @@ export function lintPiece(b: PieceBlocks): LintIssue[] {
 export const lintErrors = (issues: LintIssue[]) => issues.filter((i) => i.level === 'error');
 
 // ---------------------------------------------------------------------------------------------
-// Correção por trecho (ADR 0022). Na correção, a IA devolve trocas pontuais em vez da peça
+// Correção por trecho (ADR 0025). Na correção, a IA devolve trocas pontuais em vez da peça
 // inteira:
 //   @@EDIT script
 //   @@FIND

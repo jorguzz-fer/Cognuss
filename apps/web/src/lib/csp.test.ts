@@ -55,7 +55,7 @@ describe('prévia das peças', () => {
     expect(buildPieceCsp({ appUrl: 'http://exemplo.com' })).toContain('media-src data: blob:;');
   });
 
-  it('o único script de fora é o módulo 3D do kit, servido pelo app (ADR 0022)', () => {
+  it('o único script de fora é o módulo 3D do kit, servido pelo app (ADR 0025)', () => {
     expect(buildPieceCsp({ appUrl: 'https://app.cognuss.com.br' })).toContain(
       "script-src 'unsafe-inline' https://app.cognuss.com.br/piece-assets/three-r169.mjs;",
     );

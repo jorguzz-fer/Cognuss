@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // Módulo 3D das peças (ADR 0022): a peça roda num sandbox sem origem, então o import
+        // Módulo 3D das peças (ADR 0025): a peça roda num sandbox sem origem, então o import
         // precisa de CORS. Arquivo versionado no nome, por isso o cache longo.
         source: '/piece-assets/:file*',
         headers: [

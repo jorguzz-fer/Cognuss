@@ -91,7 +91,7 @@ describe('peças com defeito', () => {
   });
 });
 
-describe('peças com o kit (ADR 0022)', () => {
+describe('peças com o kit (ADR 0025)', () => {
   const withKit = (b: PieceBlocks) =>
     assemblePiece(b, { ...ctx, fontCss: PIECE_FONT_CSS, assetBase: 'http://localhost:3000' });
 

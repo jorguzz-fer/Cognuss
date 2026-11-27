@@ -326,7 +326,7 @@ describe('geração das peças (Fase 2)', () => {
     expect(html.map((a) => (a.meta as { ok: boolean }).ok)).toEqual([false, true]);
   }, 120_000);
 
-  it('a correção recebe as capturas e sai por troca pontual (ADR 0022)', async () => {
+  it('a correção recebe as capturas e sai por troca pontual (ADR 0025)', async () => {
     const { admin, batchId, tasks } = await released();
     const writer = new FakePieceWriter(1);
     await productionGeneratePiece({ storage: store, writer, renderer }).run(
@@ -340,7 +340,7 @@ describe('geração das peças (Fase 2)', () => {
     expect(html.map((a) => (a.meta as { mode: string }).mode)).toEqual(['full', 'edits']);
   }, 120_000);
 
-  it('o crítico visual reprova a primeira versão e a correção passa (ADR 0022)', async () => {
+  it('o crítico visual reprova a primeira versão e a correção passa (ADR 0025)', async () => {
     const { admin, batchId, tasks } = await released();
     const writer = new FakePieceWriter();
     const critic = new FakePieceCritic([['Rótulo cortado no eixo do tempo.'], []]);
@@ -456,7 +456,7 @@ describe('geração das peças (Fase 2)', () => {
     );
   }, 120_000);
 
-  it('duas peças do mesmo lote terminando juntas fecham o lote (ADR 0022)', async () => {
+  it('duas peças do mesmo lote terminando juntas fecham o lote (ADR 0025)', async () => {
     const { admin, batchId, tasks } = await released();
     const gen = productionGeneratePiece({
       storage: store,

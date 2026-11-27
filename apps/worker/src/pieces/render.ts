@@ -24,7 +24,7 @@ export type RenderCheck = {
   overlaps: Overlap[];
   screenshot: Buffer;
   /**
-   * Captura com altura limitada, para a IA (crítico e correção, ADR 0022): a de página inteira,
+   * Captura com altura limitada, para a IA (crítico e correção, ADR 0025): a de página inteira,
    * reduzida pela API, ficaria ilegível numa peça longa.
    */
   review?: Buffer;

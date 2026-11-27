@@ -126,7 +126,7 @@ describe('linter', () => {
   });
 });
 
-describe('kit de peças (ADR 0022)', () => {
+describe('kit de peças (ADR 0025)', () => {
   const blocks: PieceBlocks = {
     title: 'Peça',
     style: '',
@@ -171,7 +171,7 @@ describe('kit de peças (ADR 0022)', () => {
   });
 });
 
-describe('correção por trecho (ADR 0022)', () => {
+describe('correção por trecho (ADR 0025)', () => {
   const prev: PieceBlocks = {
     title: 'Título',
     style: '.a{color:red}',

@@ -306,7 +306,7 @@ export class FakePieceWriter implements PieceWriter {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Crítico visual (ADR 0022). O teste de render só mede o que dá para medir sem olhar (erro de
+// Crítico visual (ADR 0025). O teste de render só mede o que dá para medir sem olhar (erro de
 // script, rolagem, cena vazia, sobreposição). O crítico olha as capturas como um revisor e
 // aponta o que está visivelmente quebrado ou didaticamente enganoso. Modelo mais barato,
 // esforço baixo, saída curta.

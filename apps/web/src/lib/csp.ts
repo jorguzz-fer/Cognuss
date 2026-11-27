@@ -39,7 +39,7 @@ export function buildPieceCsp(env: { storageEndpoint?: string; appUrl?: string; 
   return [
     'sandbox allow-scripts',
     "default-src 'none'",
-    // O módulo 3D do kit (ADR 0022) é o único script de fora: um arquivo fixo, servido pelo app.
+    // O módulo 3D do kit (ADR 0025) é o único script de fora: um arquivo fixo, servido pelo app.
     `script-src 'unsafe-inline' ${app ? app + PIECE_3D_PATH : ''}`.trim(),
     "style-src 'unsafe-inline'",
     'font-src data:',

@@ -22,7 +22,7 @@ export type PieceDeps = {
   storage: ObjectStorage | null;
   writer: PieceWriter | null;
   renderer: PieceRenderer | null;
-  /** Crítico visual das capturas (ADR 0022); sem ele, vale só o teste de render. */
+  /** Crítico visual das capturas (ADR 0025); sem ele, vale só o teste de render. */
   critic?: PieceCritic | null;
   /** Origem do app (APP_URL), para o módulo 3D do kit. */
   assetBase?: string;
@@ -45,7 +45,7 @@ const SHOT_NAMES: Record<string, string> = {
 
 /**
  * Quando não sobra tarefa gerando, o lote termina a geração. A linha do lote é travada antes da
- * contagem: com peças em paralelo (ADR 0022), duas tarefas que terminam juntas não podem ver
+ * contagem: com peças em paralelo (ADR 0025), duas tarefas que terminam juntas não podem ver
  * uma à outra ainda gerando e deixar o lote preso.
  */
 export async function settleBatch(tx: Tx, batchId: string) {
