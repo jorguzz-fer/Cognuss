@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { and, createDb, createPool, eq, schema as s, withUser } from '@gutta/db';
+import { and, asc, createDb, createPool, eq, schema as s, withUser } from '@gutta/db';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { CurrentUser, Role } from '@/lib/auth/session';
 import { db } from '@/lib/db';
@@ -37,11 +37,20 @@ beforeAll(async () => {
   admin = await user(['admin']);
   ana = await user();
   beto = await user();
-  const mod = await owner.query.modules.findFirst({ where: eq(s.modules.status, 'published') });
-  moduleId = mod!.id;
-  const q = await owner.query.questions.findFirst({
-    where: and(eq(s.questions.topicId, mod!.topicId), eq(s.questions.status, 'published')),
-  });
+  // Um módulo publicado com questão publicada no assunto dele (o do seed). Outros testes criam
+  // módulos publicados sem questão em paralelo: "o primeiro publicado" não serve.
+  const [found] = await owner
+    .select({ mod: s.modules, q: s.questions })
+    .from(s.modules)
+    .innerJoin(
+      s.questions,
+      and(eq(s.questions.topicId, s.modules.topicId), eq(s.questions.status, 'published')),
+    )
+    .where(eq(s.modules.status, 'published'))
+    .orderBy(asc(s.modules.createdAt))
+    .limit(1);
+  moduleId = found!.mod.id;
+  const q = found!.q;
   const right = await owner.query.questionOptions.findFirst({
     where: and(eq(s.questionOptions.questionId, q!.id), eq(s.questionOptions.isCorrect, true)),
   });
