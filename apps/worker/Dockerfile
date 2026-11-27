@@ -41,6 +41,8 @@ RUN apk add --no-cache libreoffice poppler-utils unzip chromium ffmpeg font-deja
     && addgroup -S -g 1001 gutta && adduser -S -u 1001 -G gutta gutta
 COPY --from=build --chown=gutta:gutta /repo/apps/worker/dist/worker.mjs ./worker.mjs
 COPY --from=build --chown=gutta:gutta /out/node_modules ./node_modules
+# Módulo 3D das peças (ADR 0022): o teste de render serve este arquivo do disco.
+COPY --chown=gutta:gutta apps/web/public/piece-assets ./piece-assets
 USER gutta
 EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \

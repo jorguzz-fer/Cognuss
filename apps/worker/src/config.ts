@@ -19,7 +19,8 @@ const schema = z.object({
   WORKER_CONCURRENCY_NOTIFICATIONS: z.coerce.number().int().positive().default(5),
   WORKER_CONCURRENCY_MAINTENANCE: z.coerce.number().int().positive().default(1),
   // Produção de aulas (ADR 0021): conversão pesada e plano longo, um de cada vez.
-  WORKER_CONCURRENCY_PRODUCTION: z.coerce.number().int().positive().default(1),
+  // Peças de um lote geradas em paralelo (ADR 0022); respeite o limite de uso da API.
+  WORKER_CONCURRENCY_PRODUCTION: z.coerce.number().int().positive().default(3),
   // Eventos já publicados ficam no outbox por este número de dias (auditoria de entrega).
   OUTBOX_RETENTION_DAYS: z.coerce.number().int().min(1).default(7),
   // Antivírus (ADR 0012). "clamd" em produção; "none" só em desenvolvimento e testes.
@@ -44,7 +45,15 @@ const schema = z.object({
   // Peças HTML da produção de aulas (Fase 2) e o Chromium do teste de render.
   AI_PIECE_MODEL: z.string().default('claude-opus-5-5'),
   AI_PIECE_EFFORT: z.enum(['low', 'medium', 'high']).default('high'),
+  // Escrita das peças com o kit (ADR 0022): esforço médio basta e sai mais rápido; o alto
+  // continua no plano e no roteiro dos vídeos.
+  AI_PIECE_WRITE_EFFORT: z.enum(['low', 'medium', 'high']).default('medium'),
+  // Crítico visual das capturas (ADR 0022). "off" desliga e vale só o teste de render.
+  AI_PIECE_CRITIC_MODEL: z.string().default('claude-sonnet-5-5'),
+  AI_PIECE_CRITIC: z.enum(['on', 'off']).default('on'),
   PIECE_CHROMIUM_PATH: z.string().optional(),
+  // Pasta do módulo 3D das peças (na imagem, /app/piece-assets).
+  PIECE_ASSETS_DIR: z.string().optional(),
   // Vídeos da produção de aulas (Fase 3). Higgsfield para imagem e clipe, ElevenLabs para a
   // narração. Sem chave, a tarefa pausa com o aviso no admin. "fake" gera tudo com o ffmpeg,
   // sem rede, e não vale em produção.

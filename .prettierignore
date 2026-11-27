@@ -6,3 +6,4 @@ docs/producao/referencias/
 packages/core/src/piece-fonts.ts
 apps/web/src/features/actor-map/content.generated.ts
 apps/web/src/features/wiki/content.generated.ts
+apps/web/public/piece-assets/

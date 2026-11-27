@@ -23,7 +23,9 @@ A produção de aulas só funciona de verdade com as chaves da Claude, da Higgsf
 5. Confira o armazenamento de arquivos, que o app e o worker usam: `STORAGE_ENDPOINT`, `STORAGE_REGION`, `STORAGE_BUCKET`, `STORAGE_ACCESS_KEY_ID` e `STORAGE_SECRET_ACCESS_KEY`.
 6. Se quiser, ajuste as opcionais (todas têm padrão):
    - `AI_PRODUCTION_MODEL` e `AI_PRODUCTION_EFFORT`: modelo e esforço do plano das peças.
-   - `AI_PIECE_MODEL` e `AI_PIECE_EFFORT`: modelo e esforço da escrita das peças e do roteiro dos vídeos.
+   - `AI_PIECE_MODEL`: modelo da escrita das peças e do roteiro dos vídeos. `AI_PIECE_EFFORT` (padrão `high`) vale para o roteiro; `AI_PIECE_WRITE_EFFORT` (padrão `medium`) vale para a escrita das peças.
+   - `AI_PIECE_CRITIC` (`on` ou `off`) e `AI_PIECE_CRITIC_MODEL`: liga a revisão visual das capturas e escolhe o modelo dela (padrão Sonnet).
+   - `WORKER_CONCURRENCY_PRODUCTION`: quantas peças são geradas ao mesmo tempo (padrão 3). Baixe se a conta da Claude bater no limite de uso.
    - `HIGGSFIELD_IMAGE_ENDPOINT` e `HIGGSFIELD_VIDEO_ENDPOINT`: trocam o modelo de imagem e de clipe.
    - `ELEVENLABS_MODEL`: modelo da narração.
    - `PRODUCTION_DAILY_CREDITS`: cota diária padrão de créditos de mídia (300), usada enquanto ninguém salvar outra em **Vozes e cota de mídia**.

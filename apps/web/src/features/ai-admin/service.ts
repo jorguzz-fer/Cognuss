@@ -35,6 +35,8 @@ export function usageLabel(feature: string) {
   if (feature === 'tutor_materiais') return 'Tutor sobre os materiais';
   if (feature === 'tutor_modulo') return 'Tutor do módulo (MVP)';
   if (feature === 'producao_plano') return 'Produção de aulas: plano das peças';
+  if (feature === 'producao_peca') return 'Produção de aulas: escrita das peças';
+  if (feature === 'producao_critica') return 'Produção de aulas: revisão visual das peças';
   if (feature === 'embedding') return 'Busca por conceito: vetores dos materiais';
   if (feature === 'embedding_query') return 'Busca por conceito: buscas';
   if (feature.startsWith('criacao_'))
