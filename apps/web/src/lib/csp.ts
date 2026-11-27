@@ -1,3 +1,5 @@
+import { PIECE_3D_PATH } from '@gutta/core/piece-kit';
+
 // Content-Security-Policy montada por requisição (proxy.ts), para ler LESSON_ORIGINS em
 // tempo de execução: o mesmo build serve ambientes com aulas em origens diferentes.
 export function buildCsp(env: { lessonOrigins?: string; storageEndpoint?: string; dev?: boolean }) {
@@ -37,7 +39,8 @@ export function buildPieceCsp(env: { storageEndpoint?: string; appUrl?: string; 
   return [
     'sandbox allow-scripts',
     "default-src 'none'",
-    "script-src 'unsafe-inline'",
+    // O módulo 3D do kit (ADR 0025) é o único script de fora: um arquivo fixo, servido pelo app.
+    `script-src 'unsafe-inline' ${app ? app + PIECE_3D_PATH : ''}`.trim(),
     "style-src 'unsafe-inline'",
     'font-src data:',
     'img-src data: blob:',

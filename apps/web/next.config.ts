@@ -19,6 +19,16 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        // Módulo 3D das peças (ADR 0025): a peça roda num sandbox sem origem, então o import
+        // precisa de CORS. Arquivo versionado no nome, por isso o cache longo.
+        source: '/piece-assets/:file*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Content-Type', value: 'text/javascript; charset=utf-8' },
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
         source: '/:path*',
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },

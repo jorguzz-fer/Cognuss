@@ -380,6 +380,11 @@ async function advance(
             return await stop(`A cena "${scene.id}" está sem imagem aprovada. Refaça a imagem.`);
           const credits = MEDIA_CREDITS[kind];
           a = await inTx(async (tx) => {
+            // Com vídeos em paralelo (ADR 0025), a conferência da cota e o registro do pedido
+            // pago acontecem um de cada vez, para dois pedidos não passarem juntos da cota.
+            await tx.execute(
+              sql`select pg_advisory_xact_lock(hashtext('production_media_credits'))`,
+            );
             const st = await mediaSettings(tx, deps);
             if ((await creditsToday(tx)) + credits > st.dailyCredits)
               throw new QuotaReached(st.dailyCredits);

@@ -4,6 +4,7 @@ import {
   AnthropicCertificateReader,
   AnthropicCreator,
   AnthropicLessonPlanner,
+  AnthropicPieceCritic,
   AnthropicPieceWriter,
   AnthropicScheduleExtractor,
   AnthropicStoryboardWriter,
@@ -84,12 +85,19 @@ async function main() {
       ? new AnthropicPieceWriter(
           new Anthropic({ apiKey: cfg.ANTHROPIC_API_KEY }),
           cfg.AI_PIECE_MODEL,
-          cfg.AI_PIECE_EFFORT,
+          cfg.AI_PIECE_WRITE_EFFORT,
         )
       : cfg.AI_PROVIDER === 'fake'
         ? new FakePieceWriter()
         : null;
-  const renderer = new PlaywrightRenderer(cfg.PIECE_CHROMIUM_PATH);
+  const pieceCritic =
+    cfg.AI_PIECE_CRITIC === 'on' && cfg.AI_PROVIDER === 'anthropic' && cfg.ANTHROPIC_API_KEY
+      ? new AnthropicPieceCritic(
+          new Anthropic({ apiKey: cfg.ANTHROPIC_API_KEY }),
+          cfg.AI_PIECE_CRITIC_MODEL,
+        )
+      : null;
+  const renderer = new PlaywrightRenderer(cfg.PIECE_CHROMIUM_PATH, cfg.PIECE_ASSETS_DIR);
   const certificateReader =
     cfg.AI_PROVIDER === 'anthropic' && cfg.ANTHROPIC_API_KEY
       ? new AnthropicCertificateReader(
@@ -136,7 +144,9 @@ async function main() {
     embedder,
     planner,
     pieceWriter,
+    pieceCritic,
     renderer,
+    appUrl: cfg.APP_URL,
     storyboardWriter,
     certificateReader,
     media,

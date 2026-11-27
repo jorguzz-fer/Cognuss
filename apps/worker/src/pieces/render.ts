@@ -1,4 +1,6 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { PIECE_3D_PATH } from '@gutta/core/piece-kit';
 import { chromium, type Browser, type Page } from 'playwright-core';
 
 // Teste de render das peças (docs/producao/ESPECIFICACAO.md, "Peças com texto sobreposto no
@@ -21,7 +23,15 @@ export type RenderCheck = {
   emptyStage: boolean;
   overlaps: Overlap[];
   screenshot: Buffer;
+  /**
+   * Captura com altura limitada, para a IA (crítico e correção, ADR 0025): a de página inteira,
+   * reduzida pela API, ficaria ilegível numa peça longa.
+   */
+  review?: Buffer;
 };
+
+/** Altura máxima da captura que vai para a IA. */
+const REVIEW_HEIGHT: Record<Viewport, number> = { desktop: 2200, mobile: 1400 };
 
 export type RenderReport = {
   ok: boolean;
@@ -97,7 +107,10 @@ export const INSPECT_SOURCE = `(() => {
     if (r.width * r.height < 20000 || !visible(c)) continue;
     try {
       const ctx = c.getContext('2d');
-      if (!ctx || !c.width || !c.height) continue;
+      // Canvas WebGL (cena 3D do kit): não dá para ler os pixels pelo 2D; um canvas desse tipo
+      // com tamanho de cena conta como cena desenhada.
+      if (!ctx) { stage = true; break; }
+      if (!c.width || !c.height) continue;
       const data = ctx.getImageData(0, 0, c.width, c.height).data;
       for (let k = 3; k < data.length; k += 4 * 97)
         if (data[k] > 0) { stage = true; break; }
@@ -134,15 +147,39 @@ export function systemChromium(configured?: string) {
 
 const IGNORED_CONSOLE = /favicon|ERR_BLOCKED_BY_CLIENT|net::ERR_FAILED/i;
 
+/**
+ * Pasta com o módulo 3D das peças (apps/web/public/piece-assets; na imagem do worker,
+ * /app/piece-assets). O teste serve o arquivo daqui: a peça não sai para a rede.
+ */
+export function pieceAssetsDir(configured?: string) {
+  const candidates = [
+    configured,
+    '/app/piece-assets',
+    new URL('../../../web/public/piece-assets', import.meta.url).pathname,
+  ];
+  return candidates.find((d) => d && existsSync(join(d, PIECE_3D_PATH.split('/').pop()!)));
+}
+
 export class PlaywrightRenderer implements PieceRenderer {
   private browser: Promise<Browser> | null = null;
 
-  constructor(private executablePath?: string) {}
+  private module3d: Buffer | null | undefined;
+
+  constructor(
+    private executablePath?: string,
+    private assetsDir?: string,
+  ) {}
 
   private launch() {
     this.browser ??= chromium.launch({
       executablePath: systemChromium(this.executablePath),
-      args: ['--no-sandbox', '--disable-dev-shm-usage'],
+      // WebGL por software, para a cena 3D do kit renderizar no contêiner sem GPU.
+      args: [
+        '--no-sandbox',
+        '--disable-dev-shm-usage',
+        '--use-angle=swiftshader',
+        '--enable-unsafe-swiftshader',
+      ],
     });
     return this.browser;
   }
@@ -164,7 +201,17 @@ export class PlaywrightRenderer implements PieceRenderer {
         if (m.type() === 'error' && !IGNORED_CONSOLE.test(m.text())) errors.push(m.text());
       });
       // Nada sai da peça: qualquer pedido de rede é bloqueado (e vira erro se a peça depender).
-      await page.route(/^(?!data:|about:)/, (r) => r.abort('blockedbyclient'));
+      // A exceção é o módulo 3D do kit, servido daqui, do disco.
+      await page.route(/^(?!data:|about:)/, (r) => {
+        const mod = new URL(r.request().url()).pathname === PIECE_3D_PATH ? this.load3d() : null;
+        return mod
+          ? r.fulfill({
+              body: mod,
+              contentType: 'text/javascript',
+              headers: { 'access-control-allow-origin': '*' },
+            })
+          : r.abort('blockedbyclient');
+      });
       try {
         let opened = true;
         try {
@@ -189,7 +236,19 @@ export class PlaywrightRenderer implements PieceRenderer {
         // Falha aqui é do teste, não da peça: sobe e o trabalho tenta de novo.
         const r = (await page.evaluate(INSPECT_SOURCE)) as Inspection;
         const screenshot = await page.screenshot({ fullPage: true, type: 'jpeg', quality: 70 });
-        checks.push({ ...run, errors, ...r, screenshot });
+        const height = Number(await page.evaluate('document.documentElement.scrollHeight'));
+        const review = await page.screenshot({
+          fullPage: true,
+          clip: {
+            x: 0,
+            y: 0,
+            width: VIEWPORTS[run.viewport].width,
+            height: Math.max(1, Math.min(height, REVIEW_HEIGHT[run.viewport])),
+          },
+          type: 'jpeg',
+          quality: 75,
+        });
+        checks.push({ ...run, errors, ...r, screenshot, review });
       } finally {
         await ctx.close();
       }
@@ -207,6 +266,14 @@ export class PlaywrightRenderer implements PieceRenderer {
     const problems = [...new Set(checks.filter((c) => c.blocking).flatMap(describe))];
     const warnings = [...new Set(checks.filter((c) => !c.blocking).flatMap(describe))];
     return { ok: problems.length === 0, problems, warnings, checks };
+  }
+
+  private load3d(): Buffer | null {
+    if (this.module3d === undefined) {
+      const dir = pieceAssetsDir(this.assetsDir);
+      this.module3d = dir ? readFileSync(join(dir, PIECE_3D_PATH.split('/').pop()!)) : null;
+    }
+    return this.module3d;
   }
 
   async close() {

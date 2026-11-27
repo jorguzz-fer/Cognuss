@@ -5,6 +5,7 @@ import type {
   LessonPlanner,
   MediaProvider,
   Narrator,
+  PieceCritic,
   PieceWriter,
   ScheduleExtractor,
   StoryboardWriter,
@@ -36,7 +37,11 @@ export type HandlerDeps = {
   planner?: LessonPlanner | null;
   /** Peças HTML (Fase 2): escritor com IA e teste de render. */
   pieceWriter?: PieceWriter | null;
+  /** Crítico visual das capturas (ADR 0025). */
+  pieceCritic?: PieceCritic | null;
   renderer?: PieceRenderer | null;
+  /** Origem do app, para o módulo 3D das peças. */
+  appUrl?: string;
   /** Leitura dos certificados (Competências, K1). Null: o aluno preenche à mão. */
   certificateReader?: CertificateReader | null;
   /** Vídeos (Fase 3): roteiro com IA, imagens e clipes, narração. */
@@ -87,6 +92,8 @@ export function createHandlers(deps: HandlerDeps): Handlers {
       storage: deps.storage,
       writer: deps.pieceWriter ?? null,
       renderer: deps.renderer ?? null,
+      critic: deps.pieceCritic ?? null,
+      assetBase: deps.appUrl,
     }),
     ...(() => {
       const media = {

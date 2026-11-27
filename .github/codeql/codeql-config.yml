@@ -1,0 +1,7 @@
+# Configuração do CodeQL (workflow Segurança).
+name: Cognuss
+paths-ignore:
+  # three.js r169 empacotado e minificado (ADR 0025), gerado por apps/web/scripts/build-piece-3d.mjs.
+  # Código de terceiros: os ids internos do three.js usam Math.random(), o que o CodeQL marca
+  # como "aleatoriedade insegura" sem haver uso de segurança. Não é código nosso para revisar.
+  - apps/web/public/piece-assets
