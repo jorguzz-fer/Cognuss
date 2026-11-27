@@ -7,7 +7,9 @@ O catálogo reúne as disciplinas do seu curso, com módulos que trazem aula int
 ## Antes de começar
 
 - O catálogo não depende de chave de módulo nem de interruptor de IA. Ele aparece sempre.
+- O catálogo mostra as disciplinas do **curso** que você escolheu no cadastro. Se o curso está errado, peça ao admin para corrigir.
 - As disciplinas de **Suas disciplinas** são as que você marcou no perfil. Se a lista estiver vazia, use **Escolher no perfil**.
+- Também dá para chegar às aulas pela sua disciplina do semestre: ligue-a ao conteúdo do Cognuss em **Minhas disciplinas** e as aulas aparecem na visão da disciplina. Veja [Como cadastrar uma disciplina](cadastrar-disciplina.md).
 - Conteúdo de saúde que ainda não passou pela revisão editorial aparece com o selo **Demonstração · sem revisão**.
 
 ## Passo a passo

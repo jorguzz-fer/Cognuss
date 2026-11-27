@@ -64,6 +64,7 @@ Catálogo, questões, pessoas, instituições, IA, privacidade e métricas.
 - [Como ligar e desligar módulos da v2](admin/ligar-e-desligar-funcionalidades.md)
 - [Como levar um módulo de rascunho a publicado](admin/publicar-modulo.md)
 - [Como levar uma questão pelo fluxo editorial](admin/publicar-questao.md)
+- [Como trocar o curso de um aluno](admin/trocar-curso-do-aluno.md)
 - [Como atender um pedido LGPD](admin/responder-pedido-lgpd.md)
 - [Como ver as conversas do tutor](admin/ver-conversas-do-tutor.md)
 
