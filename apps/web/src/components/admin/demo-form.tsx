@@ -2,11 +2,17 @@
 import { useActionState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Alert } from '@/components/ui/card';
-import { Field, Input } from '@/components/ui/field';
+import { Field, Input, Select } from '@/components/ui/field';
 import { createDemoStudentAction, type DemoState } from '@/features/demo/actions';
 
 /** Cria a conta de teste e mostra a senha uma vez (não fica salva em lugar nenhum). */
-export function DemoForm() {
+export function DemoForm({
+  courses,
+  defaultCourseId,
+}: {
+  courses: { id: string; name: string }[];
+  defaultCourseId: string;
+}) {
   const [state, action, pending] = useActionState<DemoState, FormData>(
     createDemoStudentAction,
     null,
@@ -19,6 +25,20 @@ export function DemoForm() {
         </Field>
         <Field label="Nome do aluno">
           {(p) => <Input {...p} name="name" required defaultValue="Aluna Teste Cognuss" />}
+        </Field>
+        <Field
+          label="Curso"
+          hint="O Estudar mostra as disciplinas do catálogo deste curso. As que têm módulo publicado já entram no semestre."
+        >
+          {(p) => (
+            <Select {...p} name="courseId" defaultValue={defaultCourseId}>
+              {courses.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </Select>
+          )}
         </Field>
         <div>
           <Button type="submit" disabled={pending}>

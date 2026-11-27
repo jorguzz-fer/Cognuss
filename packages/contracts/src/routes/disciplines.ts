@@ -16,6 +16,13 @@ export const DisciplineDto = z.object({
   color: z.number().int().min(1).max(8),
   teachers: z.array(z.object({ id: Uuid, name: z.string() })),
   documents: z.array(z.object({ id: Uuid, kind: DocumentKind, file: FileDto })),
+  /**
+   * Disciplina do catálogo ligada a esta (ADR 0026): as aulas do Cognuss aparecem na tela da
+   * disciplina. Só vale se for do curso do aluno; fora dele, volta null.
+   */
+  catalog: z
+    .object({ id: Uuid, name: z.string(), slug: z.string(), modules: z.number().int() })
+    .nullable(),
   /** Última leitura de cronograma (a descartada não conta). */
   scheduleImport: z
     .object({ id: Uuid, status: ImportStatus, error: z.string().nullable() })
@@ -35,6 +42,11 @@ export const disciplineBody = z.object({
     .transform((v) => v || null),
   color: z.number().int().min(1).max(8).default(6),
   teachers: z.array(teacherName).max(10, 'No máximo 10 docentes.').default([]),
+  /**
+   * Liga à disciplina do catálogo do curso do aluno (ADR 0026). null desliga; ausente, na
+   * edição, mantém como está.
+   */
+  catalogDisciplineId: Uuid.nullable().optional(),
 });
 
 export const listDisciplines = defineRoute({

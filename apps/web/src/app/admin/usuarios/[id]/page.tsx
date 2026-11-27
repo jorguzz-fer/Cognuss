@@ -2,8 +2,14 @@ import type { Metadata } from 'next';
 import { AdminHeader, Flash } from '@/components/admin/ui';
 import { Button } from '@/components/ui/button';
 import { Alert, Badge, Card } from '@/components/ui/card';
-import { revokeSessionsAction, setRoleAction, verifyEmailAction } from '@/features/admin/actions';
-import { ASSIGNABLE_ROLES, getUserAdmin, ROLE_LABEL } from '@/features/admin/service';
+import { Field, Select } from '@/components/ui/field';
+import {
+  revokeSessionsAction,
+  setRoleAction,
+  setStudentCourseAction,
+  verifyEmailAction,
+} from '@/features/admin/actions';
+import { ASSIGNABLE_ROLES, getUserAdmin, listCourses, ROLE_LABEL } from '@/features/admin/service';
 import { requireRole } from '@/lib/auth/session';
 
 export const metadata: Metadata = { title: 'Usuário' };
@@ -21,12 +27,13 @@ export default async function UserAdminPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ ok?: string; erro?: string }>;
+  searchParams: Promise<{ ok?: string; erro?: string; onde?: string }>;
 }) {
   const { id } = await params;
   const admin = await requireRole(['admin'], `/admin/usuarios/${id}`);
   const sp = await searchParams;
   const { user, roles, student, sessions, history } = await getUserAdmin(admin, id);
+  const courses = student ? (await listCourses(admin)).filter((c) => c.active) : [];
   const fmt = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
   return (
     <div className="grid gap-6">
@@ -125,6 +132,40 @@ export default async function UserAdminPage({
           </ul>
         </Card>
       </div>
+
+      {student ? (
+        <Card as="section" aria-labelledby="curso" className="grid content-start gap-3">
+          <h2 id="curso" className="text-lg">
+            Curso do aluno
+          </h2>
+          <Flash {...sp} here="curso" />
+          <p className="max-w-[65ch] text-sm text-muted">
+            O curso decide quais disciplinas do catálogo aparecem no Estudar. Troque só para
+            corrigir um cadastro feito no curso errado: o semestre, as notas e os arquivos do aluno
+            ficam como estão.
+          </p>
+          <form
+            action={setStudentCourseAction}
+            className="grid gap-3 sm:grid-cols-[minmax(0,20rem)_auto] sm:items-end"
+          >
+            <input type="hidden" name="id" value={user.id} />
+            <Field label="Curso">
+              {(p) => (
+                <Select {...p} name="courseId" defaultValue={student.courseId}>
+                  {courses.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </Field>
+            <Button type="submit" variant="secondary">
+              Trocar curso
+            </Button>
+          </form>
+        </Card>
+      ) : null}
 
       <Card as="section" aria-labelledby="hist" className="grid gap-2">
         <h2 id="hist" className="text-lg">

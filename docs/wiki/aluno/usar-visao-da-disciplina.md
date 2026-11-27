@@ -1,6 +1,6 @@
 # Como usar a visão da disciplina
 
-A visão da disciplina reúne num lugar só a próxima aula, o calendário, as faltas, as notas, o cronograma e o resumo do semestre. Cada cartão leva ao módulo dele.
+A visão da disciplina reúne num lugar só as aulas do Cognuss, a próxima aula, o calendário, as faltas, as notas, o cronograma e o resumo do semestre. Cada cartão leva ao módulo dele.
 
 **Quem pode:** aluno dono da disciplina. **Onde:** `/app/minhas-disciplinas/(id)`. Abra pelo nome da disciplina em **Minhas disciplinas** ou no cartão **Minhas disciplinas** do Meu Espaço.
 
@@ -10,15 +10,16 @@ A visão da disciplina reúne num lugar só a próxima aula, o calendário, as f
 
 1. Abra **Minhas disciplinas** e clique no nome da disciplina.
 2. No topo, confira o nome (ou a sigla), os docentes e o **Período** do cronograma.
-3. Leia os cartões:
+3. Se a disciplina está ligada ao conteúdo do Cognuss, o quadro **Aulas do Cognuss** lista os módulos publicados, em ordem, com o selo **aula interativa** quando há aula. Clique num módulo para estudar. **Ver tudo de (disciplina)** abre a disciplina no Estudar. Sem ligação, o quadro explica como ligar em **Minhas disciplinas**.
+4. Leia os cartões:
    - **Lembretes**: quantos estão pendentes desta disciplina. **Ver todos** abre **Meus lembretes**.
    - **Próxima aula**: título, data, horário, local e docente. **Acompanhar a aula** abre a aula (veja [Como acompanhar uma aula](acompanhar-aula.md)). **Ver calendário** abre a agenda em lista, filtrada pela disciplina.
    - **Faltas na disciplina**: horas-aula de falta sobre o limite e a porcentagem usada. **Ver faltas** abre o controle.
    - **Notas**: **Média atual** e a situação em relação à mínima. **Ver detalhes** abre as notas; **Calcular média final** abre a calculadora.
-4. No quadro **Calendário da disciplina**, veja os próximos eventos (data, tipo, evento, descrição e docente). **Ver calendário completo** abre a agenda do mês filtrada pela disciplina.
-5. No quadro **Cronograma da disciplina**, baixe o arquivo com **Baixar o cronograma**. Sem cronograma, use **Anexar cronograma**.
-6. No quadro **Resumo da disciplina**, veja **Carga horária total**, **Aulas no cronograma**, **Progresso**, **Provas** e **Atividades e entregas**.
-7. Use o menu lateral para ir direto a **Calendário da disciplina**, **Lembretes**, **Faltas**, **Notas e calculadora**, **Conteúdo de aula**, **Meu caderno** ou **Ajuda Cognuss**.
+5. No quadro **Calendário da disciplina**, veja os próximos eventos (data, tipo, evento, descrição e docente). **Ver calendário completo** abre a agenda do mês filtrada pela disciplina.
+6. No quadro **Cronograma da disciplina**, baixe o arquivo com **Baixar o cronograma**. Sem cronograma, use **Anexar cronograma**. Para trocar o arquivo, use **Enviar outro cronograma**: a leitura nova substitui a que estava em aberto.
+7. No quadro **Resumo da disciplina**, veja **Carga horária total**, **Aulas no cronograma**, **Progresso**, **Provas** e **Atividades e entregas**.
+8. Use o menu lateral para ir direto a **Aulas do Cognuss** (com a ligação), **Calendário da disciplina**, **Lembretes**, **Faltas**, **Notas e calculadora**, **Conteúdo de aula**, **Meu caderno** ou **Ajuda Cognuss**.
 
 ## O que acontece depois
 

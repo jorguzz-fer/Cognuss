@@ -3,7 +3,7 @@ import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { isValidCpf } from '@gutta/core';
-import { eq, hashPassword, schema as s, withUser, type Tx } from '@gutta/db';
+import { and, eq, hashPassword, schema as s, withUser, type Tx } from '@gutta/db';
 import { emit } from '@gutta/jobs';
 import { keys } from '@gutta/storage';
 import { z } from 'zod';
@@ -12,7 +12,7 @@ import type { CurrentUser } from '@/lib/auth/session';
 import { db } from '@/lib/db';
 import { audit } from '@/lib/events';
 import { requireStorage } from '@/lib/storage';
-import { currentTerm } from '@/features/academics/service';
+import { currentTerm, mirrorCatalogDisciplines } from '@/features/academics/service';
 import { confirmRoutine } from '@/features/routine/service';
 import { finishSignup, savePersonal } from '@/features/signup/service';
 
@@ -33,6 +33,11 @@ export const DEMO_FILES = {
 export const demoInput = z.object({
   email: z.email('Informe um e-mail válido.').trim().toLowerCase(),
   name: z.string().trim().min(5, 'Informe nome e sobrenome.').max(120),
+  // Vazio: Medicina (ou o primeiro curso ativo), como antes.
+  courseId: z
+    .union([z.uuid(), z.literal('')])
+    .optional()
+    .transform((v) => v || null),
 });
 
 /** CPF válido gerado ao acaso (não pertence a ninguém de propósito). */
@@ -112,6 +117,22 @@ async function uploadDemoPdf(tx: Tx, userId: string, name: string, title: string
 
 export async function createDemoStudent(admin: CurrentUser, raw: unknown) {
   const v = demoInput.parse(raw);
+  // O curso é conferido antes de criar a conta: um curso inválido não deixa conta pela metade.
+  const course = await withUser(db(), admin.id, async (tx) => {
+    if (v.courseId) {
+      const chosen = await tx.query.courses.findFirst({
+        where: and(eq(s.courses.id, v.courseId), eq(s.courses.active, true)),
+      });
+      if (!chosen) throw conflict('Curso indisponível. Escolha outro.');
+      return chosen;
+    }
+    return (
+      (await tx.query.courses.findFirst({
+        where: and(eq(s.courses.slug, 'medicina'), eq(s.courses.active, true)),
+      })) ?? (await tx.query.courses.findFirst({ where: eq(s.courses.active, true) }))
+    );
+  });
+  if (!course) throw new ApiError(500, 'demo_no_course', 'Nenhum curso ativo no catálogo.');
   const password = randomPassword();
   const userId = randomUUID();
 
@@ -147,10 +168,6 @@ export async function createDemoStudent(admin: CurrentUser, raw: unknown) {
     terms: 'on',
   });
   await withUser(db(), userId, async (tx) => {
-    const course = await tx.query.courses.findFirst({ where: eq(s.courses.slug, 'medicina') });
-    const anyCourse =
-      course ?? (await tx.query.courses.findFirst({ where: eq(s.courses.active, true) }));
-    if (!anyCourse) throw new ApiError(500, 'demo_no_course', 'Nenhum curso ativo no catálogo.');
     const institution = await tx.query.institutions.findFirst({
       where: eq(s.institutions.status, 'active'),
     });
@@ -158,7 +175,7 @@ export async function createDemoStudent(admin: CurrentUser, raw: unknown) {
       .insert(s.studentProfiles)
       .values({
         userId,
-        courseId: anyCourse.id,
+        courseId: course.id,
         semester: 3,
         institutionId: institution?.id ?? null,
         institutionOther: institution ? null : 'Instituição fictícia de teste',
@@ -431,10 +448,38 @@ export async function createDemoStudent(admin: CurrentUser, raw: unknown) {
     });
   });
 
-  // 4) Cadastro concluído e registro na auditoria (sem a senha).
+  // 4) Cadastro concluído.
   await finishSignup(userId);
+  // 5) As disciplinas do catálogo do curso que já têm módulo publicado entram no semestre,
+  // ligadas ao conteúdo (ADR 0026): a conta de teste já mostra as aulas na disciplina.
+  await withUser(db(), userId, async (tx) => {
+    const withModules = await tx
+      .selectDistinct({ id: s.disciplines.id })
+      .from(s.disciplines)
+      .innerJoin(s.modules, eq(s.modules.disciplineId, s.disciplines.id))
+      .where(
+        and(
+          eq(s.disciplines.courseId, course.id),
+          eq(s.disciplines.active, true),
+          eq(s.modules.status, 'published'),
+        ),
+      );
+    await mirrorCatalogDisciplines(
+      tx,
+      userId,
+      withModules.map((d) => d.id),
+    );
+  });
+
+  // 6) Registro na auditoria (sem a senha).
   await withUser(db(), admin.id, (tx) =>
-    audit(tx, admin.id, 'demo.student_created', { type: 'user', id: userId }, { email: v.email }),
+    audit(
+      tx,
+      admin.id,
+      'demo.student_created',
+      { type: 'user', id: userId },
+      { email: v.email, course: course.slug },
+    ),
   );
   return { email: v.email, password, userId };
 }
